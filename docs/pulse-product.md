@@ -1,16 +1,14 @@
 # Pulse product design
 
-The production renderer now uses the selected Pulse direction: charcoal grey surfaces, warm amber primary actions, restrained mint meters, readable graphs, and contextual tool guidance. Kudu's logo, navigation groups, routes, and native operations remain connected to the existing product.
+The SuperSonicCleaner renderer uses solid graphite surfaces, neutral primary actions, readable graphs, and contextual tool guidance. Green, amber, and red communicate system conditions. The light theme has a soft grey canvas, white cards, and graphite text. Both appearances use the shared [design system](DESIGN_SYSTEM.md).
 
-Synced with origin/main at 78f53fd0 (storage history, Recovery Centre, Cloud diagnostics, and schedule conditions/workflows). The design changes remain in the working tree. A safety stash preserves the full pre-sync design.
-
-The colours now match the original Pulse concept exactly: page #101519, panels #171e23, sidebar #11171b, amber #f2b354, and mint #8cd4b0.
+Local diagnostics, storage history, Recovery Centre, and scheduling remain available alongside cleanup and performance tools.
 
 ## Page treatments
 
 - Home: compact CPU and memory cards with real sparklines, drive capacity, actionable care checks, recent history, and explicit routes into cleanup, protection, and scheduling.
 - Cleaner: category navigation, prominent scan action, selected/recoverable totals above the results, and the existing review and confirmation flow.
-- Protection: distinct guidance and decorative tool illustrations for malware, firewall, privacy, vulnerabilities, breach monitoring, and threat monitoring.
+- Protection: distinct guidance and tool illustrations for local malware scanning, firewall, and privacy checks. The scanner's [coverage and local rule limitations](MALWARE_SCANNING.md) are explicit.
 - Storage: directory selection workspaces, contextual artwork, existing treemap/results and file selection controls.
 - Performance: segmented resource meters, time-based CPU/memory/disk graphs, real transfer rates instead of arbitrary throughput percentages, and the existing process table.
 - Game Mode: a quiet profile summary and one clearly labelled activation control; configuration and rollback behavior are unchanged.
@@ -21,9 +19,9 @@ The colours now match the original Pulse concept exactly: page #101519, panels #
 
 ## Review locally
 
-Run `npm run dev:ui` and open http://localhost:5186/ui-preview.html. This loads the real React product with a separate, labelled, browser-only sample bridge. It never connects to Electron or changes the computer. Supported sample scans populate review screens; unsimulated operations intentionally return an error. Use `?theme=light` for light appearance and `?state=empty` for empty account/history fixtures. The preview entry is excluded from the Electron production build.
+Run `npm run dev:ui` and open http://localhost:5186/ui-preview.html. This loads the real React product with a separate, labelled, browser-only sample bridge. It never connects to Electron or changes the computer. Supported sample scans populate review screens; unsimulated operations intentionally return an error. Use `?theme=light` for light appearance and `?state=empty` for empty history fixtures. The preview entry is excluded from the Electron production build.
 
-The exploratory concept studios have been removed. Home now offers Simple mode with three outcome cards and Advanced mode containing the existing Pulse dashboard. The view is saved in Kudu settings; Simple is the default. Both modes follow the selected light or dark appearance.
+The exploratory concept studios have been removed. Home now offers Simple mode with three outcome cards and Advanced mode containing the existing Pulse dashboard. The view is saved in SuperSonicCleaner settings; Simple is the default. Both modes follow the selected light or dark appearance.
 
 ## Original redesign validation (before feature removal)
 

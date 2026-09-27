@@ -59,7 +59,7 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the project maintainers by contacting [@dbfx](https://github.com/dbfx)
+reported to the project maintainers by contacting [@leonardostagliano](https://github.com/leonardostagliano)
 directly on GitHub. All complaints will be reviewed and investigated promptly
 and fairly.
 

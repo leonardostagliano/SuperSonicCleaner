@@ -1,16 +1,18 @@
-# Kudu
+# SuperSonicCleaner
 
 A modern, open-source system cleaner for Windows, macOS, and Linux built with Electron.
 
 ## Releasing
 
-All releases are done via a single command:
+Pushes to `main` run the automatic fork release workflow. It determines the version from Conventional Commits, builds every supported platform and verifies artifacts before publication. See [RELEASE.md](RELEASE.md).
+
+For an explicit manual release:
 
 ```
 npm run release -- patch|minor|major
 ```
 
-This handles everything: version bump, changelog generation, commit, tag, push, and triggers CI to build and publish.
+This command runs checks, calculates the next version from existing stable tags, updates the changelog, commits, tags and pushes to trigger CI. Run it only when intending to publish.
 
 `conventional-changelog-angular` is pinned to `^8` as a direct devDependency even
 though nothing imports it. This is deliberate: commitlint depends on `^9`, which

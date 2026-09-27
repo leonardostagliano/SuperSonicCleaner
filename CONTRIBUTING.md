@@ -1,17 +1,17 @@
-# Contributing to Kudu
+# Contributing to SuperSonicCleaner
 
-Thanks for your interest in contributing! Kudu is a community-driven project and we welcome all contributions — bug reports, feature requests, documentation improvements, and code.
+Thanks for your interest in contributing! SuperSonicCleaner is a community-driven project and we welcome all contributions — bug reports, feature requests, documentation improvements, and code.
 
 ## Getting Started
 
 1. Fork the repository
 2. Clone your fork and create a branch:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/kudu.git
-   cd kudu
+   git clone https://github.com/YOUR_USERNAME/SuperSonicCleaner.git
+   cd SuperSonicCleaner
    git checkout -b my-feature
    ```
-3. Install dependencies (Node 22 — see `.nvmrc`):
+3. Install dependencies (Node 24 — see `.nvmrc`):
    ```bash
    npm install
    ```
@@ -88,11 +88,11 @@ A maintainer will review within a few days. We may ask for changes — that's no
 
 ## Reporting Bugs
 
-Use the [bug report template](https://github.com/adventdevinc/kudu/issues/new?template=bug_report.md). Include your OS, Kudu version, and steps to reproduce.
+Use the [bug report template](https://github.com/leonardostagliano/SuperSonicCleaner/issues/new?template=bug_report.md). Include your OS, SuperSonicCleaner version, and steps to reproduce.
 
 ## Suggesting Features
 
-Use the [feature request template](https://github.com/adventdevinc/kudu/issues/new?template=feature_request.md).
+Use the [feature request template](https://github.com/leonardostagliano/SuperSonicCleaner/issues/new?template=feature_request.md).
 
 ## Code of Conduct
 
