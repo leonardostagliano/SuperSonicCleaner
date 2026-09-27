@@ -110,7 +110,6 @@ jobs:
         run: npm run build
 
       - name: Package and sign without publishing
-        shell: bash
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_P12 || runner.os == 'Windows' && secrets.WINDOWS_CERTIFICATE_P12 || '' }}
@@ -120,12 +119,7 @@ jobs:
           APPLE_TEAM_ID: ${{ runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
           DEBUG: ${{ runner.os == 'macOS' && 'electron-notarize*' || '' }}
         timeout-minutes: 30
-        run: |
-          if [ "$RUNNER_OS" = "macOS" ] && { [ -z "$CSC_LINK" ] || [ -z "$APPLE_ID" ] || [ -z "$APPLE_APP_SPECIFIC_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ]; }; then
-            npx electron-builder ${{ matrix.build-args }} --publish never -c.mac.notarize=false
-          else
-            npx electron-builder ${{ matrix.build-args }} --publish never
-          fi
+        run: node scripts/package-release.js ${{ matrix.build-args }} --publish never
       - name: Store release artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
