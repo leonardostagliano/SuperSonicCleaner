@@ -4,6 +4,12 @@ import type { DriveInfo } from '../../shared/types'
 /** Enumerating volumes spawns PowerShell (1–4 s on Windows): reuse the list briefly. */
 export const DRIVE_LIST_TTL_MS = 30_000
 
+/**
+ * Caches the drive list for `ttlMs`. A load that fails, or that resolves to
+ * an empty list (the loader's own failure fallback), is returned to the
+ * caller as-is but never stored, so the next `get()` loads again instead of
+ * serving a false "no drives" result for the full TTL.
+ */
 export function createDriveCache(
   load: () => Promise<DriveInfo[]>,
   ttlMs = DRIVE_LIST_TTL_MS,
@@ -16,7 +22,7 @@ export function createDriveCache(
       if (cached && now() - cached.at < ttlMs) return Promise.resolve(cached.drives)
       inFlight ??= load()
         .then((drives) => {
-          cached = { at: now(), drives }
+          if (drives.length > 0) cached = { at: now(), drives }
           return drives
         })
         .finally(() => {

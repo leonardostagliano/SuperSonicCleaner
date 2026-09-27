@@ -43,6 +43,17 @@ describe('createDriveCache', () => {
     await expect(cache.get()).resolves.toHaveLength(1)
   })
 
+  it('does not cache an empty result', async () => {
+    const load = vi
+      .fn()
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([drive('C')])
+    const cache = createDriveCache(load)
+    await expect(cache.get()).resolves.toEqual([])
+    await expect(cache.get()).resolves.toHaveLength(1)
+    expect(load).toHaveBeenCalledTimes(2)
+  })
+
   it('peeks at the cached list without loading it', async () => {
     const load = vi.fn(async () => [drive('C')])
     const cache = createDriveCache(load)

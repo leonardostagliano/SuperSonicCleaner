@@ -7,7 +7,7 @@ interface DrivesState {
   drives: DriveInfo[]
   status: DriveStatus
   /** Revalidate in the background; the last known drives stay on screen. */
-  refresh: () => Promise<void>
+  refresh: (options?: { fresh?: boolean }) => Promise<void>
 }
 
 /** Fresh system-drive numbers win over a cached list; the list keeps its label. */
@@ -21,7 +21,10 @@ let inFlight: Promise<void> | null = null
 export const useDrivesStore = create<DrivesState>((set, get) => ({
   drives: [],
   status: 'idle',
-  refresh: () => {
+  refresh: (options) => {
+    // A `fresh` request that lands while a normal refresh is in flight is chained
+    // after it (instead of being de-duplicated away) so it still forces a reload.
+    if (options?.fresh && inFlight) return inFlight.then(() => get().refresh(options))
     inFlight ??= (async () => {
       if (get().drives.length === 0) set({ status: 'loading' })
       let system: DriveInfo | null = null
@@ -35,7 +38,7 @@ export const useDrivesStore = create<DrivesState>((set, get) => ({
         // The full list below still runs
       }
       try {
-        const list = (await window.kudu?.diskDrives?.()) ?? []
+        const list = (await window.kudu?.diskDrives?.(options)) ?? []
         const drives = system ? mergeSystemDrive(list, system) : list
         set({ drives, status: drives.length > 0 ? 'ready' : 'unavailable' })
       } catch {

@@ -536,7 +536,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     setResult(oneClickResult)
     setPhase('done')
     setPhaseLabel('')
-    void refreshDrives()
+    void refreshDrives({ fresh: true })
   }, [phase, runCleaners, runRegistry, historyStore, recomputeStats, features])
 
   const handleFullClean = useCallback(async () => {
@@ -634,7 +634,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     setResult(oneClickResult)
     setPhase('done')
     setPhaseLabel('')
-    void refreshDrives()
+    void refreshDrives({ fresh: true })
   }, [
     phase,
     runCleaners,

@@ -214,6 +214,15 @@ export async function getDrives(): Promise<DriveInfo[]> {
 
 const driveCache = createDriveCache(getDrives)
 
+/** True only for a request explicitly asking to skip the cache: `{ fresh: true }`. */
+function isFreshRequest(options: unknown): boolean {
+  return (
+    typeof options === 'object' &&
+    options !== null &&
+    (options as { fresh?: unknown }).fresh === true
+  )
+}
+
 /** Resolve a drive identifier to a root path (Windows letter or Unix mount path) */
 function resolveRootPath(drive: string): string | null {
   if (typeof drive !== 'string' || !drive) return null
@@ -619,7 +628,10 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
 // ── IPC registration ──
 
 export function registerDiskAnalyzerIpc(getWindow: WindowGetter): void {
-  ipcMain.handle(IPC.DISK_DRIVES, () => driveCache.get())
+  ipcMain.handle(IPC.DISK_DRIVES, (_event, options?: unknown) => {
+    if (isFreshRequest(options)) driveCache.invalidate()
+    return driveCache.get()
+  })
   // Label from the cached list when there is one; never waits for PowerShell
   ipcMain.handle(IPC.DISK_SYSTEM_DRIVE, () =>
     readSystemDrive({ knownDrives: driveCache.peek() ?? [] })

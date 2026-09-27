@@ -67,6 +67,13 @@ describe('useDrivesStore.refresh', () => {
     expect(diskDrives).toHaveBeenCalledTimes(1)
   })
 
+  it('passes fresh through to diskDrives', async () => {
+    const diskDrives = vi.fn(async () => [drive('C')])
+    stubKudu({ diskSystemDrive: vi.fn(async () => null), diskDrives })
+    await useDrivesStore.getState().refresh({ fresh: true })
+    expect(diskDrives).toHaveBeenCalledWith({ fresh: true })
+  })
+
   it('reports unavailable when nothing is known', async () => {
     stubKudu({
       diskSystemDrive: vi.fn(async () => null),
