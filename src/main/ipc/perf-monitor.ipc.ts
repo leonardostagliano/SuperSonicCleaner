@@ -49,23 +49,42 @@ const PROTECTED_PROCESS_NAMES = new Set([
 export function registerPerfMonitorIpc(getWindow: () => Electron.BrowserWindow | null): void {
   const service = perfMonitor
 
-  // Track whether the renderer explicitly requested monitoring so we can
-  // auto-pause when the window is hidden and resume when shown again.
-  let rendererRequestedMonitoring = false
+  // The page that explicitly requested monitoring (null once it stops asking),
+  // so we can auto-pause when the window is hidden and resume when shown again.
+  let monitoringPage: Electron.WebContents | null = null
   let attachedWindowId: number | null = null
+  const watchedPages = new WeakSet<Electron.WebContents>()
 
   function attachWindowListeners(win: Electron.BrowserWindow): void {
     if (win.id === attachedWindowId) return
     attachedWindowId = win.id
 
     win.on('hide', () => {
-      if (rendererRequestedMonitoring) service.stopMonitoring()
+      if (monitoringPage) service.stopMonitoring()
     })
     win.on('show', () => {
-      if (rendererRequestedMonitoring && !win.webContents.isDestroyed()) {
-        service.startMonitoring(win.webContents)
+      if (monitoringPage && !monitoringPage.isDestroyed()) {
+        service.startMonitoring(monitoringPage)
       }
     })
+  }
+
+  // A reload, a crash or a destroyed page replaces the renderer without it ever
+  // calling PERF_STOP_MONITORING: stop here, or main keeps sampling (and the show
+  // handler restarts it) until the Performance page is next opened and left.
+  function watchPage(page: Electron.WebContents): void {
+    if (watchedPages.has(page)) return
+    watchedPages.add(page)
+    const stopForPage = () => {
+      if (monitoringPage !== page) return
+      monitoringPage = null
+      service.stopMonitoring()
+    }
+    page.on('did-start-navigation', (details) => {
+      if (details.isMainFrame && !details.isSameDocument) stopForPage()
+    })
+    page.on('render-process-gone', stopForPage)
+    page.once('destroyed', stopForPage)
   }
 
   // Lightweight one-shot stats for dashboard gauges — no timers, no process list
@@ -87,7 +106,8 @@ export function registerPerfMonitorIpc(getWindow: () => Electron.BrowserWindow |
   ipcMain.handle(IPC.PERF_GET_SYSTEM_INFO, () => service.getSystemInfo())
 
   ipcMain.handle(IPC.PERF_START_MONITORING, (event) => {
-    rendererRequestedMonitoring = true
+    monitoringPage = event.sender
+    watchPage(event.sender)
 
     // Attach hide/show listeners to the current window if not already attached
     const win = getWindow()
@@ -97,7 +117,7 @@ export function registerPerfMonitorIpc(getWindow: () => Electron.BrowserWindow |
   })
 
   ipcMain.handle(IPC.PERF_STOP_MONITORING, () => {
-    rendererRequestedMonitoring = false
+    monitoringPage = null
     service.stopMonitoring()
   })
 
