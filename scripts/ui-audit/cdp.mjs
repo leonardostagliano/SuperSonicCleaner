@@ -57,9 +57,7 @@ export async function connect(port = process.env.CDP_PORT || 9333) {
   const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json()
   const page = targets.find(
     (t) =>
-      t.type === 'page' &&
-      t.url.startsWith('http://localhost:5173') &&
-      !t.url.includes('desktop-notch')
+      t.type === 'page' && t.url.startsWith('http://localhost:') && !t.url.includes('desktop-notch')
   )
   if (!page) throw new Error('Dev renderer not found on the debug port: start the dev app (Task 0)')
   const ws = new WebSocket(page.webSocketDebuggerUrl)
