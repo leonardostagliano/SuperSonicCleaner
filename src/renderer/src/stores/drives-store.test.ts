@@ -74,6 +74,32 @@ describe('useDrivesStore.refresh', () => {
     expect(diskDrives).toHaveBeenCalledWith({ fresh: true })
   })
 
+  it('chains a fresh refresh requested while a normal one is still pending', async () => {
+    // Created upfront so `resolveFirst` is stable before diskDrives is ever
+    // called — a resolver assigned only inside the mock implementation would
+    // race the .mockImplementationOnce() invocation and could resolve nothing.
+    let resolveFirst!: (drives: DriveInfo[]) => void
+    const firstDrives = new Promise<DriveInfo[]>((resolve) => {
+      resolveFirst = resolve
+    })
+    const diskDrives = vi
+      .fn()
+      .mockImplementationOnce(() => firstDrives)
+      .mockImplementationOnce(async () => [drive('D')])
+    stubKudu({ diskSystemDrive: vi.fn(async () => null), diskDrives })
+
+    const normal = useDrivesStore.getState().refresh()
+    const fresh = useDrivesStore.getState().refresh({ fresh: true })
+
+    resolveFirst([drive('C')])
+    await Promise.all([normal, fresh])
+
+    expect(diskDrives).toHaveBeenCalledTimes(2)
+    expect(diskDrives).toHaveBeenNthCalledWith(2, { fresh: true })
+    expect(useDrivesStore.getState().status).toBe('ready')
+    expect(useDrivesStore.getState().drives).toEqual([drive('D')])
+  })
+
   it('reports unavailable when nothing is known', async () => {
     stubKudu({
       diskSystemDrive: vi.fn(async () => null),

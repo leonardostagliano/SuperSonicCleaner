@@ -94,6 +94,44 @@ describe('DISK_DRIVES handler', () => {
     // On non-win32, it tries df; both may fail and return []
     expect(Array.isArray(result)).toBe(true)
   })
+
+  // A non-empty read that the platform's own driveScript/df output can produce,
+  // so it is cached by createDriveCache (Fix 1 skips caching an empty list).
+  function mockSuccessfulDriveRead(): void {
+    mockExecFile.mockImplementation((...args: unknown[]) => {
+      const callback = args[args.length - 1] as Function
+      if (typeof callback === 'function') {
+        const stdout =
+          process.platform === 'win32'
+            ? 'C|Local Disk|1000|2000|True\n'
+            : 'Filesystem 1024-blocks Used Available Capacity Mounted on\n/dev/disk1 100 40 60 40% /\n'
+        callback(null, { stdout })
+      }
+    })
+  }
+
+  it('serves cached drives and only reloads on an explicit { fresh: true } request', async () => {
+    registerDiskAnalyzerIpc(() => null)
+    const handler = getHandler('disk:drives')
+    mockSuccessfulDriveRead()
+
+    // Force a known, warm cache regardless of what earlier tests left behind.
+    const primed = await handler({}, { fresh: true })
+    expect(Array.isArray(primed)).toBe(true)
+    expect((primed as unknown[]).length).toBeGreaterThan(0)
+
+    for (const options of [undefined, null, { fresh: 'true' }, { fresh: 1 }, [], {}]) {
+      const callsBefore = mockExecFile.mock.calls.length
+      const result = await handler({}, options)
+      expect(mockExecFile.mock.calls.length).toBe(callsBefore)
+      expect(result).toEqual(primed)
+    }
+
+    const callsBeforeFresh = mockExecFile.mock.calls.length
+    const reloaded = await handler({}, { fresh: true })
+    expect(mockExecFile.mock.calls.length).toBe(callsBeforeFresh + 1)
+    expect(reloaded).toEqual(primed)
+  })
 })
 
 describe('DISK_FILE_TYPES handler', () => {
