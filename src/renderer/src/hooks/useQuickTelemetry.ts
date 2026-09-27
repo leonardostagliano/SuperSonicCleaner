@@ -1,42 +1,12 @@
-import { useEffect, useState } from 'react'
-import type { PerfQuickStats } from '@shared/types'
+import { useEffect } from 'react'
+import { acquireTelemetry, useTelemetryStore } from '@/stores/telemetry-store'
 
-export interface QuickSample {
-  at: number
-  cpu: number
-  memory: number
-}
+export type { QuickSample } from '@/stores/telemetry-store'
 
-/** A bounded, single-flight sampler. Home never starts expensive process monitoring. */
+/** Live CPU and memory for Home; samples persist across navigation. */
 export function useQuickTelemetry() {
-  const [current, setCurrent] = useState<PerfQuickStats | null>(null)
-  const [samples, setSamples] = useState<QuickSample[]>([])
-  useEffect(() => {
-    let cancelled = false
-    let timer: ReturnType<typeof setTimeout>
-    const poll = async (seed = false) => {
-      try {
-        const reading = await window.kudu?.perfQuickStats?.()
-        if (!cancelled && !seed) {
-          setCurrent(reading ?? null)
-          if (reading) {
-            setSamples((previous) => [
-              ...previous.slice(-59),
-              { at: Date.now(), cpu: reading.cpuPercent, memory: reading.memPercent }
-            ])
-          }
-        }
-      } catch {
-        if (!cancelled) setCurrent(null)
-      } finally {
-        if (!cancelled) timer = setTimeout(() => void poll(), seed ? 1000 : 3000)
-      }
-    }
-    void poll(true)
-    return () => {
-      cancelled = true
-      clearTimeout(timer)
-    }
-  }, [])
+  const current = useTelemetryStore((s) => s.current)
+  const samples = useTelemetryStore((s) => s.samples)
+  useEffect(() => acquireTelemetry(), [])
   return { current, samples }
 }

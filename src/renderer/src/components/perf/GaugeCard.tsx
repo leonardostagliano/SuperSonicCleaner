@@ -26,7 +26,7 @@ export const GaugeCard = memo(function GaugeCard({
   return (
     <section className={cn('pulse-resource-card', className)}>
       <h2>{label}</h2>
-      <strong>
+      <strong data-gauge-value>
         {value ?? (reading === null ? '\u2014' : Math.round(reading))}
         {!value && reading !== null && <small>%</small>}
       </strong>

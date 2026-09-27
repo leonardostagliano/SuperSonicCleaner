@@ -9,7 +9,7 @@ import { TimeSeriesChart } from '@/components/perf/TimeSeriesChart'
 import { AlertBanner } from '@/components/perf/AlertBanner'
 import { DiskHealthPanel } from '@/components/perf/DiskHealthPanel'
 import { ProcessTable } from '@/components/perf/ProcessTable'
-import { usePerfStore } from '@/stores/perf-store'
+import { acquirePerfMonitoring, setPerfMonitoringPaused, usePerfStore } from '@/stores/perf-store'
 import { formatBytes, formatSpeed, NO_VALUE } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
@@ -21,63 +21,32 @@ export function PerformanceMonitorPage() {
   const isMonitoring = usePerfStore((s) => s.isMonitoring)
   const timeRange = usePerfStore((s) => s.timeRange)
   const setSystemInfo = usePerfStore((s) => s.setSystemInfo)
-  const pushSnapshot = usePerfStore((s) => s.pushSnapshot)
-  const setProcessList = usePerfStore((s) => s.setProcessList)
   const diskHealth = usePerfStore((s) => s.diskHealth)
   const setDiskHealth = usePerfStore((s) => s.setDiskHealth)
-  const setMonitoring = usePerfStore((s) => s.setMonitoring)
   const setTimeRange = usePerfStore((s) => s.setTimeRange)
-  const reset = usePerfStore((s) => s.reset)
 
   const [paused, setPaused] = useState(false)
+  const [diskHealthLoading, setDiskHealthLoading] = useState(true)
 
-  // Start monitoring on mount
+  // Live data first; disk health (SMART, several seconds) loads beside it
   useEffect(() => {
-    let snapshotUnsub: (() => void) | undefined
-    let processUnsub: (() => void) | undefined
-
-    const start = async () => {
-      try {
-        const [info, disks] = await Promise.all([
-          window.kudu.perfGetSystemInfo(),
-          window.kudu.perfGetDiskHealth()
-        ])
-        setSystemInfo(info)
-        setDiskHealth(disks)
-
-        snapshotUnsub = window.kudu.onPerfSnapshot((data) => {
-          pushSnapshot(data)
-        })
-
-        processUnsub = window.kudu.onPerfProcessList((data) => {
-          setProcessList(data.processes, data.totalCount)
-        })
-
-        await window.kudu.perfStartMonitoring()
-        setMonitoring(true)
-      } catch {
-        toast.error(t('failedToStartToast'))
-      }
-    }
-
-    start()
-
-    return () => {
-      snapshotUnsub?.()
-      processUnsub?.()
-      window.kudu.perfStopMonitoring().catch(() => {})
-      reset()
-    }
+    const release = acquirePerfMonitoring(() => toast.error(t('failedToStartToast')))
+    window.kudu
+      .perfGetSystemInfo()
+      .then(setSystemInfo)
+      .catch(() => {})
+    window.kudu
+      .perfGetDiskHealth()
+      .then(setDiskHealth)
+      .catch(() => {})
+      .finally(() => setDiskHealthLoading(false))
+    return release
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const togglePause = useCallback(async () => {
-    if (paused) {
-      await window.kudu.perfStartMonitoring()
-      setPaused(false)
-    } else {
-      await window.kudu.perfStopMonitoring()
-      setPaused(true)
-    }
+  // Through the lifecycle, so hiding the window or a quick return keeps the button honest
+  const togglePause = useCallback(() => {
+    setPerfMonitoringPaused(!paused)
+    setPaused(!paused)
   }, [paused])
 
   const timeRangeOptions: Array<{ value: '60s' | '5m' | '15m'; label: string }> = [
@@ -213,7 +182,7 @@ export function PerformanceMonitorPage() {
       </div>
 
       {/* Disk Health */}
-      <DiskHealthPanel disks={diskHealth} />
+      <DiskHealthPanel disks={diskHealth} loading={diskHealthLoading} />
 
       {/* Process Table */}
       <ProcessTable />

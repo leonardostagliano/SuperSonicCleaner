@@ -13,6 +13,7 @@ import { formatBytes, NO_VALUE } from '@/lib/utils'
 
 interface DiskHealthPanelProps {
   disks: DiskSmartInfo[]
+  loading?: boolean
 }
 
 const statusConfig = {
@@ -162,9 +163,25 @@ function formatHours(hours: number): string {
   return `${years}y`
 }
 
-export function DiskHealthPanel({ disks }: DiskHealthPanelProps) {
+export function DiskHealthPanel({ disks, loading }: DiskHealthPanelProps) {
   const { t } = useTranslation('performance')
-  if (disks.length === 0) return null
+  if (disks.length === 0) {
+    if (!loading) return null
+    // Keep the panel's place while SMART data loads, so nothing jumps
+    return (
+      <div className="mb-6" aria-busy="true">
+        <div className="mb-3">
+          <h3 className="text-[13px] font-semibold text-zinc-400">{t('diskHealthTitle')}</h3>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div
+            className="h-[150px] rounded-2xl"
+            style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
+          />
+        </div>
+      </div>
+    )
+  }
 
   const hasDetailedData = disks.some(
     (d) => d.temperature !== null || d.powerOnHours !== null || d.remainingLife !== null

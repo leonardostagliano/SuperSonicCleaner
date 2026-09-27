@@ -131,3 +131,96 @@ export const usePerfStore = create<PerfState>((set, get) => ({
       diskHealth: []
     })
 }))
+
+// Monitoring lifecycle: one subscription for the app, a tail after the last
+// view leaves (coming back paints at once), paused while the window is hidden.
+export const MONITOR_TAIL_MS = 2 * 60 * 1000
+
+let perfConsumers = 0
+let stopTimer: ReturnType<typeof setTimeout> | undefined
+let unsubscribe: (() => void) | null = null
+let started = false
+let userPaused = false
+let onStartError: (() => void) | undefined
+
+const perfHidden = () => document.visibilityState === 'hidden'
+
+function startMonitoring() {
+  if (started || userPaused) return
+  started = true
+  window.kudu
+    .perfStartMonitoring()
+    .then(() => usePerfStore.getState().setMonitoring(true))
+    .catch(() => {
+      started = false
+      onStartError?.()
+    })
+}
+
+function stopMonitoring() {
+  if (!started) return
+  started = false
+  window.kudu.perfStopMonitoring().catch(() => {})
+  usePerfStore.getState().setMonitoring(false)
+}
+
+function teardown() {
+  clearTimeout(stopTimer)
+  stopTimer = undefined
+  stopMonitoring()
+  unsubscribe?.()
+  unsubscribe = null
+  document.removeEventListener('visibilitychange', onPerfVisibility)
+}
+
+function onPerfVisibility() {
+  if (perfHidden()) {
+    if (perfConsumers === 0) teardown()
+    else stopMonitoring()
+  } else if (perfConsumers > 0) {
+    startMonitoring()
+  }
+}
+
+/** Keep the monitor running for one view; call the returned function when it goes away. */
+export function acquirePerfMonitoring(onError?: () => void): () => void {
+  perfConsumers++
+  userPaused = false // a view opens with its Pause button off
+  onStartError = onError
+  clearTimeout(stopTimer)
+  stopTimer = undefined
+  if (!unsubscribe) {
+    const offSnapshot = window.kudu.onPerfSnapshot((snap) =>
+      usePerfStore.getState().pushSnapshot(snap)
+    )
+    const offProcesses = window.kudu.onPerfProcessList((data) =>
+      usePerfStore.getState().setProcessList(data.processes, data.totalCount)
+    )
+    unsubscribe = () => {
+      offSnapshot()
+      offProcesses()
+    }
+    document.addEventListener('visibilitychange', onPerfVisibility)
+  }
+  if (!perfHidden()) startMonitoring()
+  let released = false
+  return () => {
+    if (released) return
+    released = true
+    perfConsumers--
+    if (perfConsumers === 0) stopTimer = setTimeout(teardown, MONITOR_TAIL_MS)
+  }
+}
+
+/** The page's Pause button: stop the feed, and keep it stopped across hide and show. */
+export function setPerfMonitoringPaused(paused: boolean): void {
+  userPaused = paused
+  if (paused) stopMonitoring()
+  else if (perfConsumers > 0 && !perfHidden()) startMonitoring()
+}
+
+export function resetPerfMonitoringForTests(): void {
+  perfConsumers = 0
+  userPaused = false
+  teardown()
+}

@@ -1,5 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { usePerfStore } from './perf-store'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import {
+  acquirePerfMonitoring,
+  MONITOR_TAIL_MS,
+  resetPerfMonitoringForTests,
+  setPerfMonitoringPaused,
+  usePerfStore
+} from './perf-store'
 import type { PerfSnapshot } from '@shared/types'
 
 function makeSnapshot(timestamp: number): PerfSnapshot {
@@ -92,5 +98,98 @@ describe('perf-store', () => {
     expect(state.systemInfo).not.toBeNull() // Preserved
     expect(state.history).toEqual([])
     expect(state.isMonitoring).toBe(false)
+  })
+})
+
+describe('perf monitoring lifecycle', () => {
+  let visibility: 'visible' | 'hidden'
+  const listeners = new Set<() => void>()
+  const api = {
+    onPerfSnapshot: vi.fn(() => () => {}),
+    onPerfProcessList: vi.fn(() => () => {}),
+    perfStartMonitoring: vi.fn(async () => {}),
+    perfStopMonitoring: vi.fn(async () => {})
+  }
+  const setVisibility = (value: 'visible' | 'hidden') => {
+    visibility = value
+    for (const l of listeners) l()
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+    visibility = 'visible'
+    listeners.clear()
+    Object.values(api).forEach((fn) => fn.mockClear())
+    vi.stubGlobal('window', { kudu: api })
+    vi.stubGlobal('document', {
+      get visibilityState() {
+        return visibility
+      },
+      addEventListener: (_: string, l: () => void) => listeners.add(l),
+      removeEventListener: (_: string, l: () => void) => listeners.delete(l)
+    })
+    resetPerfMonitoringForTests()
+  })
+
+  afterEach(() => {
+    resetPerfMonitoringForTests()
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it('starts and subscribes once for several views', async () => {
+    const a = acquirePerfMonitoring()
+    const b = acquirePerfMonitoring()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(api.perfStartMonitoring).toHaveBeenCalledTimes(1)
+    expect(api.onPerfSnapshot).toHaveBeenCalledTimes(1)
+    a()
+    b()
+  })
+
+  it('stops only after the tail, and a quick return cancels the stop', async () => {
+    const release = acquirePerfMonitoring()
+    await vi.advanceTimersByTimeAsync(0)
+    release()
+    await vi.advanceTimersByTimeAsync(MONITOR_TAIL_MS - 1)
+    expect(api.perfStopMonitoring).not.toHaveBeenCalled()
+    const again = acquirePerfMonitoring()
+    await vi.advanceTimersByTimeAsync(MONITOR_TAIL_MS)
+    expect(api.perfStopMonitoring).not.toHaveBeenCalled()
+    expect(api.perfStartMonitoring).toHaveBeenCalledTimes(1)
+    again()
+    await vi.advanceTimersByTimeAsync(MONITOR_TAIL_MS)
+    expect(api.perfStopMonitoring).toHaveBeenCalledTimes(1)
+  })
+
+  it('stops while hidden and starts again when shown', async () => {
+    const release = acquirePerfMonitoring()
+    await vi.advanceTimersByTimeAsync(0)
+    setVisibility('hidden')
+    await vi.advanceTimersByTimeAsync(0)
+    expect(api.perfStopMonitoring).toHaveBeenCalledTimes(1)
+    setVisibility('visible')
+    await vi.advanceTimersByTimeAsync(0)
+    expect(api.perfStartMonitoring).toHaveBeenCalledTimes(2)
+    release()
+  })
+
+  it('keeps a paused view paused while hidden; resuming or reopening restarts', async () => {
+    const release = acquirePerfMonitoring()
+    await vi.advanceTimersByTimeAsync(0)
+    setPerfMonitoringPaused(true)
+    expect(api.perfStopMonitoring).toHaveBeenCalledTimes(1)
+    setVisibility('hidden')
+    setVisibility('visible')
+    await vi.advanceTimersByTimeAsync(0)
+    expect(api.perfStartMonitoring).toHaveBeenCalledTimes(1)
+    setPerfMonitoringPaused(false)
+    expect(api.perfStartMonitoring).toHaveBeenCalledTimes(2)
+    setPerfMonitoringPaused(true)
+    release()
+    // Coming back inside the tail shows a fresh Pause button, so the feed runs again
+    const again = acquirePerfMonitoring()
+    expect(api.perfStartMonitoring).toHaveBeenCalledTimes(3)
+    again()
   })
 })
