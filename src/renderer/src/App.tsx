@@ -1,5 +1,4 @@
-import { StorageHistoryPage } from './pages/StorageHistoryPage'
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
@@ -7,36 +6,6 @@ import { RTL_LANGUAGES } from './lib/languages'
 import { useScheduledScan } from './hooks/useScheduledScan'
 import { AppShell } from './components/layout/AppShell'
 import { DashboardPage } from './pages/DashboardPage'
-import { CleanerPage } from './pages/CleanerPage'
-import { RegistryPage } from './pages/RegistryPage'
-import { ContextMenuCleanerPage } from './pages/ContextMenuCleanerPage'
-import { StartupPage } from './pages/StartupPage'
-import { DebloaterPage } from './pages/DebloaterPage'
-import { SoftwareUpdaterPage } from './pages/SoftwareUpdaterPage'
-import { DriverManagerPage } from './pages/DriverManagerPage'
-import { DiskAnalyzerPage } from './pages/DiskAnalyzerPage'
-import { DuplicateFinderPage } from './pages/DuplicateFinderPage'
-import { LargeFileFinderPage } from './pages/LargeFileFinderPage'
-import { EmptyFolderCleanerPage } from './pages/EmptyFolderCleanerPage'
-import { FileShredderPage } from './pages/FileShredderPage'
-import { DiskRepairPage } from './pages/DiskRepairPage'
-import { DiskMaintenancePage } from './pages/DiskMaintenancePage'
-import { SettingsPage } from './pages/SettingsPage'
-import { NetworkCleanupPage } from './pages/NetworkCleanupPage'
-import { MalwareScannerPage } from './pages/MalwareScannerPage'
-import { PrivacyShieldPage } from './pages/PrivacyShieldPage'
-import { HistoryPage } from './pages/HistoryPage'
-import { RecoveryPage } from './pages/RecoveryPage'
-import { PerformanceDiagnosticsPage } from './pages/PerformanceDiagnosticsPage'
-import { PerformanceMonitorPage } from './pages/PerformanceMonitorPage'
-import { UninstallerPage } from './pages/UninstallerPage'
-import { ServiceManagerPage } from './pages/ServiceManagerPage'
-import { FirewallAuditPage } from './pages/FirewallAuditPage'
-import { SchedulesPage } from './pages/SchedulesPage'
-import { GameModePage } from './pages/GameModePage'
-import { AboutPage } from './pages/AboutPage'
-import { AiAnalysisPage } from './pages/AiAnalysisPage'
-import { Onboarding } from './components/Onboarding'
 import { useStatsStore } from './stores/stats-store'
 import { useHistoryStore } from './stores/history-store'
 import { useAppUpdateStore } from './stores/app-update-store'
@@ -46,6 +15,11 @@ import { initGameModeStore } from './stores/game-mode-store'
 import { useSettingsStore } from './stores/settings-store'
 import { initAiAnalysisSources } from './lib/ai-analysis-lifecycle'
 import { initGlobalProgressBridge } from './lib/global-progress-bridge'
+import { LazyPages, PageSkeleton, prefetchAllRoutes } from './routes'
+
+const Onboarding = lazy(() =>
+  import('./components/Onboarding').then((m) => ({ default: m.Onboarding }))
+)
 
 export function App() {
   const { i18n } = useTranslation()
@@ -146,6 +120,12 @@ export function App() {
     initGameModeStore()
   }, [])
 
+  // Warm the other pages' code once the first view has settled
+  useEffect(() => {
+    const timer = setTimeout(prefetchAllRoutes, 3000)
+    return () => clearTimeout(timer)
+  }, [])
+
   if (!onboardingChecked) {
     return (
       <div
@@ -164,46 +144,24 @@ export function App() {
     <PlatformContext value={platformInfo}>
       <HashRouter>
         <PageTitleUpdater />
-        {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
+        {showOnboarding && (
+          <Suspense fallback={null}>
+            <Onboarding onComplete={handleOnboardingComplete} />
+          </Suspense>
+        )}
         <AppShell>
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/cleaner" element={<CleanerPage />} />
-            <Route path="/registry" element={<RegistryPage />} />
-            <Route path="/context-menu" element={<ContextMenuCleanerPage />} />
-            <Route path="/startup" element={<StartupPage />} />
-            <Route path="/storage-history" element={<StorageHistoryPage />} />
-            <Route path="/disk" element={<DiskAnalyzerPage />} />
-            <Route path="/duplicates" element={<DuplicateFinderPage />} />
-            <Route path="/large-files" element={<LargeFileFinderPage />} />
-            <Route path="/empty-folders" element={<EmptyFolderCleanerPage />} />
-            <Route path="/file-shredder" element={<FileShredderPage />} />
-            <Route path="/disk-repair" element={<DiskRepairPage />} />
-            <Route path="/disk-maintenance" element={<DiskMaintenancePage />} />
-            <Route path="/network" element={<NetworkCleanupPage />} />
-            <Route path="/malware" element={<MalwareScannerPage />} />
-            <Route path="/game-mode" element={<GameModePage />} />
-            <Route path="/performance-diagnostics" element={<PerformanceDiagnosticsPage />} />
-            <Route path="/performance" element={<PerformanceMonitorPage />} />
-            <Route path="/uninstaller" element={<UninstallerPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/recovery" element={<RecoveryPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/ai" element={<AiAnalysisPage />} />
-            {/* Standalone pages */}
-            <Route path="/privacy" element={<PrivacyShieldPage />} />
-            <Route path="/services" element={<ServiceManagerPage />} />
-            <Route path="/firewall" element={<FirewallAuditPage />} />
-            <Route path="/debloater" element={<DebloaterPage />} />
-            <Route path="/updates" element={<SoftwareUpdaterPage />} />
-            <Route path="/schedules" element={<SchedulesPage />} />
-            {/* Legacy redirect */}
-            <Route path="/hardening" element={<Navigate to="/privacy" replace />} />
-            <Route path="/updater" element={<Navigate to="/updates" replace />} />
-            <Route path="/drivers" element={<DriverManagerPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <Suspense fallback={<PageSkeleton />}>
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              {Object.entries(LazyPages).map(([path, Page]) => (
+                <Route key={path} path={path} element={<Page />} />
+              ))}
+              {/* Legacy redirect */}
+              <Route path="/hardening" element={<Navigate to="/privacy" replace />} />
+              <Route path="/updater" element={<Navigate to="/updates" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
         </AppShell>
         <Toaster
           position="bottom-right"

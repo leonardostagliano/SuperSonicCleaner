@@ -45,6 +45,7 @@ import { usePlatform } from '@/hooks/usePlatform'
 import { useSettingsStore } from '@/stores/settings-store'
 import { activeGroupFor, toggleGroup, withActiveGroup } from '@/lib/sidebar-groups'
 import { useCompactSidebar } from '@/hooks/useCompactSidebar'
+import { prefetchRoute } from '@/routes'
 
 interface SubItemDef {
   icon: LucideIcon
@@ -596,6 +597,8 @@ function NavItem({
         aria-label={itemLabel}
         title={isCompact ? itemLabel : undefined}
         onClick={handleClick}
+        onPointerEnter={() => !hasChildren && prefetchRoute(item.path)}
+        onFocus={() => !hasChildren && prefetchRoute(item.path)}
         aria-current={isActive && !hasChildren ? 'page' : undefined}
         aria-expanded={hasChildren ? !!submenuOpen : undefined}
         className={cn(
@@ -665,6 +668,8 @@ function NavItem({
                   key={child.path}
                   type="button"
                   onClick={() => navigate(child.path)}
+                  onPointerEnter={() => prefetchRoute(child.path)}
+                  onFocus={() => prefetchRoute(child.path)}
                   aria-current={isChildActive ? 'page' : undefined}
                   title={childLabel}
                   className="sidebar-submenu-item"
@@ -796,6 +801,8 @@ function FlyoutMenu({
               key={child.path}
               role="menuitem"
               onClick={() => onSelect(child.path)}
+              onPointerEnter={() => prefetchRoute(child.path)}
+              onFocus={() => prefetchRoute(child.path)}
               className={cn(
                 'flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-[12.5px] font-medium transition-all duration-150',
                 'hover:bg-white/[0.04]'

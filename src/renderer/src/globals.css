@@ -826,6 +826,9 @@ summary,
 .app-content > * {
   width: 100%;
 }
+.page-skeleton {
+  min-height: 60vh;
+}
 .kudu-sidebar nav {
   scrollbar-width: none;
 }
