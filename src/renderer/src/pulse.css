@@ -299,6 +299,12 @@ body {
   align-items: center;
   margin-bottom: 26px;
 }
+.pulse-home-heading {
+  flex-wrap: wrap;
+}
+.pulse-home-heading > .pulse-button {
+  white-space: nowrap;
+}
 .pulse-eyebrow {
   color: var(--text-dim);
   letter-spacing: 1.8px;
@@ -491,21 +497,32 @@ body {
   position: relative;
   padding-inline-start: 33px;
 }
-.pulse-telemetry-chart svg {
+/* Time runs left to right in every language, so the chart is always LTR. */
+.pulse-telemetry-chart {
+  direction: ltr;
+}
+.pulse-chart-plot {
+  position: relative;
+  height: 210px;
+}
+.pulse-chart-plot svg {
   display: block;
   width: 100%;
-  height: 184px;
+  height: 100%;
 }
 .pulse-chart-scale {
   position: absolute;
-  inset-inline-start: 0;
-  top: 14px;
-  height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  top: 0;
+  bottom: 0;
+  left: -33px;
+  width: 30px;
   font-size: 10px;
   color: var(--text-dim);
+}
+.pulse-chart-scale span {
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
 }
 .pulse-chart-times {
   display: flex;
@@ -1082,9 +1099,6 @@ body {
   .pulse-action-card {
     padding: 19px;
   }
-  .pulse-home-heading > .pulse-button {
-    max-width: 210px;
-  }
   .pulse-big-value {
     font-size: 29px;
   }
@@ -1103,25 +1117,6 @@ body {
   }
 }
 @media (max-width: 980px) {
-  .pulse-home-metrics {
-    grid-template-columns: 1fr 1.25fr;
-  }
-  .pulse-home-storage {
-    grid-column: span 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 24px;
-  }
-  .pulse-home-storage .pulse-big-value {
-    grid-row: 2;
-    margin: 10px 0;
-  }
-  .pulse-home-storage .pulse-storage-meter {
-    margin: 13px 0;
-  }
-  .pulse-home-storage .pulse-text-button {
-    justify-content: flex-end;
-  }
   .pulse-home-columns {
     grid-template-columns: minmax(0, 1fr) 255px;
     gap: 16px;
@@ -1561,10 +1556,19 @@ body {
 .pulse-home-heading {
   margin-bottom: 24px;
 }
+.pulse-home {
+  container: home / inline-size;
+}
 .pulse-home-metrics {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(240px, 1.16fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 20px;
+}
+/* Four columns only when the content area (not the window) has room. */
+@container home (min-width: 1100px) {
+  .pulse-home-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(240px, 1.16fr);
+  }
 }
 .pulse-home-metrics > .pulse-card {
   min-height: 176px;
@@ -1588,8 +1592,10 @@ body {
   color: var(--text-muted);
 }
 .pulse-home-metrics .pulse-big-value {
-  font-size: var(--text-display);
+  font-size: clamp(22px, 12cqi, var(--text-display));
   margin: 20px 0 12px;
+  min-width: 0;
+  white-space: nowrap;
 }
 .pulse-home-metrics .pulse-big-value small {
   font-size: var(--text-caption);
@@ -1598,15 +1604,47 @@ body {
   font-size: var(--text-caption);
   margin-top: 10px;
 }
-.pulse-metric-sparkline {
-  position: absolute;
-  right: 17px;
-  top: 70px;
-  width: 36%;
-  height: 32px;
+/* Metric cards: the value and its graphic have their own grid areas, so a
+   long value or a right-to-left layout can never run under the sparkline or
+   the meter (they used to be absolutely positioned over the text). */
+.pulse-home-metrics > .pulse-card {
+  container: metric-card / inline-size;
 }
-.pulse-memory .pulse-big-value {
-  max-width: 65%;
+.pulse-metric {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  column-gap: 12px;
+}
+.pulse-cpu .pulse-metric,
+.pulse-memory .pulse-metric {
+  grid-template-columns: minmax(0, 1fr) minmax(56px, 34%);
+  grid-template-areas:
+    'head head'
+    'value graph'
+    'note note'
+    'live live';
+}
+.pulse-cpu .pulse-metric > .pulse-card-heading,
+.pulse-memory .pulse-metric > .pulse-card-heading {
+  grid-area: head;
+}
+.pulse-cpu .pulse-metric > .pulse-big-value,
+.pulse-memory .pulse-metric > .pulse-big-value {
+  grid-area: value;
+}
+.pulse-cpu .pulse-metric > p,
+.pulse-memory .pulse-metric > p {
+  grid-area: note;
+}
+.pulse-memory .pulse-metric > .pulse-live-label {
+  grid-area: live;
+}
+.pulse-metric-sparkline {
+  grid-area: graph;
+  align-self: center;
+  width: 100%;
+  height: 32px;
 }
 .pulse-memory .pulse-big-value small {
   flex-basis: 100%;
@@ -1615,12 +1653,17 @@ body {
   display: none;
 }
 .pulse-home-storage .pulse-storage-meter {
-  position: absolute;
-  right: 18px;
-  top: 78px;
-  width: 32%;
-  margin: 0;
+  width: 100%;
   height: 4px;
+  margin: 0 0 4px;
+}
+/* A narrow card puts the sparkline under the value instead of squeezing it. */
+@container metric-card (max-width: 250px) {
+  .pulse-cpu .pulse-metric,
+  .pulse-memory .pulse-metric {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'value' 'graph' 'note' 'live';
+  }
 }
 .pulse-home-storage .pulse-text-button {
   font-size: 10px;
@@ -1689,9 +1732,6 @@ body {
 .pulse-home-telemetry {
   min-height: 340px;
 }
-.pulse-telemetry-chart svg {
-  height: 210px;
-}
 .pulse-home-rail .pulse-cleanup-hero {
   display: flex;
   flex-direction: column;
@@ -1753,13 +1793,6 @@ body {
   border-radius: var(--radius-pill);
 }
 @media (max-width: 1250px) {
-  .pulse-home-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .pulse-home-metrics .pulse-home-storage {
-    grid-column: auto;
-    display: block;
-  }
   .pulse-home-columns {
     grid-template-columns: minmax(0, 1fr) 270px;
   }

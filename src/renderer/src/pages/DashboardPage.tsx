@@ -736,68 +736,74 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
       </header>
       <div className="pulse-home-metrics">
         <section className="pulse-card pulse-cpu">
-          <div className="pulse-card-heading">
-            <h2>{tx('home.cpu')}</h2>
-            <Cpu size={19} />
+          <div className="pulse-metric">
+            <div className="pulse-card-heading">
+              <h2>{tx('home.cpu')}</h2>
+              <Cpu size={19} />
+            </div>
+            <div className="pulse-big-value">
+              {perf ? Math.round(cpuPct) : '\u2014'}
+              <small>{perf ? '%' : ''}</small>
+            </div>
+            <MetricSparkline samples={samples} metric="cpu" label={tx('home.cpu')} />
+            <p>
+              {perf ? tx(cpuPct >= 70 ? 'home.loadHigh' : 'home.loadLow') : tx('home.unavailable')}
+            </p>
           </div>
-          <div className="pulse-big-value">
-            {perf ? Math.round(cpuPct) : '\u2014'}
-            <small>{perf ? '%' : ''}</small>
-          </div>
-          <MetricSparkline samples={samples} metric="cpu" label={tx('home.cpu')} />
-          <p>
-            {perf ? tx(cpuPct >= 70 ? 'home.loadHigh' : 'home.loadLow') : tx('home.unavailable')}
-          </p>
         </section>
         <section className="pulse-card pulse-memory">
-          <div className="pulse-card-heading">
-            <h2>{tx('home.memory')}</h2>
-            <MemoryStick size={20} />
+          <div className="pulse-metric">
+            <div className="pulse-card-heading">
+              <h2>{tx('home.memory')}</h2>
+              <MemoryStick size={20} />
+            </div>
+            <div className="pulse-big-value">
+              {perf ? formatBytes(perf.memUsedBytes) : '\u2014'}
+              <small>{perf ? ' / ' + formatBytes(perf.memTotalBytes) : ''}</small>
+            </div>
+            <MetricSparkline samples={samples} metric="memory" label={tx('home.memory')} />
+            <p>
+              {tx(
+                !perf ? 'home.memoryUnknown' : ramPct >= 80 ? 'home.memoryBusy' : 'home.memoryRoom'
+              )}
+            </p>
+            <span className="pulse-live-label">
+              {perf ? tx('home.used', { percent: Math.round(ramPct) }) : tx('home.unavailable')}
+            </span>
           </div>
-          <div className="pulse-big-value">
-            {perf ? formatBytes(perf.memUsedBytes) : '\u2014'}
-            <small>{perf ? ' / ' + formatBytes(perf.memTotalBytes) : ''}</small>
-          </div>
-          <MetricSparkline samples={samples} metric="memory" label={tx('home.memory')} />
-          <p>
-            {tx(
-              !perf ? 'home.memoryUnknown' : ramPct >= 80 ? 'home.memoryBusy' : 'home.memoryRoom'
-            )}
-          </p>
-          <span className="pulse-live-label">
-            {perf ? tx('home.used', { percent: Math.round(ramPct) }) : tx('home.unavailable')}
-          </span>
         </section>
         <section className="pulse-card pulse-home-storage">
-          <div className="pulse-card-heading">
-            <h2>{tx('home.storage')}</h2>
-            <HardDrive size={18} />
+          <div className="pulse-metric">
+            <div className="pulse-card-heading">
+              <h2>{tx('home.storage')}</h2>
+              <HardDrive size={18} />
+            </div>
+            <div className="pulse-big-value">
+              {primaryDrive ? formatBytes(primaryDrive.freeSpace) : '\u2014'}
+            </div>
+            <div
+              className="pulse-storage-meter"
+              role="meter"
+              aria-label={t('glanceStorage')}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={primaryDrive ? primaryDriveUsedPercent : undefined}
+            >
+              <i style={{ width: primaryDrive ? primaryDriveUsedPercent + '%' : '0%' }} />
+            </div>
+            <p>
+              {primaryDrive
+                ? tx('home.storageDetail', {
+                    size: formatBytes(primaryDrive.totalSize),
+                    drive: primaryDrive.label || primaryDrive.letter
+                  })
+                : t(driveStatus === 'loading' ? 'glanceChecking' : 'glanceStorageUnavailable')}
+            </p>
+            <button className="pulse-text-button" onClick={() => navigate('/disk')}>
+              {tx('home.storageAction')}
+              <ArrowRight size={14} />
+            </button>
           </div>
-          <div className="pulse-big-value">
-            {primaryDrive ? formatBytes(primaryDrive.freeSpace) : '\u2014'}
-          </div>
-          <div
-            className="pulse-storage-meter"
-            role="meter"
-            aria-label={t('glanceStorage')}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={primaryDrive ? primaryDriveUsedPercent : undefined}
-          >
-            <i style={{ width: primaryDrive ? primaryDriveUsedPercent + '%' : '0%' }} />
-          </div>
-          <p>
-            {primaryDrive
-              ? tx('home.storageDetail', {
-                  size: formatBytes(primaryDrive.totalSize),
-                  drive: primaryDrive.label || primaryDrive.letter
-                })
-              : t(driveStatus === 'loading' ? 'glanceChecking' : 'glanceStorageUnavailable')}
-          </p>
-          <button className="pulse-text-button" onClick={() => navigate('/disk')}>
-            {tx('home.storageAction')}
-            <ArrowRight size={14} />
-          </button>
         </section>
         <section className="pulse-card pulse-health-summary">
           <div className="pulse-card-heading">
