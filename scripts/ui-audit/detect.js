@@ -23,6 +23,8 @@
   const visible = (el) => {
     const cs = getComputedStyle(el)
     if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) return false
+    // Visually hidden text (sr-only) is read by screen readers and never shown
+    if (cs.clipPath === 'inset(50%)' || cs.clip === 'rect(0px, 0px, 0px, 0px)') return false
     const r = el.getBoundingClientRect()
     return r.width > 0 && r.height > 0
   }
