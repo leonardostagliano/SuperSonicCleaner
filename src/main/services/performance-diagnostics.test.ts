@@ -121,6 +121,7 @@ describe('recording privacy and persistence', () => {
     await writeFile(join(dir, `${s.recording.recordId}.record`), 'corrupt')
     await expect(store.get(s.recording.recordId)).rejects.toThrow()
   })
+  // Thirty-one serialized creates repeatedly read real encrypted files under CI load.
   it('serializes capacity checks and protects pinned records and deleted IDs', async () => {
     const sessions = Array.from({ length: 31 }, session)
     const results = await Promise.allSettled(sessions.map((s) => store.save(s, true)))
@@ -134,7 +135,7 @@ describe('recording privacy and persistence', () => {
     await store.remove(s.recording.recordId)
     await expect(store.save(s)).rejects.toThrow()
     expect(await store.list()).toHaveLength(29)
-  })
+  }, 20_000)
   it('skips unreadable files without disabling the feature and allows removing them', async () => {
     const s = session()
     await store.save(s, true)

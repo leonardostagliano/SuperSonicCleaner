@@ -30,7 +30,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: package-smoke-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: package-smoke-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:

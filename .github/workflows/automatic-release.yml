@@ -29,8 +29,6 @@ jobs:
     outputs:
       skip: ${{ steps.version.outputs.skip }}
       version: ${{ steps.version.outputs.version }}
-    env:
-      RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
     steps:
       - name: Checkout release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -48,13 +46,14 @@ jobs:
         id: version
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
         run: node scripts/automatic-release.js prepare
       - name: Share the version and source plan
         if: steps.version.outputs.skip != 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: automatic-release-plan
-          path: ${{ env.RELEASE_PLAN }}
+          path: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
           retention-days: 7
           overwrite: true
 
@@ -75,8 +74,6 @@ jobs:
             args: --linux AppImage deb --arm64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
-    env:
-      RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
     steps:
       - name: Checkout release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -95,6 +92,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Apply planned version to this build
+        env:
+          RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
         run: node scripts/automatic-release.js version
       - name: Build application
         run: npm run build
@@ -136,8 +135,6 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
-    env:
-      RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
     steps:
       - name: Checkout release tooling
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -164,4 +161,5 @@ jobs:
       - name: Verify all manifests and publish complete release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
         run: node scripts/automatic-release.js publish

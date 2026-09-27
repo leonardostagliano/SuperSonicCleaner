@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { BrowserWindow } from 'electron'
 import { NOTCH_IPC, NOTCH_MOTION_MS, type NotchState } from '../../shared/desktop-notch'
 import { initDesktopNotch } from './desktop-notch'
@@ -141,6 +141,7 @@ const shapeOf = (window: BrowserWindow) =>
   (window as unknown as { shape: { x: number; y: number; width: number; height: number }[] }).shape
 
 afterEach(() => {
+  vi.unstubAllGlobals()
   vi.useRealTimers()
   mocks.handlers.clear()
   mocks.current = null
@@ -149,6 +150,33 @@ afterEach(() => {
 })
 
 describe('desktop notch motion lifecycle', () => {
+  beforeEach(() => {
+    // The shape API is used on Windows and Linux, but intentionally skipped on macOS.
+    vi.stubGlobal('process', { ...process, platform: 'win32' })
+  })
+
+  it('keeps native bounds fixed without shaping the window on macOS', () => {
+    vi.stubGlobal('process', { ...process, platform: 'darwin' })
+    vi.useFakeTimers()
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    const bounds = window.getBounds()
+    expect(bounds).toMatchObject({ width: 344, height: 466 })
+    expect(shapeOf(window)).toEqual([])
+
+    invoke(NOTCH_IPC.EXPANDED, true)
+    expect(window.getBounds()).toEqual(bounds)
+    expect(shapeOf(window)).toEqual([])
+    invoke(NOTCH_IPC.EXPANDED, false)
+    invoke(NOTCH_IPC.COLLAPSE_FINISHED)
+    expect(window.getBounds()).toEqual(bounds)
+    expect(shapeOf(window)).toEqual([])
+    dispose()
+  })
+
   it('keeps native bounds fixed and narrows the input region only after closing', () => {
     vi.useFakeTimers()
     const dispose = initDesktopNotch(
