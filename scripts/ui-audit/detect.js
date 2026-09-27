@@ -144,12 +144,22 @@
     const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
     return w > 1 && h > 1 ? Math.round(w * h) : 0
   }
+  const ids = new WeakMap()
+  let nextId = 0
+  const idOf = (el) => {
+    if (!ids.has(el)) ids.set(el, ++nextId)
+    return ids.get(el)
+  }
+  const contains = (r, g) =>
+    r.left >= g.left - 1 && r.right <= g.right + 1 && r.top >= g.top - 1 && r.bottom <= g.bottom + 1
   const seen = new Set()
   for (const t of texts) {
     for (const g of graphics) {
       if (g.contains(t.el) || t.el.contains(g)) continue
-      const a = area(t.r, g.getBoundingClientRect())
-      const key = sel(t.el) + '|' + sel(g)
+      const gr = g.getBoundingClientRect()
+      if (contains(t.r, gr)) continue
+      const a = area(t.r, gr)
+      const key = idOf(t.el) + '|' + idOf(g)
       if (a > 6 && !seen.has(key)) {
         seen.add(key)
         out.overlaps.push({
@@ -168,7 +178,7 @@
       const B = texts[j]
       if (A.el === B.el || A.el.contains(B.el) || B.el.contains(A.el)) continue
       const a = area(A.r, B.r)
-      const key = sel(A.el) + '|' + sel(B.el)
+      const key = idOf(A.el) + '|' + idOf(B.el)
       if (a > 6 && !seen.has(key)) {
         seen.add(key)
         out.overlaps.push({

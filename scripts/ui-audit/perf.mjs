@@ -3,9 +3,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { connect, parseArgs, sleep, OUT_DIR, ROUTES } from './cdp.mjs'
 
+/** Accept routes with or without the leading slash, and `home` for `/` (Git Bash rewrites a bare `/updates` token into a Windows path). */
+const normalizeRoute = (r) => {
+  const t = r.trim()
+  if (t === '' || t === 'home' || t === '/') return '/'
+  return t.startsWith('/') ? t : `/${t}`
+}
 const args = parseArgs(process.argv.slice(2))
 const rounds = Number(args.rounds ?? 2)
-const routes = args.routes ? String(args.routes).split(',') : ROUTES
+const routes = args.routes ? String(args.routes).split(',').map(normalizeRoute) : ROUTES
 const s = await connect()
 await s.setViewport(1440, 900)
 await s.evaluate(`(() => {

@@ -7,12 +7,18 @@ import { connect, parseArgs, sleep, OUT_DIR, ROUTES } from './cdp.mjs'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const detect = fs.readFileSync(path.join(here, 'detect.js'), 'utf8')
+/** Accept routes with or without the leading slash, and `home` for `/` (Git Bash rewrites a bare `/updates` token into a Windows path). */
+const normalizeRoute = (r) => {
+  const t = r.trim()
+  if (t === '' || t === 'home' || t === '/') return '/'
+  return t.startsWith('/') ? t : `/${t}`
+}
 const args = parseArgs(process.argv.slice(2))
 const widths = String(args.widths ?? '900,1100,1251,1440')
   .split(',')
   .map(Number)
 const langs = String(args.langs ?? 'it,de,ar').split(',')
-const routes = args.routes ? String(args.routes).split(',') : ROUTES
+const routes = args.routes ? String(args.routes).split(',').map(normalizeRoute) : ROUTES
 const height = Number(args.height ?? 900)
 const inject = !args['no-inject']
 const shots = Boolean(args.shots)
