@@ -805,15 +805,19 @@ summary,
 /* Long lists: rows off screen skip style and layout until they scroll in.
    `auto` remembers each row's real height once it has been rendered. The
    sizes are content-box heights: padding and border come on top of them
-   (service 72px, update and uninstaller 78px, startup 111px rows). */
-.service-row {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 47px;
-}
+   (update and uninstaller 78px, startup 111px rows; `.service-row` is
+   contained with its other rules further down). */
 .update-row,
 .list-row-cv {
   content-visibility: auto;
   contain-intrinsic-size: auto 45px;
+}
+/* Update rows stack (100px) below their own 820px container breakpoint,
+   reached when the list is under 862px (820 + 40 padding + 2 border). */
+@container update-list (width < 862px) {
+  .update-row {
+    contain-intrinsic-size: auto 66px;
+  }
 }
 /* Startup rows add a third line (the command) */
 .app-content[data-route='/startup'] .list-row-cv {
@@ -2990,6 +2994,9 @@ body {
 .service-row {
   min-height: 68px;
   color: var(--text-primary) !important;
+  /* Long list: off-screen rows skip layout; 47px content box = 72px row */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 47px;
 }
 .service-row:not(:disabled):hover {
   background: color-mix(in srgb, var(--brand-solid), transparent 95%) !important;

@@ -784,10 +784,10 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
         </div>
       )}
 
-      {/* App list */}
+      {/* App list: a named container so off-screen rows can follow the rows' stacked layout */}
       {hasChecked && !loading && filteredApps.length > 0 && (
         <div className="mb-6">
-          <div className="grid grid-cols-1 gap-2">
+          <div className="@container/update-list grid grid-cols-1 gap-2">
             {filteredApps.map((app) => (
               <AppRow
                 key={appKey(app)}
