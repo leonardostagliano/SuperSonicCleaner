@@ -1,4 +1,4 @@
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
+import { lazy, type ComponentType, type LazyExoticComponent, type ReactElement } from 'react'
 
 interface PageEntry {
   load: () => Promise<Record<string, unknown>>
@@ -71,11 +71,45 @@ export function prefetchAllRoutes(): void {
   next()
 }
 
-export const LazyPages: Record<string, LazyExoticComponent<ComponentType>> = Object.fromEntries(
-  Object.entries(PAGE_ENTRIES).map(([path, page]) => [
-    path,
-    lazy(async () => ({ default: (await page.load())[page.exportName] as ComponentType }))
-  ])
+function loadPageComponent(page: PageEntry): LazyExoticComponent<ComponentType> {
+  return lazy(async () => ({ default: (await page.load())[page.exportName] as ComponentType }))
+}
+
+/**
+ * The lazy component currently registered per route. React's `lazy()` calls its
+ * loader only once per instance and remembers a rejection forever, so a failed
+ * chunk can only be retried by swapping in a brand-new instance (`retryPageLoad`),
+ * not by calling the loader again on the same one.
+ */
+const currentPage = new Map<string, LazyExoticComponent<ComponentType>>(
+  Object.entries(PAGE_ENTRIES).map(([path, page]) => [path, loadPageComponent(page)])
+)
+
+/**
+ * Drops the cached lazy component for `path` so the next mount re-attempts the
+ * chunk download from scratch instead of re-throwing the same rejection. Used
+ * by the page-level error boundary's "try again" action.
+ */
+export function retryPageLoad(path: string): void {
+  const page = PAGE_ENTRIES[path]
+  if (!page) return
+  currentPage.set(path, loadPageComponent(page))
+}
+
+/**
+ * One stable component per route: it re-reads `currentPage` on every mount, so
+ * remounting it after `retryPageLoad` (e.g. when the page-level error boundary
+ * clears its error) renders the freshly created lazy component. Kept as a plain
+ * function (not React.lazy) so it can also be called directly in tests.
+ */
+export const LazyPages: Record<string, () => ReactElement> = Object.fromEntries(
+  Object.keys(PAGE_ENTRIES).map((path) => {
+    function RoutePage() {
+      const Current = currentPage.get(path)!
+      return <Current />
+    }
+    return [path, RoutePage]
+  })
 )
 
 /** Holds the page's place while its code loads, so nothing below it jumps. */

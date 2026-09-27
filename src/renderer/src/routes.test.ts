@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { PAGE_ENTRIES, prefetchRoute } from './routes'
+import { PAGE_ENTRIES, prefetchRoute, retryPageLoad, LazyPages } from './routes'
 
 const ROUTED = [
   '/cleaner',
@@ -61,5 +61,20 @@ describe('lazy routes', () => {
 
   it('ignores unknown paths', () => {
     expect(() => prefetchRoute('/nope')).not.toThrow()
+  })
+
+  it('retries a page load that failed by creating a fresh lazy component', () => {
+    // React's `lazy()` calls its loader once per instance and remembers a
+    // rejection forever, so the only way to make a page whose chunk failed to
+    // load try again is to swap in a brand-new lazy component for that route
+    // — reusing the same one would just re-throw the cached rejection.
+    const before = LazyPages['/about']()
+    retryPageLoad('/about')
+    const after = LazyPages['/about']()
+    expect(after.type).not.toBe(before.type)
+  })
+
+  it('does nothing when retrying an unknown path', () => {
+    expect(() => retryPageLoad('/nope')).not.toThrow()
   })
 })

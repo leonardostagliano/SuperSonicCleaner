@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
@@ -15,7 +15,8 @@ import { initGameModeStore } from './stores/game-mode-store'
 import { useSettingsStore } from './stores/settings-store'
 import { initAiAnalysisSources } from './lib/ai-analysis-lifecycle'
 import { initGlobalProgressBridge } from './lib/global-progress-bridge'
-import { LazyPages, PageSkeleton, prefetchAllRoutes } from './routes'
+import { LazyPages, PageSkeleton, prefetchAllRoutes, retryPageLoad } from './routes'
+import i18nInstance from './i18n'
 
 const Onboarding = lazy(() =>
   import('./components/Onboarding').then((m) => ({ default: m.Onboarding }))
@@ -150,18 +151,7 @@ export function App() {
           </Suspense>
         )}
         <AppShell>
-          <Suspense fallback={<PageSkeleton />}>
-            <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              {Object.entries(LazyPages).map(([path, Page]) => (
-                <Route key={path} path={path} element={<Page />} />
-              ))}
-              {/* Legacy redirect */}
-              <Route path="/hardening" element={<Navigate to="/privacy" replace />} />
-              <Route path="/updater" element={<Navigate to="/updates" replace />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
+          <RoutedContent />
         </AppShell>
         <Toaster
           position="bottom-right"
@@ -229,4 +219,110 @@ function PageTitleUpdater() {
     document.title = name ? `${name} - SuperSonicCleaner` : 'SuperSonicCleaner'
   }, [location.pathname, t])
   return null
+}
+
+/**
+ * Wraps the routed pages in a content-scoped error boundary keyed on the
+ * pathname: a page whose chunk fails to load, or that throws while rendering,
+ * is caught here instead of reaching the app-wide boundary in main.tsx — so
+ * the sidebar and header stay usable — and navigating to another page mounts
+ * a fresh boundary, clearing any previous error.
+ */
+function RoutedContent() {
+  const location = useLocation()
+  return (
+    <PageErrorBoundary key={location.pathname} path={location.pathname}>
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          {Object.entries(LazyPages).map(([path, Page]) => (
+            <Route key={path} path={path} element={<Page />} />
+          ))}
+          {/* Legacy redirect */}
+          <Route path="/hardening" element={<Navigate to="/privacy" replace />} />
+          <Route path="/updater" element={<Navigate to="/updates" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </PageErrorBoundary>
+  )
+}
+
+interface PageErrorBoundaryState {
+  error: Error | null
+}
+
+/**
+ * Same look as the app-wide `ErrorBoundary` in main.tsx, scoped to the content
+ * area instead of the whole renderer. "Try again" recreates the lazy component
+ * for this route (`retryPageLoad`) so a chunk whose `import()` rejected is
+ * actually retried rather than re-thrown from React's cached rejection; the
+ * last-resort button reloads the window, same as the app-wide boundary.
+ */
+class PageErrorBoundary extends Component<
+  { path: string; children: ReactNode },
+  PageErrorBoundaryState
+> {
+  state: PageErrorBoundaryState = { error: null }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  handleRetry = () => {
+    retryPageLoad(this.props.path)
+    this.setState({ error: null })
+  }
+
+  render() {
+    if (this.state.error) {
+      // Same hardcoded colors as the app-wide boundary — CSS variables may not
+      // be loaded when the error boundary triggers, which would make the text
+      // invisible.
+      return (
+        <div
+          style={{
+            padding: 32,
+            color: '#fafafa',
+            fontFamily: 'system-ui',
+            background: '#09090b'
+          }}
+        >
+          <h1 style={{ fontSize: 20, marginBottom: 8 }}>Something went wrong</h1>
+          <pre style={{ color: '#a1a1aa', fontSize: 13, whiteSpace: 'pre-wrap' }}>
+            {this.state.error.message}
+          </pre>
+          <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+            <button
+              onClick={this.handleRetry}
+              style={{
+                padding: '8px 16px',
+                background: '#27272a',
+                color: '#fafafa',
+                border: '1px solid #3f3f46',
+                borderRadius: 6,
+                cursor: 'pointer'
+              }}
+            >
+              {i18nInstance.t('settings:retry')}
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: '8px 16px',
+                background: '#27272a',
+                color: '#fafafa',
+                border: '1px solid #3f3f46',
+                borderRadius: 6,
+                cursor: 'pointer'
+              }}
+            >
+              Reload
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
 }
