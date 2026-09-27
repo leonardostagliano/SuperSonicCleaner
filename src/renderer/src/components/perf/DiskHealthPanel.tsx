@@ -51,7 +51,7 @@ function DiskCard({ disk }: { disk: DiskSmartInfo }) {
           <div>
             <div className="text-[13px] font-semibold text-white">{disk.model}</div>
             <div className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
-              {disk.type} &middot; {formatBytes(disk.sizeBytes, 0)}
+              {disk.type} &middot; {formatBytes(disk.sizeBytes)}
             </div>
           </div>
         </div>

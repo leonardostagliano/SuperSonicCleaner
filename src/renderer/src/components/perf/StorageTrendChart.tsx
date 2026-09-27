@@ -44,7 +44,7 @@ export function StorageTrendChart({ snapshots }: { snapshots: StorageSnapshotSum
             />
             <YAxis
               domain={[0, 'auto']}
-              tickFormatter={(value) => formatBytes(value, 1)}
+              tickFormatter={(value) => formatBytes(value)}
               tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
               axisLine={false}
               tickLine={false}

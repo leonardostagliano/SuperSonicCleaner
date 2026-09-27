@@ -2,33 +2,14 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import i18next from 'i18next'
 
+export { formatBytes, formatSpeed, NO_VALUE } from './format'
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return '0 B'
-  if (bytes < 0) return `-${formatBytes(-bytes, decimals)}`
-
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
-
 export function formatNumber(num: number): string {
   return num.toLocaleString()
-}
-
-export function formatSpeed(bytesPerSec: number): string {
-  if (bytesPerSec <= 0) return '0 B/s'
-  const k = 1024
-  const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s']
-  const i = Math.min(sizes.length - 1, Math.floor(Math.log(bytesPerSec) / Math.log(k)))
-  return `${parseFloat((bytesPerSec / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
 }
 
 export function formatDuration(ms: number): string {

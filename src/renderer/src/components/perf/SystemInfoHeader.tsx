@@ -31,7 +31,7 @@ export function SystemInfoHeader({ info, uptime }: SystemInfoHeaderProps) {
     {
       icon: MemoryStick,
       label: t('systemInfoMemory'),
-      value: formatBytes(info.totalMemBytes, 1),
+      value: formatBytes(info.totalMemBytes),
       sub: ''
     },
     { icon: Monitor, label: t('systemInfoOs'), value: info.osVersion, sub: '' },

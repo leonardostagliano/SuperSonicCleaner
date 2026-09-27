@@ -17,39 +17,7 @@ i18next.init({
   defaultNS: 'common'
 })
 
-import { formatBytes, formatNumber, formatSpeed, formatDate } from './utils'
-
-describe('formatBytes', () => {
-  it('returns "0 B" for zero', () => {
-    expect(formatBytes(0)).toBe('0 B')
-  })
-
-  it('formats bytes', () => {
-    expect(formatBytes(500)).toBe('500 B')
-  })
-
-  it('formats kilobytes', () => {
-    expect(formatBytes(1024)).toBe('1 KB')
-    expect(formatBytes(1536)).toBe('1.5 KB')
-  })
-
-  it('formats megabytes', () => {
-    expect(formatBytes(1048576)).toBe('1 MB')
-  })
-
-  it('formats gigabytes', () => {
-    expect(formatBytes(1073741824)).toBe('1 GB')
-  })
-
-  it('formats terabytes', () => {
-    expect(formatBytes(1099511627776)).toBe('1 TB')
-  })
-
-  it('respects custom decimal places', () => {
-    expect(formatBytes(1536, 0)).toBe('2 KB')
-    expect(formatBytes(1536, 3)).toBe('1.5 KB')
-  })
-})
+import { formatNumber, formatDate } from './utils'
 
 describe('formatNumber', () => {
   it('formats numbers with locale separators', () => {
@@ -57,29 +25,6 @@ describe('formatNumber', () => {
     const result = formatNumber(1234567)
     expect(typeof result).toBe('string')
     expect(result.length).toBeGreaterThan(0)
-  })
-})
-
-describe('formatSpeed', () => {
-  it('returns "0 B/s" for zero or negative', () => {
-    expect(formatSpeed(0)).toBe('0 B/s')
-    expect(formatSpeed(-100)).toBe('0 B/s')
-  })
-
-  it('formats bytes per second', () => {
-    expect(formatSpeed(500)).toBe('500 B/s')
-  })
-
-  it('formats kilobytes per second', () => {
-    expect(formatSpeed(1024)).toBe('1 KB/s')
-  })
-
-  it('formats megabytes per second', () => {
-    expect(formatSpeed(1048576)).toBe('1 MB/s')
-  })
-
-  it('formats gigabytes per second', () => {
-    expect(formatSpeed(1073741824)).toBe('1 GB/s')
   })
 })
 

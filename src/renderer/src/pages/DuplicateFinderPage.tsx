@@ -307,7 +307,7 @@ export function DuplicateFinderPage() {
                         store.maxFileSize === v ? 'rgba(245,158,11,0.1)' : 'var(--bg-subtle-2)'
                     }}
                   >
-                    {formatBytes(v, 0)}
+                    {formatBytes(v)}
                   </button>
                 ))}
               </div>

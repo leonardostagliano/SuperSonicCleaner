@@ -462,7 +462,7 @@ function OverviewView({
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
-                  tickFormatter={(v) => formatBytes(v, 0)}
+                  tickFormatter={(v) => formatBytes(v)}
                   width={60}
                 />
                 <Tooltip
@@ -583,7 +583,7 @@ function OverviewView({
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
-                  tickFormatter={(v) => formatBytes(v, 0)}
+                  tickFormatter={(v) => formatBytes(v)}
                 />
                 <YAxis
                   type="category"

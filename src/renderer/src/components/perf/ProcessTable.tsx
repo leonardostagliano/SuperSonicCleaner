@@ -181,7 +181,7 @@ export function ProcessTable() {
 
             {/* Memory */}
             <span className="text-[11px] font-mono text-zinc-400" style={{ width: '18%' }}>
-              {formatBytes(p.memBytes, 1)}
+              {formatBytes(p.memBytes)}
             </span>
 
             {/* Kill */}

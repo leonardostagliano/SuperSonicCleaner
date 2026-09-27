@@ -23,19 +23,8 @@ import {
   applyFilter,
   type DriveFilter
 } from '@/stores/disk-maintenance-store'
+import { formatBytes } from '@/lib/utils'
 import type { TrimDriveInfo, TrimMediaType, TrimStatus } from '@shared/types'
-
-function formatBytes(bytes: number, fractionDigits = 1): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'
-  const units = ['B', 'KB', 'MB', 'GB', 'TB']
-  let i = 0
-  let v = bytes
-  while (v >= 1024 && i < units.length - 1) {
-    v /= 1024
-    i++
-  }
-  return `${v.toFixed(i === 0 ? 0 : fractionDigits)} ${units[i]}`
-}
 
 function formatRelativeTime(ts: number | null, never: string): string {
   if (!ts) return never
@@ -386,7 +375,7 @@ function DriveRow({
           >
             <span>{drive.filesystem ?? '—'}</span>
             <span>·</span>
-            <span>{formatBytes(drive.totalSize, 0)} total</span>
+            <span>{formatBytes(drive.totalSize)} total</span>
             <span>·</span>
             <span>
               {t('trimLastTrimmed')}: {formatRelativeTime(drive.lastTrimAt, t('trimNeverRecorded'))}

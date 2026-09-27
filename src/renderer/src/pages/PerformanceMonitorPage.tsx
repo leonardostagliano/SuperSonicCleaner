@@ -152,7 +152,7 @@ export function PerformanceMonitorPage() {
           percent={snapshot?.memory.percent ?? null}
           detail={
             snapshot
-              ? `${formatBytes(snapshot.memory.usedBytes, 1)} / ${formatBytes(snapshot.memory.totalBytes, 1)}`
+              ? `${formatBytes(snapshot.memory.usedBytes)} / ${formatBytes(snapshot.memory.totalBytes)}`
               : t('noDataPlaceholder')
           }
         />

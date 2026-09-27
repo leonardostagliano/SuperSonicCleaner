@@ -141,7 +141,7 @@ function CategoryBar({
         className="w-16 shrink-0 text-right text-[11px] font-mono"
         style={{ color: 'var(--text-secondary)' }}
       >
-        {formatBytes(space, 1)}
+        {formatBytes(space)}
       </span>
     </motion.div>
   )
