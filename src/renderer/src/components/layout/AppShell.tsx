@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Check, Download, Monitor, Moon, Sun } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +21,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { platform } = usePlatform()
   const updateState = useAppUpdateStore((s) => s.status.state)
   const hasUpdate = updateState === 'available' || updateState === 'downloaded'
+  const mainRef = useRef<HTMLElement>(null)
+  // Each page starts at its top, not at the previous page's scroll position
+  useLayoutEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 })
+  }, [location.pathname])
   const handleSkip = useCallback((e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault()
     const el = document.getElementById('main-content')
@@ -62,6 +67,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <AdminBanner />
           <AppUpdateNotice />
           <main
+            ref={mainRef}
             id="main-content"
             data-route={location.pathname}
             tabIndex={-1}

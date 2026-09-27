@@ -596,7 +596,7 @@ export function StartupPage() {
             <Fragment key={item.id}>
               <div
                 className={cn(
-                  'flex items-center gap-5 rounded-2xl p-5 transition-all',
+                  'list-row-cv flex items-center gap-5 rounded-2xl p-5 transition-all',
                   !item.enabled && 'opacity-50'
                 )}
                 style={{

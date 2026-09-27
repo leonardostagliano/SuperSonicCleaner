@@ -800,6 +800,24 @@ summary,
 }
 .app-content {
   padding: 28px 34px 48px;
+  scrollbar-gutter: stable;
+}
+/* Long lists: rows off screen skip style and layout until they scroll in.
+   `auto` remembers each row's real height once it has been rendered. The
+   sizes are content-box heights: padding and border come on top of them
+   (service 72px, update and uninstaller 78px, startup 111px rows). */
+.service-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 47px;
+}
+.update-row,
+.list-row-cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 45px;
+}
+/* Startup rows add a third line (the command) */
+.app-content[data-route='/startup'] .list-row-cv {
+  contain-intrinsic-size: auto 69px;
 }
 .app-content > * {
   width: 100%;

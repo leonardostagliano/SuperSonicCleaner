@@ -802,7 +802,7 @@ export function UninstallerPage() {
               return (
                 <Fragment key={prog.id}>
                   <div
-                    className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors"
+                    className="list-row-cv flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors"
                     style={{
                       background: isSelected
                         ? 'var(--accent-muted-bg)'
