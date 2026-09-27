@@ -15,23 +15,37 @@ import type {
 import { psUtf8 } from './exec-utf8'
 import { CpuTimeSampler } from './cpu-time-sampler'
 import { cpuModelName } from './cpu-model'
+import { NetworkThroughput } from './network-throughput'
 
 const execFileAsync = promisify(execFile)
 
+/** A CPU reading needs two counter samples: take the second this soon after priming, then every second. */
+export const FIRST_SAMPLE_MS = 300
+const SNAPSHOT_INTERVAL_MS = 1000
+/** One-off probes wait this long at most for the first reading before starting anyway. */
+export const FIRST_READING_WAIT_MS = 2000
+
 export class PerfMonitorService {
   private fastTimer: ReturnType<typeof setInterval> | null = null
+  private firstSampleTimer: ReturnType<typeof setTimeout> | null = null
   private slowTimer: ReturnType<typeof setInterval> | null = null
   private sender: Electron.WebContents | null = null
   private snapshotListeners = new Set<(snapshot: PerfSnapshot) => void>()
   private monitoringGeneration = 0
   private cachedSystemInfo: PerfSystemInfo | null = null
+  private systemInfoQuery: Promise<PerfSystemInfo> | null = null
+  private diskHealthQuery: Promise<DiskSmartInfo[]> | null = null
+  // Callers held until the first reading after the snapshot timer starts; null once it went out
+  private firstReadingWaiters: Array<() => void> | null = null
   private startupExeMap: Map<string, string> = new Map()
+  private lastProcessList: PerfProcessList | null = null
   // Guards to prevent overlapping async calls from piling up if si hangs
   private snapshotRunning = false
   private processesRunning = false
   private readonly cpuSampler = new CpuTimeSampler()
   private snapshotGeneration = 0
-  // Cache expensive si.networkStats() — poll every 5s, reuse in between
+  // Network counters cost a child process: poll every 5s, reuse in between
+  private readonly network = new NetworkThroughput()
   private cachedNetworkStats = { rxBytesPerSec: 0, txBytesPerSec: 0 }
   private lastNetworkPoll = -Infinity
   private networkPollRunning = false
@@ -47,18 +61,54 @@ export class PerfMonitorService {
 
   async getSystemInfo(): Promise<PerfSystemInfo> {
     if (this.cachedSystemInfo) return this.cachedSystemInfo
+    // One query for concurrent callers (React's development double mount asks twice)
+    this.systemInfoQuery ??= this.querySystemInfo().finally(() => {
+      this.systemInfoQuery = null
+    })
+    return this.systemInfoQuery
+  }
 
-    const [cpu, osInfo, mem] = await Promise.all([si.cpu(), si.osInfo(), si.mem()])
+  private async querySystemInfo(): Promise<PerfSystemInfo> {
+    // About a dozen child processes: start them after the live data, not in front of it
+    await this.afterFirstReading()
+    const [cpu, osInfo] = await Promise.all([si.cpu(), si.osInfo()])
 
     this.cachedSystemInfo = {
       cpuModel: cpuModelName(cpu.manufacturer, cpu.brand, os.cpus()[0]?.model),
       cpuCores: cpu.physicalCores,
       cpuThreads: cpu.cores,
-      totalMemBytes: mem.total,
+      // si.mem() reports this same total, after a PowerShell query for swap on Windows
+      totalMemBytes: os.totalmem(),
       osVersion: `${osInfo.distro} ${osInfo.release}`,
       hostname: osInfo.hostname
     }
     return this.cachedSystemInfo
+  }
+
+  /**
+   * Resolves once the first live reading after the snapshot timer started has
+   * gone out (at once when nothing is sampling or it already has), or after
+   * FIRST_READING_WAIT_MS. Spawning a child process blocks main's event loop
+   * for tens to hundreds of milliseconds on a busy machine, so one-off probes
+   * wait here instead of pushing the first value back.
+   */
+  private afterFirstReading(): Promise<void> {
+    const waiters = this.firstReadingWaiters
+    if (!waiters) return Promise.resolve()
+    return new Promise((resolve) => {
+      const release = (): void => {
+        clearTimeout(timer)
+        resolve()
+      }
+      const timer = setTimeout(release, FIRST_READING_WAIT_MS)
+      waiters.push(release)
+    })
+  }
+
+  private releaseFirstReadingWaiters(): void {
+    const waiters = this.firstReadingWaiters
+    this.firstReadingWaiters = null
+    waiters?.forEach((release) => release())
   }
 
   async startMonitoring(
@@ -67,35 +117,56 @@ export class PerfMonitorService {
   ): Promise<void> {
     const generation = ++this.monitoringGeneration
     this.sender = sender
-    if (this.slowTimer) return
+    if (this.slowTimer || sender.isDestroyed()) return
 
-    // Build startup exe map for correlation
-    if (getStartupItems) {
-      try {
-        const items = await getStartupItems()
-        if (generation !== this.monitoringGeneration || this.sender !== sender) return
-        this.startupExeMap.clear()
-        for (const item of items) {
-          // Extract exe name from command string
-          const match = item.command.match(/([^/\\]+\.exe)/i)
-          if (match) {
-            this.startupExeMap.set(match[1].toLowerCase(), item.displayName || item.name)
-          }
-        }
-      } catch {
-        // Startup correlation is optional
-      }
-    }
-
-    if (generation !== this.monitoringGeneration || this.sender !== sender || sender.isDestroyed())
-      return
-
+    // Live data first: the startup-item lookup below runs beside the collectors
     // Fast interval: system metrics every 1s
     this.ensureSnapshotTimer()
 
     // Slow interval: process list every 10s (si.processes() is expensive)
     this.slowTimer = setInterval(() => this.collectProcesses(), 10000)
     this.collectProcesses()
+
+    if (getStartupItems) await this.loadStartupItems(getStartupItems, generation, sender)
+  }
+
+  /** Startup-item correlation for the process list, applied whenever the lookup settles. */
+  private async loadStartupItems(
+    getStartupItems: () => Promise<StartupItem[]>,
+    generation: number,
+    sender: Electron.WebContents
+  ): Promise<void> {
+    let items: StartupItem[]
+    try {
+      items = await getStartupItems()
+    } catch {
+      return // Startup correlation is optional
+    }
+    if (generation !== this.monitoringGeneration || this.sender !== sender) return
+    this.startupExeMap.clear()
+    for (const item of items) {
+      // Extract exe name from command string
+      const match = item.command.match(/([^/\\]+\.exe)/i)
+      if (match) {
+        this.startupExeMap.set(match[1].toLowerCase(), item.displayName || item.name)
+      }
+    }
+    // The first process list has usually gone out already: send it again, marked
+    if (this.lastProcessList && !sender.isDestroyed()) {
+      this.lastProcessList = {
+        ...this.lastProcessList,
+        processes: this.lastProcessList.processes.map((p) => this.withStartupItem(p))
+      }
+      sender.send(IPC.PERF_PROCESS_LIST, this.lastProcessList)
+    }
+  }
+
+  private withStartupItem(proc: PerfProcess): PerfProcess {
+    const exeName = (proc.name || '').toLowerCase()
+    const startupName = this.startupExeMap.get(
+      exeName.endsWith('.exe') ? exeName : `${exeName}.exe`
+    )
+    return { ...proc, isStartupItem: !!startupName, startupItemName: startupName }
   }
 
   stopMonitoring(): void {
@@ -105,6 +176,9 @@ export class PerfMonitorService {
       this.slowTimer = null
     }
     this.sender = null
+    this.lastProcessList = null
+    // The next page visit primes network rates instead of averaging over the pause
+    this.network.reset()
     this.stopUnusedSnapshotTimer()
   }
 
@@ -119,22 +193,31 @@ export class PerfMonitorService {
   }
 
   private ensureSnapshotTimer(): void {
-    if (this.fastTimer) return
+    if (this.fastTimer || this.firstSampleTimer) return
     this.snapshotGeneration++
     this.cpuSampler.reset()
-    this.fastTimer = setInterval(() => void this.collectSnapshot(), 1000)
+    this.firstReadingWaiters ??= []
+    // Prime now and read shortly after instead of a full second later, then every second
+    this.firstSampleTimer = setTimeout(() => {
+      this.firstSampleTimer = null
+      this.fastTimer = setInterval(() => void this.collectSnapshot(), SNAPSHOT_INTERVAL_MS)
+      void this.collectSnapshot()
+    }, FIRST_SAMPLE_MS)
     void this.collectSnapshot()
   }
 
   private stopUnusedSnapshotTimer(): void {
-    if (!this.sender && this.snapshotListeners.size === 0 && this.fastTimer) {
-      clearInterval(this.fastTimer)
-      this.fastTimer = null
-      this.snapshotGeneration++
-      this.cpuSampler.reset()
-      this.lastNetworkPoll = -Infinity
-      this.lastDiskPoll = -Infinity
-    }
+    if (this.sender || this.snapshotListeners.size > 0) return
+    if (!this.fastTimer && !this.firstSampleTimer) return
+    if (this.firstSampleTimer) clearTimeout(this.firstSampleTimer)
+    if (this.fastTimer) clearInterval(this.fastTimer)
+    this.firstSampleTimer = null
+    this.fastTimer = null
+    this.snapshotGeneration++
+    this.cpuSampler.reset()
+    this.lastNetworkPoll = -Infinity
+    this.lastDiskPoll = -Infinity
+    this.releaseFirstReadingWaiters()
   }
 
   async getProcessName(pid: number): Promise<string | null> {
@@ -177,7 +260,18 @@ export class PerfMonitorService {
     }
   }
 
-  async getDiskHealth(): Promise<DiskSmartInfo[]> {
+  getDiskHealth(): Promise<DiskSmartInfo[]> {
+    // One query for concurrent callers (React's development double mount asks twice)
+    this.diskHealthQuery ??= this.queryDiskHealth().finally(() => {
+      this.diskHealthQuery = null
+    })
+    return this.diskHealthQuery
+  }
+
+  private async queryDiskHealth(): Promise<DiskSmartInfo[]> {
+    // Several child processes, and a synchronous `WHERE smartctl` on the first call:
+    // start them after the live data, not in front of it
+    await this.afterFirstReading()
     try {
       const disks = await si.diskLayout()
       const reliabilityMap = await this.getStorageReliability()
@@ -315,14 +409,11 @@ export class PerfMonitorService {
     if (!this.networkPollRunning && now - this.lastNetworkPoll >= this.NETWORK_POLL_INTERVAL_MS) {
       this.networkPollRunning = true
       this.lastNetworkPoll = now
-      void si
-        .networkStats()
-        .then((net) => {
-          if (generation !== this.snapshotGeneration) return
-          this.cachedNetworkStats = {
-            rxBytesPerSec: net.reduce((sum, entry) => sum + Math.max(0, entry.rx_sec || 0), 0),
-            txBytesPerSec: net.reduce((sum, entry) => sum + Math.max(0, entry.tx_sec || 0), 0)
-          }
+      // Never si.networkStats() without an interface: its lookup is a synchronous netstat
+      void this.network
+        .read(now)
+        .then((rates) => {
+          if (generation === this.snapshotGeneration && rates) this.cachedNetworkStats = rates
         })
         .catch(() => {})
         .finally(() => {
@@ -342,8 +433,6 @@ export class PerfMonitorService {
     const generation = this.snapshotGeneration
 
     try {
-      this.pollSlowMetrics(performance.now())
-
       // On Windows, si.mem() costs ~290ms per call — use os.totalmem()/os.freemem()
       // instead (identical values, near-zero cost). On Linux/macOS, si.mem() is cheap
       // (reads /proc/meminfo or vm_stat) and os.freemem() excludes buffers/cache,
@@ -394,6 +483,9 @@ export class PerfMonitorService {
         this.sender.send(IPC.PERF_SNAPSHOT, snapshot)
       }
       for (const listener of this.snapshotListeners) listener(snapshot)
+      // Probes that spawn child processes start once a reading is out, never on the priming tick
+      this.releaseFirstReadingWaiters()
+      this.pollSlowMetrics(performance.now())
     } catch {
       // Silently skip failed ticks
     } finally {
@@ -410,30 +502,24 @@ export class PerfMonitorService {
     this.processesRunning = true
 
     try {
-      const [data, mem] = await Promise.all([si.processes(), si.mem()])
-      const totalMem = mem.total
+      // si.mem() would add a PowerShell for swap on Windows every 10s for this same total
+      const data = await si.processes()
+      const totalMem = os.totalmem()
 
       // Sort by CPU + memory and take top 100
       const sorted = data.list.sort((a, b) => b.cpu + b.memRss - (a.cpu + a.memRss)).slice(0, 100)
 
-      const processes: PerfProcess[] = sorted.map((p) => {
-        const exeName = (p.name || '').toLowerCase()
-        const startupName = this.startupExeMap.get(
-          exeName.endsWith('.exe') ? exeName : `${exeName}.exe`
-        )
-
-        return {
+      const processes: PerfProcess[] = sorted.map((p) =>
+        this.withStartupItem({
           pid: p.pid,
           name: p.name,
           cpuPercent: p.cpu,
           memBytes: p.memRss,
           memPercent: totalMem > 0 ? (p.memRss / totalMem) * 100 : 0,
           user: p.user || '',
-          started: p.started || '',
-          isStartupItem: !!startupName,
-          startupItemName: startupName
-        }
-      })
+          started: p.started || ''
+        })
+      )
 
       const result: PerfProcessList = {
         timestamp: Date.now(),
@@ -442,6 +528,7 @@ export class PerfMonitorService {
       }
 
       if (this.sender && !this.sender.isDestroyed()) {
+        this.lastProcessList = result
         this.sender.send(IPC.PERF_PROCESS_LIST, result)
       }
     } catch {
