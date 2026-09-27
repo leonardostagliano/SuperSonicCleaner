@@ -3,6 +3,7 @@ import {
   acquireTelemetry,
   resetTelemetryForTests,
   TELEMETRY_TAIL_MS,
+  TELEMETRY_WINDOW_MS,
   useTelemetryStore
 } from './telemetry-store'
 
@@ -112,5 +113,27 @@ describe('telemetry sampler', () => {
     const { samples } = useTelemetryStore.getState()
     expect(samples).toHaveLength(60)
     expect(samples[59].cpu).toBe(79)
+  })
+
+  it('spans the 60 samples of the chart, 3 s apart', () => {
+    expect(TELEMETRY_WINDOW_MS).toBe(180_000)
+  })
+
+  it('drops samples older than the chart window when a new one arrives after a gap', () => {
+    const { push } = useTelemetryStore.getState()
+    const start = 1_000_000
+    for (let i = 0; i < 60; i++) push(reading(i), start + i * 3000)
+    // Ten minutes later (tail expired or window hidden): the old series must not come back
+    const later = start + 59 * 3000 + 10 * 60_000
+    push(reading(99), later)
+    expect(useTelemetryStore.getState().samples).toEqual([{ at: later, cpu: 99, memory: 50 }])
+  })
+
+  it('keeps samples up to one chart window old and drops older ones', () => {
+    const { push } = useTelemetryStore.getState()
+    push(reading(1), 0)
+    push(reading(2), 1)
+    push(reading(3), TELEMETRY_WINDOW_MS + 1)
+    expect(useTelemetryStore.getState().samples.map((s) => s.cpu)).toEqual([2, 3])
   })
 })

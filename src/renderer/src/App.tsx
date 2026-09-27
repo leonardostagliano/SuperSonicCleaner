@@ -222,16 +222,18 @@ function PageTitleUpdater() {
 }
 
 /**
- * Wraps the routed pages in a content-scoped error boundary keyed on the
- * pathname: a page whose chunk fails to load, or that throws while rendering,
- * is caught here instead of reaching the app-wide boundary in main.tsx — so
- * the sidebar and header stay usable — and navigating to another page mounts
- * a fresh boundary, clearing any previous error.
+ * Wraps the routed pages in a content-scoped error boundary: a page whose chunk
+ * fails to load, or that throws while rendering, is caught here instead of
+ * reaching the app-wide boundary in main.tsx — so the sidebar and header stay
+ * usable — and navigating to another page clears any previous error. The
+ * boundary is not keyed on the pathname: remounting it would remount the
+ * Suspense boundary too, and a route transition would then flash the skeleton
+ * instead of keeping the previous page on screen while the next one loads.
  */
 function RoutedContent() {
   const location = useLocation()
   return (
-    <PageErrorBoundary key={location.pathname} path={location.pathname}>
+    <PageErrorBoundary path={location.pathname}>
       <Suspense fallback={<PageSkeleton />}>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
@@ -250,6 +252,13 @@ function RoutedContent() {
 
 interface PageErrorBoundaryState {
   error: Error | null
+  /** The route the state belongs to: an error is cleared once the route changes. */
+  path: string
+}
+
+interface PageErrorBoundaryProps {
+  path: string
+  children: ReactNode
 }
 
 const boundaryButtonStyle = {
@@ -270,11 +279,18 @@ const boundaryButtonStyle = {
  * threw during its own render can simply be re-rendered by resetting this
  * boundary, with reload kept as the secondary, always-available action.
  */
-class PageErrorBoundary extends Component<
-  { path: string; children: ReactNode },
-  PageErrorBoundaryState
-> {
-  state: PageErrorBoundaryState = { error: null }
+class PageErrorBoundary extends Component<PageErrorBoundaryProps, PageErrorBoundaryState> {
+  constructor(props: PageErrorBoundaryProps) {
+    super(props)
+    this.state = { error: null, path: props.path }
+  }
+
+  static getDerivedStateFromProps(
+    props: PageErrorBoundaryProps,
+    state: PageErrorBoundaryState
+  ): Partial<PageErrorBoundaryState> | null {
+    return props.path === state.path ? null : { path: props.path, error: null }
+  }
 
   static getDerivedStateFromError(error: Error) {
     return { error }

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Activity, ArrowRight, Cpu, MemoryStick } from 'lucide-react'
@@ -7,9 +8,10 @@ import { useQuickTelemetry } from '@/hooks/useQuickTelemetry'
 import { formatBytes, NO_VALUE } from '@/lib/utils'
 
 // Home's live cards read telemetry themselves: a new sample re-renders these
-// three components, not the whole dashboard.
+// three components, not the whole dashboard. They take no props, so memo also
+// keeps the dashboard's own re-renders (Game Mode's 1 s timer) from reaching them.
 
-export function CpuCard() {
+export const CpuCard = memo(function CpuCard() {
   const { t: tx } = useTranslation('experience')
   const { current: perf, samples } = useQuickTelemetry()
   const cpuPct = perf?.cpuPercent ?? 0
@@ -29,9 +31,9 @@ export function CpuCard() {
       </div>
     </section>
   )
-}
+})
 
-export function MemoryCard() {
+export const MemoryCard = memo(function MemoryCard() {
   const { t: tx } = useTranslation('experience')
   const { current: perf, samples } = useQuickTelemetry()
   const ramPct = perf?.memPercent ?? 0
@@ -56,9 +58,9 @@ export function MemoryCard() {
       </div>
     </section>
   )
-}
+})
 
-export function TelemetryPanel() {
+export const TelemetryPanel = memo(function TelemetryPanel() {
   const { t } = useTranslation('dashboard')
   const { t: tx } = useTranslation('experience')
   const navigate = useNavigate()
@@ -91,4 +93,4 @@ export function TelemetryPanel() {
       </button>
     </section>
   )
-}
+})

@@ -58,7 +58,10 @@ export function prefetchRoute(path: string): void {
   )
 }
 
-/** Warm every page in the background, one at a time, when the renderer is idle. */
+/**
+ * Warm every page in the background: one page's download starts per idle period.
+ * Each load is not awaited, so the downloads themselves may overlap.
+ */
 export function prefetchAllRoutes(): void {
   const queue = Object.keys(PAGE_ENTRIES)
   const next = () => {

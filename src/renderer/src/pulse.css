@@ -492,6 +492,7 @@ body {
   font-weight: 500;
   color: var(--text-primary);
   margin-inline-start: 4px;
+  font-variant-numeric: tabular-nums;
 }
 .pulse-telemetry-chart {
   position: relative;
@@ -991,6 +992,7 @@ body {
   font-size: var(--text-display);
   font-weight: 600;
   letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
 }
 .pulse-resource-card strong small {
   font-size: 13px;

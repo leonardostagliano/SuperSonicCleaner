@@ -12,6 +12,12 @@ const POLL_MS = 3000
 const FIRST_SAMPLE_MS = 1000
 /** Keep sampling this long after the last view leaves, so coming back shows a full chart. */
 export const TELEMETRY_TAIL_MS = 2 * 60 * 1000
+/**
+ * The chart's nominal span. Samples older than this (relative to the newest one)
+ * are dropped, so after a long gap — tail expired, window hidden — the series
+ * restarts instead of squeezing the live data against the right edge.
+ */
+export const TELEMETRY_WINDOW_MS = MAX_SAMPLES * POLL_MS
 
 interface TelemetryState {
   current: PerfQuickStats | null
@@ -28,7 +34,9 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
         ? {
             current: reading,
             samples: [
-              ...s.samples.slice(-(MAX_SAMPLES - 1)),
+              ...s.samples
+                .filter((sample) => at - sample.at <= TELEMETRY_WINDOW_MS)
+                .slice(-(MAX_SAMPLES - 1)),
               { at, cpu: reading.cpuPercent, memory: reading.memPercent }
             ]
           }

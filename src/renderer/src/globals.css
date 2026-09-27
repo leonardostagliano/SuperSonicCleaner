@@ -1001,6 +1001,11 @@ summary,
 .sidebar-submenu-collapse[data-open='true'] {
   grid-template-rows: 1fr;
 }
+/* The collapse clips overflow and the items reach its right edge: draw the
+   keyboard ring inside the item so all four sides stay visible. */
+.sidebar-submenu-item:focus-visible {
+  outline-offset: -2px;
+}
 .sidebar-submenu-collapse > .sidebar-submenu {
   min-height: 0;
   /* Margins sit outside the clipped track: keep them only while open, or a

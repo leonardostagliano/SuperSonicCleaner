@@ -580,6 +580,10 @@ function NavItem({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
   const isCompact = useCompactSidebar()
+  const shownBadge = badge || (badgeCount != null && badgeCount > 0) ? (badgeCount ?? 1) : null
+  // A labelled button is announced by its aria-label alone, and in compact mode the
+  // badge is only a dot: the count has to be part of the button's own name.
+  const accessibleName = shownBadge === null ? itemLabel : `${itemLabel} (${shownBadge})`
 
   const handleClick = () => {
     if (hasChildren) {
@@ -594,8 +598,8 @@ function NavItem({
       <button
         ref={buttonRef}
         data-active={isActive}
-        aria-label={itemLabel}
-        title={isCompact ? itemLabel : undefined}
+        aria-label={accessibleName}
+        title={isCompact ? accessibleName : undefined}
         onClick={handleClick}
         onPointerEnter={() => !hasChildren && prefetchRoute(item.path)}
         onFocus={() => !hasChildren && prefetchRoute(item.path)}
@@ -624,7 +628,7 @@ function NavItem({
           aria-hidden="true"
         />
         <span className="flex-1 text-left">{itemLabel}</span>
-        {(badge || (badgeCount != null && badgeCount > 0)) && (
+        {shownBadge !== null && (
           <span
             className="nav-badge flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
             style={{
@@ -632,9 +636,9 @@ function NavItem({
               color: 'var(--page-bg)',
               boxShadow: 'none'
             }}
-            aria-label={`${badgeCount ?? 1}`}
+            aria-hidden="true"
           >
-            {badgeCount ?? 1}
+            {shownBadge}
           </span>
         )}
         {hasChildren && (
@@ -647,7 +651,8 @@ function NavItem({
         )}
       </button>
 
-      {/* Flyout submenu — rendered fixed to escape sidebar overflow */}
+      {/* Inline submenu (full-width sidebar): always mounted so it can animate open and
+          closed, inert while closed. The compact sidebar uses FlyoutMenu below instead. */}
       {hasChildren && !isCompact && (
         <div
           className="sidebar-submenu-collapse"

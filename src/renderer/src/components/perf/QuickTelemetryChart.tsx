@@ -77,7 +77,12 @@ export function QuickTelemetryChart({ samples }: { samples: QuickSample[] }) {
           )}
         </svg>
       </div>
-      {samples.length < 2 && <p className="pulse-chart-waiting">{t('home.collecting')}</p>}
+      {/* The chart is forced LTR; the sentence follows its own language's direction */}
+      {samples.length < 2 && (
+        <p className="pulse-chart-waiting" dir="auto">
+          {t('home.collecting')}
+        </p>
+      )}
       <div className="pulse-chart-times">
         <span>{seconds ? t('home.ago', { seconds }) : '—'}</span>
         <span>{t('home.now')}</span>
