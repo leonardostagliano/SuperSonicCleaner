@@ -1,0 +1,167 @@
+name: Release - Automatic Fork
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Share the publication lock with the manual tag pipeline.
+concurrency:
+  group: fork-release
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main' && github.repository == 'leonardostagliano/SuperSonicCleaner' && (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(release):'))
+    uses: ./.github/workflows/ci.yml
+
+  package-smoke:
+    if: github.ref == 'refs/heads/main' && github.repository == 'leonardostagliano/SuperSonicCleaner' && (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(release):'))
+    uses: ./.github/workflows/package-smoke.yml
+
+  plan:
+    needs: [validate, package-smoke]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      skip: ${{ steps.version.outputs.skip }}
+      version: ${{ steps.version.outputs.version }}
+    env:
+      RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
+    steps:
+      - name: Checkout release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install release tooling
+        run: npm ci --ignore-scripts
+      - name: Plan release from Conventional Commits
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/automatic-release.js prepare
+      - name: Share the version and source plan
+        if: steps.version.outputs.skip != 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: automatic-release-plan
+          path: ${{ env.RELEASE_PLAN }}
+          retention-days: 7
+          overwrite: true
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.skip != 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            args: --win
+          - os: macos-latest
+            args: --mac
+          - os: ubuntu-latest
+            args: --linux AppImage deb --x64
+          - os: ubuntu-24.04-arm
+            args: --linux AppImage deb --arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
+    steps:
+      - name: Checkout release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Download release plan
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: automatic-release-plan
+          path: ${{ runner.temp }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Apply planned version to this build
+        run: node scripts/automatic-release.js version
+      - name: Build application
+        run: npm run build
+      - name: Package without publishing
+        shell: bash
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_P12 || runner.os == 'Windows' && secrets.WINDOWS_CERTIFICATE_P12 || '' }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_PASSWORD || runner.os == 'Windows' && secrets.WINDOWS_CERTIFICATE_PASSWORD || '' }}
+          APPLE_ID: ${{ runner.os == 'macOS' && secrets.APPLE_ID || '' }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ runner.os == 'macOS' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ] && { [ -z "$CSC_LINK" ] || [ -z "$APPLE_ID" ] || [ -z "$APPLE_APP_SPECIFIC_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ]; }; then
+            npx electron-builder ${{ matrix.args }} --publish never -c.mac.notarize=false
+          else
+            npx electron-builder ${{ matrix.args }} --publish never
+          fi
+      - name: Store platform artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: automatic-build-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.zip
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.blockmap
+            dist/latest*.yml
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+          overwrite: true
+
+  publish:
+    needs: [plan, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      RELEASE_PLAN: ${{ runner.temp }}/supersonic-cleaner-release-plan.json
+    steps:
+      - name: Checkout release tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install release tooling
+        run: npm ci --ignore-scripts
+      - name: Download release plan
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: automatic-release-plan
+          path: ${{ runner.temp }}
+      - name: Download every platform
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: automatic-build-*
+          path: release-artifacts
+          merge-multiple: false
+      - name: Verify all manifests and publish complete release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/automatic-release.js publish

@@ -24,7 +24,6 @@ import { DiskMaintenancePage } from './pages/DiskMaintenancePage'
 import { SettingsPage } from './pages/SettingsPage'
 import { NetworkCleanupPage } from './pages/NetworkCleanupPage'
 import { MalwareScannerPage } from './pages/MalwareScannerPage'
-import { ThreatMonitorPage } from './pages/ThreatMonitorPage'
 import { PrivacyShieldPage } from './pages/PrivacyShieldPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { RecoveryPage } from './pages/RecoveryPage'
@@ -35,10 +34,8 @@ import { ServiceManagerPage } from './pages/ServiceManagerPage'
 import { FirewallAuditPage } from './pages/FirewallAuditPage'
 import { SchedulesPage } from './pages/SchedulesPage'
 import { GameModePage } from './pages/GameModePage'
-import { CveScannerPage } from './pages/CveScannerPage'
 import { AboutPage } from './pages/AboutPage'
-import { CloudPage } from './pages/CloudPage'
-import { BreachMonitorPage } from './pages/BreachMonitorPage'
+import { AiAnalysisPage } from './pages/AiAnalysisPage'
 import { Onboarding } from './components/Onboarding'
 import { useStatsStore } from './stores/stats-store'
 import { useHistoryStore } from './stores/history-store'
@@ -47,6 +44,8 @@ import { useBackgroundScans } from './hooks/useBackgroundScans'
 import { usePlatformLoader, PlatformContext } from './hooks/usePlatform'
 import { initGameModeStore } from './stores/game-mode-store'
 import { useSettingsStore } from './stores/settings-store'
+import { initAiAnalysisSources } from './lib/ai-analysis-lifecycle'
+import { initGlobalProgressBridge } from './lib/global-progress-bridge'
 
 export function App() {
   const { i18n } = useTranslation()
@@ -56,6 +55,15 @@ export function App() {
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [onboardingChecked, setOnboardingChecked] = useState(false)
   const theme = useSettingsStore((s) => s.settings.theme)
+
+  useEffect(() => {
+    const stopProgress = initGlobalProgressBridge()
+    const stopAiSources = initAiAnalysisSources()
+    return () => {
+      stopProgress()
+      stopAiSources()
+    }
+  }, [])
 
   // Apply theme class to <html> element
   useEffect(() => {
@@ -173,8 +181,6 @@ export function App() {
             <Route path="/disk-maintenance" element={<DiskMaintenancePage />} />
             <Route path="/network" element={<NetworkCleanupPage />} />
             <Route path="/malware" element={<MalwareScannerPage />} />
-            <Route path="/threat-monitor" element={<ThreatMonitorPage />} />
-            <Route path="/cve" element={<CveScannerPage />} />
             <Route path="/game-mode" element={<GameModePage />} />
             <Route path="/performance-diagnostics" element={<PerformanceDiagnosticsPage />} />
             <Route path="/performance" element={<PerformanceMonitorPage />} />
@@ -183,8 +189,7 @@ export function App() {
             <Route path="/recovery" element={<RecoveryPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/cloud" element={<CloudPage />} />
-            <Route path="/breach-monitor" element={<BreachMonitorPage />} />
+            <Route path="/ai" element={<AiAnalysisPage />} />
             {/* Standalone pages */}
             <Route path="/privacy" element={<PrivacyShieldPage />} />
             <Route path="/services" element={<ServiceManagerPage />} />
@@ -221,6 +226,7 @@ export function App() {
 // Maps routes to page titles for the window/tab title.
 // Every route title is sourced from the same translations as its page or nav item.
 const ROUTE_TITLES: Record<string, { key: string }> = {
+  '/ai': { key: 'ai:title' },
   '/': { key: 'dashboard' },
   '/cleaner': { key: 'cleaner:pageTitle' },
   '/registry': { key: 'registry:pageTitle' },
@@ -236,8 +242,6 @@ const ROUTE_TITLES: Record<string, { key: string }> = {
   '/disk-maintenance': { key: 'disk:maintenanceTitle' },
   '/network': { key: 'network:pageTitle' },
   '/malware': { key: 'malware:pageTitle' },
-  '/threat-monitor': { key: 'threatMonitor:pageTitle' },
-  '/cve': { key: 'cveScanner:pageTitle' },
   '/game-mode': { key: 'gameMode:pageTitle' },
   '/performance': { key: 'performance:pageTitle' },
   '/uninstaller': { key: 'uninstaller:pageTitle' },
@@ -251,9 +255,7 @@ const ROUTE_TITLES: Record<string, { key: string }> = {
   '/debloater': { key: 'hardening:debloater.pageTitle' },
   '/updates': { key: 'updates:softwareUpdater.pageTitle' },
   '/schedules': { key: 'schedules:pageTitle' },
-  '/drivers': { key: 'updates:driverManager.pageTitle' },
-  '/cloud': { key: 'cloud:pageTitle' },
-  '/breach-monitor': { key: 'breachMonitor:pageTitle' }
+  '/drivers': { key: 'updates:driverManager.pageTitle' }
 }
 
 function PageTitleUpdater() {
@@ -265,7 +267,7 @@ function PageTitleUpdater() {
     if (entry) {
       name = t(entry.key)
     }
-    document.title = name ? `${name} - Kudu` : 'Kudu'
+    document.title = name ? `${name} - SuperSonicCleaner` : 'SuperSonicCleaner'
   }, [location.pathname, t])
   return null
 }

@@ -24,6 +24,11 @@ const mockGetInstalledProgramsFull = vi.fn()
 const mockRunUninstaller = vi.fn()
 const mockVerifyUninstall = vi.fn()
 const mockScanLeftoversForProgram = vi.fn()
+const mockAddInstalledProgramIcons = vi.fn()
+
+vi.mock('../services/software-icons', () => ({
+  addInstalledProgramIcons: (...args: unknown[]) => mockAddInstalledProgramIcons(...args)
+}))
 
 vi.mock('../services/program-uninstaller', () => ({
   getInstalledProgramsFull: (...args: unknown[]) => mockGetInstalledProgramsFull(...args),
@@ -90,6 +95,7 @@ describe('program-uninstaller IPC', () => {
   beforeEach(() => {
     handleMap.clear()
     vi.clearAllMocks()
+    mockAddInstalledProgramIcons.mockImplementation(async (programs) => programs)
     mockTouchesExclusions.mockResolvedValue(false)
     settings.exclusions = []
     // Re-register to get a fresh module-level cachedPrograms
@@ -122,6 +128,32 @@ describe('program-uninstaller IPC', () => {
       const result = await invoke('uninstaller:list')
 
       expect(result).toEqual({ programs: [], totalCount: 0 })
+    })
+
+    it('includes local icon data without re-reading or changing the installed list', async () => {
+      const programs = [makeProgram()]
+      const iconDataUrl = 'data:image/png;base64,AA=='
+      mockGetInstalledProgramsFull.mockResolvedValue(programs)
+      mockAddInstalledProgramIcons.mockImplementationOnce(async (items) => {
+        items[0].iconDataUrl = iconDataUrl
+        return items
+      })
+      registerProgramUninstallerIpc(() => makeWindow())
+      const result = await invoke('uninstaller:list')
+      expect(result).toEqual({
+        programs: [expect.objectContaining({ iconDataUrl })],
+        totalCount: 1
+      })
+      expect(mockGetInstalledProgramsFull).toHaveBeenCalledOnce()
+      expect(mockAddInstalledProgramIcons).toHaveBeenCalledExactlyOnceWith(programs)
+    })
+
+    it('still returns every installed program if icon enrichment fails', async () => {
+      const programs = [makeProgram()]
+      mockGetInstalledProgramsFull.mockResolvedValue(programs)
+      mockAddInstalledProgramIcons.mockRejectedValueOnce(new Error('shell icon unavailable'))
+      registerProgramUninstallerIpc(() => makeWindow())
+      await expect(invoke('uninstaller:list')).resolves.toEqual({ programs, totalCount: 1 })
     })
 
     it('propagates errors from getInstalledProgramsFull', async () => {

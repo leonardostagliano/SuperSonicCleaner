@@ -32,4 +32,13 @@ describe('performance graph readings', () => {
     ])
     expect(buildTimeSeries([], '60s', 'memory')).toEqual([])
   })
+  it('leaves unavailable disk samples as gaps rather than reporting zero activity', () => {
+    const unavailable = sample(2000)
+    unavailable.disk = { available: false, readBytesPerSec: 0, writeBytesPerSec: 0 }
+    expect(buildTimeSeries([sample(1000), unavailable, sample(3000)], '60s', 'disk')).toEqual([
+      { time: 1000, read: 2, write: 1 },
+      { time: 2000, read: null, write: null },
+      { time: 3000, read: 2, write: 1 }
+    ])
+  })
 })

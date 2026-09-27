@@ -17,6 +17,7 @@ permissions: {}
 
 jobs:
   trigger-deploy:
+    if: github.repository == 'AdventDevInc/kudu'
     name: Deploy Website
     runs-on: ubuntu-latest
     timeout-minutes: 5

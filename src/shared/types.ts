@@ -94,19 +94,6 @@ export interface DeletionLogPage {
   enabled: boolean
 }
 
-// ─── Cloud Action History ────────────────────────────────────
-export interface CloudActionEntry {
-  id: string
-  commandType: string
-  requestId: string
-  timestamp: string
-  duration: number
-  success: boolean
-  error?: string
-  /** Brief summary of what happened, e.g. "Scanned 1,204 files" */
-  summary?: string
-}
-
 export type ManagedCleanupAction =
   | 'uv-prune'
   | 'pnpm-prune'
@@ -128,6 +115,8 @@ export interface ScanItem {
   category: string
   subcategory: string
   lastModified: number
+  /** Filesystem timestamp only; not proof of a person's last opening. */
+  lastAccessed?: number
   selected: boolean
   /** Revalidate this age cutoff immediately before deleting a scanned item. */
   recencyCutoff?: number
@@ -259,18 +248,6 @@ export interface StartupBootTrace {
   entries: StartupBootEntry[]
   available: boolean
   needsAdmin: boolean
-}
-
-export interface StartupSafetyRating {
-  name: string
-  safetyScore: number
-  description: string
-  analyzedAt: string
-}
-
-export interface StartupSafetyResult {
-  ratings: StartupSafetyRating[]
-  pending: number
 }
 
 export interface DiskNode {
@@ -470,7 +447,7 @@ export interface YaraRulesInfo {
   rulesLoaded: number
   version: string | null
   updatedAt: string | null
-  source: 'cloud' | 'none'
+  source: 'local' | 'none'
   cachedRules: number
   compileProgress: { loaded: number; total: number } | null
 }
@@ -635,7 +612,7 @@ export interface PerfSnapshot {
   timestamp: number
   cpu: { overall: number; perCore: number[] }
   memory: { usedBytes: number; totalBytes: number; cachedBytes: number; percent: number }
-  disk: { readBytesPerSec: number; writeBytesPerSec: number }
+  disk: { readBytesPerSec: number; writeBytesPerSec: number; available?: boolean }
   network: { rxBytesPerSec: number; txBytesPerSec: number }
   uptime: number
 }
@@ -696,6 +673,8 @@ export interface UpdateStatus {
   version?: string
   progress?: number
   error?: string
+  releaseNotes?: string
+  checkedAt?: string
 }
 
 // ─── Program Uninstaller ────────────────────────────────────
@@ -710,6 +689,8 @@ export interface InstalledProgram {
   uninstallString: string
   quietUninstallString: string
   displayIcon: string
+  /** Extracted local application icon; never a remote URL. */
+  iconDataUrl?: string
   registryKey: string
   isSystemComponent: boolean
   isWindowsInstaller: boolean
@@ -836,17 +817,6 @@ export interface KuduSettings {
     hour: number
   }
   schedules: ScheduleEntry[]
-  cloud: {
-    apiKey: string
-    telemetryIntervalSec: number
-    shareDiskHealth: boolean
-    shareProcessList: boolean
-    shareThreatMonitor: boolean
-    allowRemotePower: boolean
-    allowRemoteCleanup: boolean
-    allowRemoteInstalls: boolean
-    allowRemoteConfig: boolean
-  }
   /**
    * Preferred Windows package manager for Software Updater.
    * @deprecated Superseded by `windowsPackageManagers` (multi-manager aggregation).
@@ -1120,6 +1090,8 @@ export interface UpdateRequestItem {
 export interface UpdatableApp {
   id: string
   name: string
+  /** Local application icon; never a remote URL. */
+  iconDataUrl?: string
   currentVersion: string
   availableVersion: string
   source: string
@@ -1130,6 +1102,8 @@ export interface UpdatableApp {
 export interface UpToDateApp {
   id: string
   name: string
+  /** Local application icon; never a remote URL. */
+  iconDataUrl?: string
   version: string
   source: string
 }
@@ -1271,73 +1245,6 @@ export interface ThreatSnapshot {
   lastDnsScanAt: string | null
 }
 
-// ─── CVE Vulnerability Scanner ────────────────────────────
-
-export type CveSeverity = 'critical' | 'high' | 'medium' | 'low' | 'none'
-
-export interface CveVulnerability {
-  id: number
-  cveId: string
-  appName: string
-  installedVersion: string
-  severity: CveSeverity
-  cvssScore: number | null
-  fixedIn: string | null
-  description: string | null
-  firstDetectedAt: string
-  lastScannedAt: string
-}
-
-/** Unfiltered severity counts (always the full picture, ignoring any active severity filter) */
-export interface CveSummary {
-  critical: number
-  high: number
-  medium: number
-  low: number
-}
-
-export interface CvePageResult {
-  vulnerabilities: CveVulnerability[]
-  summary: CveSummary
-  total: number
-  nextPageUrl: string | null
-  /** Total CVE entries tracked in the server database */
-  librarySize: number
-}
-
-// ─── Breach Monitor ──────────────────────────────────────
-
-export interface BreachEntry {
-  name: string
-  title: string
-  domain: string
-  breachDate: string
-  dataClasses: string[]
-  pwnCount: number
-  isVerified: boolean
-  isSensitive: boolean
-  acknowledgedAt: string | null
-}
-
-export interface MonitoredEmail {
-  email: string
-  lastCheckedAt: string | null
-  fresh: boolean
-  monitoringPaused: boolean
-  breaches: BreachEntry[]
-}
-
-export interface BreachMonitorResult {
-  emails: MonitoredEmail[]
-  limit: number
-  usage: number
-}
-
-export interface BreachAcknowledgeResult {
-  status: string
-  acknowledged: number
-}
-
 // ─── Large File Finder ────────────────────────────────────
 
 export interface LargeFileScanOptions {
@@ -1352,6 +1259,8 @@ export interface LargeFileEntry {
   name: string
   size: number
   lastModified: number
+  /** Filesystem access time captured during the metadata scan. */
+  lastAccessed?: number
   extension: string
 }
 
@@ -1456,6 +1365,8 @@ export interface DuplicateFile {
   path: string
   size: number
   lastModified: number
+  /** Captured before the local duplicate finder hashes file contents. */
+  lastAccessed?: number
   /** The file has other hard links, so deleting it would free no space. */
   hardLinked?: boolean
 }

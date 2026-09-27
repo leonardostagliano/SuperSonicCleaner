@@ -228,7 +228,11 @@ export function SchedulesPage() {
         toast.error(t('failedEnableStartup'), {
           action: {
             label: t('failedEnableStartupAction'),
-            onClick: () => window.open('https://usekudu.com/help/startup-failed', '_blank')
+            onClick: () =>
+              window.open(
+                'https://github.com/leonardostagliano/SuperSonicCleaner/blob/main/RELEASE.md#startup-troubleshooting',
+                '_blank'
+              )
           }
         })
       })
@@ -1256,7 +1260,8 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
         onChange(!checked)
       }}
       className="toggle-switch relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors"
-      style={{ background: checked ? 'var(--accent)' : 'var(--bg-active)' }}
+      data-checked={checked}
+      style={{ background: checked ? 'var(--accent)' : 'var(--toggle-off-bg)' }}
     >
       <div
         className={cn(

@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "Öppna Kudu",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "Öppna SuperSonicCleaner",
   "quit": "Avsluta",
-  "scheduledTaskNotificationTitle": "Kudu - Schemalagd aktivitet",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Schemalagd aktivitet",
   "scheduledTaskNotificationBody": "Kör \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "Kudu - Genomsökning slutförd",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - Genomsökning slutförd",
   "scanCompleteNotificationBody": "Hittade {{itemCount}} objekt ({{sizeMB}} MB) som kan rensas.",
   "scheduledScanName": "Schemalagd genomsökning"
 }

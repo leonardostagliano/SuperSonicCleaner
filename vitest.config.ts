@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
+import { availableParallelism } from 'node:os'
 
 export default defineConfig({
   test: {
@@ -13,6 +14,9 @@ export default defineConfig({
     reporters: process.env.CI
       ? ['dot', ['junit', { outputFile: 'test-results/junit.xml' }]]
       : ['verbose'],
+    // Real-filesystem suites share a disk. Windows needs sequential files to
+    // keep durable writes and cleanup stable; bound other hosts' disk pressure.
+    maxWorkers: process.platform === 'win32' ? 1 : Math.min(4, availableParallelism()),
     pool: 'threads'
   },
   resolve: {

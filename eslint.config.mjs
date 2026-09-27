@@ -17,6 +17,7 @@ export default tseslint.config(
       // Local-only scratch dirs (git-ignored); never part of CI
       '.claude/**',
       '.tmp/**',
+      '.cache/**',
       'cloud/**',
       'manifests/**'
     ]
@@ -71,7 +72,7 @@ export default tseslint.config(
   },
   {
     // Plain-JS tooling scripts are CommonJS
-    files: ['scripts/**/*.js', 'commitlint.config.js'],
+    files: ['scripts/**/*.{js,cjs}', 'commitlint.config.js'],
     languageOptions: { sourceType: 'commonjs', globals: { ...globals.node } },
     rules: { '@typescript-eslint/no-require-imports': 'off' }
   },

@@ -7,19 +7,24 @@ import { isPortable } from './portable'
 import type { UpdateStatus } from '../../shared/types'
 
 let status: UpdateStatus = { state: 'idle' }
-let daemonMode = false
 let checkInterval: ReturnType<typeof setInterval> | null = null
+
+function releaseDetails(info: {
+  version: string
+  releaseNotes?: string | { version: string; note: string | null }[] | null
+}): Pick<UpdateStatus, 'version' | 'releaseNotes' | 'checkedAt'> {
+  const notes = Array.isArray(info.releaseNotes)
+    ? info.releaseNotes.map((entry) => `${entry.version}\n${entry.note ?? ''}`).join('\n\n')
+    : (info.releaseNotes ?? '')
+  return {
+    version: info.version,
+    releaseNotes: notes.slice(0, 24000),
+    checkedAt: new Date().toISOString()
+  }
+}
 
 function broadcast(s: UpdateStatus): void {
   status = s
-  if (daemonMode) {
-    const ts = new Date().toISOString()
-    const detail = s.version ? ` v${s.version}` : ''
-    const progress = s.progress != null ? ` ${s.progress}%` : ''
-    const error = s.error ? ` — ${s.error}` : ''
-    process.stdout.write(`[${ts}] [updater] ${s.state}${detail}${progress}${error}\n`)
-    return
-  }
   for (const win of BrowserWindow.getAllWindows()) {
     if (win.isDestroyed()) continue
     // isDestroyed() returns false while the render frame is mid-teardown,
@@ -33,10 +38,6 @@ function broadcast(s: UpdateStatus): void {
       /* renderer gone — nothing to deliver to */
     }
   }
-}
-
-interface InitOptions {
-  daemon?: boolean
 }
 
 /** electron-updater only supports AppImage on Linux and NSIS on Windows. */
@@ -57,7 +58,7 @@ function skipReason(): string {
   return 'Updates are unavailable for this package format'
 }
 
-export function initAutoUpdater(opts: InitOptions = {}): void {
+export function initAutoUpdater(): void {
   if (!app.isPackaged) return
 
   if (shouldSkipUpdater()) {
@@ -65,10 +66,10 @@ export function initAutoUpdater(opts: InitOptions = {}): void {
     return
   }
 
-  daemonMode = opts.daemon === true
-
   const settings = getSettings()
-  autoUpdater.autoDownload = daemonMode || settings.autoUpdate
+  autoUpdater.allowDowngrade = false
+  autoUpdater.allowPrerelease = false
+  autoUpdater.autoDownload = settings.autoUpdate
   autoUpdater.autoInstallOnAppQuit = true
 
   autoUpdater.on('checking-for-update', () => {
@@ -76,27 +77,27 @@ export function initAutoUpdater(opts: InitOptions = {}): void {
   })
 
   autoUpdater.on('update-available', (info) => {
-    broadcast({ state: 'available', version: info.version })
+    broadcast({ state: 'available', ...releaseDetails(info) })
   })
 
   autoUpdater.on('update-not-available', () => {
-    broadcast({ state: 'not-available' })
+    broadcast({ state: 'not-available', checkedAt: new Date().toISOString() })
   })
 
   autoUpdater.on('download-progress', (prog) => {
-    broadcast({ state: 'downloading', progress: Math.round(prog.percent) })
+    broadcast({ ...status, state: 'downloading', progress: Math.round(prog.percent) })
   })
 
   autoUpdater.on('update-downloaded', (info) => {
-    broadcast({ state: 'downloaded', version: info.version })
-    if (daemonMode) {
-      process.stdout.write(
-        `[${new Date().toISOString()}] [updater] Installing v${info.version} and restarting...\n`
-      )
-      autoUpdater.quitAndInstall(true, true)
-      return
-    }
-    // GUI mode: auto-restart if the user opted in
+    const details = releaseDetails(info)
+    broadcast({
+      ...status,
+      state: 'downloaded',
+      ...details,
+      releaseNotes: details.releaseNotes || status.releaseNotes,
+      progress: 100
+    })
+    // Auto-restart only if the user opted in.
     const current = getSettings()
     if (current.autoRestart) {
       console.log(
@@ -107,7 +108,7 @@ export function initAutoUpdater(opts: InitOptions = {}): void {
   })
 
   autoUpdater.on('error', (err) => {
-    broadcast({ state: 'error', error: err?.message || 'Update failed' })
+    broadcast({ ...status, state: 'error', error: err?.message || 'Update failed' })
   })
 
   // Versioned → stable AppImage rename leaves .desktop Exec= on the deleted path (#401).
@@ -138,8 +139,8 @@ function startPeriodicChecks(intervalHours: number): void {
   const ms = intervalHours * 60 * 60 * 1000
   checkInterval = setInterval(() => {
     const settings = getSettings()
-    autoUpdater.autoDownload = daemonMode || settings.autoUpdate
-    autoUpdater.checkForUpdates().catch((err) => {
+    autoUpdater.autoDownload = settings.autoUpdate
+    checkForUpdates().catch((err) => {
       console.error('Auto-updater periodic check failed:', err?.message || err)
     })
   }, ms)
@@ -152,6 +153,7 @@ export function updateCheckInterval(hours: number): void {
 }
 
 export function checkForUpdates(): Promise<void> {
+  if (['checking', 'downloading', 'downloaded'].includes(status.state)) return Promise.resolve()
   // About → Check for updates used to resolve with no status change when the
   // package format is unsupported (common on Linux .deb), so the button looked dead.
   if (!app.isPackaged || shouldSkipUpdater()) {
@@ -172,6 +174,8 @@ export function downloadUpdate(): Promise<void> {
     broadcast({ state: 'error', error: skipReason() })
     return Promise.resolve()
   }
+  if (status.state !== 'available') return Promise.resolve()
+  broadcast({ ...status, state: 'downloading', progress: 0 })
   return autoUpdater
     .downloadUpdate()
     .then(() => {})
@@ -183,6 +187,7 @@ export function downloadUpdate(): Promise<void> {
 
 export function installUpdate(): void {
   if (!app.isPackaged || shouldSkipUpdater()) return
+  if (status.state !== 'downloaded') return
   autoUpdater.quitAndInstall(true, true)
 }
 

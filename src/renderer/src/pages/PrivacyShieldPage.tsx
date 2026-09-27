@@ -881,7 +881,10 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
                             onClick={() => handleToggleSingle(setting.id)}
                             disabled={toggleDisabled}
                             className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-60"
-                            style={{ background: setting.enabled ? '#22c55e' : 'var(--bg-active)' }}
+                            data-checked={setting.enabled}
+                            style={{
+                              background: setting.enabled ? '#22c55e' : 'var(--toggle-off-bg)'
+                            }}
                           >
                             <div
                               className="absolute top-0.5 h-5 w-5 rounded-full transition-all"

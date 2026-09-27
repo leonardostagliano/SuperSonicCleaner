@@ -1,7 +1,7 @@
 {
-  "name": "kudu",
+  "name": "supersonic-cleaner",
   "version": "3.4.0",
-  "description": "A modern, open-source system cleaner for Windows, macOS, and Linux",
+  "description": "SuperSonicCleaner — a modern, open-source system cleaner for Windows, macOS, and Linux",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
@@ -44,17 +44,23 @@
     "name": "Kudu Contributors",
     "email": "kudu@users.noreply.github.com"
   },
+  "contributors": [
+    {
+      "name": "leonardostagliano",
+      "url": "https://github.com/leonardostagliano"
+    }
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=22"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/adventdevinc/kudu.git"
+    "url": "https://github.com/leonardostagliano/SuperSonicCleaner.git"
   },
-  "homepage": "https://usekudu.com",
+  "homepage": "https://github.com/leonardostagliano/SuperSonicCleaner",
   "bugs": {
-    "url": "https://github.com/adventdevinc/kudu/issues"
+    "url": "https://github.com/leonardostagliano/SuperSonicCleaner/issues"
   },
   "devDependencies": {
     "@axe-core/react": "^4.13.0",
@@ -84,6 +90,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.70.0",
     "vite": "^7.3.6",
@@ -98,7 +105,6 @@
     "framer-motion": "^13.4.0",
     "i18next": "^26.3.6",
     "lucide-react": "^0.577.0",
-    "pusher-js": "^8.6.0",
     "react-i18next": "^17.0.14",
     "react-router-dom": "^7.18.4",
     "recharts": "^3.10.1",
@@ -106,5 +112,6 @@
     "systeminformation": "^5.33.11",
     "tailwind-merge": "^3.7.0",
     "zustand": "^5.0.15"
-  }
+  },
+  "productName": "SuperSonicCleaner"
 }

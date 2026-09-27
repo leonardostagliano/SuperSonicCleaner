@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "सिस्टम क्लीनर",
   "dashboard": "होम",
   "securityHeading": "सुरक्षा",
   "malwareScanner": "मैलवेयर स्कैनर",
-  "threatMonitor": "खतरा मॉनिटर",
   "systemHardening": "सिस्टम सुदृढ़ीकरण",
-  "cveScanner": "कमज़ोरियाँ",
   "monitoring": "निगरानी",
   "maintainHeading": "प्रबंधन",
   "cleaner": "साफ़ करें",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "गतिविधि और पुनर्प्राप्ति",
   "history": "गतिविधि",
   "settings": "प्राथमिकताएँ",
-  "breachMonitor": "उल्लंघन मॉनिटर",
   "gameMode": "गेम मोड",
   "firewallAudit": "फ़ायरवॉल ऑडिट"
 }

@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "ОЧИЩЕННЯ СИСТЕМИ",
   "dashboard": "Головна",
   "securityHeading": "Захист",
   "malwareScanner": "Сканер шкідливого ПЗ",
-  "threatMonitor": "Монітор загроз",
   "systemHardening": "Посилення захисту системи",
-  "cveScanner": "Вразливості",
   "monitoring": "Моніторинг",
   "maintainHeading": "Керування",
   "cleaner": "Очищення",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Активність і відновлення",
   "history": "Активність",
   "settings": "Параметри",
-  "breachMonitor": "Монітор витоків",
   "gameMode": "Ігровий режим",
   "firewallAudit": "Аудит брандмауера"
 }

@@ -865,7 +865,7 @@ interface RecencyScan {
 }
 
 interface ResolvedEntry {
-  items: Array<{ path: string; size: number; mtimeMs: number }>
+  items: Array<{ path: string; size: number; mtimeMs: number; atimeMs?: number }>
   /** Nothing beneath this entry was withheld, so deleting it whole is safe */
   complete: boolean
   size: number
@@ -937,7 +937,7 @@ async function resolveEntry(
     if (stats.mtimeMs > ctx.cutoff) return withheld()
     ctx.remaining--
     return {
-      items: [{ path, size: stats.size, mtimeMs: stats.mtimeMs }],
+      items: [{ path, size: stats.size, mtimeMs: stats.mtimeMs, atimeMs: stats.atimeMs }],
       complete: true,
       size: stats.size
     }
@@ -1016,6 +1016,7 @@ export async function scanDirectory(
     category,
     subcategory,
     lastModified: item.mtimeMs,
+    lastAccessed: item.atimeMs,
     selected: true,
     recencyCutoff: cutoff
   }))
@@ -1041,10 +1042,18 @@ export async function scanMultipleDirectories(
   const allItems: ScanItem[] = []
   let totalSize = 0
 
-  for (const dirPath of dirPaths) {
-    const result = await scanDirectory(dirPath, category, subcategory, recency)
-    allItems.push(...result.items)
-    totalSize += result.totalSize
+  // Roots have independent recency budgets. Scan a few at once while keeping
+  // result order stable and filesystem metadata requests bounded.
+  for (let index = 0; index < dirPaths.length; index += 4) {
+    const batch = await Promise.all(
+      dirPaths
+        .slice(index, index + 4)
+        .map((dirPath) => scanDirectory(dirPath, category, subcategory, recency))
+    )
+    for (const result of batch) {
+      allItems.push(...result.items)
+      totalSize += result.totalSize
+    }
   }
 
   return {
@@ -1124,6 +1133,7 @@ export async function scanMatchingFiles(
             category,
             subcategory,
             lastModified: stats.mtimeMs,
+            lastAccessed: stats.atimeMs,
             selected: true
           })
           totalSize += stats.size
@@ -1201,6 +1211,7 @@ export async function scanFile(
       category,
       subcategory,
       lastModified: stats.mtimeMs,
+      lastAccessed: stats.atimeMs,
       selected: true,
       recencyCutoff: cutoff
     }
@@ -1244,6 +1255,7 @@ export async function scanDirectoriesAsItems(
           category,
           subcategory,
           lastModified: item.mtimeMs,
+          lastAccessed: item.atimeMs,
           selected: true,
           recencyCutoff: cutoff
         })

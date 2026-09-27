@@ -6,7 +6,7 @@ import type {
   FlaggedConnection,
   FlaggedDnsEntry,
   ThreatSnapshot
-} from './cloud-agent-types'
+} from './local-system-types'
 
 const CONNECTION_INTERVAL_MS = 30_000
 const DNS_INTERVAL_MS = 60_000

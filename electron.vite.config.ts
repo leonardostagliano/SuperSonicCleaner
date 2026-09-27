@@ -30,7 +30,14 @@ export default defineConfig({
   renderer: {
     root: resolve(__dirname, 'src/renderer'),
     build: {
+      minify: 'esbuild',
       rollupOptions: {
+        output: {
+          manualChunks(id) {
+            const locale = id.replace(/\\/g, '/').match(/\/locales\/([^/]+)\/[^/]+\.json$/)?.[1]
+            if (locale && locale !== 'en') return `locale-${locale}`
+          }
+        },
         input: {
           index: resolve(__dirname, 'src/renderer/index.html')
         }

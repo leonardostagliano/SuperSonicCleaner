@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePlatform } from '@/hooks/usePlatform'
 import {
@@ -217,18 +217,9 @@ function RegistryPageContent() {
   const error = useRegistryStore((s) => s.error)
 
   const [showConfirm, setShowConfirm] = useState(false)
-  const cleanupRef = useRef<(() => void) | null>(null)
   const fixStartRef = useRef<number>(0)
   const historyStore = useHistoryStore()
   const recomputeStats = useStatsStore((s) => s.recompute)
-
-  useEffect(() => {
-    const cleanup = window.kudu.onRegistryFixProgress((data) => {
-      useRegistryStore.getState().setFixProgress(data)
-    })
-    cleanupRef.current = cleanup
-    return () => cleanup()
-  }, [])
 
   const handleScan = useCallback(async () => {
     const store = useRegistryStore.getState()
@@ -644,7 +635,8 @@ function RegistryPageContent() {
                       <button
                         onClick={() => useRegistryStore.getState().toggleCardAll(card.types)}
                         className="toggle-switch relative h-6 w-11 rounded-full transition-colors"
-                        style={{ background: allSelected ? color.text : 'var(--bg-active)' }}
+                        data-checked={allSelected}
+                        style={{ background: allSelected ? color.text : 'var(--toggle-off-bg)' }}
                       >
                         <div
                           className="absolute top-0.5 h-5 w-5 rounded-full transition-all"

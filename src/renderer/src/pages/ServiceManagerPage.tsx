@@ -22,7 +22,7 @@ import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { useServiceStore } from '@/stores/service-store'
 import { useHistoryStore } from '@/stores/history-store'
-import type { ServiceScanProgress, WindowsService, ServiceCategory } from '@shared/types'
+import type { WindowsService, ServiceCategory } from '@shared/types'
 
 const SAFETY_COLORS = {
   safe: {
@@ -110,16 +110,6 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
   const [confirmMode, setConfirmMode] = useState<ApplyMode | null>(null)
   const [appliedMode, setAppliedMode] = useState<ApplyMode>('disable')
   const isBusy = scanning || applying
-
-  // Listen for progress events
-  useEffect(() => {
-    const cleanup = window.kudu?.onServiceProgress?.((data: ServiceScanProgress) => {
-      useServiceStore.getState().setScanProgress(data)
-    })
-    return () => {
-      cleanup?.()
-    }
-  }, [])
 
   // ─── Scan ──────────────────────────────────────────────────
   const handleScan = useCallback(async () => {
@@ -419,8 +409,8 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
         <div
           className="service-manager-guide mb-5 flex items-start gap-3 rounded-2xl px-5 py-4"
           style={{
-            background: 'var(--accent-muted-bg)',
-            border: '1px solid color-mix(in srgb, var(--warning), transparent 72%)'
+            background: 'var(--card-bg)',
+            border: '1px solid var(--border-default)'
           }}
         >
           <Shield

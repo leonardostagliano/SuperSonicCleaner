@@ -23,16 +23,12 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { StatCard } from '@/components/shared/StatCard'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
+import { AppIcon } from '@/components/shared/AppIcon'
 import { useUpdaterStore, severityOrder, appKey } from '@/stores/updater-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { usePlatform } from '@/hooks/usePlatform'
-import type {
-  UpdateProgress,
-  UpdatableApp,
-  UpToDateApp,
-  WindowsPackageManager
-} from '@shared/types'
+import type { UpdatableApp, UpToDateApp, WindowsPackageManager } from '@shared/types'
 
 /** Windows managers Kudu can aggregate, with their display labels. */
 const WINDOWS_MANAGER_OPTIONS: { id: WindowsPackageManager; label: string }[] = [
@@ -118,16 +114,6 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
   const [showIgnored, setShowIgnored] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const filterMenuRef = useRef<HTMLDivElement>(null)
-
-  // Listen for progress events
-  useEffect(() => {
-    const cleanup = window.kudu.onSoftwareUpdateProgress((data: UpdateProgress) => {
-      useUpdaterStore.getState().setProgress(data)
-    })
-    return () => {
-      cleanup()
-    }
-  }, [])
 
   // Load persisted ignore list from settings, then auto-scan on first visit
   useEffect(() => {
@@ -976,6 +962,16 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
   )
 }
 
+function SoftwareAppIcon({
+  app,
+  small = false
+}: {
+  app: UpdatableApp | UpToDateApp
+  small?: boolean
+}) {
+  return <AppIcon iconDataUrl={app.iconDataUrl} small={small} />
+}
+
 function AppRow({
   app,
   updating,
@@ -1002,7 +998,15 @@ function AppRow({
       }}
     >
       {/* Checkbox */}
-      <button onClick={onToggle} disabled={updating} className="shrink-0 disabled:opacity-40">
+      <button
+        type="button"
+        role="checkbox"
+        aria-label={app.name}
+        aria-checked={app.selected}
+        onClick={onToggle}
+        disabled={updating}
+        className="shrink-0 disabled:opacity-40"
+      >
         <div
           className="flex h-4.5 w-4.5 items-center justify-center rounded"
           style={{
@@ -1023,12 +1027,7 @@ function AppRow({
       </button>
 
       {/* App icon */}
-      <div
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-        style={{ background: severity.bg }}
-      >
-        <Package className="h-5 w-5" style={{ color: severity.text }} strokeWidth={1.8} />
-      </div>
+      <SoftwareAppIcon app={app} />
 
       {/* App info */}
       <div className="flex-1 min-w-0">
@@ -1104,12 +1103,7 @@ function IgnoredRow({ app, onUnignore }: { app: UpdatableApp; onUnignore: () => 
         opacity: 0.7
       }}
     >
-      <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-        style={{ background: 'rgba(113,113,122,0.08)' }}
-      >
-        <EyeOff className="h-4 w-4 text-zinc-500" strokeWidth={1.8} />
-      </div>
+      <SoftwareAppIcon app={app} small />
       <div className="flex-1 min-w-0">
         <span className="text-[12px] font-medium text-zinc-400 truncate block">{app.name}</span>
         <span className="text-[10px] truncate block" style={{ color: 'var(--text-muted)' }}>
@@ -1145,12 +1139,7 @@ function UpToDateRow({ app }: { app: UpToDateApp }) {
         border: '1px solid var(--border-subtle)'
       }}
     >
-      <div
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-        style={{ background: 'rgba(34,197,94,0.08)' }}
-      >
-        <CheckCircle2 className="h-4 w-4 text-green-500" strokeWidth={1.8} />
-      </div>
+      <SoftwareAppIcon app={app} small />
       <div className="flex-1 min-w-0">
         <span className="text-[12px] font-medium text-zinc-400 truncate block">{app.name}</span>
         <span className="text-[10px] truncate block" style={{ color: 'var(--text-muted)' }}>

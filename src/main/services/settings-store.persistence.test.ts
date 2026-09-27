@@ -1,7 +1,7 @@
 import { describe, it, expect, afterAll, vi } from 'vitest'
 import { tmpdir } from 'os'
 import { join } from 'path'
-import { rmSync, existsSync, readFileSync, mkdirSync } from 'fs'
+import { rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { randomUUID } from 'crypto'
 
 const TEST_DIR = join(tmpdir(), `kudu-test-${randomUUID()}`)
@@ -171,20 +171,23 @@ describe('window geometry persistence (issue #270)', () => {
   })
 })
 
-describe('cloud remote command defaults (opt-in)', () => {
+describe('retired settings privacy', () => {
   afterAll(() => {
     if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true, force: true })
   })
-
-  it('defaults remote power/cleanup/installs/config to off', () => {
-    const cloud = getSettings().cloud
-    expect(cloud.allowRemotePower).toBe(false)
-    expect(cloud.allowRemoteCleanup).toBe(false)
-    expect(cloud.allowRemoteInstalls).toBe(false)
-    expect(cloud.allowRemoteConfig).toBe(false)
+  it('does not expose legacy credentials and preserves them while saving local preferences', async () => {
+    await setSettings({ language: 'it' })
+    const path = join(TEST_DIR, 'Kudu-Dev', 'config.json')
+    const saved = JSON.parse(readFileSync(path, 'utf8'))
+    const retired = { apiKey: 'v1:enc:retained-ciphertext', allowRemotePower: true }
+    saved.settings.cloud = retired
+    writeFileSync(path, JSON.stringify(saved))
+    expect(getSettings()).not.toHaveProperty('cloud')
+    await setSettings({ theme: 'light' })
+    expect(JSON.parse(readFileSync(path, 'utf8')).settings.cloud).toEqual(retired)
+    expect(getSettings().theme).toBe('light')
   })
 })
-
 describe('malware allowlist (false positives)', () => {
   afterAll(() => {
     if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true, force: true })

@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "Kudu megnyitása",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "SuperSonicCleaner megnyitása",
   "quit": "Kilépés",
-  "scheduledTaskNotificationTitle": "Kudu - Ütemezett feladat",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Ütemezett feladat",
   "scheduledTaskNotificationBody": "\"{{name}}\" futtatása...",
-  "scanCompleteNotificationTitle": "Kudu - Vizsgálat befejezve",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - Vizsgálat befejezve",
   "scanCompleteNotificationBody": "{{itemCount}} tisztítható elem található ({{sizeMB}} MB).",
   "scheduledScanName": "Ütemezett vizsgálat"
 }

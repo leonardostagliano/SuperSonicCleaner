@@ -18,10 +18,6 @@
     "recoveryDescription": "Najděte možnosti obnovení pro podporované systémové změny.",
     "reviewFirst": "Před provedením změn otevřete nástroj a zkontrolujte jeho možnosti.",
     "advancedPrompt": "Chcete grafy a podrobnosti o systému? Přepněte na Pokročilé",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Potřebuji více místa",
@@ -129,7 +125,6 @@
     "handleThreats": "Vybrat způsob reakce",
     "reviewPaths": "Zkontrolovat vybrané cesty",
     "chooseOptimizations": "Vybrat optimalizace",
-    "reviewCloud": "Zkontrolovat předvolby sdílení",
     "trackFolder": "Vybrat složku ke sledování",
     "captureSnapshot": "Pořídit místní snímky",
     "compareGrowth": "Porovnat změny v úložišti",
@@ -154,15 +149,13 @@
     "maintenance": "Dopřejte každé jednotce správnou péči. Před spuštěním úlohy zkontrolujte typ jednotky a dostupnou údržbu.",
     "network": "Zkontrolujte uložená síťová data. Podle potřeby vymažte mezipaměť nebo jednotlivě odeberte stará připojení.",
     "malware": "Zkontrolujte malware a podezřelé soubory. Projděte nálezy a vyberte, jak s každou detekcí naložit.",
-    "threatMonitor": "Sledujte připojení a bezpečnostní aktivitu. Prověřte upozornění, abyste porozuměli jeho zdroji a souvislostem.",
     "cve": "Proměňte zjištěné zranitelnosti v plán. Zkontrolujte problémy s vyšší závažností a aktualizujte dotčený software.",
     "gameMode": "Udělejte místo pro hraní. Zkontrolujte optimalizace a aktivujte je, až budete připraveni.",
     "performance": "Pochopte, co vaše PC právě dělá. Porovnejte trendy využití prostředků a najděte procesy, které způsobují zátěž.",
     "uninstaller": "Ponechte si aplikace, které používáte. Před odinstalací nebo odstraněním zbylých souborů zkontrolujte podrobnosti aplikace.",
     "history": "Podívejte se, co se změnilo, co bylo obnoveno a co potřebuje další kontrolu. Každá dokončená úloha zanechá záznam.",
-    "settings": "Nastavte si Kudu podle sebe. Upravte vzhled, oznámení, výjimky a předvolby čištění.",
+    "settings": "Nastavte si SuperSonicCleaner podle sebe. Upravte vzhled, oznámení, výjimky a předvolby čištění.",
     "about": "Open source, promyšleně vytvořené. Najděte svou verzi, zkontrolujte aktualizace a seznamte se s projektem.",
-    "cloud": "Propojte svá zařízení. Propojte tento počítač, abyste mohli spravovat jeho cloudové připojení a bezpečnostní funkce.",
     "breach": "Zkontrolujte, zda se e-mail nachází ve známých únicích dat. Projděte, co bylo odhaleno, a doporučené další kroky.",
     "privacy": "Vyberte, co váš počítač sdílí. Zkontrolujte každé doporučení a ponechte nastavení, na která spoléháte.",
     "services": "Porozumějte službám, na kterých váš systém běží. Před změnou chování při spuštění zkontrolujte jejich účel a bezpečnost.",
@@ -172,8 +165,7 @@
     "schedules": "Dobrá péče podle vašeho plánu. Vyberte úlohy, časování a frekvenci, které tomuto počítači vyhovují.",
     "drivers": "Zkontrolujte aktualizace ovladačů i starší balíčky na jednom místě. Před použitím zkontrolujte navržené změny.",
     "storageHistory": "Podívejte se, co narůstá. Ukládejte místní snímky složek a porovnávejte, kde se úložiště změnilo.",
-    "recovery": "Jasná cesta zpět. Před vrácením změn zkontrolujte podporované změny a podrobnosti obnovení.",
-    "diagnostics": "Proměňte pomalý okamžik v důkaz. Nahrávejte místně, prohlédněte si data a vyberte, zda požádat o analýzu Cloud AI."
+    "recovery": "Jasná cesta zpět. Před vrácením změn zkontrolujte podporované změny a podrobnosti obnovení."
   },
   "home": {
     "eyebrow": "VÁŠ SYSTÉM NA PRVNÍ POHLED",
@@ -187,7 +179,7 @@
     "protectDescription": "Spusťte kontrolu na malware a zkontrolujte všechny soubory, které vyžadují pozornost.",
     "protectAction": "Otevřít ochranu",
     "automateTitle": "Proměňte péči v rutinu",
-    "automateDescription": "Vyberte, kdy má Kudu kontrolovat a čistit váš počítač.",
+    "automateDescription": "Vyberte, kdy má SuperSonicCleaner kontrolovat a čistit váš počítač.",
     "automateAction": "Nastavit plán",
     "cpu": "Využití CPU",
     "memory": "Paměť",

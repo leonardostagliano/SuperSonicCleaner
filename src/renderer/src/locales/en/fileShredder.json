@@ -7,7 +7,7 @@
   "shredButton": "Shred {{count}} items",
   "shredButtonSingle": "Shred 1 item",
   "cancelShred": "Cancel",
-  "shredding": "Shredding files\u2026",
+  "shredding": "Shredding files…",
   "filesShredded": "Files Shredded",
   "totalFiles": "Total Files",
   "bytesShredded": "Data Destroyed",

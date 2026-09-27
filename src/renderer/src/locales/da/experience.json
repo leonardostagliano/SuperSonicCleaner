@@ -18,10 +18,6 @@
     "recoveryDescription": "Find gendannelsesmuligheder for understøttede systemændringer.",
     "reviewFirst": "Åbn et værktøj for at gennemgå dets indstillinger, før du foretager ændringer.",
     "advancedPrompt": "Vil du have grafer og systemdetaljer? Skift til Avanceret",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Jeg har brug for mere plads",
@@ -129,7 +125,6 @@
     "handleThreats": "Vælg, hvordan der skal reageres",
     "reviewPaths": "Gennemgå valgte stier",
     "chooseOptimizations": "Vælg optimeringer",
-    "reviewCloud": "Gennemgå delingsindstillinger",
     "trackFolder": "Vælg en mappe, der skal spores",
     "captureSnapshot": "Tag lokale snapshots",
     "compareGrowth": "Sammenlign ændringer i lagerplads",
@@ -154,15 +149,13 @@
     "maintenance": "Giv hvert drev den rette vedligeholdelse. Gennemgå drevtype og tilgængelig vedligeholdelse, før du kører en opgave.",
     "network": "Gennemgå gemte netværksdata. Ryd cachefiler eller fjern gamle forbindelser enkeltvis, når du har brug for det.",
     "malware": "Kontrollér for malware og mistænkelige filer. Gennemgå fundene, og vælg, hvordan hver registrering skal håndteres.",
-    "threatMonitor": "Følg forbindelser og sikkerhedsaktivitet. Undersøg en advarsel for at forstå dens kilde og sammenhæng.",
     "cve": "Gør sårbarhedsfund til en plan. Gennemgå problemer med højere alvorlighed, og opdater berørt software.",
     "gameMode": "Gør plads til spil. Gennemgå optimeringerne, og aktivér dem, når du er klar.",
     "performance": "Forstå, hvad din PC laver. Sammenlign ressourceudvikling, og find processerne bag belastningen.",
     "uninstaller": "Behold de apps, du bruger. Gennemgå en apps oplysninger, før du afinstallerer den eller fjerner resterende filer.",
     "history": "Se, hvad der blev ændret, hvad der blev gendannet, og hvad der kræver endnu et kig. Hver fuldført opgave efterlader en registrering.",
-    "settings": "Få Kudu til at passe til dig. Indstil udseende, meddelelser, undtagelser og præferencer for oprydning.",
+    "settings": "Få SuperSonicCleaner til at passe til dig. Indstil udseende, meddelelser, undtagelser og præferencer for oprydning.",
     "about": "Open source, gennemtænkt lavet. Find din version, søg efter opdateringer, og lær projektet at kende.",
-    "cloud": "Saml dine enheder. Tilknyt denne computer for at administrere dens cloudforbindelse og sikkerhedsfunktioner.",
     "breach": "Kontrollér, om en e-mailadresse optræder i kendte databrud. Gennemgå, hvad der blev eksponeret, og de anbefalede næste skridt.",
     "privacy": "Vælg, hvad din computer deler. Gennemgå hver anbefaling, og behold de indstillinger, du er afhængig af.",
     "services": "Forstå tjenesterne bag dit system. Kontrollér formål og sikkerhed, før du ændrer opstartsadfærd.",
@@ -172,8 +165,7 @@
     "schedules": "God vedligeholdelse på din tidsplan. Vælg de opgaver, tidspunkter og den hyppighed, der passer til denne computer.",
     "drivers": "Gennemgå driveropdateringer og ældre pakker ét sted. Kontrollér de foreslåede ændringer, før du anvender dem.",
     "storageHistory": "Se, hvad der vokser. Gem lokale mappesnapshots, og sammenlign, hvor lagerpladsen har ændret sig.",
-    "recovery": "En tydelig vej tilbage. Gennemgå understøttede ændringer og gendannelsesoplysninger, før du fortryder noget.",
-    "diagnostics": "Gør et langsomt øjeblik til dokumentation. Optag lokalt, undersøg dataene, og vælg, om du vil anmode om Cloud AI-analyse."
+    "recovery": "En tydelig vej tilbage. Gennemgå understøttede ændringer og gendannelsesoplysninger, før du fortryder noget."
   },
   "home": {
     "eyebrow": "DIT SYSTEM, MED ET BLIK",
@@ -187,7 +179,7 @@
     "protectDescription": "Kør en malware-scanning, og gennemgå eventuelle filer, der kræver opmærksomhed.",
     "protectAction": "Åbn beskyttelse",
     "automateTitle": "Gør vedligeholdelse til en rutine",
-    "automateDescription": "Vælg, hvornår Kudu skal kontrollere og rydde op på din computer.",
+    "automateDescription": "Vælg, hvornår SuperSonicCleaner skal kontrollere og rydde op på din computer.",
     "automateAction": "Opsæt en tidsplan",
     "cpu": "CPU-forbrug",
     "memory": "Hukommelse",

@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "SYSTEM CLEANER",
   "dashboard": "Home",
   "securityHeading": "Protection",
   "malwareScanner": "Malware Scanner",
-  "threatMonitor": "Threat Monitor",
   "systemHardening": "System Hardening",
-  "cveScanner": "Vulnerabilities",
   "monitoring": "Monitoring",
   "maintainHeading": "Manage",
   "cleaner": "Clean up",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Activity & Recovery",
   "history": "Activity",
   "settings": "Preferences",
-  "breachMonitor": "Breach Monitor",
   "gameMode": "Game Mode",
   "firewallAudit": "Firewall Audit"
 }

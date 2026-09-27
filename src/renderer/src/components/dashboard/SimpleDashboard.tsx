@@ -14,7 +14,6 @@ import { usePlatform } from '@/hooks/usePlatform'
 import { pageExperiences } from '@/components/layout/page-experiences'
 import { getGoalTools, type DashboardGoal } from './simple-dashboard-tools'
 import './simple-dashboard.css'
-import { DashboardCloud } from './DashboardCloud'
 
 const goals = [
   { id: 'space', icon: HardDrive },
@@ -46,23 +45,29 @@ export function SimpleDashboard({
         <h1>{t('simple.title')}</h1>
         <p>{t('simple.description')}</p>
       </header>
-      <div className="simple-goals" aria-label={t('simple.chooseGoal')}>
+      <div className="simple-goals-heading">
+        <h2>{t('simple.chooseGoal')}</h2>
+        <span aria-hidden="true" />
+      </div>
+      <div className="simple-goals" role="group" aria-label={t('simple.chooseGoal')}>
         {goals.map(({ id, icon: Icon }) => (
           <button
             className="simple-goal"
             data-goal={id}
             key={id}
             aria-expanded={selected === id}
-            aria-controls={selected ? 'simple-goal-tools' : undefined}
+            aria-controls={selected === id ? 'simple-goal-tools' : undefined}
             onClick={() => setSelected(id)}
           >
             <span className="simple-goal-top">
               <span className="simple-goal-icon">
-                <Icon size={25} strokeWidth={1.65} />
+                <Icon size={24} strokeWidth={1.65} aria-hidden="true" />
               </span>
-              <ArrowUpRight size={22} />
+              <span className="simple-goal-arrow" aria-hidden="true">
+                <ArrowUpRight size={19} />
+              </span>
             </span>
-            <h2>{t(`simple.goals.${id}.title`)}</h2>
+            <strong className="simple-goal-title">{t(`simple.goals.${id}.title`)}</strong>
             <p>{t(`simple.goals.${id}.description`)}</p>
             <span className="simple-goal-count">
               {t(`simple.goals.${id}.count`, { count: getGoalTools(id, platform).length })}
@@ -105,9 +110,6 @@ export function SimpleDashboard({
                     )}
                     <strong>{t(tool.titleKey)}</strong>
                     <span>{t(`routes.${experience.key}`)}</span>
-                    {tool.tier && (
-                      <small className="simple-tier">{t(`simple.cloud.${tool.tier}`)}</small>
-                    )}
                   </span>
                   <ArrowRight size={17} />
                 </button>
@@ -117,7 +119,7 @@ export function SimpleDashboard({
         </section>
       ) : (
         <div className="simple-support">
-          <button onClick={() => navigate('/schedules')}>
+          <button className="simple-support-link" onClick={() => navigate('/schedules')}>
             <CalendarClock size={23} strokeWidth={1.6} />
             <span>
               <strong>{t('simple.routineTitle')}</strong>
@@ -125,16 +127,14 @@ export function SimpleDashboard({
             </span>
             <ArrowUpRight size={18} />
           </button>
-          <DashboardCloud variant="compact">
-            <button onClick={() => navigate('/recovery')}>
-              <RotateCcw size={23} strokeWidth={1.6} />
-              <span>
-                <strong>{t('simple.recoveryTitle')}</strong>
-                <small>{t('simple.recoveryDescription')}</small>
-              </span>
-              <ArrowUpRight size={18} />
-            </button>
-          </DashboardCloud>
+          <button className="simple-support-link" onClick={() => navigate('/recovery')}>
+            <RotateCcw size={23} strokeWidth={1.6} />
+            <span>
+              <strong>{t('simple.recoveryTitle')}</strong>
+              <small>{t('simple.recoveryDescription')}</small>
+            </span>
+            <ArrowUpRight size={18} />
+          </button>
         </div>
       )}
       <footer className="simple-dashboard-footer">

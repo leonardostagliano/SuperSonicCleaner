@@ -160,12 +160,12 @@ export function PerformanceMonitorPage() {
           label={t('gaugeDiskIo')}
           percent={null}
           value={
-            snapshot
+            snapshot && snapshot.disk.available !== false
               ? formatSpeed(snapshot.disk.readBytesPerSec + snapshot.disk.writeBytesPerSec)
-              : '?'
+              : t('noDataPlaceholder')
           }
           detail={
-            snapshot
+            snapshot && snapshot.disk.available !== false
               ? t('diskIoDetail', {
                   read: formatSpeed(snapshot.disk.readBytesPerSec),
                   write: formatSpeed(snapshot.disk.writeBytesPerSec)

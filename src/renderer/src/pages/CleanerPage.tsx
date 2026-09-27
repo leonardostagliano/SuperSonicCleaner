@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { useShallow } from 'zustand/react/shallow'
 import {
   Monitor,
   Globe,
@@ -30,6 +31,7 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { CleanSummary } from '@/components/cleaner/CleanSummary'
 import { cn, formatBytes, formatNumber } from '@/lib/utils'
 import { cleanInBatches } from '@/lib/cleaner-batches'
+import { cancelCleanerScan, startCleanerScan } from '@/lib/cleaner-scan'
 import { useScanStore } from '@/stores/scan-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useHistoryStore } from '@/stores/history-store'
@@ -39,6 +41,7 @@ import { ScanStatus, CleanerType } from '@shared/enums'
 import type { CleanerBlocker, ScanResult } from '@shared/types'
 import type { LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
+import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
 
 /** Check whether a path looks like an absolute filesystem path (not a label like "Recycle Bin" or "PATH → …"). */
 const isAbsolutePath = (p: string) => /^[A-Za-z]:[\\/]/.test(p) || p.startsWith('/')
@@ -229,11 +232,29 @@ function CleanerContextMenu({
   )
 }
 
+function CleanerScanProgress() {
+  const progress = useScanStore((state) => state.progress)
+  const status = useScanStore((state) => state.status)
+  if (!progress || (status !== ScanStatus.Scanning && status !== ScanStatus.Cleaning)) return null
+  return (
+    <ScanProgress
+      status={status === ScanStatus.Scanning ? 'scanning' : 'cleaning'}
+      progress={progress.progress}
+      currentPath={progress.currentPath}
+      itemsFound={progress.itemsFound}
+      sizeFound={progress.sizeFound}
+      className="mb-5"
+    />
+  )
+}
+
 export function CleanerPage() {
   const { t } = useTranslation(['cleaner', 'settings'])
   const navigate = useNavigate()
   const { platform } = usePlatform()
-  const store = useScanStore()
+  // Progress arrives frequently; only the progress card needs to render for
+  // those events, not every result row and selection aggregate on the page.
+  const store = useScanStore(useShallow(({ progress: _progress, ...state }) => state))
   const recomputeStats = useStatsStore((s) => s.recompute)
   const historyStore = useHistoryStore()
   const createRestorePointEnabled = useSettingsStore((s) => s.settings.cleaner.createRestorePoint)
@@ -254,35 +275,14 @@ export function CleanerPage() {
   const cleanStartRef = useRef<number>(0)
   const blockerRequestRef = useRef(0)
   const scopedBlockerRequestRef = useRef(0)
-  const [scanningCategory, setScanningCategory] = useState<CleanerType | null>(null)
   const [sortMode, setSortMode] = useState<SortMode>('default')
   const [showSortMenu, setShowSortMenu] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const [contextMenu, setContextMenu] = useState<CleanerContextMenuState | null>(null)
   const [scopedClean, setScopedClean] = useState<{ ids: string[]; label: string } | null>(null)
 
-  const scanIndexRef = useRef(0)
   const cleanIndexRef = useRef(0)
   const cleanTotalRef = useRef(1)
-
-  useEffect(() => {
-    if (!window.kudu?.onScanProgress) return
-    return window.kudu.onScanProgress((data) => {
-      // Each cleaner reports 0-100% independently. Scale to overall progress
-      // based on which category we're currently processing.
-      if (data.phase === 'cleaning') {
-        const total = cleanTotalRef.current
-        const base = (cleanIndexRef.current / total) * 100
-        const slice = data.progress / total
-        store.setProgress({ ...data, progress: base + slice })
-      } else {
-        const total = scannableCategories.length
-        const base = (scanIndexRef.current / total) * 100
-        const slice = data.progress / total
-        store.setProgress({ ...data, progress: base + slice })
-      }
-    })
-  }, [protectRecycleBin])
 
   // Close the sort menu when clicking anywhere outside it.
   useEffect(() => {
@@ -296,8 +296,7 @@ export function CleanerPage() {
     return () => document.removeEventListener('mousedown', handler)
   }, [showSortMenu])
 
-  const [failedCategories, setFailedCategories] = useState<string[]>([])
-  const [elevationSkipped, setElevationSkipped] = useState<string[]>([])
+  const { scanningCategory, failedCategories, elevationSkipped } = store
 
   // Check the default selection after each scan. Selection changes are
   // revalidated when Clean is clicked, avoiding an OS query on every checkbox.
@@ -338,55 +337,12 @@ export function CleanerPage() {
     window.kudu.elevationRelaunch()
   }, [])
 
-  const handleScan = useCallback(async () => {
-    store.setStatus(ScanStatus.Scanning)
-    store.setResults([])
-    store.setCleanSummary(null)
+  const handleScan = () => {
     setExpandedGroups(new Set())
-    setFailedCategories([])
-    setElevationSkipped([])
-    const failed: string[] = []
-    const skippedForElevation: string[] = []
-    try {
-      const scanFns: Partial<Record<CleanerType, () => Promise<ScanResult[]>>> = {
-        [CleanerType.System]: () => window.kudu.systemScan(),
-        [CleanerType.Browser]: () => window.kudu.browserScan(),
-        [CleanerType.App]: () => window.kudu.appScan(),
-        [CleanerType.Gaming]: () => window.kudu.gamingScan(),
-        [CleanerType.RecycleBin]: () => window.kudu.recycleBinScan(),
-        [CleanerType.Shortcut]: () => window.kudu.shortcutScan(),
-        [CleanerType.Environment]: () => window.kudu.environmentScan(),
-        [CleanerType.Database]: () => window.kudu.databaseScan(),
-        [CleanerType.PrivacyTraces]: () => window.kudu.privacyTracesScan()
-      }
-      for (let ci = 0; ci < scannableCategories.length; ci++) {
-        const cat = scannableCategories[ci]
-        scanIndexRef.current = ci
-        setScanningCategory(cat.type)
-        try {
-          const scanFn = scanFns[cat.type]
-          if (!scanFn) continue
-          const results = await scanFn()
-          // Extract elevation-required markers before adding to store
-          const elevationMarker = results.find((r) => r.subcategory === '__elevation_required')
-          if (elevationMarker?.group) {
-            skippedForElevation.push(...elevationMarker.group.split(', '))
-          }
-          store.addResults(results.filter((r) => r.subcategory !== '__elevation_required'))
-        } catch {
-          failed.push(t(cat.labelKey))
-        }
-      }
-      if (failed.length > 0) setFailedCategories(failed)
-      if (skippedForElevation.length > 0) setElevationSkipped(skippedForElevation)
-      setScanningCategory(null)
-      store.setStatus(ScanStatus.Complete)
-    } catch {
-      setScanningCategory(null)
-      store.setStatus(ScanStatus.Error)
-    }
-    store.setProgress(null)
-  }, [protectRecycleBin])
+    void startCleanerScan(
+      scannableCategories.map((cat) => ({ type: cat.type, label: t(cat.labelKey) }))
+    )
+  }
 
   const handleCleanRequest = useCallback(
     async (scope?: { ids: string[]; label: string }) => {
@@ -429,6 +385,15 @@ export function CleanerPage() {
     setConfirmBlockers([])
     store.setStatus(ScanStatus.Cleaning)
     cleanStartRef.current = Date.now()
+    // Own the listener for the duration of the operation, not the page. The
+    // cleanup and its progress continue when the user navigates elsewhere.
+    const stopProgress = window.kudu.onScanProgress((data) => {
+      if (data.phase !== 'cleaning') return
+      const total = cleanTotalRef.current
+      const base = (cleanIndexRef.current / total) * 100
+      const slice = data.progress / total
+      useScanStore.getState().setProgress({ ...data, progress: base + slice })
+    })
     try {
       if (shouldCloseDetectedBrowsers) {
         try {
@@ -443,7 +408,7 @@ export function CleanerPage() {
       if (createRestorePointEnabled) {
         try {
           const rpResult = await window.kudu.createRestorePoint(
-            `Kudu clean — ${new Date().toLocaleString()}`
+            `SuperSonicCleaner clean — ${new Date().toLocaleString()}`
           )
           if (rpResult.success) {
             toast.success(t('toastRestorePointCreated'))
@@ -618,8 +583,10 @@ export function CleanerPage() {
       store.setStatus(ScanStatus.Complete)
     } catch {
       store.setStatus(ScanStatus.Error)
+    } finally {
+      stopProgress()
+      store.setProgress(null)
     }
-    store.setProgress(null)
   }, [
     store.results,
     createRestorePointEnabled,
@@ -729,6 +696,18 @@ export function CleanerPage() {
               <Search className="h-4 w-4" strokeWidth={1.8} />
               {t('scanButton')}
             </button>
+            {isScanning && (
+              <button
+                type="button"
+                onClick={cancelCleanerScan}
+                disabled={store.scanCancelRequested}
+                title={t('cancelAfterCategory')}
+                className="rounded-xl px-4 py-2.5 text-[13px] font-medium disabled:opacity-50"
+                style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
+              >
+                {t('common:cancel')}
+              </button>
+            )}
             <button
               onClick={() => void handleCleanRequest()}
               disabled={
@@ -779,15 +758,9 @@ export function CleanerPage() {
                 className="relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
                 style={{
                   background: isActive ? 'var(--accent-muted-bg)' : 'transparent',
-                  color: isActive ? 'var(--warning)' : 'var(--text-muted)'
+                  color: isActive ? 'var(--text-primary)' : 'var(--text-muted)'
                 }}
               >
-                {isActive && (
-                  <div
-                    className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full"
-                    style={{ background: 'var(--accent)' }}
-                  />
-                )}
                 {scanningCategory === cat.type ||
                 (cat.type === AI_TOOLS_VIEW && scanningCategory === CleanerType.App) ? (
                   <Loader2
@@ -838,15 +811,31 @@ export function CleanerPage() {
               </div>
             </section>
           )}
-          {(isScanning || isCleaning) && store.progress && (
-            <ScanProgress
-              status={isScanning ? 'scanning' : 'cleaning'}
-              progress={store.progress.progress}
-              currentPath={store.progress.currentPath}
-              itemsFound={store.progress.itemsFound}
-              sizeFound={store.progress.sizeFound}
-              className="mb-5"
+          {hasResults && store.status === ScanStatus.Complete && (
+            <AiAnalysisPanel
+              source="cleaner"
+              sourceRevision={store.results}
+              candidates={store.results
+                .filter((result) => result.category !== CleanerType.PrivacyTraces)
+                .flatMap((result) => result.items)
+                .filter((item) => !item.cleanupAction && !item.dockerTarget)
+                .map((item) => ({
+                  path: item.path,
+                  size: item.size,
+                  lastModified: item.lastModified,
+                  lastAccessed: item.lastAccessed
+                }))}
             />
+          )}
+          {(isScanning || isCleaning) && (
+            <>
+              <CleanerScanProgress />
+              {store.scanCancelRequested && (
+                <p className="mb-5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
+                  {t('scanCancelPending')}
+                </p>
+              )}
+            </>
           )}
 
           {failedCategories.length > 0 && store.status === ScanStatus.Complete && (

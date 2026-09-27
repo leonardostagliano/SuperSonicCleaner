@@ -4,7 +4,8 @@ import { randomUUID } from 'crypto'
 import {
   diagnosticId,
   validDiagnosticRecording,
-  validDiagnosticReport
+  validDiagnosticReport,
+  validDiagnosticAiReport
 } from '../../shared/performance-diagnostics'
 import type { DiagnosticSession, DiagnosticSummary } from '../../shared/performance-diagnostics'
 
@@ -32,7 +33,10 @@ export class DiagnosticsStore {
     const info = await lstat(path)
     if (!info.isFile() || info.isSymbolicLink() || info.size > 2097152)
       throw new Error('Invalid recording file')
-    const value = JSON.parse(this.open(await readFile(path))) as DiagnosticSession
+    const value = JSON.parse(this.open(await readFile(path))) as DiagnosticSession & {
+      cloud?: { report?: unknown }
+    }
+    const report = value.report ?? value.cloud?.report ?? null
     if (
       !validDiagnosticRecording(value.recording) ||
       value.recording.recordId !== id ||
@@ -42,11 +46,11 @@ export class DiagnosticsStore {
       value.notes.length > 2000 ||
       typeof value.pinned !== 'boolean' ||
       !['recording', 'saved', 'interrupted'].includes(value.state) ||
-      (value.cloud?.report &&
-        !validDiagnosticReport(value.cloud.report, value.recording.durationMs))
+      (report !== null && !validDiagnosticReport(report, value.recording.durationMs)) ||
+      (value.aiReport != null && !validDiagnosticAiReport(value.aiReport, value.recording))
     )
       throw new Error('Recording is corrupt or unsupported')
-    return value
+    return { ...value, report: report as DiagnosticSession['report'] }
   }
   async list(): Promise<DiagnosticSummary[]> {
     if (this.summaries) return structuredClone(this.summaries)
@@ -75,8 +79,7 @@ export class DiagnosticsStore {
         state: s.state,
         startedAt: s.recording.startedAt,
         durationMs: s.recording.durationMs,
-        samples: s.recording.samples.length,
-        cloudStatus: s.cloud?.status ?? null
+        samples: s.recording.samples.length
       })
       await new Promise<void>((resolve) => setImmediate(resolve))
     }
@@ -90,17 +93,18 @@ export class DiagnosticsStore {
     if (revision === this.revision) this.summaries = results
     return structuredClone(results)
   }
-  save(session: DiagnosticSession, create = false): Promise<void> {
+  save(session: DiagnosticSession, create = false, signal?: AbortSignal): Promise<void> {
     // Snapshot before waiting so subsequent sampling cannot change this write.
     const json = JSON.stringify(session)
     const id = session.recording.recordId
     return this.serial(async () => {
+      if (signal?.aborted) throw new Error('cancelled')
       await mkdir(this.dir, { recursive: true })
       const path = this.path(id)
       if (create) {
         const rows = await this.list()
         if (rows.some((r) => r.id === id)) throw new Error('Recording already exists')
-        // Explicit cleanup prevents silently discarding an unsynced recording or Cloud reference.
+        // Explicit cleanup prevents silently discarding a saved recording.
         if (rows.length >= 30)
           throw new Error(
             '30 sessions saved. Delete a previous session to make space for a new recording.'
@@ -109,11 +113,14 @@ export class DiagnosticsStore {
         // No resurrection after deletion.
         await lstat(path)
       }
+      if (signal?.aborted) throw new Error('cancelled')
       const encrypted = this.seal(json)
       if (encrypted.length > 2097152) throw new Error('Recording exceeds the local storage limit')
       const temp = `${path}.${randomUUID()}.tmp`
       try {
         await writeFile(temp, encrypted, { flag: 'wx', mode: 0o600 })
+        // Cancellation can arrive while the encrypted staging file is being written.
+        if (signal?.aborted) throw new Error('cancelled')
         await rename(temp, path)
         this.summaries = null
         this.revision++

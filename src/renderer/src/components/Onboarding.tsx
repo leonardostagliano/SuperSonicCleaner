@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Rocket, Check, ChevronRight, ChevronLeft, Globe } from 'lucide-react'
 import { LANGUAGES } from '@/lib/languages'
 import { usePlatform } from '@/hooks/usePlatform'
-import logoSrc from '@/assets/logo.png'
+import { BrandWordmark } from '@/components/shared/BrandWordmark'
 
 interface OnboardingProps {
   /** Records that onboarding is done; awaited before anything that can stall. */
@@ -192,7 +192,7 @@ function WelcomeStep({ onBack, onNext }: { onBack: () => void; onNext: () => voi
   return (
     <StepWrapper>
       <div className="flex flex-col items-center text-center">
-        <img src={logoSrc} alt="Kudu" className="mb-5 h-20 w-20 rounded-2xl" />
+        <BrandWordmark size="large" className="mb-6" />
         <h2 className="mb-2 text-[22px] font-bold text-zinc-100">{t('welcomeTitle')}</h2>
         <p className="mb-2 text-[13px] leading-relaxed text-zinc-400">
           {isWin ? t('welcomeDescriptionWindows') : t('welcomeDescriptionOther')}
@@ -339,7 +339,8 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
     <button
       onClick={() => onChange(!checked)}
       className="toggle-switch relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors"
-      style={{ background: checked ? 'var(--accent)' : 'var(--bg-active)' }}
+      data-checked={checked}
+      style={{ background: checked ? 'var(--accent)' : 'var(--toggle-off-bg)' }}
     >
       <div
         className={`absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-[3px]'}`}

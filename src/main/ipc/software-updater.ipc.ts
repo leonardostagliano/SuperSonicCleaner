@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import { IPC } from '../../shared/channels'
 import { checkForUpdates, runUpdates } from '../services/software-updater'
 import { trackMainWork } from '../services/main-work'
+import { addSoftwareIcons } from '../services/software-icons'
 import type { WindowGetter } from './index'
 import type {
   UpdateCheckResult,
@@ -17,7 +18,7 @@ export function registerSoftwareUpdaterIpc(getWindow: WindowGetter): void {
   }
 
   ipcMain.handle(IPC.SOFTWARE_UPDATE_CHECK, async (): Promise<UpdateCheckResult> => {
-    return checkForUpdates()
+    return addSoftwareIcons(await checkForUpdates())
   })
 
   ipcMain.handle(

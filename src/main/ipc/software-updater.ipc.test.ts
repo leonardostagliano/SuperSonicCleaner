@@ -23,6 +23,10 @@ vi.mock('../../shared/channels', () => ({
 const mockCheckForUpdates = vi.fn()
 const mockRunUpdates = vi.fn()
 
+vi.mock('../services/software-icons', () => ({
+  addSoftwareIcons: (result: unknown) => Promise.resolve(result)
+}))
+
 vi.mock('../services/software-updater', () => ({
   checkForUpdates: (...args: unknown[]) => mockCheckForUpdates(...args),
   runUpdates: (...args: unknown[]) => mockRunUpdates(...args)

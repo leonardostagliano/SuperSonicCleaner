@@ -54,13 +54,13 @@ describe('electron-builder.yml', () => {
   })
 
   it('requests admin for the app executable', () => {
-    // Kudu edits HKLM, system directories and other machine-wide state, so the
+    // The app edits HKLM, system directories and other machine-wide state, so the
     // manifest asks for elevation rather than re-launching at runtime.
     expect(option('win', 'requestedExecutionLevel')).toBe('requireAdministrator')
   })
 
   it('installs per-machine whenever the app manifest requires admin', () => {
-    // requestedExecutionLevel is applied to Kudu.exe only; the NSIS installer
+    // requestedExecutionLevel is applied to SuperSonicCleaner.exe only; the NSIS installer
     // has a separate execution level derived from nsis.perMachine. If they
     // disagree, the installer runs unelevated and installs an auto-elevating
     // binary into user-writable %LOCALAPPDATA%\Programs — which both breaks the
@@ -80,7 +80,7 @@ describe('electron-builder.yml', () => {
 
   it('publishes a Windows portable artifact alongside NSIS', () => {
     expect(block('win').some((l) => l.includes('target: portable'))).toBe(true)
-    expect(option('portable', 'artifactName')).toBe('Kudu-Portable-${version}.${ext}')
+    expect(option('portable', 'artifactName')).toBe('SuperSonicCleaner-Portable-${version}.${ext}')
     expect(option('portable', 'requestExecutionLevel')).toBe('admin')
     expect((load(CONFIG) as any).afterAllArtifactBuild).toBe('scripts/build-portable-zip.js')
   })
@@ -88,12 +88,36 @@ describe('electron-builder.yml', () => {
   it('publishes a stable AppImage name for in-place Linux auto-update', () => {
     // Versioned AppImage basenames make electron-updater write a new file and
     // delete the old one, breaking desktop Exec= paths (#401).
-    expect(option('appImage', 'artifactName')).toBe('Kudu-${arch}.${ext}')
+    expect(option('appImage', 'artifactName')).toBe('SuperSonicCleaner-${arch}.${ext}')
     expect(option('appImage', 'artifactName')).not.toContain('${version}')
   })
 
   it('keeps versioned Linux deb artifact names', () => {
-    expect(option('deb', 'artifactName')).toBe('Kudu-${version}-${arch}.${ext}')
+    expect(option('deb', 'artifactName')).toBe('SuperSonicCleaner-${version}-${arch}.${ext}')
+  })
+
+  it('keeps the fork identity and update feed separate from upstream', () => {
+    const config = load(CONFIG) as any
+    expect(config.productName).toBe('SuperSonicCleaner')
+    expect(config.executableName).toBe('SuperSonicCleaner')
+    expect(config.appId).toBe('com.leonardostagliano.supersoniccleaner')
+    expect(config.publish).toMatchObject({
+      provider: 'github',
+      owner: 'leonardostagliano',
+      repo: 'SuperSonicCleaner'
+    })
+  })
+
+  it('ships the upstream license and the macOS icon used at runtime', () => {
+    const config = load(CONFIG) as any
+    expect(config.files).toContain('LICENSE')
+    expect(readFileSync(path.resolve(__dirname, '../../LICENSE'), 'utf8')).toContain(
+      'Copyright (c) 2026 Advent Development Inc'
+    )
+    expect(config.mac.icon).toBe('resources/icon.icns')
+    expect(config.extraResources).toContainEqual(
+      expect.objectContaining({ from: 'resources/icon.icns', to: 'icon.icns' })
+    )
   })
 
   it('publishes Linux AppImage for x64 and arm64', () => {

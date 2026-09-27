@@ -15,27 +15,19 @@ interface StatCardProps {
 const variantConfig = {
   default: {
     iconBg: 'var(--bg-hover)',
-    iconColor: 'var(--text-muted)',
-    accentLine: 'var(--border-medium)',
-    glowClass: ''
+    iconColor: 'var(--text-muted)'
   },
   accent: {
     iconBg: 'var(--accent-muted-bg)',
-    iconColor: 'var(--accent)',
-    accentLine: 'var(--accent-muted-border)',
-    glowClass: 'glow-amber'
+    iconColor: 'var(--accent)'
   },
   success: {
     iconBg: 'color-mix(in srgb, var(--success), transparent 88%)',
-    iconColor: 'var(--success)',
-    accentLine: 'color-mix(in srgb, var(--success), transparent 58%)',
-    glowClass: 'glow-green'
+    iconColor: 'var(--success)'
   },
   danger: {
     iconBg: 'color-mix(in srgb, var(--danger), transparent 88%)',
-    iconColor: 'var(--danger)',
-    accentLine: 'color-mix(in srgb, var(--danger), transparent 64%)',
-    glowClass: ''
+    iconColor: 'var(--danger)'
   }
 }
 
@@ -57,18 +49,9 @@ export function StatCard({
       aria-label={label}
       className={cn(
         'calm-stat-card glass-card glass-card-hover group relative overflow-hidden rounded-2xl p-5',
-        config.glowClass,
         className
       )}
     >
-      {/* Accent line at top */}
-      <div
-        className="absolute inset-x-0 top-0 h-[2px]"
-        style={{
-          background: `linear-gradient(90deg, transparent, ${config.accentLine}, transparent)`
-        }}
-      />
-
       {/* Icon in container */}
       <div
         className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"

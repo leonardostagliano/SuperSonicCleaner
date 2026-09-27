@@ -201,12 +201,6 @@ export function NetworkCleanupPage() {
                   color: isActive ? 'var(--accent-hover)' : 'var(--text-muted)'
                 }}
               >
-                {isActive && (
-                  <div
-                    className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full"
-                    style={{ background: 'var(--accent)' }}
-                  />
-                )}
                 <cat.icon className="h-[17px] w-[17px] shrink-0" strokeWidth={1.8} />
                 <div className="flex-1 min-w-0">
                   <span className="text-[13px] font-medium">{t(cat.labelKey)}</span>

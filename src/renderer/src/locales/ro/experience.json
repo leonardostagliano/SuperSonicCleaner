@@ -18,10 +18,6 @@
     "recoveryDescription": "Găsiți opțiuni de restaurare pentru modificările de sistem acceptate.",
     "reviewFirst": "Deschideți un instrument pentru a-i examina opțiunile înainte de a face modificări.",
     "advancedPrompt": "Doriți grafice și detalii despre sistem? Comutați la Avansat",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Am nevoie de mai mult spațiu",
@@ -129,7 +125,6 @@
     "handleThreats": "Alegeți cum să răspundeți",
     "reviewPaths": "Examinați căile selectate",
     "chooseOptimizations": "Alegeți optimizările",
-    "reviewCloud": "Examinați preferințele de partajare",
     "trackFolder": "Alegeți un folder de urmărit",
     "captureSnapshot": "Capturați instantanee locale",
     "compareGrowth": "Comparați modificările de stocare",
@@ -154,15 +149,13 @@
     "maintenance": "Oferiți fiecărei unități îngrijirea potrivită. Examinați tipul unității și întreținerea disponibilă înainte de a rula o sarcină.",
     "network": "Examinați datele de rețea salvate. Goliți memoria cache sau eliminați conexiunile vechi individual, când aveți nevoie.",
     "malware": "Verificați pentru malware și fișiere suspecte. Examinați rezultatele și alegeți cum să gestionați fiecare detecție.",
-    "threatMonitor": "Urmăriți conexiunile și activitatea de securitate. Inspectați o alertă pentru a înțelege sursa și contextul acesteia.",
     "cve": "Transformați rezultatele privind vulnerabilitățile într-un plan. Examinați problemele cu severitate mai mare și actualizați software-ul afectat.",
     "gameMode": "Faceți loc pentru joacă. Examinați optimizările și activați-le când sunteți pregătit.",
     "performance": "Înțelegeți ce face PC-ul dvs. Comparați tendințele resurselor și găsiți procesele din spatele încărcării.",
     "uninstaller": "Păstrați aplicațiile pe care le folosiți. Examinați detaliile unei aplicații înainte de a o dezinstala sau de a elimina fișierele rămase.",
     "history": "Vedeți ce s-a schimbat, ce a fost recuperat și ce mai necesită o verificare. Fiecare sarcină finalizată lasă o înregistrare.",
-    "settings": "Faceți ca Kudu să vi se potrivească. Configurați aspectul, notificările, excluderile și preferințele de curățare.",
+    "settings": "Faceți ca SuperSonicCleaner să vi se potrivească. Configurați aspectul, notificările, excluderile și preferințele de curățare.",
     "about": "Open source, realizat cu grijă. Găsiți versiunea dvs., verificați actualizările și descoperiți proiectul.",
-    "cloud": "Aduceți-vă dispozitivele împreună. Conectați acest computer pentru a-i gestiona conexiunea cloud și funcțiile de securitate.",
     "breach": "Verificați dacă o adresă de e-mail apare în breșe cunoscute. Examinați ce a fost expus și următorii pași recomandați.",
     "privacy": "Alegeți ce partajează computerul dvs. Examinați fiecare recomandare și păstrați setările pe care vă bazați.",
     "services": "Înțelegeți serviciile din spatele sistemului dvs. Verificați scopul și siguranța înainte de a modifica comportamentul la pornire.",
@@ -172,8 +165,7 @@
     "schedules": "Îngrijire bună, după programul dvs. Alegeți sarcinile, orele și frecvența potrivite pentru acest computer.",
     "drivers": "Examinați actualizările de drivere și pachetele mai vechi într-un singur loc. Verificați modificările propuse înainte de a le aplica.",
     "storageHistory": "Vedeți ce crește. Salvați instantanee locale ale folderelor și comparați unde s-a modificat spațiul de stocare.",
-    "recovery": "O cale clară de întoarcere. Examinați modificările acceptate și detaliile restaurării înainte de a anula ceva.",
-    "diagnostics": "Transformați un moment de încetinire în dovezi. Înregistrați local, inspectați datele și alegeți dacă solicitați analiza Cloud AI."
+    "recovery": "O cale clară de întoarcere. Examinați modificările acceptate și detaliile restaurării înainte de a anula ceva."
   },
   "home": {
     "eyebrow": "SISTEMUL DVS., DINTR-O PRIVIRE",
@@ -187,7 +179,7 @@
     "protectDescription": "Rulați o scanare malware și examinați orice fișiere care necesită atenție.",
     "protectAction": "Deschideți protecția",
     "automateTitle": "Transformați îngrijirea într-o rutină",
-    "automateDescription": "Alegeți când Kudu verifică și curăță computerul dvs.",
+    "automateDescription": "Alegeți când SuperSonicCleaner verifică și curăță computerul dvs.",
     "automateAction": "Configurați un program",
     "cpu": "Utilizare CPU",
     "memory": "Memorie",

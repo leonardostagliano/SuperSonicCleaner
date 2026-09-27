@@ -1343,8 +1343,7 @@ thead {
   background: color-mix(in srgb, var(--success), transparent 88%);
   color: var(--success);
 }
-.calm-game-card,
-.calm-cloud-card {
+.calm-game-card {
   display: flex;
   width: 100%;
   align-items: center;
@@ -1356,8 +1355,7 @@ thead {
   color: var(--text-muted);
   box-shadow: var(--glass-shadow);
 }
-.calm-game-card:hover,
-.calm-cloud-card:hover {
+.calm-game-card:hover {
   border-color: var(--border-strong);
 }
 .calm-game-card.is-active {
@@ -1374,14 +1372,12 @@ thead {
   background: var(--brand-surface);
   color: var(--brand-solid);
 }
-.calm-game-card b,
-.calm-cloud-card b {
+.calm-game-card b {
   display: block;
   color: var(--text-primary);
   font-size: 10px;
 }
-.calm-game-card small,
-.calm-cloud-card small {
+.calm-game-card small {
   display: block;
   margin-top: 2px;
   color: var(--text-muted);
@@ -1820,101 +1816,6 @@ thead {
   color: var(--text-primary);
   font-size: 10px;
 }
-.kudu-cloud-upsell {
-  position: relative;
-  display: grid;
-  overflow: hidden;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 16px;
-  margin-top: 18px;
-  padding: 18px 20px;
-  border: 1px solid color-mix(in srgb, var(--brand-solid), transparent 76%);
-  border-radius: 18px;
-  background:
-    linear-gradient(
-      115deg,
-      color-mix(in srgb, var(--brand-solid), transparent 91%),
-      transparent 58%
-    ),
-    var(--card-bg);
-  box-shadow: 0 8px 28px rgba(20, 46, 38, 0.045);
-}
-.kudu-cloud-upsell::after {
-  position: absolute;
-  right: 105px;
-  width: 150px;
-  height: 150px;
-  border: 28px solid color-mix(in srgb, var(--brand-solid), transparent 95%);
-  border-radius: 50%;
-  content: '';
-  pointer-events: none;
-}
-.kudu-cloud-upsell > * {
-  position: relative;
-  z-index: 1;
-}
-.kudu-cloud-upsell-icon {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--brand-solid), transparent 74%);
-  border-radius: 14px;
-  background: var(--brand-surface);
-  color: var(--brand-solid);
-}
-.kudu-cloud-upsell-icon svg {
-  width: 19px;
-  height: 19px;
-}
-.kudu-cloud-upsell-copy {
-  min-width: 0;
-}
-.kudu-cloud-upsell-copy > span {
-  color: var(--brand-solid);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-.kudu-cloud-upsell h2 {
-  margin: 4px 0 3px;
-  color: var(--text-primary);
-  font-size: 15px;
-  font-weight: 760;
-  letter-spacing: -0.02em;
-}
-.kudu-cloud-upsell p {
-  max-width: 730px;
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.55;
-}
-.kudu-cloud-upsell > button {
-  display: flex;
-  min-height: 40px;
-  align-items: center;
-  gap: 10px;
-  padding: 0 15px;
-  border: 1px solid var(--accent-muted-border);
-  border-radius: 12px;
-  background: var(--accent-muted-bg);
-  color: var(--brand-solid);
-  font-size: 12px;
-  font-weight: 750;
-  white-space: nowrap;
-  transition:
-    border-color 0.18s ease,
-    background 0.18s ease,
-    transform 0.18s ease;
-}
-.kudu-cloud-upsell > button:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--brand-solid), transparent 55%);
-  background: color-mix(in srgb, var(--brand-solid), transparent 88%);
-}
 .kudu-attention-rail {
   display: flex;
   min-height: 100%;
@@ -2077,29 +1978,6 @@ thead {
   color: var(--text-dim);
   font-style: normal;
 }
-.kudu-cloud-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: auto;
-  padding: 20px 0 2px;
-  border: 0;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 8px;
-  text-align: left;
-}
-.kudu-cloud-status > i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--text-faint);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--text-faint), transparent 86%);
-}
-.kudu-cloud-status > i.is-connected {
-  background: var(--success);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--success), transparent 85%);
-}
 .admin-banner {
   position: absolute;
   right: 20px;
@@ -2148,9 +2026,6 @@ thead {
     border-top: 1px solid var(--border-default);
     border-left: 0;
   }
-  .kudu-cloud-status {
-    margin-top: 18px;
-  }
 }
 @media (max-width: 680px) {
   .kudu-home-main {
@@ -2175,13 +2050,6 @@ thead {
   }
   .kudu-activity-strip > div:last-child {
     border-bottom: 0;
-  }
-  .kudu-cloud-upsell {
-    grid-template-columns: 44px minmax(0, 1fr);
-  }
-  .kudu-cloud-upsell > button {
-    grid-column: 1 / -1;
-    justify-content: center;
   }
 }
 
@@ -2744,9 +2612,6 @@ body {
   margin-top: 11px;
   font-size: 12px;
 }
-.kudu-cloud-status {
-  font-size: 12px;
-}
 
 /* Visual stage shared by scan, search, and setup empty states. */
 .empty-state {
@@ -2943,9 +2808,6 @@ body {
 .dark .service-danger-action,
 .dark .service-info-action {
   color: #14231d !important;
-}
-.service-manager-guide {
-  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--warning), transparent 28%);
 }
 .service-stats-grid {
   gap: 14px !important;

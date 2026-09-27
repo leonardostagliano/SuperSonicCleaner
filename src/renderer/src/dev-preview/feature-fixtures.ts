@@ -59,8 +59,7 @@ const recording: DiagnosticSession = {
   notes: 'Browser and everyday apps opening.',
   pinned: false,
   state: 'saved',
-  cloud: null,
-  upload: null,
+  report: null,
   recording: {
     version: 1,
     recordId: '00000000-0000-4000-8000-000000000002',
@@ -73,25 +72,19 @@ const recording: DiagnosticSession = {
       totalMemoryBytes: 32 * GB,
       osVersion: 'Windows 11'
     },
-    samples: Array.from({ length: 61 }, (_, i) => ({
-      t: i * 2000,
+    samples: Array.from({ length: 121 }, (_, i) => ({
+      t: i * 1000,
       memoryPercent: ((8.4 + i * 0.01) / 32) * 100,
-      cpuPercent: 18 + Math.round(Math.abs(Math.sin(i * 0.3)) * 42),
+      cpuPercent: i >= 25 && i <= 65 ? 92 : 18 + Math.round(Math.abs(Math.sin(i * 0.3)) * 42),
       memoryUsedBytes: (8.4 + i * 0.01) * GB,
-      diskReadBytesPerSec: 2 * 1024 ** 2,
-      diskWriteBytesPerSec: 1024 ** 2,
+      diskReadBytesPerSec: i % 5 === 1 ? 2 * 1024 ** 2 : null,
+      diskWriteBytesPerSec: i % 5 === 1 ? 1024 ** 2 : null,
       processes: []
     }))
   }
 }
 export const featureReads = (empty: boolean) => ({
   ...diagnosticsFixture(recording, empty),
-  diagnosticsCapabilities: () => ({
-    available: true,
-    requiredPlan: 'pro',
-    retentionDays: 30,
-    provider: 'Preview'
-  }),
   recoveryList: () => ({
     entries: empty ? [] : entries,
     unreadable: [],

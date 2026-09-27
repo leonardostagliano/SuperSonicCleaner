@@ -18,10 +18,6 @@
     "recoveryDescription": "Temukan opsi pemulihan untuk perubahan sistem yang didukung.",
     "reviewFirst": "Buka alat untuk meninjau opsinya sebelum membuat perubahan.",
     "advancedPrompt": "Ingin grafik dan detail sistem? Beralih ke Lanjutan",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Saya memerlukan lebih banyak ruang",
@@ -129,7 +125,6 @@
     "handleThreats": "Pilih cara menanganinya",
     "reviewPaths": "Tinjau jalur yang dipilih",
     "chooseOptimizations": "Pilih pengoptimalan",
-    "reviewCloud": "Tinjau preferensi berbagi",
     "trackFolder": "Pilih folder untuk dipantau",
     "captureSnapshot": "Ambil snapshot lokal",
     "compareGrowth": "Bandingkan perubahan penyimpanan",
@@ -154,15 +149,13 @@
     "maintenance": "Berikan perawatan yang tepat untuk setiap drive. Tinjau jenis drive dan pemeliharaan yang tersedia sebelum menjalankan tugas.",
     "network": "Tinjau data jaringan yang tersimpan. Bersihkan cache atau hapus koneksi lama satu per satu saat diperlukan.",
     "malware": "Periksa malware dan file mencurigakan. Tinjau temuan dan pilih cara menangani setiap deteksi.",
-    "threatMonitor": "Pantau koneksi dan aktivitas keamanan. Periksa peringatan untuk memahami sumber dan konteksnya.",
     "cve": "Ubah temuan kerentanan menjadi rencana. Tinjau masalah dengan tingkat keparahan lebih tinggi dan perbarui perangkat lunak yang terdampak.",
     "gameMode": "Sediakan ruang untuk bermain. Tinjau pengoptimalan dan aktifkan saat Anda siap.",
     "performance": "Pahami apa yang sedang dilakukan PC Anda. Bandingkan tren sumber daya dan temukan proses di balik beban tersebut.",
     "uninstaller": "Pertahankan aplikasi yang Anda gunakan. Tinjau detail aplikasi sebelum mencopot pemasangan atau menghapus file sisanya.",
     "history": "Lihat apa yang berubah, apa yang dipulihkan, dan apa yang perlu ditinjau lagi. Setiap tugas yang selesai meninggalkan catatan.",
-    "settings": "Buat Kudu terasa tepat untuk Anda. Atur tampilan, notifikasi, pengecualian, dan preferensi pembersihan Anda.",
+    "settings": "Buat SuperSonicCleaner terasa tepat untuk Anda. Atur tampilan, notifikasi, pengecualian, dan preferensi pembersihan Anda.",
     "about": "Open source, dibuat dengan penuh perhatian. Temukan versi Anda, periksa pembaruan, dan kenali proyek ini.",
-    "cloud": "Satukan perangkat Anda. Tautkan komputer ini untuk mengelola koneksi cloud dan fitur keamanannya.",
     "breach": "Periksa apakah email muncul dalam kebocoran yang diketahui. Tinjau apa yang terekspos dan langkah berikutnya yang direkomendasikan.",
     "privacy": "Pilih apa yang dibagikan komputer Anda. Tinjau setiap rekomendasi dan pertahankan pengaturan yang Anda andalkan.",
     "services": "Pahami layanan di balik sistem Anda. Periksa fungsi dan keamanannya sebelum mengubah perilaku startup.",
@@ -172,8 +165,7 @@
     "schedules": "Perawatan yang baik, sesuai jadwal Anda. Pilih tugas, waktu, dan frekuensi yang sesuai untuk komputer ini.",
     "drivers": "Tinjau pembaruan driver dan paket lama di satu tempat. Periksa perubahan yang diusulkan sebelum menerapkannya.",
     "storageHistory": "Lihat apa yang bertambah. Simpan snapshot folder lokal dan bandingkan di mana penyimpanan telah berubah.",
-    "recovery": "Cara yang jelas untuk kembali. Tinjau perubahan yang didukung dan detail pemulihan sebelum membatalkan apa pun.",
-    "diagnostics": "Ubah momen lambat menjadi bukti. Rekam secara lokal, periksa datanya, dan pilih apakah akan meminta analisis Cloud AI."
+    "recovery": "Cara yang jelas untuk kembali. Tinjau perubahan yang didukung dan detail pemulihan sebelum membatalkan apa pun."
   },
   "home": {
     "eyebrow": "SISTEM ANDA, SEKILAS",
@@ -187,7 +179,7 @@
     "protectDescription": "Jalankan pemindaian malware dan tinjau file apa pun yang memerlukan perhatian.",
     "protectAction": "Buka perlindungan",
     "automateTitle": "Jadikan perawatan sebagai rutinitas",
-    "automateDescription": "Pilih kapan Kudu memeriksa dan membersihkan komputer Anda.",
+    "automateDescription": "Pilih kapan SuperSonicCleaner memeriksa dan membersihkan komputer Anda.",
     "automateAction": "Siapkan jadwal",
     "cpu": "Penggunaan CPU",
     "memory": "Memori",

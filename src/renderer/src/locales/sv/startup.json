@@ -53,17 +53,6 @@
   "historyCategoryDisabled": "Inaktiverad",
   "historyCategoryRemoved": "Borttagen",
   "removeButtonTitle": "Ta bort {{name}}",
-  "safetyLinkCloud": "Länka till Kudu Cloud för att se AI-säkerhetsbetyg för dina autostartprogram",
-  "safetyPending": "Analyserar säkerhet...",
-  "safetyTooltipSafe": "Säker — klicka för detaljer",
-  "safetyTooltipCaution": "Var försiktig — klicka för detaljer",
-  "safetyTooltipWarning": "Misstänkt — klicka för detaljer",
-  "safetyTooltipDanger": "Potentiellt osäker — klicka för detaljer",
-  "safetyTooltipPending": "Säkerhetsanalys pågår",
-  "safetyTooltipLocked": "Länka till Kudu Cloud för säkerhetsbetyg",
-  "safetyScore": "Säkerhet: {{score}}/10",
-  "safetyAnalyzed": "Analyserad {{date}}",
-  "sortBySafety": "Sortera efter säkerhet",
   "staleBadge": "Inte installerad",
   "staleTooltip": "Programmet som den här posten pekar på saknas, så det kan inte längre starta. Det är säkert att ta bort posten."
 }

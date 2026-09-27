@@ -1,9 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './i18n'
-import { App } from './App'
+import { i18nReady } from './i18n'
+import { RendererRoot } from './RendererRoot'
 import './globals.css'
+import './design-tokens.css'
 import './pulse.css'
+import './controls.css'
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -60,10 +62,14 @@ if (import.meta.env.DEV) {
   })
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>
-)
+// Render after the selected locale is available, avoiding untranslated keys
+// while its local chunk is loading on a cold start.
+void i18nReady.then(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <ErrorBoundary>
+        <RendererRoot />
+      </ErrorBoundary>
+    </React.StrictMode>
+  )
+})

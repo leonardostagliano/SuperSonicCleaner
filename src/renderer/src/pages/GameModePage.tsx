@@ -715,7 +715,8 @@ export function GameModePage() {
             <button
               onClick={() => store.getState().setAutoDetect(!config.autoDetect)}
               className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors"
-              style={{ background: config.autoDetect ? '#a6d2b8' : 'var(--bg-active)' }}
+              data-checked={config.autoDetect}
+              style={{ background: config.autoDetect ? '#a6d2b8' : 'var(--toggle-off-bg)' }}
             >
               <motion.div
                 className="absolute top-0.5 h-5 w-5 rounded-full"
@@ -753,7 +754,10 @@ export function GameModePage() {
                   <button
                     onClick={() => store.getState().setAutoDeactivate(!config.autoDeactivate)}
                     className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors"
-                    style={{ background: config.autoDeactivate ? '#a6d2b8' : 'var(--bg-active)' }}
+                    data-checked={config.autoDeactivate}
+                    style={{
+                      background: config.autoDeactivate ? '#a6d2b8' : 'var(--toggle-off-bg)'
+                    }}
                   >
                     <motion.div
                       className="absolute top-0.5 h-5 w-5 rounded-full"
@@ -932,7 +936,8 @@ export function GameModePage() {
                             onClick={() => !active && store.getState().toggleOptimization(opt.id)}
                             disabled={active}
                             className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-40"
-                            style={{ background: isEnabled ? cat.color : 'var(--bg-active)' }}
+                            data-checked={isEnabled}
+                            style={{ background: isEnabled ? cat.color : 'var(--toggle-off-bg)' }}
                           >
                             <motion.div
                               className="absolute top-0.5 h-5 w-5 rounded-full"

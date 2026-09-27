@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "RENDSZERTISZTÍTÓ",
   "dashboard": "Kezdőlap",
   "securityHeading": "Védelem",
   "malwareScanner": "Kártevővizsgáló",
-  "threatMonitor": "Fenyegetésfigyelő",
   "systemHardening": "Rendszermegerősítés",
-  "cveScanner": "Sérülékenységek",
   "monitoring": "Figyelés",
   "maintainHeading": "Kezelés",
   "cleaner": "Tisztítás",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Tevékenység és helyreállítás",
   "history": "Tevékenység",
   "settings": "Beállítások",
-  "breachMonitor": "Adatszivárgás-figyelő",
   "gameMode": "Játékmód",
   "firewallAudit": "Tűzfalaudit"
 }

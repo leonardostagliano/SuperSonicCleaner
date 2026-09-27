@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Cpu,
@@ -27,7 +27,7 @@ import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useDriverStore } from '@/stores/driver-store'
 import { formatBytes } from '@/lib/utils'
-import type { DriverScanProgress, DriverUpdate, DriverUpdateProgress } from '@shared/types'
+import type { DriverUpdate } from '@shared/types'
 
 export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
   const { t } = useTranslation('updates')
@@ -58,20 +58,6 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
 
   const isScanning = scanning || updateScanning
   const isBusy = isScanning || applying
-
-  // Listen for progress events
-  useEffect(() => {
-    const cleanupDriver = window.kudu.onDriverProgress((data: DriverScanProgress) => {
-      useDriverStore.getState().setScanProgress(data)
-    })
-    const cleanupUpdate = window.kudu.onDriverUpdateProgress((data: DriverUpdateProgress) => {
-      useDriverStore.getState().setUpdateProgress(data)
-    })
-    return () => {
-      cleanupDriver()
-      cleanupUpdate()
-    }
-  }, [])
 
   // ─── Scan for both stale packages and updates ─────────────
   const handleScan = useCallback(async () => {

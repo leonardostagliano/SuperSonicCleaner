@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "ΚΑΘΑΡΙΣΜΟΣ ΣΥΣΤΗΜΑΤΟΣ",
   "dashboard": "Αρχική",
   "securityHeading": "Προστασία",
   "malwareScanner": "Σάρωση για κακόβουλο λογισμικό",
-  "threatMonitor": "Παρακολούθηση απειλών",
   "systemHardening": "Ενίσχυση ασφάλειας συστήματος",
-  "cveScanner": "Ευπάθειες",
   "monitoring": "Παρακολούθηση",
   "maintainHeading": "Διαχείριση",
   "cleaner": "Εκκαθάριση",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Δραστηριότητα & Ανάκτηση",
   "history": "Δραστηριότητα",
   "settings": "Προτιμήσεις",
-  "breachMonitor": "Παρακολούθηση παραβιάσεων",
   "gameMode": "Λειτουργία παιχνιδιού",
   "firewallAudit": "Έλεγχος τείχους προστασίας"
 }

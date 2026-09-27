@@ -9,6 +9,7 @@ import {
 } from '../services/program-uninstaller'
 import { deletionTouchesExclusions, safeDelete } from '../services/file-utils'
 import { getSettings } from '../services/settings-store'
+import { addInstalledProgramIcons } from '../services/software-icons'
 import type {
   InstalledProgram,
   UninstallerListResult,
@@ -28,6 +29,7 @@ export function registerProgramUninstallerIpc(getWindow: WindowGetter): void {
   ipcMain.handle(IPC.UNINSTALLER_LIST, async (): Promise<UninstallerListResult> => {
     const programs = await getInstalledProgramsFull()
     cachedPrograms = programs
+    await addInstalledProgramIcons(programs).catch(() => undefined)
     return { programs, totalCount: programs.length }
   })
 

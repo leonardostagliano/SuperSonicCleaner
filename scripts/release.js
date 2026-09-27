@@ -2,6 +2,7 @@
 
 const { execSync } = require('child_process')
 const { readFileSync, writeFileSync } = require('fs')
+const { manualReleaseVersion } = require('./manual-release-version')
 
 const run = (cmd) => execSync(cmd, { stdio: 'inherit' })
 const capture = (cmd) => execSync(cmd, { encoding: 'utf-8' }).trim()
@@ -27,15 +28,21 @@ if (branch !== 'main') {
 }
 
 // Ensure up to date with remote
-run('git fetch origin main')
+run('git fetch origin main --tags')
 const behind = capture('git rev-list HEAD..origin/main --count')
 if (behind !== '0') {
   console.error('Error: local main is behind origin. Pull first.')
   process.exit(1)
 }
 
+// Resolve the version before mutations. Automatic releases can be newer than package.json.
+const declaredVersion = JSON.parse(readFileSync('package.json', 'utf-8')).version
+const remoteTags = capture('git tag --list').split('\n').filter(Boolean)
+const plannedVersion = manualReleaseVersion(declaredVersion, bump, remoteTags)
+run('npm run check')
+
 // 1. Bump version (no git tag, no commit)
-run(`npm version ${bump} --no-git-tag-version`)
+run(`npm version ${plannedVersion} --no-git-tag-version`)
 const version = JSON.parse(readFileSync('package.json', 'utf-8')).version
 const tag = `v${version}`
 console.log(`\nBumped to ${tag}`)
@@ -98,4 +105,6 @@ run('git push origin main')
 run(`git push origin ${tag}`)
 
 console.log(`\n${tag} released! CI will build and publish.`)
-console.log(`Track progress: https://github.com/AdventDevInc/kudu/actions/workflows/release.yml`)
+console.log(
+  `Track progress: https://github.com/leonardostagliano/SuperSonicCleaner/actions/workflows/release.yml`
+)

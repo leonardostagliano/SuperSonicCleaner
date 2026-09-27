@@ -18,10 +18,6 @@
     "recoveryDescription": "Tìm các tùy chọn khôi phục cho những thay đổi hệ thống được hỗ trợ.",
     "reviewFirst": "Mở một công cụ để xem lại các tùy chọn của công cụ đó trước khi thực hiện thay đổi.",
     "advancedPrompt": "Muốn xem biểu đồ và chi tiết hệ thống? Chuyển sang Nâng cao",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Tôi cần thêm dung lượng",
@@ -129,7 +125,6 @@
     "handleThreats": "Chọn cách xử lý",
     "reviewPaths": "Xem lại các đường dẫn đã chọn",
     "chooseOptimizations": "Chọn các tối ưu hóa",
-    "reviewCloud": "Xem lại tùy chọn chia sẻ",
     "trackFolder": "Chọn một thư mục để theo dõi",
     "captureSnapshot": "Chụp ảnh nhanh cục bộ",
     "compareGrowth": "So sánh thay đổi dung lượng lưu trữ",
@@ -154,15 +149,13 @@
     "maintenance": "Chăm sóc đúng cách cho từng ổ đĩa. Xem lại loại ổ đĩa và các tùy chọn bảo trì hiện có trước khi chạy tác vụ.",
     "network": "Xem lại dữ liệu mạng đã lưu. Xóa bộ nhớ đệm hoặc gỡ từng kết nối cũ khi cần.",
     "malware": "Kiểm tra malware và các tệp đáng ngờ. Xem lại kết quả phát hiện và chọn cách xử lý cho từng mục.",
-    "threatMonitor": "Theo dõi các kết nối và hoạt động bảo mật. Kiểm tra một cảnh báo để hiểu nguồn gốc và ngữ cảnh của nó.",
     "cve": "Biến các phát hiện lỗ hổng thành một kế hoạch. Xem lại các sự cố nghiêm trọng hơn và cập nhật phần mềm bị ảnh hưởng.",
     "gameMode": "Tạo không gian cho giải trí. Xem lại các tối ưu hóa và kích hoạt khi bạn sẵn sàng.",
     "performance": "Hiểu PC của bạn đang làm gì. So sánh xu hướng tài nguyên và tìm các tiến trình gây tải.",
     "uninstaller": "Giữ lại những ứng dụng bạn sử dụng. Xem lại chi tiết ứng dụng trước khi gỡ cài đặt hoặc xóa các tệp còn sót lại.",
     "history": "Xem điều gì đã thay đổi, điều gì đã được khôi phục và điều gì cần xem lại. Mỗi tác vụ hoàn tất đều để lại bản ghi.",
-    "settings": "Điều chỉnh Kudu theo cách phù hợp với bạn. Thiết lập giao diện, thông báo, loại trừ và tùy chọn dọn dẹp.",
+    "settings": "Điều chỉnh SuperSonicCleaner theo cách phù hợp với bạn. Thiết lập giao diện, thông báo, loại trừ và tùy chọn dọn dẹp.",
     "about": "Mã nguồn mở, được xây dựng cẩn thận. Tìm phiên bản của bạn, kiểm tra bản cập nhật và tìm hiểu về dự án.",
-    "cloud": "Kết nối các thiết bị của bạn. Liên kết máy tính này để quản lý kết nối đám mây và các tính năng bảo mật của nó.",
     "breach": "Kiểm tra xem một email có xuất hiện trong các vụ rò rỉ đã biết hay không. Xem lại những gì đã bị lộ và các bước tiếp theo được đề xuất.",
     "privacy": "Chọn những gì máy tính của bạn chia sẻ. Xem lại từng đề xuất và giữ nguyên các cài đặt bạn cần dùng.",
     "services": "Hiểu các dịch vụ phía sau hệ thống của bạn. Kiểm tra chức năng và độ an toàn trước khi thay đổi hành vi khởi động.",
@@ -172,8 +165,7 @@
     "schedules": "Chăm sóc tốt, theo lịch của bạn. Chọn tác vụ, thời gian và tần suất phù hợp với máy tính này.",
     "drivers": "Xem lại các bản cập nhật driver và các gói cũ ở cùng một nơi. Kiểm tra các thay đổi được đề xuất trước khi áp dụng.",
     "storageHistory": "Xem điều gì đang tăng lên. Lưu ảnh nhanh thư mục cục bộ và so sánh nơi dung lượng lưu trữ đã thay đổi.",
-    "recovery": "Một cách quay lại rõ ràng. Xem lại các thay đổi được hỗ trợ và chi tiết khôi phục trước khi hoàn tác bất kỳ điều gì.",
-    "diagnostics": "Biến một lúc máy chậm thành bằng chứng. Ghi lại cục bộ, kiểm tra dữ liệu và chọn có yêu cầu phân tích Cloud AI hay không."
+    "recovery": "Một cách quay lại rõ ràng. Xem lại các thay đổi được hỗ trợ và chi tiết khôi phục trước khi hoàn tác bất kỳ điều gì."
   },
   "home": {
     "eyebrow": "TỔNG QUAN HỆ THỐNG CỦA BẠN",
@@ -187,7 +179,7 @@
     "protectDescription": "Chạy quét malware và xem lại mọi tệp cần chú ý.",
     "protectAction": "Mở bảo vệ",
     "automateTitle": "Biến việc chăm sóc thành thói quen",
-    "automateDescription": "Chọn thời điểm Kudu kiểm tra và dọn dẹp máy tính của bạn.",
+    "automateDescription": "Chọn thời điểm SuperSonicCleaner kiểm tra và dọn dẹp máy tính của bạn.",
     "automateAction": "Thiết lập lịch",
     "cpu": "Mức sử dụng CPU",
     "memory": "Bộ nhớ",

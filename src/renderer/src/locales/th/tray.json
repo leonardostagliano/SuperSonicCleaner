@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "เปิด Kudu",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "เปิด SuperSonicCleaner",
   "quit": "ออก",
-  "scheduledTaskNotificationTitle": "Kudu - งานที่กำหนดเวลาไว้",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - งานที่กำหนดเวลาไว้",
   "scheduledTaskNotificationBody": "กำลังเรียกใช้ \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "Kudu - การสแกนเสร็จสมบูรณ์",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - การสแกนเสร็จสมบูรณ์",
   "scanCompleteNotificationBody": "พบ {{itemCount}} รายการ ({{sizeMB}} MB) ที่สามารถล้างได้",
   "scheduledScanName": "การสแกนตามกำหนดเวลา"
 }

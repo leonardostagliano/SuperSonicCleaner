@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 import { app } from 'electron'
-import type { ThreatBlacklist } from './cloud-agent-types'
+import type { ThreatBlacklist } from './local-system-types'
 
 const MAX_ENTRIES_PER_ARRAY = 500_000
 const MAX_DOWNLOAD_BYTES = 50 * 1024 * 1024 // 50 MB

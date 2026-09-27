@@ -7,6 +7,7 @@ import { dump, load } from 'js-yaml'
 import {
   expectedAssetNames,
   verifyReleaseArtifacts,
+  writeChecksumManifest,
   verifyUploadedAssets
 } from './release-artifacts'
 
@@ -21,19 +22,22 @@ afterEach(async () => {
 })
 
 async function fixture() {
-  const directory = await mkdtemp(join(tmpdir(), 'kudu-release-test-'))
+  const directory = await mkdtemp(join(tmpdir(), 'supersonic-cleaner-release-test-'))
   directories.push(directory)
   const names = expectedAssetNames(tag)
   const targets = {
-    'latest.yml': ['Kudu-Setup-2.9.0.exe'],
+    'latest.yml': ['SuperSonicCleaner-Setup-2.9.0.exe'],
     'latest-mac.yml': [
-      'Kudu-2.9.0-x64.dmg',
-      'Kudu-2.9.0-x64.zip',
-      'Kudu-2.9.0-arm64.dmg',
-      'Kudu-2.9.0-arm64.zip'
+      'SuperSonicCleaner-2.9.0-x64.dmg',
+      'SuperSonicCleaner-2.9.0-x64.zip',
+      'SuperSonicCleaner-2.9.0-arm64.dmg',
+      'SuperSonicCleaner-2.9.0-arm64.zip'
     ],
-    'latest-linux.yml': ['Kudu-x86_64.AppImage', 'Kudu-2.9.0-amd64.deb'],
-    'latest-linux-arm64.yml': ['Kudu-arm64.AppImage', 'Kudu-2.9.0-arm64.deb']
+    'latest-linux.yml': ['SuperSonicCleaner-x86_64.AppImage', 'SuperSonicCleaner-2.9.0-amd64.deb'],
+    'latest-linux-arm64.yml': [
+      'SuperSonicCleaner-arm64.AppImage',
+      'SuperSonicCleaner-2.9.0-arm64.deb'
+    ]
   }
   for (const name of names.filter((name: string) => !name.endsWith('.yml'))) {
     await writeFile(join(directory, name), name)
@@ -60,6 +64,18 @@ async function editManifest(directory: string, name: string, edit: (manifest: an
 }
 
 describe('release artifact verification', () => {
+  it('creates the checksum asset consumed by the Linux installer for both release pipelines', async () => {
+    const directory = await fixture()
+    const assets = await verifyReleaseArtifacts(directory, tag)
+    const checksum = await writeChecksumManifest(directory, assets)
+    const bytes = await readFile(checksum.path)
+    expect(bytes.toString()).toContain(
+      `${assets.find((asset) => asset.name === 'SuperSonicCleaner-x86_64.AppImage')!.sha256}  SuperSonicCleaner-x86_64.AppImage\n`
+    )
+    expect(bytes.toString().trim().split('\n')).toHaveLength(assets.length)
+    expect(checksum.size).toBe(bytes.length)
+    expect(checksum.sha256).toBe(createHash('sha256').update(bytes).digest('hex'))
+  })
   it('accepts a complete release with all architecture manifests', async () => {
     const assets = await verifyReleaseArtifacts(await fixture(), tag)
     expect(assets).toHaveLength(20)
@@ -67,17 +83,17 @@ describe('release artifact verification', () => {
 
   it('rejects a missing installer before publishing', async () => {
     const directory = await fixture()
-    await rm(join(directory, 'Kudu-2.9.0-arm64.dmg'))
+    await rm(join(directory, 'SuperSonicCleaner-2.9.0-arm64.dmg'))
     await expect(verifyReleaseArtifacts(directory, tag)).rejects.toThrow('Missing release artifact')
   })
 
   it('requires the portable ZIP and never offers it as an installer update', async () => {
     const directory = await fixture()
     await editManifest(directory, 'latest.yml', (manifest) => {
-      manifest.files[0].url = 'Kudu-Portable-2.9.0-x64.zip'
+      manifest.files[0].url = 'SuperSonicCleaner-Portable-2.9.0-x64.zip'
     })
     await expect(verifyReleaseArtifacts(directory, tag)).rejects.toThrow('unexpected update target')
-    await rm(join(directory, 'Kudu-Portable-2.9.0-x64.zip'))
+    await rm(join(directory, 'SuperSonicCleaner-Portable-2.9.0-x64.zip'))
     await expect(verifyReleaseArtifacts(directory, tag)).rejects.toThrow('Missing release artifact')
   })
 
@@ -96,9 +112,12 @@ describe('release artifact verification', () => {
 
   it('rejects empty or unexpected artifacts', async () => {
     const directory = await fixture()
-    await writeFile(join(directory, 'Kudu-Setup-2.9.0.exe'), '')
+    await writeFile(join(directory, 'SuperSonicCleaner-Setup-2.9.0.exe'), '')
     await expect(verifyReleaseArtifacts(directory, tag)).rejects.toThrow('Empty artifact')
-    await writeFile(join(directory, 'Kudu-Setup-2.9.0.exe'), 'Kudu-Setup-2.9.0.exe')
+    await writeFile(
+      join(directory, 'SuperSonicCleaner-Setup-2.9.0.exe'),
+      'SuperSonicCleaner-Setup-2.9.0.exe'
+    )
     await writeFile(join(directory, 'builder-effective-config.yaml'), 'not a release asset')
     await expect(verifyReleaseArtifacts(directory, tag)).rejects.toThrow(
       'Unexpected release artifact'
@@ -114,9 +133,9 @@ describe('release artifact verification', () => {
   })
 
   it.each([
-    'Kudu-x86_64.AppImage',
-    '../Kudu-arm64.AppImage',
-    'https://example.com/Kudu-arm64.AppImage'
+    'SuperSonicCleaner-x86_64.AppImage',
+    '../SuperSonicCleaner-arm64.AppImage',
+    'https://example.com/SuperSonicCleaner-arm64.AppImage'
   ])('rejects wrong-architecture or unsafe update target %s', async (url) => {
     const directory = await fixture()
     await editManifest(directory, 'latest-linux-arm64.yml', (manifest) => {
@@ -127,7 +146,7 @@ describe('release artifact verification', () => {
 
   it('rejects a manifest pointing at a modified installer', async () => {
     const directory = await fixture()
-    await writeFile(join(directory, 'Kudu-Setup-2.9.0.exe'), 'corrupted')
+    await writeFile(join(directory, 'SuperSonicCleaner-Setup-2.9.0.exe'), 'corrupted')
     await expect(verifyReleaseArtifacts(directory, tag)).rejects.toThrow('checksum mismatch')
   })
 

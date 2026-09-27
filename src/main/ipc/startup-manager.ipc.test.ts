@@ -492,6 +492,19 @@ describe('makeStableId (logic replica)', () => {
 // =====================================================================
 
 describe('listStartupItems', () => {
+  it('excludes both current and legacy application startup tasks from the system query', async () => {
+    setupExecFileHandler(() => ({ stdout: '' }))
+    await listStartupItems()
+    const query = mockExecFile.mock.calls.find(
+      ([, args]) =>
+        Array.isArray(args) && args.some((arg) => String(arg).includes('Get-ScheduledTask'))
+    )
+    expect(query).toBeDefined()
+    expect(query![1].join(' ')).toContain(
+      "$task.TaskName -notin @('KuduStartup', 'SuperSonicCleanerStartup')"
+    )
+  })
+
   it('returns items from HKCU registry', async () => {
     setupExecFileHandler((cmd, args) => {
       if (cmd === 'reg' && args[0] === 'query' && args[1] === HKCU_RUN) {

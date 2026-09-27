@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * GPT-5.4 Translation Script for Kudu i18n
+ * GPT-5.4 Translation Script for SuperSonicCleaner i18n
  *
  * Usage:
  *   OPENAI_API_KEY=sk-... node scripts/translate.js                    # All languages, all namespaces
@@ -240,12 +240,12 @@ async function translateNamespace(namespace, targetLang, targetLangName, english
     process.exit(1)
   }
 
-  const systemPrompt = `You are a professional translator for "Kudu", a free, open-source desktop system cleaner and optimization tool for Windows, macOS, and Linux. Kudu helps users clean junk files, fix registry issues (Windows), manage startup programs, scan for malware, harden privacy settings, uninstall programs, monitor system performance, manage drivers, and schedule automated maintenance tasks. It has a cloud dashboard feature for managing multiple devices. The target audience is everyday computer users who want to keep their systems running fast and clean.
+  const systemPrompt = `You are a professional translator for "SuperSonicCleaner", a free, open-source desktop system cleaner and optimization tool for Windows, macOS, and Linux. SuperSonicCleaner helps users clean junk files, fix registry issues (Windows), manage startup programs, scan for malware, harden privacy settings, uninstall programs, monitor system performance, manage drivers, and schedule automated maintenance tasks. The target audience is everyday computer users who want to keep their systems running fast and clean.
 
 Translate the following JSON values from English to ${targetLangName}. Rules:
 - Keep all JSON keys exactly as-is (do not translate keys)
 - Keep interpolation variables like {{count}}, {{name}}, {{size}}, {{version}} exactly unchanged — these are replaced at runtime
-- Keep brand names unchanged: Kudu, Windows, macOS, Linux, Chrome, Firefox, PowerShell, winget, Homebrew, Microsoft Store, GitHub, S.M.A.R.T., SFC, DISM, UAC, Defender, ClamAV, LLMNR, WPAD, SMBv1, RDP, Hyper-V, Xbox, Cortana, Copilot, Recall, DPAPI, Keychain
+- Keep brand names unchanged: SuperSonicCleaner, Windows, macOS, Linux, Chrome, Firefox, PowerShell, winget, Homebrew, Microsoft Store, GitHub, S.M.A.R.T., SFC, DISM, UAC, Defender, ClamAV, LLMNR, WPAD, SMBv1, RDP, Hyper-V, Xbox, Cortana, Copilot, Recall, DPAPI, Keychain
 - Keep technical abbreviations unchanged: DNS, ARP, CPU, GPU, RAM, PID, IP, CIDR, SSH, USB, SSD, HDD, API, IPC, URI, URL, HTTP, HTTPS
 - Use formal but accessible tone — like a polished desktop utility, not overly casual or overly technical
 - For OS/computing terms (registry, cache, malware, firewall, telemetry, driver, service, startup, quarantine, etc.), use the standard localized term commonly used in ${targetLangName} operating systems and security software
@@ -394,7 +394,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`\nKudu i18n Translation Script`)
+  console.log(`\nSuperSonicCleaner i18n Translation Script`)
   console.log(`Model: ${MODEL}`)
   console.log(`Namespaces: ${nsFiles.join(', ')}`)
   console.log(`Languages: ${languages.map(([c, n]) => `${c} (${n})`).join(', ')}`)

@@ -1,12 +1,32 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { existsSync, mkdtempSync, mkdirSync, rmSync, writeFileSync, utimesSync } from 'fs'
+import type { Dirent, Stats } from 'fs'
+import { lstat, readdir } from 'fs/promises'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
 const state = vi.hoisted(() => ({
   exclusions: [] as string[],
-  items: [] as Array<{ id: string }>
+  items: [] as Array<{ id: string }>,
+  flatFixture: null as { root: string; entries: Dirent[]; paths: Set<string>; info: Stats } | null
 }))
+
+// Only the count-limit regression uses synthetic entries. The remaining recency
+// tests still exercise real files, timestamps, descendants and cleanup.
+vi.mock('fs/promises', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('fs/promises')>()
+  return {
+    ...actual,
+    readdir: (...args: Parameters<typeof actual.readdir>) =>
+      state.flatFixture?.root === args[0]
+        ? Promise.resolve(state.flatFixture.entries)
+        : actual.readdir(...args),
+    lstat: (...args: Parameters<typeof actual.lstat>) =>
+      state.flatFixture?.paths.has(String(args[0]))
+        ? Promise.resolve(state.flatFixture.info)
+        : actual.lstat(...args)
+  }
+})
 
 vi.mock('./settings-store', () => ({
   getSettings: () => ({
@@ -81,6 +101,7 @@ beforeEach(() => {
   testDir = mkdtempSync(join(tmpdir(), 'kudu-recency-'))
   state.exclusions = []
   state.items = []
+  state.flatFixture = null
 })
 
 afterEach(() => {
@@ -234,13 +255,24 @@ describe('scanDirectory with deepRecencyCheck', () => {
   })
 
   it('does not silently truncate a flat cache after 5,000 settled files', async () => {
-    for (let i = 0; i < 5_001; i++) file(`entry-${i}`, 180, 1)
+    const fixturePath = file('fixture', 180, 1)
+    const info = await lstat(fixturePath)
+    const [entry] = await readdir(testDir, { withFileTypes: true })
+    state.flatFixture = {
+      root: testDir,
+      info,
+      paths: new Set(Array.from({ length: 5_001 }, (_, i) => join(testDir, `entry-${i}`))),
+      entries: Array.from({ length: 5_001 }, (_, i) =>
+        Object.assign(Object.create(Object.getPrototypeOf(entry)), entry, { name: `entry-${i}` })
+      )
+    }
 
     const result = await scanDirectory(testDir, 'browser', 'Large flat cache', DEEP)
 
     expect(result.itemCount).toBe(5_001)
     expect(result.totalSize).toBe(5_001)
-  }, 30_000)
+    expect(new Set(result.items.map((item) => item.path)).size).toBe(5_001)
+  })
 
   it('collapses a fully settled tree into one item per top-level entry', async () => {
     file('js/a', 180, 10)

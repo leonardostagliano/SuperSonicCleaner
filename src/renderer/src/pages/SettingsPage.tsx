@@ -1,17 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import {
-  Plus,
-  X,
-  FolderOpen,
-  Sun,
-  Moon,
-  Monitor,
-  Cloud,
-  ChevronRight,
-  RotateCcw
-} from 'lucide-react'
+import { Plus, X, FolderOpen, Sun, Moon, Monitor, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { cn } from '@/lib/utils'
@@ -23,11 +12,9 @@ import i18next from 'i18next'
 export function SettingsPage() {
   const { t } = useTranslation('settings')
   const { features, platform, isPortable } = usePlatform()
-  const { settings, updateSettings, setSettings } = useSettingsStore()
+  const { settings, saveSettings, setSettings } = useSettingsStore()
   const [newExclusion, setNewExclusion] = useState('')
-  const navigate = useNavigate()
-
-  const isLinked = !!settings.cloud.apiKey
+  const [savingStartup, setSavingStartup] = useState(false)
 
   useEffect(() => {
     window.kudu
@@ -36,34 +23,60 @@ export function SettingsPage() {
       .catch(() => {})
   }, [])
 
-  const save = (partial: Partial<typeof settings>) => {
-    updateSettings(partial)
-    window.kudu?.settingsSet?.(partial).catch(() => {})
+  useEffect(() => {
+    void i18next.changeLanguage(settings.language)
+  }, [settings.language])
+
+  const save = async (partial: Partial<typeof settings>): Promise<boolean> => {
+    try {
+      await saveSettings(partial)
+      return true
+    } catch {
+      toast.error(t('settingsSaveFailed'))
+      return false
+    } finally {
+      // Also restore the language if the user left this page while saving.
+      if ('language' in partial) {
+        void i18next.changeLanguage(useSettingsStore.getState().settings.language)
+      }
+    }
   }
 
   const saveStartup = async (enabled: boolean) => {
-    save({ runAtStartup: enabled })
+    if (savingStartup) return
+    setSavingStartup(true)
+    const previous = settings.runAtStartup
     try {
-      await window.kudu?.applyStartup?.(enabled)
+      if (!(await save({ runAtStartup: enabled }))) return
+      await window.kudu.applyStartup(enabled)
     } catch {
       // Revert the toggle — the OS rejected the change
-      save({ runAtStartup: !enabled })
+      if (useSettingsStore.getState().settings.runAtStartup === enabled) {
+        await save({ runAtStartup: previous })
+      }
       toast.error(t('startupSettingFailedToast'), {
         description: t('startupSettingFailedDesc'),
         action: {
           label: t('startupSettingFailedAction'),
-          onClick: () => window.open('https://usekudu.com/help/startup-failed', '_blank')
+          onClick: () =>
+            window.open(
+              'https://github.com/leonardostagliano/SuperSonicCleaner/blob/main/RELEASE.md#startup-troubleshooting',
+              '_blank'
+            )
         }
       })
+    } finally {
+      setSavingStartup(false)
     }
   }
 
-  const saveTray = (enabled: boolean) => {
-    save({ minimizeToTray: enabled })
-    window.kudu?.applyTray?.(enabled)
+  const saveTray = async (enabled: boolean) => {
+    if (await save({ minimizeToTray: enabled })) {
+      window.kudu.applyTray(useSettingsStore.getState().settings.minimizeToTray)
+    }
   }
 
-  const addExclusion = () => {
+  const addExclusion = async () => {
     const value = newExclusion.trim()
     if (!value) return
     // Must be an absolute path or a *.ext glob
@@ -76,8 +89,9 @@ export function SettingsPage() {
     if (!isDrivePath && !isUncPath && !isUnixPath && !isGlob) return
     // Prevent duplicates
     if (settings.exclusions.includes(value)) return
-    save({ exclusions: [...settings.exclusions, value] })
-    setNewExclusion('')
+    if (await save({ exclusions: [...settings.exclusions, value] })) {
+      setNewExclusion((current) => (current.trim() === value ? '' : current))
+    }
   }
 
   const selectStyle = 'rounded-lg px-3 py-1.5 text-[13px] text-zinc-400 outline-none'
@@ -93,7 +107,6 @@ export function SettingsPage() {
       <nav className="pulse-settings-nav" aria-label={t('pageTitle')}>
         {[
           'sectionGeneral',
-          'sectionCloudDashboard',
           'sectionBackups',
           'sectionCleaningPreferences',
           'sectionExclusions'
@@ -112,19 +125,13 @@ export function SettingsPage() {
       </nav>
       <div className="settings-grid">
         <Section id="sectionGeneral" title={t('sectionGeneral')}>
-          <Row
-            label={t('themeLabel', 'Theme')}
-            desc={t('themeDesc', 'Follow your system appearance or choose a mode')}
-          >
+          <Row label={t('themeLabel')} desc={t('themeDesc')}>
             <ThemeSelector value={settings.theme} onChange={(v) => save({ theme: v })} />
           </Row>
           <Row label={t('languageLabel')} desc={t('languageDesc')}>
             <select
               value={settings.language}
-              onChange={(e) => {
-                save({ language: e.target.value })
-                i18next.changeLanguage(e.target.value)
-              }}
+              onChange={(e) => save({ language: e.target.value })}
               className={selectStyle}
               style={selectBorder}
             >
@@ -139,7 +146,7 @@ export function SettingsPage() {
             <Row
               label={t('runAtStartupLabel')}
               desc={t('portableStartupDesc', {
-                defaultValue: 'Run at startup requires the installed version of Kudu.'
+                defaultValue: 'Run at startup requires the installed version of SuperSonicCleaner.'
               })}
             >
               <span className="text-[12px] text-zinc-500">
@@ -148,31 +155,43 @@ export function SettingsPage() {
             </Row>
           ) : (
             <Row label={t('runAtStartupLabel')} desc={t('runAtStartupDesc')}>
-              <Toggle checked={settings.runAtStartup} onChange={saveStartup} />
+              <Toggle
+                label={t('runAtStartupLabel')}
+                checked={settings.runAtStartup}
+                onChange={saveStartup}
+                disabled={savingStartup}
+              />
             </Row>
           )}
           <Row label={t('minimizeToTrayLabel')} desc={t('minimizeToTrayDesc')}>
-            <Toggle checked={settings.minimizeToTray} onChange={saveTray} />
+            <Toggle
+              label={t('minimizeToTrayLabel')}
+              checked={settings.minimizeToTray}
+              onChange={saveTray}
+            />
           </Row>
           <Row label={t('showNotificationsLabel')} desc={t('showNotificationsDesc')}>
             <Toggle
+              label={t('showNotificationsLabel')}
               checked={settings.showNotificationOnComplete}
               onChange={(v) => save({ showNotificationOnComplete: v })}
-            />
-          </Row>
-          <Row label={t('threatDetectionAlertsLabel')} desc={t('threatDetectionAlertsDesc')}>
-            <Toggle
-              checked={settings.showThreatNotifications}
-              onChange={(v) => save({ showThreatNotifications: v })}
             />
           </Row>
           {!isPortable && (
             <>
               <Row label={t('autoUpdateLabel')} desc={t('autoUpdateDesc')}>
-                <Toggle checked={settings.autoUpdate} onChange={(v) => save({ autoUpdate: v })} />
+                <Toggle
+                  label={t('autoUpdateLabel')}
+                  checked={settings.autoUpdate}
+                  onChange={(v) => save({ autoUpdate: v })}
+                />
               </Row>
               <Row label={t('autoRestartLabel')} desc={t('autoRestartDesc')}>
-                <Toggle checked={settings.autoRestart} onChange={(v) => save({ autoRestart: v })} />
+                <Toggle
+                  label={t('autoRestartLabel')}
+                  checked={settings.autoRestart}
+                  onChange={(v) => save({ autoRestart: v })}
+                />
               </Row>
               <Row label={t('updateCheckIntervalLabel')} desc={t('updateCheckIntervalDesc')}>
                 <select
@@ -195,6 +214,7 @@ export function SettingsPage() {
             last={platform === 'darwin'}
           >
             <Toggle
+              label={t('softwareUpdaterNotificationsLabel')}
               checked={settings.softwareUpdaterNotifications ?? true}
               onChange={(v) => save({ softwareUpdaterNotifications: v })}
             />
@@ -202,48 +222,12 @@ export function SettingsPage() {
           {platform !== 'darwin' && (
             <Row label={t('preferElevatedLaunchLabel')} desc={t('preferElevatedLaunchDesc')} last>
               <Toggle
+                label={t('preferElevatedLaunchLabel')}
                 checked={settings.preferElevatedLaunch ?? false}
                 onChange={(v) => save({ preferElevatedLaunch: v })}
               />
             </Row>
           )}
-        </Section>
-
-        <Section id="sectionCloudDashboard" title={t('sectionCloudDashboard')}>
-          <button
-            onClick={() => navigate('/cloud')}
-            className="flex w-full items-center gap-4 rounded-xl p-4 text-left transition-all"
-            style={{
-              background: 'var(--accent-muted-bg)',
-              border: '1px solid var(--accent-muted-border)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(245,158,11,0.3)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--accent-muted-border)'
-            }}
-          >
-            <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}
-            >
-              <Cloud className="h-5 w-5 text-black" strokeWidth={2} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium text-zinc-200">
-                {isLinked ? t('cloudLinkedCardTitle') : t('cloudUnlinkedCardTitle')}
-              </p>
-              <p className="mt-0.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-                {isLinked ? t('cloudLinkedCardDesc') : t('cloudUnlinkedCardDesc')}
-              </p>
-            </div>
-            <ChevronRight
-              className="h-4 w-4 shrink-0"
-              style={{ color: 'var(--text-muted)' }}
-              strokeWidth={1.8}
-            />
-          </button>
         </Section>
 
         <Section id="sectionBackups" title={t('sectionBackups', 'Backups')}>
@@ -252,7 +236,7 @@ export function SettingsPage() {
             onPick={async () => {
               const picked = await window.kudu?.settingsSelectBackupDir?.()
               if (picked) {
-                save({ backupPath: picked })
+                if (!(await save({ backupPath: picked }))) return
                 toast.success(t('backupFolderUpdatedToast', 'Backup folder updated'), {
                   description: t(
                     'backupFolderUpdatedDesc',
@@ -293,18 +277,21 @@ export function SettingsPage() {
         <Section id="sectionCleaningPreferences" title={t('sectionCleaningPreferences')}>
           <Row label={t('protectRecycleBinLabel')} desc={t('protectRecycleBinDesc')}>
             <Toggle
+              label={t('protectRecycleBinLabel')}
               checked={settings.cleaner.protectRecycleBin}
               onChange={(v) => save({ cleaner: { ...settings.cleaner, protectRecycleBin: v } })}
             />
           </Row>
           <Row label={t('secureDeleteLabel')} desc={t('secureDeleteDesc')}>
             <Toggle
+              label={t('secureDeleteLabel')}
               checked={settings.cleaner.secureDelete}
               onChange={(v) => save({ cleaner: { ...settings.cleaner, secureDelete: v } })}
             />
           </Row>
           <Row label={t('closeBrowsersLabel')} desc={t('closeBrowsersDesc')}>
             <Toggle
+              label={t('closeBrowsersLabel')}
               checked={settings.cleaner.closeBrowsersBeforeClean}
               onChange={(v) =>
                 save({ cleaner: { ...settings.cleaner, closeBrowsersBeforeClean: v } })
@@ -314,6 +301,7 @@ export function SettingsPage() {
           {features.restorePoint && (
             <Row label={t('createRestorePointLabel')} desc={t('createRestorePointDesc')}>
               <Toggle
+                label={t('createRestorePointLabel')}
                 checked={settings.cleaner.createRestorePoint}
                 onChange={(v) => save({ cleaner: { ...settings.cleaner, createRestorePoint: v } })}
               />
@@ -321,6 +309,7 @@ export function SettingsPage() {
           )}
           <Row label={t('keepDeletionLogLabel')} desc={t('keepDeletionLogDesc')}>
             <Toggle
+              label={t('keepDeletionLogLabel')}
               checked={settings.cleaner.keepDeletionLog}
               onChange={(v) => save({ cleaner: { ...settings.cleaner, keepDeletionLog: v } })}
             />
@@ -470,12 +459,28 @@ function Row({
   )
 }
 
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+function Toggle({
+  label,
+  checked,
+  onChange,
+  disabled = false
+}: {
+  label: string
+  checked: boolean
+  onChange: (v: boolean) => void
+  disabled?: boolean
+}) {
   return (
     <button
+      type="button"
+      role="switch"
+      aria-label={label}
+      aria-checked={checked}
+      disabled={disabled}
       onClick={() => onChange(!checked)}
       className="toggle-switch relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors"
-      style={{ background: checked ? 'var(--accent)' : 'var(--bg-active)' }}
+      data-checked={checked}
+      style={{ background: checked ? 'var(--accent)' : 'var(--toggle-off-bg)' }}
     >
       <div
         className={cn(
@@ -502,7 +507,7 @@ function BackupFolderRow({
   const isCustom = path.length > 0
   const displayPath = isCustom
     ? path
-    : t('backupFolderDefaultLabel', 'Default (Documents/Kudu Backups)')
+    : t('backupFolderDefaultLabel', 'Default (Documents/SuperSonicCleaner Backups)')
   return (
     <div className="space-y-3">
       <div>
@@ -512,7 +517,7 @@ function BackupFolderRow({
         <p className="mt-0.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
           {t(
             'backupFolderDesc',
-            'Where Kudu writes registry and shell-extension backups before making changes. Existing backups stay in their previous location when you switch folders.'
+            'Where SuperSonicCleaner writes registry and shell-extension backups before making changes. Existing backups stay in their previous location when you switch folders.'
           )}
         </p>
       </div>
@@ -585,10 +590,11 @@ function ThemeSelector({
   value: 'dark' | 'light' | 'system'
   onChange: (v: 'dark' | 'light' | 'system') => void
 }) {
+  const { t } = useTranslation('settings')
   const options: { id: 'dark' | 'light' | 'system'; icon: typeof Sun; label: string }[] = [
-    { id: 'system', icon: Monitor, label: 'System' },
-    { id: 'light', icon: Sun, label: 'Light' },
-    { id: 'dark', icon: Moon, label: 'Dark' }
+    { id: 'system', icon: Monitor, label: t('themeSystem') },
+    { id: 'light', icon: Sun, label: t('themeLight') },
+    { id: 'dark', icon: Moon, label: t('themeDark') }
   ]
   return (
     <div

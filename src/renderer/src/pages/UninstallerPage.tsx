@@ -6,9 +6,6 @@ import {
   Loader2,
   CheckCircle2,
   Shield,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
   Trash2,
   RefreshCw,
   ArrowUpDown,
@@ -23,13 +20,13 @@ import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
+import { AppIcon } from '@/components/shared/AppIcon'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
-import { useSettingsStore } from '@/stores/settings-store'
 import { useUninstallerStore, UNUSED_THRESHOLD_DAYS } from '@/stores/uninstaller-store'
 import { formatBytes } from '@/lib/utils'
-import type { InstalledProgram, UninstallProgress } from '@shared/types'
+import type { InstalledProgram } from '@shared/types'
 
 function formatDate(raw: string): string {
   if (!raw || raw.length !== 8) return ''
@@ -66,54 +63,7 @@ const SORT_LABEL_KEYS: Record<string, string> = {
   displayName: 'sortByName',
   estimatedSize: 'sortBySize',
   installDate: 'sortByDate',
-  publisher: 'sortByPublisher',
-  safety: 'sortBySafety'
-}
-
-function safetyScoreColor(score: number): { bg: string; text: string } {
-  if (score >= 8) return { bg: 'rgba(34,197,94,0.10)', text: '#22c55e' }
-  if (score >= 5) return { bg: 'rgba(245,158,11,0.10)', text: '#f59e0b' }
-  if (score >= 3) return { bg: 'rgba(249,115,22,0.10)', text: '#f97316' }
-  return { bg: 'rgba(239,68,68,0.10)', text: '#ef4444' }
-}
-
-function safetyIcon(score: number) {
-  if (score >= 8) return ShieldCheck
-  if (score >= 5) return Shield
-  return ShieldAlert
-}
-
-function SafetyTooltip({ children, text }: { children: React.ReactNode; text: string }) {
-  const [show, setShow] = useState(false)
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-    >
-      {children}
-      {show && (
-        <div
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded-lg px-3 py-1.5 text-[11px] font-medium pointer-events-none z-50 shadow-lg"
-          style={{
-            background: 'var(--card-bg)',
-            border: '1px solid var(--border-strong)',
-            color: 'var(--text-primary)'
-          }}
-        >
-          {text}
-          <div
-            className="absolute top-full left-1/2 -translate-x-1/2 -mt-px w-0 h-0"
-            style={{
-              borderLeft: '5px solid transparent',
-              borderRight: '5px solid transparent',
-              borderTop: '5px solid var(--border-strong)'
-            }}
-          />
-        </div>
-      )}
-    </div>
-  )
+  publisher: 'sortByPublisher'
 }
 
 export function UninstallerPage() {
@@ -131,10 +81,6 @@ export function UninstallerPage() {
   const filterMode = useUninstallerStore((s) => s.filterMode)
 
   const selectedIds = useUninstallerStore((s) => s.selectedIds)
-  const safetyRatings = useUninstallerStore((s) => s.safetyRatings)
-  const safetyLoading = useUninstallerStore((s) => s.safetyLoading)
-  const expandedItemId = useUninstallerStore((s) => s.expandedItemId)
-  const isCloudLinked = !!useSettingsStore((s) => s.settings.cloud.apiKey)
 
   const [confirmProgram, setConfirmProgram] = useState<InstalledProgram | null>(null)
   const [confirmForceRemove, setConfirmForceRemove] = useState<InstalledProgram | null>(null)
@@ -146,27 +92,10 @@ export function UninstallerPage() {
   const historyStore = useHistoryStore()
   const recomputeStats = useStatsStore((s) => s.recompute)
 
-  // Listen for progress events
-  useEffect(() => {
-    const cleanup = window.kudu.onUninstallerProgress((data: UninstallProgress) => {
-      useUninstallerStore.getState().setProgress(data)
-    })
-    return () => {
-      cleanup()
-    }
-  }, [])
-
   // Auto-load on first visit
   useEffect(() => {
     if (!hasLoaded && !loading) handleLoad()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Fetch safety ratings when cloud is linked and programs are loaded
-  useEffect(() => {
-    if (isCloudLinked && hasLoaded && Object.keys(safetyRatings).length === 0) {
-      useUninstallerStore.getState().fetchSafetyRatings()
-    }
-  }, [isCloudLinked, hasLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Close sort menu on click outside
   useEffect(() => {
@@ -186,14 +115,12 @@ export function UninstallerPage() {
     store.setLoading(true)
     store.setError(null)
     store.setUninstallResult(null)
-    store.setExpandedItemId(null)
 
     try {
       const result = await window.kudu.uninstallerList()
       const s = useUninstallerStore.getState()
       s.setPrograms(result.programs)
       s.setHasLoaded(true)
-      if (isCloudLinked) s.fetchSafetyRatings()
     } catch (err) {
       console.error('Failed to list programs:', err)
       toast.error(t('failedToLoadToast'))
@@ -201,7 +128,7 @@ export function UninstallerPage() {
     } finally {
       useUninstallerStore.getState().setLoading(false)
     }
-  }, [isCloudLinked])
+  }, [])
 
   // ─── Uninstall a program ──────────────────────────────────
   const handleUninstall = useCallback(async () => {
@@ -436,16 +363,11 @@ export function UninstallerPage() {
           return a.installDate.localeCompare(b.installDate) * dir
         case 'publisher':
           return a.publisher.localeCompare(b.publisher) * dir
-        case 'safety': {
-          const sa = safetyRatings[a.displayName]?.safetyScore ?? 99
-          const sb = safetyRatings[b.displayName]?.safetyScore ?? 99
-          return (sa - sb) * dir
-        }
         default:
           return a.displayName.localeCompare(b.displayName) * dir
       }
     })
-  }, [programs, searchQuery, sortField, sortDirection, filterMode, safetyRatings])
+  }, [programs, searchQuery, sortField, sortDirection, filterMode])
 
   // Unused stats — only meaningful when Prefetch data is available
   const hasPrefetchData = useMemo(() => programs.some((p) => p.lastUsed !== -1), [programs])
@@ -877,8 +799,6 @@ export function UninstallerPage() {
             {filteredPrograms.map((prog) => {
               const unused = isUnused(prog)
               const isSelected = selectedIds.has(prog.id)
-              const rating = safetyRatings[prog.displayName]
-              const isExpanded = expandedItemId === prog.id
               return (
                 <Fragment key={prog.id}>
                   <div
@@ -893,6 +813,10 @@ export function UninstallerPage() {
                     }}
                   >
                     <button
+                      type="button"
+                      role="checkbox"
+                      aria-label={prog.displayName}
+                      aria-checked={isSelected}
                       onClick={() => useUninstallerStore.getState().toggleSelected(prog.id)}
                       disabled={uninstalling}
                       className="shrink-0 text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-30"
@@ -903,26 +827,18 @@ export function UninstallerPage() {
                         <Square className="h-5 w-5" strokeWidth={1.8} />
                       )}
                     </button>
-                    <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                      style={{
-                        background: unused ? 'rgba(245,158,11,0.1)' : 'rgba(139,92,246,0.1)'
-                      }}
-                    >
-                      {unused ? (
-                        <AlertTriangle
-                          className="h-5 w-5"
-                          style={{ color: 'var(--accent)' }}
-                          strokeWidth={1.8}
-                        />
-                      ) : (
-                        <Package
-                          className="h-5 w-5"
-                          style={{ color: '#a78bfa' }}
-                          strokeWidth={1.8}
-                        />
-                      )}
-                    </div>
+                    <AppIcon
+                      iconDataUrl={prog.iconDataUrl}
+                      fallback={
+                        unused ? (
+                          <AlertTriangle
+                            className="h-5 w-5"
+                            style={{ color: 'var(--warning-text)' }}
+                            strokeWidth={1.8}
+                          />
+                        ) : undefined
+                      }
+                    />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2.5">
                         <span className="text-[13px] font-medium text-zinc-200 truncate">
@@ -974,79 +890,6 @@ export function UninstallerPage() {
                       </div>
                     </div>
                     <div className="shrink-0 flex items-center gap-4">
-                      {/* Safety badge */}
-                      {isCloudLinked ? (
-                        rating ? (
-                          (() => {
-                            const colors = safetyScoreColor(rating.safetyScore)
-                            const Icon = safetyIcon(rating.safetyScore)
-                            const tooltipKey =
-                              rating.safetyScore >= 8
-                                ? 'safetyTooltipSafe'
-                                : rating.safetyScore >= 5
-                                  ? 'safetyTooltipCaution'
-                                  : rating.safetyScore >= 3
-                                    ? 'safetyTooltipWarning'
-                                    : 'safetyTooltipDanger'
-                            return (
-                              <SafetyTooltip text={t(tooltipKey)}>
-                                <button
-                                  onClick={() =>
-                                    useUninstallerStore
-                                      .getState()
-                                      .setExpandedItemId(isExpanded ? null : prog.id)
-                                  }
-                                  className="flex h-9 w-9 items-center justify-center rounded-xl transition-all hover:scale-110"
-                                  style={{ background: colors.bg }}
-                                >
-                                  <Icon
-                                    className="h-4.5 w-4.5"
-                                    style={{ color: colors.text }}
-                                    strokeWidth={1.8}
-                                  />
-                                </button>
-                              </SafetyTooltip>
-                            )
-                          })()
-                        ) : (
-                          <SafetyTooltip
-                            text={t(safetyLoading ? 'safetyTooltipPending' : 'safetyPending')}
-                          >
-                            <div
-                              className="flex h-9 w-9 items-center justify-center rounded-xl"
-                              style={{ background: 'var(--bg-hover)' }}
-                            >
-                              {safetyLoading ? (
-                                <Loader2
-                                  className="h-4 w-4 animate-spin"
-                                  style={{ color: 'var(--text-muted)' }}
-                                  strokeWidth={1.8}
-                                />
-                              ) : (
-                                <Shield
-                                  className="h-4.5 w-4.5"
-                                  style={{ color: 'var(--text-muted)', opacity: 0.5 }}
-                                  strokeWidth={1.8}
-                                />
-                              )}
-                            </div>
-                          </SafetyTooltip>
-                        )
-                      ) : (
-                        <SafetyTooltip text={t('safetyTooltipLocked')}>
-                          <button
-                            onClick={() => toast.info(t('safetyLinkCloud'))}
-                            className="flex h-9 w-9 items-center justify-center rounded-xl transition-all hover:scale-110"
-                            style={{ background: 'var(--bg-hover)' }}
-                          >
-                            <ShieldOff
-                              className="h-4.5 w-4.5"
-                              style={{ color: 'var(--text-muted)', opacity: 0.3 }}
-                              strokeWidth={1.8}
-                            />
-                          </button>
-                        </SafetyTooltip>
-                      )}
                       <div className="text-right">
                         <span className="text-[12px] font-medium text-zinc-400">
                           {formatBytes(prog.estimatedSize)}
@@ -1063,51 +906,6 @@ export function UninstallerPage() {
                       </button>
                     </div>
                   </div>
-
-                  {/* Expanded safety detail panel */}
-                  {isExpanded &&
-                    rating &&
-                    (() => {
-                      const colors = safetyScoreColor(rating.safetyScore)
-                      const DetailIcon = safetyIcon(rating.safetyScore)
-                      return (
-                        <div
-                          className="flex items-start gap-3 rounded-2xl px-5 py-4 -mt-1 animate-fade-in"
-                          style={{ background: colors.bg, border: `1px solid ${colors.text}22` }}
-                        >
-                          <div
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-                            style={{ background: colors.text + '20' }}
-                          >
-                            <DetailIcon
-                              className="h-5 w-5"
-                              style={{ color: colors.text }}
-                              strokeWidth={1.8}
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-semibold" style={{ color: colors.text }}>
-                              {t('safetyScore', { score: rating.safetyScore })}
-                            </p>
-                            {rating.description && (
-                              <p className="mt-1 text-[12px] text-zinc-300 leading-relaxed">
-                                {rating.description}
-                              </p>
-                            )}
-                            {rating.analyzedAt && (
-                              <p
-                                className="mt-1.5 text-[10px]"
-                                style={{ color: 'var(--text-muted)' }}
-                              >
-                                {t('safetyAnalyzed', {
-                                  date: new Date(rating.analyzedAt).toLocaleDateString()
-                                })}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })()}
                 </Fragment>
               )
             })}

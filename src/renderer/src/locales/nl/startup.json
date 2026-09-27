@@ -53,17 +53,6 @@
   "historyCategoryDisabled": "Uitgeschakeld",
   "historyCategoryRemoved": "Verwijderd",
   "removeButtonTitle": "{{name}} verwijderen",
-  "safetyLinkCloud": "Koppel aan Kudu Cloud om AI-veiligheidsbeoordelingen voor uw opstartprogramma's te bekijken",
-  "safetyPending": "Veiligheid wordt geanalyseerd...",
-  "safetyTooltipSafe": "Veilig — klik voor details",
-  "safetyTooltipCaution": "Voorzichtig gebruiken — klik voor details",
-  "safetyTooltipWarning": "Verdacht — klik voor details",
-  "safetyTooltipDanger": "Mogelijk onveilig — klik voor details",
-  "safetyTooltipPending": "Veiligheidsanalyse wordt uitgevoerd",
-  "safetyTooltipLocked": "Koppel aan Kudu Cloud voor veiligheidsbeoordelingen",
-  "safetyScore": "Veiligheid: {{score}}/10",
-  "safetyAnalyzed": "Geanalyseerd op {{date}}",
-  "sortBySafety": "Sorteren op veiligheid",
   "staleBadge": "Niet geïnstalleerd",
   "staleTooltip": "Het programma waarnaar dit item verwijst ontbreekt, waardoor het niet meer kan worden gestart. Het item verwijderen is veilig."
 }

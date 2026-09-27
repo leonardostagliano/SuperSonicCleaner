@@ -18,10 +18,6 @@
     "recoveryDescription": "Hitta återställningsalternativ för systemändringar som stöds.",
     "reviewFirst": "Öppna ett verktyg för att granska dess alternativ innan du gör ändringar.",
     "advancedPrompt": "Vill du ha grafer och systemdetaljer? Växla till Avancerad",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Jag behöver mer utrymme",
@@ -129,7 +125,6 @@
     "handleThreats": "Välj hur du vill agera",
     "reviewPaths": "Granska markerade sökvägar",
     "chooseOptimizations": "Välj optimeringar",
-    "reviewCloud": "Granska delningsinställningar",
     "trackFolder": "Välj en mapp att följa",
     "captureSnapshot": "Ta lokala ögonblicksbilder",
     "compareGrowth": "Jämför ändringar i lagring",
@@ -154,15 +149,13 @@
     "maintenance": "Ge varje enhet rätt omsorg. Granska enhetstyp och tillgängligt underhåll innan du kör en uppgift.",
     "network": "Granska sparade nätverksdata. Rensa cachefiler eller ta bort gamla anslutningar en i taget när du behöver.",
     "malware": "Kontrollera om det finns skadlig kod och misstänkta filer. Granska resultaten och välj hur varje upptäckt ska hanteras.",
-    "threatMonitor": "Följ anslutningar och säkerhetsaktivitet. Inspektera en varning för att förstå dess källa och sammanhang.",
     "cve": "Gör sårbarhetsresultat till en plan. Granska problem med högre allvarlighetsgrad och uppdatera berörd programvara.",
     "gameMode": "Skapa utrymme för spel. Granska optimeringarna och aktivera dem när du är redo.",
     "performance": "Förstå vad din PC gör. Jämför resurstrender och hitta processerna bakom belastningen.",
     "uninstaller": "Behåll apparna du använder. Granska en apps detaljer innan du avinstallerar eller tar bort kvarvarande filer.",
     "history": "Se vad som ändrades, vad som återställdes och vad som behöver granskas igen. Varje slutförd uppgift lämnar ett spår.",
-    "settings": "Få Kudu att kännas rätt för dig. Ställ in utseende, aviseringar, undantag och inställningar för rensning.",
+    "settings": "Få SuperSonicCleaner att kännas rätt för dig. Ställ in utseende, aviseringar, undantag och inställningar för rensning.",
     "about": "Öppen källkod, genomtänkt utformad. Hitta din version, sök efter uppdateringar och lär känna projektet.",
-    "cloud": "Samla dina enheter. Länka den här datorn för att hantera dess molnanslutning och säkerhetsfunktioner.",
     "breach": "Kontrollera om en e-postadress förekommer i kända dataintrång. Granska vad som exponerades och rekommenderade nästa steg.",
     "privacy": "Välj vad din dator delar. Granska varje rekommendation och behåll de inställningar du förlitar dig på.",
     "services": "Förstå tjänsterna bakom ditt system. Kontrollera syfte och säkerhet innan du ändrar startbeteende.",
@@ -172,8 +165,7 @@
     "schedules": "God omsorg, på ditt schema. Välj de uppgifter, tider och den frekvens som passar den här datorn.",
     "drivers": "Granska drivrutinsuppdateringar och äldre paket på ett ställe. Kontrollera de föreslagna ändringarna innan du tillämpar dem.",
     "storageHistory": "Se vad som växer. Spara lokala ögonblicksbilder av mappar och jämför var lagringen har förändrats.",
-    "recovery": "En tydlig väg tillbaka. Granska ändringar som stöds och återställningsdetaljer innan du ångrar något.",
-    "diagnostics": "Förvandla en långsam stund till underlag. Spela in lokalt, inspektera data och välj om du vill begära Cloud AI-analys."
+    "recovery": "En tydlig väg tillbaka. Granska ändringar som stöds och återställningsdetaljer innan du ångrar något."
   },
   "home": {
     "eyebrow": "DITT SYSTEM, I KORTHET",
@@ -187,7 +179,7 @@
     "protectDescription": "Kör en genomsökning efter skadlig kod och granska filer som behöver åtgärdas.",
     "protectAction": "Öppna skydd",
     "automateTitle": "Gör omsorg till en rutin",
-    "automateDescription": "Välj när Kudu ska kontrollera och rensa din dator.",
+    "automateDescription": "Välj när SuperSonicCleaner ska kontrollera och rensa din dator.",
     "automateAction": "Ställ in ett schema",
     "cpu": "CPU-användning",
     "memory": "Minne",

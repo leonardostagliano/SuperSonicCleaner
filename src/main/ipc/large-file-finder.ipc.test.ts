@@ -35,6 +35,7 @@ const identity = {
   ino: 123n,
   size: fileSize,
   mtimeMs: 1000n,
+  atimeMs: 2000n,
   mtimeNs: 1_000_000_000n,
   ctimeNs: 1_000_000_000n,
   isFile: () => true,
@@ -81,6 +82,7 @@ describe('Large File Finder scan and deletion safety', () => {
           name: 'archive.zip',
           size: Number(fileSize),
           lastModified: 1000,
+          lastAccessed: 2000,
           extension: '.zip'
         }
       ])

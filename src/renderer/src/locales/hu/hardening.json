@@ -35,7 +35,7 @@
     "unprotectedBadge": "{{count}} nincs védve",
     "protectAllCategoryButton": "Összes védelme",
     "adminBadge": "Rendszergazda",
-    "adminWarning": "Egyes beállítások módosításához rendszergazdai jogosultság szükséges. A teljes védelemhez futtassa a Kudu alkalmazást rendszergazdaként.",
+    "adminWarning": "Egyes beállítások módosításához rendszergazdai jogosultság szükséges. A teljes védelemhez futtassa a SuperSonicCleaner alkalmazást rendszergazdaként.",
     "scanFailed": "Az adatvédelmi vizsgálat sikertelen",
     "applyFailed": "Nem sikerült alkalmazni az adatvédelmi beállításokat",
     "applyFailedDescription": "Próbálja meg rendszergazdaként futtatni",

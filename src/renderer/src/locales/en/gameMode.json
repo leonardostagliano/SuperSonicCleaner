@@ -6,18 +6,15 @@
   "activeLabel": "ACTIVE",
   "inactiveLabel": "READY",
   "activeSince": "Active for {{time}}",
-
   "activatingProgress": "Activating optimizations...",
   "deactivatingProgress": "Restoring system state...",
   "applyingOptimization": "Applying: {{label}}",
   "restoringOptimization": "Restoring: {{label}}",
-
   "resultActivated": "Game Mode activated — {{count}} optimization applied",
   "resultActivated_plural": "Game Mode activated — {{count}} optimizations applied",
   "resultDeactivated": "System restored — {{count}} setting reverted",
   "resultDeactivated_plural": "System restored — {{count}} settings reverted",
   "resultErrors": "{{count}} failed",
-
   "categoryServices": "Services",
   "categoryServicesDesc": "Disable resource-heavy Windows services",
   "categoryProcesses": "Processes",
@@ -28,7 +25,6 @@
   "categorySystemDesc": "Block notifications and maximize performance",
   "categoryNetwork": "Network",
   "categoryNetworkDesc": "Optimize network latency",
-
   "optSvcWsearch": "Disable Windows Search",
   "optSvcWsearchDesc": "Stops the indexing service that uses CPU and disk",
   "optSvcSysmain": "Disable SysMain (Superfetch)",
@@ -39,7 +35,6 @@
   "optSvcSpoolerDesc": "Stops the print service if you have no printer connected",
   "optSvcDiagtrack": "Disable Diagnostics",
   "optSvcDiagtrackDesc": "Stops telemetry and diagnostic tracking services",
-
   "optProcBrowsers": "Close Browsers",
   "optProcBrowsersDesc": "Kill Chrome, Firefox, Edge, and other browsers",
   "optProcChat": "Close Chat Apps",
@@ -51,10 +46,8 @@
   "customProcessPlaceholder": "Process name (e.g. spotify.exe)",
   "customProcessAdd": "Add",
   "customProcessEmpty": "No custom processes configured",
-
   "optMemStandby": "Clear Standby Memory",
   "optMemStandbyDesc": "Purge cached RAM to free memory for your game",
-
   "optSysFocusAssist": "Enable Focus Assist",
   "optSysFocusAssistDesc": "Suppress Windows notifications and alerts",
   "optSysPowerPlan": "High Performance Power Plan",
@@ -67,18 +60,15 @@
   "optSysFseOptDesc": "Prevent Windows from applying DWM composition to fullscreen games",
   "optSysTransparency": "Disable Transparency Effects",
   "optSysTransparencyDesc": "Turn off window transparency to reduce GPU compositing overhead",
-
   "optNetFlushDns": "Flush DNS Cache",
   "optNetFlushDnsDesc": "Clear the DNS resolver cache for fresh lookups",
   "optNetNagle": "Disable Nagle's Algorithm",
   "optNetNagleDesc": "Reduce network latency by disabling TCP packet batching",
-
   "enabledCount": "{{count}} enabled",
   "adminBadge": "ADMIN",
   "warningProcesses": "Killed processes cannot be automatically restarted when Game Mode is deactivated.",
   "noOptimizationsSelected": "Select at least one optimization to activate Game Mode",
   "configLockedWhileActive": "Deactivate Game Mode to change settings",
-
   "pendingRestoreBanner": "Some settings from the last session couldn't be restored automatically. Retry once the cause (e.g. admin rights) is resolved.",
   "pendingRestoreDiscardHint": "If it keeps failing, discard the pending state to unblock Game Mode. Any settings still changed stay as they are.",
   "retryCleanup": "Retry cleanup",
@@ -89,11 +79,9 @@
   "discardFailed": "Could not discard the pending cleanup",
   "restoreFailedToast": "Cleanup incomplete — {{count}} still pending: {{reason}}",
   "restoreReasonUnknown": "unknown error",
-
   "statOptimizationsActive": "Optimizations Active",
   "statServicesDisabled": "Services Paused",
   "statSessionTimer": "Session Timer",
-
   "autoDetectTitle": "Auto-Detect",
   "autoDetectLabel": "Auto-detect games",
   "autoDetectDesc": "Automatically activate Game Mode when a game is launched",
@@ -104,5 +92,5 @@
   "customGamePlaceholder": "Game executable (e.g. mygame.exe)",
   "customGameAdd": "Add",
   "customGameEmpty": "No custom game processes configured",
-  "autoDetectedBanner": "Auto-activated \u2014 detected {{name}}"
+  "autoDetectedBanner": "Auto-activated — detected {{name}}"
 }

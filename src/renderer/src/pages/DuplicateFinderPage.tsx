@@ -1,5 +1,5 @@
 import { ToolIllustration } from '@/components/shared/ToolIllustration'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
@@ -19,6 +19,7 @@ import { cn, formatBytes } from '@/lib/utils'
 import { useDuplicateStore } from '@/stores/duplicate-store'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
 
 const SIZE_PRESETS = [
   { label: '100 KB', value: 102_400 },
@@ -58,14 +59,6 @@ export function DuplicateFinderPage() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
   const [excludeInput, setExcludeInput] = useState('')
-
-  // Subscribe to progress events
-  useEffect(() => {
-    if (!window.kudu?.onDuplicatesProgress) return
-    return window.kudu.onDuplicatesProgress((data) => {
-      useDuplicateStore.getState().setProgress(data)
-    })
-  }, [])
 
   const selectedCount = store.selectedPaths.size
   const selectedSize = useMemo(() => {
@@ -479,6 +472,19 @@ export function DuplicateFinderPage() {
       {/* Results */}
       {store.status === 'complete' && store.result && (
         <>
+          <AiAnalysisPanel
+            source="duplicates"
+            sourceRevision={store.result}
+            candidates={store.result.groups.flatMap((group) =>
+              group.files.map((file) => ({
+                path: file.path,
+                size: file.size,
+                lastModified: file.lastModified,
+                lastAccessed: file.lastAccessed,
+                duplicateGroupKey: group.fullHash
+              }))
+            )}
+          />
           {/* Cancelled banner */}
           {store.result.cancelled && (
             <div

@@ -53,17 +53,6 @@
   "historyCategoryDisabled": "Deaktiveret",
   "historyCategoryRemoved": "Fjernet",
   "removeButtonTitle": "Fjern {{name}}",
-  "safetyLinkCloud": "Forbind til Kudu Cloud for at se AI-sikkerhedsvurderinger for dine opstartsprogrammer",
-  "safetyPending": "Analyserer sikkerhed...",
-  "safetyTooltipSafe": "Sikker — klik for detaljer",
-  "safetyTooltipCaution": "Vær forsigtig — klik for detaljer",
-  "safetyTooltipWarning": "Mistænkelig — klik for detaljer",
-  "safetyTooltipDanger": "Potentielt usikker — klik for detaljer",
-  "safetyTooltipPending": "Sikkerhedsanalyse er i gang",
-  "safetyTooltipLocked": "Forbind til Kudu Cloud for sikkerhedsvurderinger",
-  "safetyScore": "Sikkerhed: {{score}}/10",
-  "safetyAnalyzed": "Analyseret {{date}}",
-  "sortBySafety": "Sortér efter sikkerhed",
   "staleBadge": "Ikke installeret",
   "staleTooltip": "Programmet, som denne post peger på, mangler, så det kan ikke længere starte. Det er sikkert at fjerne posten."
 }

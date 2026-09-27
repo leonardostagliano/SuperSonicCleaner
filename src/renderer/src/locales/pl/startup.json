@@ -53,17 +53,6 @@
   "historyCategoryDisabled": "Wyłączone",
   "historyCategoryRemoved": "Usunięte",
   "removeButtonTitle": "Usuń {{name}}",
-  "safetyLinkCloud": "Połącz z Kudu Cloud, aby zobaczyć oceny bezpieczeństwa AI dla swoich programów uruchamianych przy starcie",
-  "safetyPending": "Analizowanie bezpieczeństwa...",
-  "safetyTooltipSafe": "Bezpieczne — kliknij, aby zobaczyć szczegóły",
-  "safetyTooltipCaution": "Zachowaj ostrożność — kliknij, aby zobaczyć szczegóły",
-  "safetyTooltipWarning": "Podejrzane — kliknij, aby zobaczyć szczegóły",
-  "safetyTooltipDanger": "Potencjalnie niebezpieczne — kliknij, aby zobaczyć szczegóły",
-  "safetyTooltipPending": "Trwa analiza bezpieczeństwa",
-  "safetyTooltipLocked": "Połącz z Kudu Cloud, aby uzyskać oceny bezpieczeństwa",
-  "safetyScore": "Bezpieczeństwo: {{score}}/10",
-  "safetyAnalyzed": "Przeanalizowano: {{date}}",
-  "sortBySafety": "Sortuj według bezpieczeństwa",
   "staleBadge": "Nie zainstalowano",
   "staleTooltip": "Program, do którego odwołuje się ten wpis, nie istnieje, więc nie może już zostać uruchomiony. Usunięcie wpisu jest bezpieczne."
 }

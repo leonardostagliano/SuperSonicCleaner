@@ -1,201 +1,53 @@
 import { useTranslation } from 'react-i18next'
-import {
-  Github,
-  Bug,
-  ExternalLink,
-  RefreshCw,
-  Download,
-  CheckCircle,
-  AlertCircle,
-  Loader,
-  Heart
-} from 'lucide-react'
+import { Github, Bug, ExternalLink } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { useAppUpdateStore } from '@/stores/app-update-store'
+import { AppUpdateCard } from '@/components/updates/AppUpdates'
+import { APP_REPOSITORY_URL } from '@shared/app-release'
 import logoSrc from '@/assets/logo.png'
-import { usePlatform } from '@/hooks/usePlatform'
+import { BrandWordmark } from '@/components/shared/BrandWordmark'
 
 declare const __APP_VERSION__: string
 
 export function AboutPage() {
   const { t } = useTranslation('settings')
-  const updateStatus = useAppUpdateStore((s) => s.status)
-  const { isPortable } = usePlatform()
-
   return (
     <div className="animate-fade-in">
       <PageHeader title={t('sectionAbout')} />
-
-      <div className="glass-card rounded-2xl p-6">
-        <div className="flex items-center gap-4">
-          <img src={logoSrc} alt="Kudu" className="h-14 w-14 rounded-xl" />
-          <div>
-            <p className="text-[16px] font-semibold text-white">
+      <section className="glass-card rounded-2xl p-7">
+        <div className="flex flex-wrap items-center gap-5">
+          <img src={logoSrc} alt="" className="h-20 w-20" />
+          <div className="min-w-0 flex-1">
+            <BrandWordmark className="mb-3" />
+            <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
               {t('appVersion', { version: __APP_VERSION__ })}
-            </p>
-            <p className="mt-0.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
+            </h2>
+            <p className="mt-1 text-[13px]" style={{ color: 'var(--text-muted)' }}>
               {t('license')}
             </p>
           </div>
+          <span className="app-release-channel">{t('forkEdition')}</span>
         </div>
-
-        {isPortable ? (
-          <div className="mt-5 space-y-3">
-            <p className="text-[12px] text-zinc-400">
-              {t('portableUpdatesDesc', {
-                defaultValue:
-                  'Portable builds use manual updates. Close Kudu and replace the app files with the latest portable download. Your settings are retained.'
-              })}
-            </p>
-            <LinkButton
-              icon={Download}
-              label={t('portableDownload', { defaultValue: 'Download latest portable build' })}
-              href="https://github.com/AdventDevInc/kudu/releases/latest"
-            />
-          </div>
-        ) : (
-          <div className="mt-5 flex items-center gap-3">
-            {updateStatus.state === 'idle' && (
-              <button
-                onClick={() => window.kudu?.updaterCheck?.()}
-                className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[12px] font-medium text-zinc-400 transition-colors"
-                style={{ border: '1px solid var(--border-medium)' }}
-              >
-                <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.8} /> {t('checkForUpdates')}
-              </button>
-            )}
-            {updateStatus.state === 'checking' && (
-              <span className="flex items-center gap-2 text-[12px] text-zinc-500">
-                <Loader className="h-3.5 w-3.5 animate-spin" strokeWidth={1.8} />{' '}
-                {t('checkingForUpdates')}
-              </span>
-            )}
-            {updateStatus.state === 'not-available' && (
-              <>
-                <span className="flex items-center gap-2 text-[12px] text-zinc-500">
-                  <CheckCircle
-                    className="h-3.5 w-3.5"
-                    style={{ color: '#22c55e' }}
-                    strokeWidth={1.8}
-                  />{' '}
-                  {t('upToDate')}
-                </span>
-                <button
-                  onClick={() => window.kudu?.updaterCheck?.()}
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-medium text-zinc-400 transition-colors"
-                  style={{ border: '1px solid var(--border-medium)' }}
-                >
-                  <RefreshCw className="h-3 w-3" strokeWidth={1.8} /> {t('checkAgain')}
-                </button>
-              </>
-            )}
-            {updateStatus.state === 'available' && (
-              <>
-                <span className="text-[12px] text-zinc-400">
-                  {t('versionAvailable', { version: updateStatus.version })}
-                </span>
-                <button
-                  onClick={() => window.kudu?.updaterDownload?.()}
-                  className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[12px] font-medium text-zinc-200 transition-colors"
-                  style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
-                >
-                  <Download className="h-3.5 w-3.5" strokeWidth={1.8} /> {t('download')}
-                </button>
-              </>
-            )}
-            {updateStatus.state === 'downloading' && (
-              <div className="flex flex-1 items-center gap-3">
-                <Loader
-                  className="h-3.5 w-3.5 shrink-0 animate-spin text-zinc-500"
-                  strokeWidth={1.8}
-                />
-                <div className="flex-1">
-                  <div className="mb-1 text-[12px] text-zinc-400">
-                    {t('downloading', { progress: updateStatus.progress ?? 0 })}
-                  </div>
-                  <div
-                    className="h-1.5 w-full overflow-hidden rounded-full"
-                    style={{ background: 'var(--bg-hover-2)' }}
-                  >
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{
-                        width: `${updateStatus.progress ?? 0}%`,
-                        background: 'var(--accent)'
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            {updateStatus.state === 'downloaded' && (
-              <button
-                onClick={() => window.kudu?.updaterInstall?.()}
-                className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[12px] font-medium transition-colors"
-                style={{ background: '#22c55e', color: 'var(--text-on-accent)' }}
-              >
-                <Download className="h-3.5 w-3.5" strokeWidth={1.8} />{' '}
-                {t('restartAndInstall', { version: updateStatus.version })}
-              </button>
-            )}
-            {updateStatus.state === 'error' && (
-              <>
-                <span className="flex items-center gap-2 text-[12px] text-red-400">
-                  <AlertCircle className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
-                  {updateStatus.error}
-                </span>
-                <button
-                  onClick={() => window.kudu?.updaterCheck?.()}
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-medium text-zinc-400 transition-colors"
-                  style={{ border: '1px solid var(--border-medium)' }}
-                >
-                  {t('retry')}
-                </button>
-              </>
-            )}
-          </div>
-        )}
-        <div className="mt-6 flex items-center gap-2.5">
-          <LinkButton
-            icon={Github}
-            label={t('github')}
-            href="https://github.com/adventdevinc/kudu"
-          />
-          <LinkButton
-            icon={Bug}
-            label={t('reportBug')}
-            href="https://github.com/adventdevinc/kudu/issues"
-          />
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <LinkButton icon={Github} label={t('github')} href={APP_REPOSITORY_URL} />
+          <LinkButton icon={Bug} label={t('reportBug')} href={`${APP_REPOSITORY_URL}/issues`} />
         </div>
-
-        <div
-          className="mt-6 flex items-center gap-4 rounded-xl p-4"
-          style={{
-            background: 'var(--accent-muted-bg)',
-            border: '1px solid var(--accent-muted-border)'
-          }}
-        >
-          <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
-          >
-            <Heart className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-semibold text-zinc-200">{t('supportKudu')}</p>
-            <p
-              className="mt-0.5 text-[12px] leading-relaxed"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {t('supportKuduDescription')}
-            </p>
-          </div>
-          <LinkButton
-            icon={Heart}
-            label={t('supportKuduAction')}
-            href="https://usekudu.com/sponsors"
-          />
+      </section>
+      <AppUpdateCard />
+      <div className="mt-6 flex flex-wrap items-center gap-4 p-2">
+        <Github size={19} style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-medium" style={{ color: 'var(--text-secondary)' }}>
+            {t('upstreamCredit')}
+          </p>
+          <p className="mt-1 text-[12px]" style={{ color: 'var(--text-muted)' }}>
+            {t('forkAttribution')}
+          </p>
         </div>
+        <LinkButton
+          icon={Github}
+          label={t('upstreamRepository')}
+          href="https://github.com/AdventDevInc/kudu"
+        />
       </div>
     </div>
   )
@@ -211,13 +63,9 @@ function LinkButton({
   href: string
 }) {
   return (
-    <button
-      onClick={() => window.open(href, '_blank')}
-      className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[12px] font-medium text-zinc-500 transition-colors"
-      style={{ border: '1px solid var(--border-medium)' }}
-    >
-      <Icon className="h-3.5 w-3.5" strokeWidth={1.8} /> {label}{' '}
-      <ExternalLink className="h-3 w-3 opacity-50" />
-    </button>
+    <a href={href} target="_blank" rel="noreferrer" className="pulse-button">
+      <Icon size={15} strokeWidth={1.8} aria-hidden="true" /> {label}
+      <ExternalLink size={12} aria-hidden="true" />
+    </a>
   )
 }

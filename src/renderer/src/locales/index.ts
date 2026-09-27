@@ -1,21 +1,20 @@
-// Auto-import all locale JSON files using Vite's glob import.
-// Each file is eagerly bundled at build time — no runtime file I/O.
-const modules = import.meta.glob('./*/*.json', { eager: true }) as Record<
+import { createLocaleBackend } from './locale-backend'
+
+// Keep the fallback ready, but do not parse every supported language in every
+// window. Vite emits local chunks for the selected language; no network service.
+const english = import.meta.glob('./en/*.json', { eager: true, import: 'default' }) as Record<
   string,
-  { default: Record<string, unknown> }
+  Record<string, unknown>
+>
+const localized = import.meta.glob(['./*/*.json', '!./en/*.json'], { import: 'default' }) as Record<
+  string,
+  () => Promise<Record<string, unknown>>
 >
 
-// Build the resources object: { en: { common: {...}, sidebar: {...} }, es: { ... }, ... }
-const resources: Record<string, Record<string, Record<string, unknown>>> = {}
-
-for (const [path, mod] of Object.entries(modules)) {
-  // path looks like "./en/common.json"
-  const parts = path.split('/')
-  const lang = parts[1]   // "en", "es", "fr", etc.
-  const ns = parts[2].replace('.json', '') // "common", "sidebar", etc.
-  if (!resources[lang]) resources[lang] = {}
-  resources[lang][ns] = mod.default
+export const resources = {
+  en: Object.fromEntries(
+    Object.entries(english).map(([path, data]) => [path.split('/')[2].replace('.json', ''), data])
+  )
 }
-
-export { resources }
-export const namespaces = Object.keys(resources.en ?? {})
+export const namespaces = Object.keys(resources.en)
+export const localeBackend = createLocaleBackend(localized)

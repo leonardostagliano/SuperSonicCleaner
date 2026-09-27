@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict')
 const { createHash } = require('node:crypto')
 const { createReadStream } = require('node:fs')
-const { readdir, readFile, stat } = require('node:fs/promises')
+const { readdir, readFile, stat, writeFile } = require('node:fs/promises')
 const path = require('node:path')
 const yaml = require('js-yaml')
 
@@ -12,14 +12,20 @@ function releaseVersion(tag) {
 
 function manifestTargets(version) {
   return {
-    'latest.yml': [`Kudu-Setup-${version}.exe`],
+    'latest.yml': [`SuperSonicCleaner-Setup-${version}.exe`],
     'latest-mac.yml': ['x64', 'arm64'].flatMap((arch) => [
-      `Kudu-${version}-${arch}.dmg`,
-      `Kudu-${version}-${arch}.zip`
+      `SuperSonicCleaner-${version}-${arch}.dmg`,
+      `SuperSonicCleaner-${version}-${arch}.zip`
     ]),
     // Our pinned electron-builder includes DEBs in Linux update metadata too.
-    'latest-linux.yml': ['Kudu-x86_64.AppImage', `Kudu-${version}-amd64.deb`],
-    'latest-linux-arm64.yml': ['Kudu-arm64.AppImage', `Kudu-${version}-arm64.deb`]
+    'latest-linux.yml': [
+      'SuperSonicCleaner-x86_64.AppImage',
+      `SuperSonicCleaner-${version}-amd64.deb`
+    ],
+    'latest-linux-arm64.yml': [
+      'SuperSonicCleaner-arm64.AppImage',
+      `SuperSonicCleaner-${version}-arm64.deb`
+    ]
   }
 }
 
@@ -29,8 +35,8 @@ function expectedAssetNames(tag) {
   const installers = Object.values(manifests).flat()
   return [
     ...installers,
-    `Kudu-Portable-${version}.exe`,
-    `Kudu-Portable-${version}-x64.zip`,
+    `SuperSonicCleaner-Portable-${version}.exe`,
+    `SuperSonicCleaner-Portable-${version}-x64.zip`,
     ...installers.filter((name) => /\.(exe|dmg|zip)$/.test(name)).map((name) => `${name}.blockmap`),
     ...Object.keys(manifests)
   ]
@@ -72,8 +78,8 @@ async function verifyReleaseArtifacts(directory, tag) {
   // Optional external AppImage blockmaps vary with electron-builder versions.
   const allowed = new Set([
     ...expected,
-    'Kudu-x86_64.AppImage.blockmap',
-    'Kudu-arm64.AppImage.blockmap'
+    'SuperSonicCleaner-x86_64.AppImage.blockmap',
+    'SuperSonicCleaner-arm64.AppImage.blockmap'
   ])
   for (const name of assets.keys())
     assert(allowed.has(name), `Unexpected release artifact: ${name}`)
@@ -107,6 +113,23 @@ async function verifyReleaseArtifacts(directory, tag) {
   return [...assets.values()]
 }
 
+async function writeChecksumManifest(directory, assets) {
+  const bytes = Buffer.from(
+    assets
+      .map((asset) => `${asset.sha256}  ${asset.name}`)
+      .sort()
+      .join('\n') + '\n'
+  )
+  const file = path.resolve(directory, 'SHA256SUMS.txt')
+  await writeFile(file, bytes)
+  return {
+    name: 'SHA256SUMS.txt',
+    path: file,
+    size: bytes.length,
+    sha256: createHash('sha256').update(bytes).digest('hex')
+  }
+}
+
 function verifyUploadedAssets(localAssets, remoteAssets) {
   assert.equal(remoteAssets.length, localAssets.length, 'Unexpected number of uploaded assets')
   for (const local of localAssets) {
@@ -127,5 +150,6 @@ module.exports = {
   releaseVersion,
   expectedAssetNames,
   verifyReleaseArtifacts,
+  writeChecksumManifest,
   verifyUploadedAssets
 }

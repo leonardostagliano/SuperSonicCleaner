@@ -22,13 +22,7 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { useFirewallStore } from '@/stores/firewall-store'
-import type {
-  FirewallScanProgress,
-  FirewallRule,
-  FirewallRiskLevel,
-  FirewallIssue,
-  FirewallAction
-} from '@shared/types'
+import type { FirewallRule, FirewallRiskLevel, FirewallIssue, FirewallAction } from '@shared/types'
 
 const RISK_COLORS: Record<
   FirewallRiskLevel,
@@ -85,15 +79,6 @@ export function FirewallAuditPage() {
 
   const [pendingAction, setPendingAction] = useState<FirewallAction | null>(null)
   const isBusy = scanning || applying
-
-  useEffect(() => {
-    const cleanup = window.kudu?.onFirewallProgress?.((data: FirewallScanProgress) => {
-      useFirewallStore.getState().setScanProgress(data)
-    })
-    return () => {
-      cleanup?.()
-    }
-  }, [])
 
   const handleScan = useCallback(async () => {
     const store = useFirewallStore.getState()

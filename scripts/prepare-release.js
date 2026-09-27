@@ -39,7 +39,7 @@ if (existing) {
     .split(/^(?=##? \[)/m)
     .find((text) => text.startsWith(`## [${version}]`) || text.startsWith(`# [${version}]`))
   assert(section, `Missing CHANGELOG.md section for ${tag}`)
-  const notesFile = path.join(process.env.RUNNER_TEMP, 'kudu-release-notes.md')
+  const notesFile = path.join(process.env.RUNNER_TEMP, 'supersonic-cleaner-release-notes.md')
   writeFileSync(notesFile, section.replace(/^##? .+\n+/, '').trim())
   gh(
     'release',

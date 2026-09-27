@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "Åpne Kudu",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "Åpne SuperSonicCleaner",
   "quit": "Avslutt",
-  "scheduledTaskNotificationTitle": "Kudu - Planlagt oppgave",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Planlagt oppgave",
   "scheduledTaskNotificationBody": "Kjører \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "Kudu - Skanning fullført",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - Skanning fullført",
   "scanCompleteNotificationBody": "Fant {{itemCount}} elementer ({{sizeMB}} MB) som kan ryddes.",
   "scheduledScanName": "Planlagt skanning"
 }

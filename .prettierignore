@@ -19,5 +19,6 @@ choco/
 src/renderer/src/locales/
 .claude/
 .tmp/
+.cache/
 cloud/
 manifests/

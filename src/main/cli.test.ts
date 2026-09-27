@@ -278,33 +278,32 @@ describe('exitCodeForRegistryFix', () => {
 describe('redactSettingsForDisplay', () => {
   const settings = {
     cleaner: { secureDelete: false },
-    cloud: { apiKey: 'kudu_live_1234567890abcdef', serverUrl: 'https://cloud.usekudu.com' }
+    cloud: { apiKey: 'retired-private-key', serverUrl: 'https://retired.example' }
   }
 
-  it('masks the cloud API key, keeping only enough to recognise it', () => {
+  it('omits all retired integration settings from terminal output', () => {
     const shown = redactSettingsForDisplay(settings)
-    expect(shown.cloud.apiKey).toBe('****cdef')
-    expect(JSON.stringify(shown)).not.toContain('1234567890')
+    expect(shown).not.toHaveProperty('cloud')
+    expect(JSON.stringify(shown)).not.toContain('retired-private-key')
+    expect(JSON.stringify(shown)).not.toContain('retired.example')
   })
 
   it('leaves every other setting untouched', () => {
     const shown = redactSettingsForDisplay(settings)
     expect(shown.cleaner).toBe(settings.cleaner)
-    expect(shown.cloud.serverUrl).toBe(settings.cloud.serverUrl)
   })
 
   it('does not mutate the stored settings', () => {
     redactSettingsForDisplay(settings)
-    expect(settings.cloud.apiKey).toBe('kudu_live_1234567890abcdef')
+    expect(settings.cloud.apiKey).toBe('retired-private-key')
+    expect(settings.cloud.serverUrl).toBe('https://retired.example')
   })
 
-  it('fully masks a short key and leaves an unset key empty', () => {
-    expect(redactSettingsForDisplay({ cloud: { apiKey: 'short' } }).cloud.apiKey).toBe('****')
-    // 10 characters is the shortest key cloud linking accepts.
-    expect(redactSettingsForDisplay({ cloud: { apiKey: 'abcdefghij' } }).cloud.apiKey).toBe('****')
-    expect(redactSettingsForDisplay({ cloud: { apiKey: 'abcdefghijklmno' } }).cloud.apiKey).toBe(
-      '****'
-    )
-    expect(redactSettingsForDisplay({ cloud: { apiKey: '' } }).cloud.apiKey).toBe('')
+  it('handles absent or empty retired settings', () => {
+    expect(redactSettingsForDisplay({ cleaner: settings.cleaner })).toEqual({
+      cleaner: settings.cleaner
+    })
+    expect(redactSettingsForDisplay({ cloud: {} })).toEqual({})
+    expect(redactSettingsForDisplay({})).toEqual({})
   })
 })

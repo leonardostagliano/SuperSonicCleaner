@@ -46,10 +46,10 @@ jobs:
             # The smoke executable must start unattended without a UAC prompt.
             # This override applies only to this unpublished test package.
             args: --win --x64 -c.win.requestedExecutionLevel=asInvoker
-            executable: dist/win-unpacked/Kudu.exe
+            executable: dist/win-unpacked/SuperSonicCleaner.exe
           - os: ubuntu-24.04-arm
             args: --linux --arm64
-            executable: dist/linux-arm64-unpacked/kudu
+            executable: dist/linux-arm64-unpacked/SuperSonicCleaner
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7

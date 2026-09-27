@@ -129,7 +129,12 @@ async function walkDirectory(
         record.identities.set(fullPath, { dev: s.dev, ino: s.ino })
         if (s.nlink > 1n) record.linked.add(fullPath)
 
-        files.push({ path: fullPath, size, lastModified: Number(s.mtimeMs) })
+        files.push({
+          path: fullPath,
+          size,
+          lastModified: Number(s.mtimeMs),
+          lastAccessed: Number(s.atimeMs)
+        })
 
         // Throttled progress
         const now = Date.now()

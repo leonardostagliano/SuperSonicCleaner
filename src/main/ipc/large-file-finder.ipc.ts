@@ -127,6 +127,7 @@ async function walkDirectory(
             name: entry.name,
             size: Number(s.size),
             lastModified: Number(s.mtimeMs),
+            lastAccessed: Number(s.atimeMs),
             extension: extname(entry.name).toLowerCase(),
             identity: s
           })

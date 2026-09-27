@@ -21,9 +21,9 @@ permissions:
 env:
   RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
-# A newer run must never interrupt signing or publication of this tag.
+# Serialize with automatic releases; never interrupt signing or publication.
 concurrency:
-  group: release-${{ inputs.tag || github.ref_name }}
+  group: fork-release
   cancel-in-progress: false
 
 jobs:
@@ -109,37 +109,23 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Azure login (Windows signing)
-        if: runner.os == 'Windows'
-        uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          allow-no-subscriptions: true
-
       - name: Package and sign without publishing
         shell: bash
         env:
-          AZURE_TENANT_ID: ${{ runner.os == 'Windows' && secrets.AZURE_TENANT_ID || '' }}
-          AZURE_CLIENT_ID: ${{ runner.os == 'Windows' && secrets.AZURE_CLIENT_ID || '' }}
-          AZURE_CLIENT_SECRET: ${{ runner.os == 'Windows' && secrets.AZURE_CLIENT_SECRET || '' }}
-          CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_P12 || '' }}
-          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_PASSWORD || '' }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_P12 || runner.os == 'Windows' && secrets.WINDOWS_CERTIFICATE_P12 || '' }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_PASSWORD || runner.os == 'Windows' && secrets.WINDOWS_CERTIFICATE_PASSWORD || '' }}
           APPLE_ID: ${{ runner.os == 'macOS' && secrets.APPLE_ID || '' }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ runner.os == 'macOS' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
           APPLE_TEAM_ID: ${{ runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
           DEBUG: ${{ runner.os == 'macOS' && 'electron-notarize*' || '' }}
         timeout-minutes: 30
         run: |
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            npx electron-builder ${{ matrix.build-args }} --publish never \
-              -c.win.azureSignOptions.endpoint="https://eus.codesigning.azure.net" \
-              -c.win.azureSignOptions.codeSigningAccountName="kudu-signing" \
-              -c.win.azureSignOptions.certificateProfileName="kudu-sign" \
-              -c.win.azureSignOptions.publisherName="Advent Development, Inc."
+          if [ "$RUNNER_OS" = "macOS" ] && { [ -z "$CSC_LINK" ] || [ -z "$APPLE_ID" ] || [ -z "$APPLE_APP_SPECIFIC_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ]; }; then
+            npx electron-builder ${{ matrix.build-args }} --publish never -c.mac.notarize=false
           else
             npx electron-builder ${{ matrix.build-args }} --publish never
           fi
-
       - name: Store release artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -209,7 +195,7 @@ jobs:
     needs: publish-release
     # Reused builds are intentionally skipped; do not let that transitive skip
     # suppress distribution after publication has succeeded.
-    if: ${{ !cancelled() && needs.publish-release.result == 'success' }}
+    if: ${{ !cancelled() && needs.publish-release.result == 'success' && github.repository == 'AdventDevInc/kudu' }}
     permissions:
       contents: write
     uses: ./.github/workflows/distribute-release.yml

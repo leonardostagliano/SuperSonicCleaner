@@ -123,7 +123,9 @@ function getExeNames(program: InstalledProgram): string[] {
 /**
  * Query the Windows Registry for all installed programs with full details.
  */
-export async function getInstalledProgramsFull(): Promise<InstalledProgram[]> {
+export async function getInstalledProgramsFull(
+  options: { includeUsage?: boolean } = {}
+): Promise<InstalledProgram[]> {
   // On non-Windows, use platform commands to list installed apps
   if (process.platform !== 'win32') {
     const platform = getPlatform()
@@ -155,7 +157,8 @@ export async function getInstalledProgramsFull(): Promise<InstalledProgram[]> {
   const seen = new Set<string>() // dedup by displayName+publisher
 
   // Load prefetch data in parallel with registry queries
-  const prefetchPromise = getPrefetchMap()
+  const prefetchPromise =
+    options.includeUsage === false ? Promise.resolve(new Map<string, number>()) : getPrefetchMap()
 
   for (const key of REGISTRY_KEYS) {
     try {

@@ -18,10 +18,6 @@
     "recoveryDescription": "Trova le opzioni di ripristino per le modifiche di sistema supportate.",
     "reviewFirst": "Apri uno strumento per rivederne le opzioni prima di apportare modifiche.",
     "advancedPrompt": "Vuoi grafici e dettagli di sistema? Passa alla modalità Avanzata",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Ho bisogno di più spazio",
@@ -129,7 +125,6 @@
     "handleThreats": "Scegli come rispondere",
     "reviewPaths": "Rivedi i percorsi selezionati",
     "chooseOptimizations": "Scegli le ottimizzazioni",
-    "reviewCloud": "Rivedi le preferenze di condivisione",
     "trackFolder": "Scegli una cartella da monitorare",
     "captureSnapshot": "Acquisisci istantanee locali",
     "compareGrowth": "Confronta le variazioni di archiviazione",
@@ -138,7 +133,7 @@
     "restoreSupported": "Ripristina gli elementi supportati",
     "recordSession": "Registra una sessione",
     "inspectRecording": "Esamina la registrazione",
-    "consentAnalysis": "Scegli se condividere"
+    "analyzeLocally": "Analizza sul dispositivo"
   },
   "routes": {
     "cleaner": "Libera spazio per ciò che conta. Analizza gli elementi superflui, confronta le categorie e poi rivedi cosa rimuovere.",
@@ -154,15 +149,13 @@
     "maintenance": "Offri a ogni unità la manutenzione adatta. Rivedi il tipo di unità e la manutenzione disponibile prima di eseguire un'attività.",
     "network": "Rivedi i dati di rete salvati. Svuota le cache o rimuovi singolarmente le vecchie connessioni, quando necessario.",
     "malware": "Controlla la presenza di malware e file sospetti. Rivedi i risultati e scegli come gestire ogni rilevamento.",
-    "threatMonitor": "Segui le connessioni e l'attività di sicurezza. Esamina un avviso per comprenderne origine e contesto.",
     "cve": "Trasforma i risultati sulle vulnerabilità in un piano. Rivedi i problemi più gravi e aggiorna il software interessato.",
     "gameMode": "Fai spazio al gioco. Rivedi le ottimizzazioni e attivale quando sei pronto.",
     "performance": "Comprendi cosa sta facendo il tuo PC. Confronta l'andamento delle risorse e trova i processi che causano il carico.",
     "uninstaller": "Conserva le app che usi. Rivedi i dettagli di un'app prima di disinstallarla o rimuovere i file residui.",
     "history": "Scopri cosa è cambiato, cosa è stato recuperato e cosa richiede un altro controllo. Ogni attività completata lascia una registrazione.",
-    "settings": "Fai in modo che Kudu sia adatto a te. Imposta aspetto, notifiche, esclusioni e preferenze di pulizia.",
+    "settings": "Fai in modo che SuperSonicCleaner sia adatto a te. Imposta aspetto, notifiche, esclusioni e preferenze di pulizia.",
     "about": "Open source, realizzato con cura. Trova la tua versione, controlla gli aggiornamenti e scopri il progetto.",
-    "cloud": "Riunisci i tuoi dispositivi. Collega questo computer per gestirne la connessione cloud e le funzionalità di sicurezza.",
     "breach": "Controlla se un indirizzo email compare in violazioni note. Rivedi cosa è stato esposto e i passaggi successivi consigliati.",
     "privacy": "Scegli cosa condivide il tuo computer. Rivedi ogni consiglio e mantieni le impostazioni su cui fai affidamento.",
     "services": "Comprendi i servizi alla base del sistema. Controllane scopo e sicurezza prima di modificarne il comportamento all'avvio.",
@@ -173,7 +166,7 @@
     "drivers": "Rivedi gli aggiornamenti dei driver e i pacchetti meno recenti in un unico posto. Controlla le modifiche proposte prima di applicarle.",
     "storageHistory": "Scopri cosa sta crescendo. Salva istantanee locali delle cartelle e confronta dove lo spazio di archiviazione è cambiato.",
     "recovery": "Un modo chiaro per tornare indietro. Rivedi le modifiche supportate e i dettagli del ripristino prima di annullare qualsiasi operazione.",
-    "diagnostics": "Trasforma un momento di lentezza in prove concrete. Registra localmente, esamina i dati e scegli se richiedere l'analisi Cloud AI."
+    "diagnostics": "Registra un rallentamento, arresta e salva, poi analizza le misurazioni su questo dispositivo."
   },
   "home": {
     "eyebrow": "IL TUO SISTEMA, A COLPO D'OCCHIO",
@@ -187,7 +180,7 @@
     "protectDescription": "Esegui una scansione malware e rivedi gli eventuali file che richiedono attenzione.",
     "protectAction": "Apri Protezione",
     "automateTitle": "Trasforma la cura in una routine",
-    "automateDescription": "Scegli quando Kudu controlla e pulisce il tuo computer.",
+    "automateDescription": "Scegli quando SuperSonicCleaner controlla e pulisce il tuo computer.",
     "automateAction": "Configura una pianificazione",
     "cpu": "Utilizzo CPU",
     "memory": "Memoria",

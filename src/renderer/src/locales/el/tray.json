@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "Άνοιγμα του Kudu",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "Άνοιγμα του SuperSonicCleaner",
   "quit": "Έξοδος",
-  "scheduledTaskNotificationTitle": "Kudu - Προγραμματισμένη εργασία",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Προγραμματισμένη εργασία",
   "scheduledTaskNotificationBody": "Εκτέλεση του \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "Kudu - Η σάρωση ολοκληρώθηκε",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - Η σάρωση ολοκληρώθηκε",
   "scanCompleteNotificationBody": "Βρέθηκαν {{itemCount}} στοιχεία ({{sizeMB}} MB) που μπορούν να καθαριστούν.",
   "scheduledScanName": "Προγραμματισμένη σάρωση"
 }

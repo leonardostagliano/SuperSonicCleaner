@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "UTILITAR DE CURĂȚARE A SISTEMULUI",
   "dashboard": "Acasă",
   "securityHeading": "Protecție",
   "malwareScanner": "Scaner malware",
-  "threatMonitor": "Monitorizare amenințări",
   "systemHardening": "Consolidarea sistemului",
-  "cveScanner": "Vulnerabilități",
   "monitoring": "Monitorizare",
   "maintainHeading": "Gestionare",
   "cleaner": "Curățare",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Activitate și recuperare",
   "history": "Activitate",
   "settings": "Preferințe",
-  "breachMonitor": "Monitorizare breșe",
   "gameMode": "Mod joc",
   "firewallAudit": "Audit firewall"
 }

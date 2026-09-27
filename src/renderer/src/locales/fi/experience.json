@@ -18,10 +18,6 @@
     "recoveryDescription": "Etsi palautusvaihtoehdot tuetuille järjestelmämuutoksille.",
     "reviewFirst": "Avaa työkalu ja tarkista sen asetukset ennen muutosten tekemistä.",
     "advancedPrompt": "Haluatko kaavioita ja järjestelmätietoja? Vaihda Edistynyt-näkymään",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Tarvitsen lisää tilaa",
@@ -129,7 +125,6 @@
     "handleThreats": "Valitse toimintatapa",
     "reviewPaths": "Tarkista valitut polut",
     "chooseOptimizations": "Valitse optimoinnit",
-    "reviewCloud": "Tarkista jakamisasetukset",
     "trackFolder": "Valitse seurattava kansio",
     "captureSnapshot": "Tallenna paikalliset tilannevedokset",
     "compareGrowth": "Vertaa tallennustilan muutoksia",
@@ -154,15 +149,13 @@
     "maintenance": "Anna jokaiselle asemalle oikeanlaista huolenpitoa. Tarkista aseman tyyppi ja käytettävissä oleva ylläpito ennen tehtävän suorittamista.",
     "network": "Tarkista tallennetut verkkotiedot. Tyhjennä välimuistit tai poista vanhat yhteydet yksitellen tarpeen mukaan.",
     "malware": "Tarkista haittaohjelmat ja epäilyttävät tiedostot. Tarkista löydökset ja valitse, miten kukin havainto käsitellään.",
-    "threatMonitor": "Seuraa yhteyksiä ja suojaustoimintaa. Tutki hälytystä ymmärtääksesi sen lähteen ja asiayhteyden.",
     "cve": "Muuta haavoittuvuuslöydökset suunnitelmaksi. Tarkista vakavammat ongelmat ja päivitä vaikutuksen alainen ohjelmisto.",
     "gameMode": "Tee tilaa pelaamiselle. Tarkista optimoinnit ja ota ne käyttöön, kun olet valmis.",
     "performance": "Ymmärrä, mitä tietokoneesi tekee. Vertaa resurssien kehitystä ja etsi kuormituksen aiheuttavat prosessit.",
     "uninstaller": "Säilytä käyttämäsi sovellukset. Tarkista sovelluksen tiedot ennen asennuksen poistamista tai jäännöstiedostojen poistamista.",
     "history": "Näe, mikä muuttui, mitä palautettiin ja mikä tarvitsee uuden tarkastelun. Jokaisesta suoritetusta tehtävästä jää merkintä.",
-    "settings": "Mukauta Kudu sinulle sopivaksi. Määritä ulkoasu, ilmoitukset, poissulut ja puhdistusasetukset.",
+    "settings": "Mukauta SuperSonicCleaner sinulle sopivaksi. Määritä ulkoasu, ilmoitukset, poissulut ja puhdistusasetukset.",
     "about": "Avoin lähdekoodi, huolella tehty. Etsi versiosi, tarkista päivitykset ja tutustu projektiin.",
-    "cloud": "Yhdistä laitteesi. Liitä tämä tietokone hallitaksesi sen pilviyhteyttä ja suojausominaisuuksia.",
     "breach": "Tarkista, esiintyykö sähköpostiosoite tunnetuissa tietomurroissa. Tarkista, mitä paljastui, ja suositellut seuraavat vaiheet.",
     "privacy": "Valitse, mitä tietokoneesi jakaa. Tarkista jokainen suositus ja säilytä asetukset, joihin luotat.",
     "services": "Ymmärrä järjestelmäsi taustalla olevat palvelut. Tarkista tarkoitus ja turvallisuus ennen käynnistystoiminnan muuttamista.",
@@ -172,8 +165,7 @@
     "schedules": "Hyvää huolenpitoa omalla aikataulullasi. Valitse tehtävät, ajoitus ja toistuvuus, jotka sopivat tälle tietokoneelle.",
     "drivers": "Tarkista ohjainpäivitykset ja vanhemmat paketit yhdessä paikassa. Tarkista ehdotetut muutokset ennen niiden käyttöönottoa.",
     "storageHistory": "Näe, mikä kasvaa. Tallenna paikallisia kansiotilannevedoksia ja vertaa, missä tallennustila on muuttunut.",
-    "recovery": "Selkeä tie takaisin. Tarkista tuetut muutokset ja palautuksen tiedot ennen minkään kumoamista.",
-    "diagnostics": "Muuta hidas hetki todisteiksi. Tallenna paikallisesti, tutki tiedot ja valitse, haluatko pyytää Cloud AI -analyysin."
+    "recovery": "Selkeä tie takaisin. Tarkista tuetut muutokset ja palautuksen tiedot ennen minkään kumoamista."
   },
   "home": {
     "eyebrow": "JÄRJESTELMÄSI YHDELLÄ SILMÄYKSELLÄ",
@@ -187,7 +179,7 @@
     "protectDescription": "Suorita haittaohjelmatarkistus ja tarkista tiedostot, jotka vaativat huomiota.",
     "protectAction": "Avaa suojaus",
     "automateTitle": "Tee huolenpidosta rutiini",
-    "automateDescription": "Valitse, milloin Kudu tarkistaa ja puhdistaa tietokoneesi.",
+    "automateDescription": "Valitse, milloin SuperSonicCleaner tarkistaa ja puhdistaa tietokoneesi.",
     "automateAction": "Määritä aikataulu",
     "cpu": "CPU:n käyttö",
     "memory": "Muisti",

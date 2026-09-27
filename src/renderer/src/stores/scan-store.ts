@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { ScanResult, ProgressData, ScanItem, CleanError } from '@shared/types'
+import type { ScanResult, ProgressData, CleanError } from '@shared/types'
 import { ScanStatus, CleanerType } from '@shared/enums'
 
 export interface CleanSummaryData {
@@ -41,6 +41,10 @@ interface ScanState {
   progress: ProgressData | null
   cleanSummary: CleanSummaryData | null
   activeCategory: CleanerType | null
+  scanningCategory: CleanerType | null
+  failedCategories: string[]
+  elevationSkipped: string[]
+  scanCancelRequested: boolean
 
   setStatus: (status: ScanStatus) => void
   setResults: (results: ScanResult[]) => void
@@ -48,6 +52,10 @@ interface ScanState {
   setProgress: (progress: ProgressData | null) => void
   setCleanSummary: (summary: CleanSummaryData | null) => void
   setActiveCategory: (cat: CleanerType | null) => void
+  setScanningCategory: (cat: CleanerType | null) => void
+  setFailedCategories: (categories: string[]) => void
+  setElevationSkipped: (categories: string[]) => void
+  setScanCancelRequested: (requested: boolean) => void
   toggleItem: (id: string) => void
   toggleSubcategory: (result: ScanResult) => void
   selectAll: (category: string) => void
@@ -67,6 +75,10 @@ export const useScanStore = create<ScanState>((set, get) => ({
   progress: null,
   cleanSummary: null,
   activeCategory: null,
+  scanningCategory: null,
+  failedCategories: [],
+  elevationSkipped: [],
+  scanCancelRequested: false,
 
   setStatus: (status) => set({ status }),
   setResults: (results) => {
@@ -93,6 +105,10 @@ export const useScanStore = create<ScanState>((set, get) => ({
   setProgress: (progress) => set({ progress }),
   setCleanSummary: (cleanSummary) => set({ cleanSummary }),
   setActiveCategory: (activeCategory) => set({ activeCategory }),
+  setScanningCategory: (scanningCategory) => set({ scanningCategory }),
+  setFailedCategories: (failedCategories) => set({ failedCategories }),
+  setElevationSkipped: (elevationSkipped) => set({ elevationSkipped }),
+  setScanCancelRequested: (scanCancelRequested) => set({ scanCancelRequested }),
   toggleItem: (id) =>
     set((s) => {
       const next = new Set(s.selectedItems)
@@ -182,6 +198,10 @@ export const useScanStore = create<ScanState>((set, get) => ({
       results: [],
       selectedItems: new Set(),
       progress: null,
-      cleanSummary: null
+      cleanSummary: null,
+      scanningCategory: null,
+      failedCategories: [],
+      elevationSkipped: [],
+      scanCancelRequested: false
     })
 }))

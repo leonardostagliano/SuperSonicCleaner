@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "מנקה מערכת",
   "dashboard": "בית",
   "securityHeading": "הגנה",
   "malwareScanner": "סורק נוזקות",
-  "threatMonitor": "ניטור איומים",
   "systemHardening": "הקשחת המערכת",
-  "cveScanner": "פגיעויות",
   "monitoring": "ניטור",
   "maintainHeading": "ניהול",
   "cleaner": "ניקוי",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "פעילות ושחזור",
   "history": "פעילות",
   "settings": "העדפות",
-  "breachMonitor": "ניטור פרצות",
   "gameMode": "מצב משחק",
   "firewallAudit": "ביקורת חומת אש"
 }

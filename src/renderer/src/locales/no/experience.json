@@ -18,10 +18,6 @@
     "recoveryDescription": "Finn gjenopprettingsalternativer for støttede systemendringer.",
     "reviewFirst": "Åpne et verktøy for å se gjennom alternativene før du gjør endringer.",
     "advancedPrompt": "Vil du ha grafer og systemdetaljer? Bytt til Avansert",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Jeg trenger mer plass",
@@ -129,7 +125,6 @@
     "handleThreats": "Velg hvordan du vil håndtere dem",
     "reviewPaths": "Se gjennom valgte stier",
     "chooseOptimizations": "Velg optimaliseringer",
-    "reviewCloud": "Se gjennom delingsinnstillinger",
     "trackFolder": "Velg en mappe å spore",
     "captureSnapshot": "Ta lokale øyeblikksbilder",
     "compareGrowth": "Sammenlign endringer i lagring",
@@ -154,15 +149,13 @@
     "maintenance": "Gi hver stasjon riktig vedlikehold. Se gjennom stasjonstype og tilgjengelig vedlikehold før du kjører en oppgave.",
     "network": "Se gjennom lagrede nettverksdata. Tøm hurtigbuffer eller fjern gamle tilkoblinger enkeltvis når du trenger det.",
     "malware": "Kontroller for malware og mistenkelige filer. Se gjennom funnene og velg hvordan hver oppdagelse skal håndteres.",
-    "threatMonitor": "Følg tilkoblinger og sikkerhetsaktivitet. Undersøk et varsel for å forstå kilden og konteksten.",
     "cve": "Gjør sårbarhetsfunn om til en plan. Se gjennom problemer med høyere alvorlighetsgrad og oppdater berørt programvare.",
     "gameMode": "Gjør plass til spilling. Se gjennom optimaliseringene og aktiver dem når du er klar.",
     "performance": "Forstå hva PC-en din gjør. Sammenlign ressursutvikling og finn prosessene bak belastningen.",
     "uninstaller": "Behold appene du bruker. Se gjennom detaljene for en app før du avinstallerer eller fjerner resterende filer.",
     "history": "Se hva som ble endret, hva som ble gjenopprettet, og hva som trenger en ny gjennomgang. Hver fullførte oppgave etterlater en registrering.",
-    "settings": "Tilpass Kudu slik det passer deg. Angi utseende, varsler, unntak og innstillinger for opprydding.",
+    "settings": "Tilpass SuperSonicCleaner slik det passer deg. Angi utseende, varsler, unntak og innstillinger for opprydding.",
     "about": "Åpen kildekode, gjennomtenkt laget. Finn versjonen din, se etter oppdateringer, og bli kjent med prosjektet.",
-    "cloud": "Samle enhetene dine. Koble denne datamaskinen til for å administrere skytjenesten og sikkerhetsfunksjonene.",
     "breach": "Kontroller om en e-postadresse finnes i kjente datainnbrudd. Se gjennom hva som ble eksponert og anbefalte neste steg.",
     "privacy": "Velg hva datamaskinen din deler. Se gjennom hver anbefaling og behold innstillingene du er avhengig av.",
     "services": "Forstå tjenestene bak systemet ditt. Kontroller formål og sikkerhet før du endrer oppstartsatferd.",
@@ -172,8 +165,7 @@
     "schedules": "Godt vedlikehold, på din tidsplan. Velg oppgavene, tidspunktene og frekvensen som passer denne datamaskinen.",
     "drivers": "Se gjennom driveroppdateringer og eldre pakker på ett sted. Kontroller de foreslåtte endringene før du bruker dem.",
     "storageHistory": "Se hva som vokser. Lagre lokale mappeøyeblikksbilder og sammenlign hvor lagringen har endret seg.",
-    "recovery": "En tydelig vei tilbake. Se gjennom støttede endringer og gjenopprettingsdetaljene før du angrer noe.",
-    "diagnostics": "Gjør et tregt øyeblikk om til dokumentasjon. Ta opp lokalt, undersøk dataene, og velg om du vil be om Cloud AI-analyse."
+    "recovery": "En tydelig vei tilbake. Se gjennom støttede endringer og gjenopprettingsdetaljene før du angrer noe."
   },
   "home": {
     "eyebrow": "SYSTEMET DITT, I ET NØTTESKALL",
@@ -187,7 +179,7 @@
     "protectDescription": "Kjør en malware-skanning og se gjennom filer som trenger oppmerksomhet.",
     "protectAction": "Åpne beskyttelse",
     "automateTitle": "Gjør vedlikehold til en rutine",
-    "automateDescription": "Velg når Kudu skal kontrollere og rense datamaskinen din.",
+    "automateDescription": "Velg når SuperSonicCleaner skal kontrollere og rense datamaskinen din.",
     "automateAction": "Sett opp en tidsplan",
     "cpu": "CPU-bruk",
     "memory": "Minne",

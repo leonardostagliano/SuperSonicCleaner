@@ -1,5 +1,5 @@
 import { ToolIllustration } from '@/components/shared/ToolIllustration'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
@@ -17,6 +17,7 @@ import { cn, formatBytes } from '@/lib/utils'
 import { useLargeFileStore } from '@/stores/large-file-store'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
 
 const SIZE_PRESETS = [
   { label: '1 MB', value: 1_048_576 },
@@ -42,13 +43,6 @@ export function LargeFileFinderPage() {
   const [showSettings, setShowSettings] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [excludeInput, setExcludeInput] = useState('')
-
-  useEffect(() => {
-    if (!window.kudu?.onLargeFilesProgress) return
-    return window.kudu.onLargeFilesProgress((data) => {
-      useLargeFileStore.getState().setProgress(data)
-    })
-  }, [])
 
   const selectedCount = store.selectedPaths.size
   const busy = store.status === 'scanning' || store.status === 'deleting'
@@ -343,6 +337,16 @@ export function LargeFileFinderPage() {
       {/* Results */}
       {store.status === 'complete' && store.result && (
         <>
+          <AiAnalysisPanel
+            source="large-files"
+            sourceRevision={store.result}
+            candidates={store.result.files.map((file) => ({
+              path: file.path,
+              size: file.size,
+              lastModified: file.lastModified,
+              lastAccessed: file.lastAccessed
+            }))}
+          />
           {/* Summary stats */}
           <div className="mb-5 grid grid-cols-4 gap-3">
             <StatCard

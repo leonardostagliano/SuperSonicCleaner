@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "ČIŠTĚNÍ SYSTÉMU",
   "dashboard": "Domů",
   "securityHeading": "Ochrana",
   "malwareScanner": "Kontrola malwaru",
-  "threatMonitor": "Monitor hrozeb",
   "systemHardening": "Zabezpečení systému",
-  "cveScanner": "Zranitelnosti",
   "monitoring": "Monitorování",
   "maintainHeading": "Správa",
   "cleaner": "Vyčištění",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Aktivita a obnovení",
   "history": "Aktivita",
   "settings": "Předvolby",
-  "breachMonitor": "Monitor úniků",
   "gameMode": "Herní režim",
   "firewallAudit": "Audit brány firewall"
 }

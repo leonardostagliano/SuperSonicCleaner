@@ -1,4 +1,7 @@
 export const IPC = {
+  AI_ANALYSIS_STATUS: 'ai-analysis:status',
+  AI_ANALYSIS_RUN: 'ai-analysis:run',
+  AI_ANALYSIS_CANCEL: 'ai-analysis:cancel',
   SCHEDULE_AUTHORIZE: 'schedule:authorize',
   SCHEDULE_RUNTIME: 'schedule:runtime',
   SCHEDULE_RUN_NOW: 'schedule:run-now',
@@ -87,8 +90,6 @@ export const IPC = {
   STARTUP_TOGGLE: 'startup:toggle',
   STARTUP_DELETE: 'startup:delete',
   STARTUP_BOOT_TRACE: 'startup:boot-trace',
-  STARTUP_SAFETY_FETCH: 'startup:safety:fetch',
-  STARTUP_SAFETY_UPDATED: 'startup:safety:updated',
 
   // Debloater
   DEBLOATER_SCAN: 'debloater:scan',
@@ -174,7 +175,6 @@ export const IPC = {
   MALWARE_ALLOWLIST_LIST: 'malware:allowlist:list',
   MALWARE_ALLOWLIST_REMOVE: 'malware:allowlist:remove',
   MALWARE_YARA_INFO: 'malware:yara:info',
-  MALWARE_YARA_UPDATE: 'malware:yara:update',
   MALWARE_YARA_COMPILE_PROGRESS: 'malware:yara:compile-progress',
   MALWARE_SCAN_COVERAGE: 'malware:scan-coverage',
 
@@ -198,8 +198,6 @@ export const IPC = {
   UNINSTALLER_UNINSTALL: 'uninstaller:uninstall',
   UNINSTALLER_FORCE_REMOVE: 'uninstaller:force-remove',
   UNINSTALLER_PROGRESS: 'uninstaller:progress',
-  PROGRAM_SAFETY_FETCH: 'program:safety:fetch',
-  PROGRAM_SAFETY_UPDATED: 'program:safety:updated',
 
   // Onboarding
   ONBOARDING_GET: 'onboarding:get',
@@ -237,33 +235,8 @@ export const IPC = {
   SOFTWARE_UPDATE_RUN: 'software-update:run',
   SOFTWARE_UPDATE_PROGRESS: 'software-update:progress',
 
-  // Cloud Agent
-  CLOUD_LINK: 'cloud:link',
-  CLOUD_UNLINK: 'cloud:unlink',
-  CLOUD_GET_STATUS: 'cloud:get-status',
-  CLOUD_RECONNECT: 'cloud:reconnect',
-
-  // Threat Monitor
-  THREAT_MONITOR_GET_SNAPSHOT: 'threat-monitor:get-snapshot',
-  THREAT_MONITOR_UPDATED: 'threat-monitor:updated',
-
-  // CVE Scanner
-  CVE_FETCH: 'cve:fetch',
-  CVE_UPDATED: 'cve:updated',
-
-  // Breach Monitor
-  BREACH_MONITOR_FETCH: 'breach-monitor:fetch',
-  BREACH_MONITOR_ADD: 'breach-monitor:add',
-  BREACH_MONITOR_REMOVE: 'breach-monitor:remove',
-  BREACH_MONITOR_ACKNOWLEDGE: 'breach-monitor:acknowledge',
-
-  // Cloud Action History
-  CLOUD_HISTORY_GET: 'cloud:history:get',
-  CLOUD_HISTORY_CLEAR: 'cloud:history:clear',
-
   // History push events (main -> renderer)
   HISTORY_CHANGED: 'history:changed',
-  CLOUD_HISTORY_CHANGED: 'cloud:history:changed',
 
   // Large File Finder
   LARGE_FILES_SCAN: 'large-files:scan',
@@ -298,6 +271,8 @@ export const IPC = {
   GAME_MODE_AUTO_EVENT: 'game-mode:auto-event',
 
   DIAGNOSTICS: 'performance:diagnostics',
+  DIAGNOSTICS_AI_ANALYZE: 'performance:ai-analyze',
+  DIAGNOSTICS_AI_CANCEL: 'performance:ai-cancel',
 
   // Platform
   PLATFORM_INFO: 'platform:info',

@@ -17,13 +17,6 @@
   "statusLastScan": "Last Scan",
   "statusLastScanNever": "Never",
   "statusTotalScans": "Total Scans",
-  "statusCloud": "Cloud",
-  "statusCloudConnected": "Connected",
-  "statusCloudNotConnected": "Not connected",
-  "cloudUpsellEyebrow": "Optional Cloud upgrade",
-  "cloudUpsellTitle": "Unlock four powerful Cloud features",
-  "cloudUpsellDescription": "Get threat monitoring, vulnerability scanning, breach alerts, and remote management. Your subscription also supports Kudu's continued open-source development.",
-  "cloudUpsellAction": "Explore Kudu Cloud",
   "toolLabelCleaner": "Cleaner",
   "toolLabelRegistry": "Registry",
   "toolLabelDrivers": "Drivers",
@@ -92,17 +85,15 @@
   "toastStartupCheckFailed": "Startup check failed",
   "toastSoftwareUpdateCheckFailed": "Software update check failed",
   "toastDriverCleanupFailed": "Driver cleanup failed",
-
   "greetingMorning": "Good morning",
   "greetingAfternoon": "Good afternoon",
   "greetingEvening": "Good evening",
   "greetingDeviceNeedsAttention": "Your device needs attention. {{count}} active threat remains.",
   "greetingDeviceNeedsAttentionPlural": "Your device needs attention. {{count}} active threats remain.",
-  "greetingEstablishingStatus": "Kudu is still establishing this device’s status. Complete the remaining checks for a reliable health summary.",
+  "greetingEstablishingStatus": "SuperSonicCleaner is still establishing this device’s status. Complete the remaining checks for a reliable health summary.",
   "greetingHealthyAllUpToDate": "Your PC is healthy and everything important is up to date.",
   "greetingChecksCompleteItems": "Your checks are complete. {{count}} item is ready for review.",
   "greetingChecksCompleteItemsPlural": "Your checks are complete. {{count}} items are ready for review.",
-
   "briefingEyebrow": "TODAY'S SYSTEM BRIEFING",
   "healthHeadlineThreats": "{{count}} threat needs your attention.",
   "healthHeadlineThreatsPlural": "{{count}} threats need your attention.",
@@ -110,19 +101,16 @@
   "healthHeadlineProtected": "Everything important is protected.",
   "healthHeadlineGoodShape": "Your device is in good shape.",
   "healthHeadlineReady": "A few things are ready for your attention.",
-
   "briefingDescThreats": "{{count}} active threat needs attention.",
   "briefingDescThreatsPlural": "{{count}} active threats need attention.",
   "briefingDescThreatsLastScan": " Your last malware scan ran {{date}}.",
-  "briefingDescClean": "No active threats were found in your last malware scan {{date}}. Kudu has reclaimed {{size}} over its lifetime.",
+  "briefingDescClean": "No active threats were found in your last malware scan {{date}}. SuperSonicCleaner has reclaimed {{size}} over its lifetime.",
   "briefingDescBaseline": "Run a complete scan to establish a protection baseline and uncover safe cleanup opportunities.",
-
   "recommendedHeading": "Recommended for you",
   "safeActionsOnly": "Safe actions only",
   "quickCleanSubtextDesc": "Browser cache, downloads residue and temporary files",
   "smartScanTitle": "Run smart scan",
   "smartScanDesc": "Protection, privacy and performance check",
-
   "scanCompleteThreats": "Scan complete — threats need attention",
   "threatsQuarantinedCount": "{{count}} quarantined",
   "threatsActiveCount": "{{count}} threat remains active",
@@ -130,7 +118,6 @@
   "privacyImprovementsCount": "{{count}} privacy improvements",
   "startupItemsCount": "{{count}} startup items",
   "updatesCount": "{{count}} updates",
-
   "systemGlanceHeading": "System at a glance",
   "updatedJustNow": "Updated just now",
   "glanceProcessor": "Processor",
@@ -141,14 +128,11 @@
   "glanceChecking": "Checking…",
   "glanceStorage": "Storage",
   "glanceStorageUnavailable": "Unavailable",
-
   "activitySpaceReclaimed": "Space reclaimed",
   "activityFilesCleaned": "Files cleaned",
   "activityScansCompleted": "Scans completed",
-
   "deviceCareEyebrow": "DEVICE CARE",
   "deviceCareHeading": "Needs your attention",
-
   "railCheckAppUpdates": "Check app updates",
   "railPendingAppUpdates": "{{count}} app update",
   "railPendingAppUpdatesPlural": "{{count}} app updates",
@@ -159,7 +143,6 @@
   "railAction5Min": "5 MIN",
   "railActionReview": "REVIEW",
   "railActionDone": "DONE",
-
   "railCheckStartupApps": "Check startup apps",
   "railStartupAppsAttention": "{{count}} startup app",
   "railStartupAppsAttentionPlural": "{{count}} startup apps",
@@ -169,7 +152,6 @@
   "railStartupSubtextNone": "No high-impact apps found",
   "railActionChecking": "CHECKING",
   "railActionCheck": "CHECK",
-
   "railThreatsAttention": "{{count}} threat needs attention",
   "railThreatsAttentionPlural": "{{count}} threats need attention",
   "railFirstMalwareScan": "Run your first malware scan",
@@ -178,7 +160,6 @@
   "railMalwareSubtextBaseline": "Establish a security baseline",
   "railMalwareSubtextNone": "No active threats detected",
   "railActionStart": "START",
-
   "systemDriveLabel": "System drive",
   "storageChecking": "Checking storage…",
   "storageUnavailable": "Storage unavailable",
@@ -187,12 +168,7 @@
   "storageCleanupRecommended": "Cleanup is recommended soon.",
   "storagePlentyAvailable": "Plenty of working space is available.",
   "openStorageTools": "Open storage tools →",
-
   "gameModeActiveLabel": "Game Mode is active",
   "gameModeReadyLabel": "Game Mode is ready",
-  "gameModeFocusResources": "Focus resources before you play",
-
-  "cloudStatusConnected": "Kudu Cloud connected",
-  "cloudStatusNeedsAttention": "Kudu Cloud needs attention",
-  "cloudStatusConnect": "Connect Kudu Cloud"
+  "gameModeFocusResources": "Focus resources before you play"
 }

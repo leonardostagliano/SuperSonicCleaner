@@ -53,17 +53,6 @@
   "historyCategoryDisabled": "הושבת",
   "historyCategoryRemoved": "הוסר",
   "removeButtonTitle": "הסר את {{name}}",
-  "safetyLinkCloud": "קשר אל Kudu Cloud כדי לראות דירוגי בטיחות מבוססי AI עבור תוכניות ההפעלה שלך",
-  "safetyPending": "מנתח בטיחות...",
-  "safetyTooltipSafe": "בטוח — לחץ לפרטים",
-  "safetyTooltipCaution": "יש לנקוט זהירות — לחץ לפרטים",
-  "safetyTooltipWarning": "חשוד — לחץ לפרטים",
-  "safetyTooltipDanger": "עלול להיות לא בטוח — לחץ לפרטים",
-  "safetyTooltipPending": "ניתוח הבטיחות מתבצע",
-  "safetyTooltipLocked": "קשר אל Kudu Cloud כדי לקבל דירוגי בטיחות",
-  "safetyScore": "בטיחות: {{score}}/10",
-  "safetyAnalyzed": "נותח ב-{{date}}",
-  "sortBySafety": "מיון לפי בטיחות",
   "staleBadge": "לא מותקן",
   "staleTooltip": "התוכנית שאליה ערך זה מפנה חסרה, ולכן היא כבר לא יכולה לפעול. בטוח להסיר את הערך."
 }

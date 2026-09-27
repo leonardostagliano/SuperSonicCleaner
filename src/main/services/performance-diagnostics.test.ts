@@ -11,23 +11,13 @@ import {
   measurement
 } from './diagnostics-recorder'
 import { PerformanceDiagnostics } from './performance-diagnostics'
-import { CloudRejectedError } from './diagnostics-cloud'
 import {
   diagnosticStats,
-  diagnosticUpload,
   validDiagnosticRecording,
   validDiagnosticReport
 } from '../../shared/performance-diagnostics'
 import type { DiagnosticSession } from '../../shared/performance-diagnostics'
 
-const cloud = vi.hoisted(() => ({ account: 'account-a', capabilities: vi.fn(), request: vi.fn() }))
-vi.mock('./diagnostics-cloud', () => ({
-  CloudRejectedError: class CloudRejectedError extends Error {},
-  diagnosticAccount: () => cloud.account,
-  diagnosticCapabilities: cloud.capabilities,
-  diagnosticsRequest: cloud.request,
-  diagnosticCloudResult: (v: unknown) => v
-}))
 vi.mock('systeminformation', () => ({
   fsStats: vi.fn(async () => ({ rx_sec: -1, wx_sec: -1 })),
   processes: vi.fn(async () => ({ list: [] })),
@@ -65,8 +55,7 @@ function session(): DiagnosticSession {
     notes: 'private note',
     pinned: false,
     state: 'saved',
-    cloud: null,
-    upload: null
+    report: null
   }
 }
 let dir: string
@@ -87,9 +76,6 @@ beforeEach(async () => {
       return Buffer.concat([decipher.update(value.subarray(12, -16)), decipher.final()]).toString()
     }
   )
-  cloud.account = 'account-a'
-  cloud.capabilities.mockResolvedValue({ available: true })
-  cloud.request.mockReset()
 })
 afterEach(async () => {
   vi.useRealTimers()
@@ -97,6 +83,33 @@ afterEach(async () => {
 })
 
 describe('recording privacy and persistence', () => {
+  it('preserves legacy recordings without exposing retired account metadata', async () => {
+    const s = session()
+    const report = {
+      version: 1,
+      analyzerVersion: 'legacy',
+      generatedAt: new Date().toISOString(),
+      summary: 'Existing report',
+      findings: [],
+      limitations: []
+    }
+    Object.assign(s, {
+      report: undefined,
+      cloud: { report },
+      upload: { account: 'private-account', digest: 'private-digest' }
+    })
+    await store.save(s, true)
+    const file = join(dir, s.recording.recordId + '.record')
+    const original = await readFile(file)
+    const service = new PerformanceDiagnostics(store)
+    const restored = await service.get(s.recording.recordId)
+    expect(restored.report).toEqual(report)
+    expect(restored).not.toHaveProperty('cloud')
+    expect(restored).not.toHaveProperty('upload')
+    expect(await readFile(file)).toEqual(original)
+    await service.remove(s.recording.recordId)
+    expect(await store.list()).toHaveLength(0)
+  })
   it('round trips encrypted sessions and rejects tampering and path IDs', async () => {
     const s = session()
     await store.save(s, true)
@@ -140,16 +153,6 @@ describe('recording privacy and persistence', () => {
     await service.ready()
     expect((await service.get(s.recording.recordId)).state).toBe('interrupted')
     expect((await service.get(s.recording.recordId)).recording.samples).toHaveLength(2)
-  })
-  it('whitelists upload fields and omits all processes unless selected', () => {
-    const s = session()
-    Object.assign(s.recording.system, { hostname: 'private-host' })
-    Object.assign(s.recording.samples[0].processes[0], { commandLine: 'secret', user: 'private' })
-    const hidden = diagnosticUpload(s.recording, false)
-    expect(hidden.samples.every((x) => x.processes.length === 0)).toBe(true)
-    const json = JSON.stringify(diagnosticUpload(s.recording, true))
-    expect(json).not.toMatch(/private-host|secret|commandLine|"user"/)
-    expect(validDiagnosticRecording(hidden)).toBe(true)
   })
 })
 
@@ -213,15 +216,25 @@ describe('measurement semantics', () => {
   })
 })
 
-describe('recording lifecycle and consent', () => {
-  it('checks paid access in the main process before starting', async () => {
-    const r = new DiagnosticsRecorder(store, async () => false)
-    await expect(r.start(120, false)).rejects.toThrow('Pro')
-    expect(await store.list()).toHaveLength(0)
+describe('local recording lifecycle', () => {
+  it('rejects analysis while a recording is active and reports an interrupted checkpoint honestly', async () => {
+    const s = session()
+    await store.save(s, true)
+    const service = new PerformanceDiagnostics(store)
+    await service.ready()
+    service.recorder.active = { ...s, state: 'recording' }
+    await expect(service.analyze(s.recording.recordId, 'en')).rejects.toThrow('Stop the recording')
+    expect((await store.get(s.recording.recordId)).report).toBeNull()
+    service.recorder.active = null
+    await store.save({ ...s, state: 'interrupted' })
+    const report = await service.analyze(s.recording.recordId, 'en')
+    expect(report.limitations.join(' ')).toContain('Interrupted recording')
+    expect((await store.get(s.recording.recordId)).report).toEqual(report)
   })
+
   it('records independently, stops coherently, and does not collect processes by default', async () => {
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'performance', 'Date'] })
-    const r = new DiagnosticsRecorder(store, async () => true)
+    const r = new DiagnosticsRecorder(store)
     const id = await r.start(120, false)
     await vi.advanceTimersByTimeAsync(2500)
     await r.stop()
@@ -233,135 +246,5 @@ describe('recording lifecycle and consent', () => {
     const count = s.recording.samples.length
     await vi.advanceTimersByTimeAsync(5000)
     expect((await store.get(id)).recording.samples).toHaveLength(count)
-  })
-  it('requires a fresh preview tied to data and the linked account', async () => {
-    const s = session()
-    await store.save(s, true)
-    const service = new PerformanceDiagnostics(store)
-    await expect(service.upload('invented')).rejects.toThrow('preview expired')
-    const p = await service.prepare(s.recording.recordId, false)
-    expect(cloud.request).not.toHaveBeenCalled()
-    expect(p.json).not.toContain('private-app')
-    cloud.account = 'account-b'
-    await expect(service.upload(p.token)).rejects.toThrow('preview expired')
-    cloud.account = 'account-a'
-    const next = await service.prepare(s.recording.recordId, false)
-    s.recording.samples[0].cpuPercent = 80
-    await store.save(s)
-    await expect(service.upload(next.token)).rejects.toThrow('Recording changed')
-    expect(cloud.request).not.toHaveBeenCalled()
-  })
-  it('releases the consent lock after a definitive server rejection and hides the fingerprint', async () => {
-    const s = session()
-    await store.save(s, true)
-    const service = new PerformanceDiagnostics(store)
-    const rejected = Object.assign(new Error('subscription'), { status: 402 })
-    Object.setPrototypeOf(rejected, CloudRejectedError.prototype)
-    cloud.request.mockRejectedValueOnce(rejected)
-    const p = await service.prepare(s.recording.recordId, true)
-    await expect(service.upload(p.token)).rejects.toThrow('subscription')
-    expect((await store.get(s.recording.recordId)).upload).toBeNull()
-    const unavailable = Object.assign(new Error('unavailable'), { status: 503 })
-    Object.setPrototypeOf(unavailable, CloudRejectedError.prototype)
-    cloud.request.mockRejectedValueOnce(unavailable)
-    const retry = await service.prepare(s.recording.recordId, false)
-    await expect(service.upload(retry.token)).rejects.toThrow('unavailable')
-    expect((await store.get(s.recording.recordId)).upload?.account).toBe('account-a')
-    cloud.request.mockRejectedValueOnce(new Error('network'))
-    const again = await service.prepare(s.recording.recordId, false)
-    await expect(service.upload(again.token)).rejects.toThrow('network')
-    const kept = await store.get(s.recording.recordId)
-    expect(kept.upload?.account).toBe('account-a')
-    const exposed = await service.get(s.recording.recordId)
-    expect(exposed.upload).toEqual({ consentAt: kept.upload?.consentAt, includeProcesses: false })
-    cloud.request.mockResolvedValueOnce({ deleted: true })
-    await service.deleteCloud(s.recording.recordId)
-  })
-  it('keeps the original upload handle when a retry conflicts with a stored copy', async () => {
-    const s = session()
-    await store.save(s, true)
-    const service = new PerformanceDiagnostics(store)
-    cloud.request.mockRejectedValueOnce(new Error('network'))
-    const first = await service.prepare(s.recording.recordId, true)
-    await expect(service.upload(first.token)).rejects.toThrow('network')
-    const original = (await store.get(s.recording.recordId)).upload
-    expect(original?.includeProcesses).toBe(true)
-    const conflict = Object.assign(new Error('already submitted'), { status: 409 })
-    Object.setPrototypeOf(conflict, CloudRejectedError.prototype)
-    cloud.request.mockRejectedValueOnce(conflict)
-    const retry = await service.prepare(s.recording.recordId, false)
-    await expect(service.upload(retry.token)).rejects.toThrow('already submitted')
-    const kept = (await store.get(s.recording.recordId)).upload
-    expect(kept).toEqual(original)
-    expect(kept?.includeProcesses).toBe(true)
-    expect(kept?.digest).toBe(original?.digest)
-    await expect(service.remove(s.recording.recordId)).rejects.toThrow('Delete the Cloud copy')
-  })
-  it('records a Cloud deletion after an ambiguous submission so local removal is allowed', async () => {
-    const s = session()
-    await store.save(s, true)
-    const service = new PerformanceDiagnostics(store)
-    cloud.request.mockRejectedValueOnce(new Error('network'))
-    const p = await service.prepare(s.recording.recordId, false)
-    await expect(service.upload(p.token)).rejects.toThrow('network')
-    await expect(service.remove(s.recording.recordId)).rejects.toThrow('Delete the Cloud copy')
-    const gone = Object.assign(new Error('not found'), { status: 404 })
-    Object.setPrototypeOf(gone, CloudRejectedError.prototype)
-    cloud.request.mockRejectedValueOnce(gone)
-    await service.deleteCloud(s.recording.recordId)
-    const marked = await store.get(s.recording.recordId)
-    expect(marked.cloud?.status).toBe('failed')
-    expect(marked.cloud?.errorCode).toBe('deleted')
-    expect(marked.cloud?.expiresAt).toBe('1970-01-01T00:00:00.000Z')
-    await service.remove(s.recording.recordId)
-    expect(await store.list()).toHaveLength(0)
-  })
-  it('requires the Cloud copy to be deleted before the local recording is removed', async () => {
-    const s = session()
-    await store.save(s, true)
-    const service = new PerformanceDiagnostics(store)
-    cloud.request.mockResolvedValueOnce({
-      recordId: s.recording.recordId,
-      status: 'queued',
-      report: null,
-      errorCode: null,
-      expiresAt: '2999-01-01T00:00:00Z'
-    })
-    const p = await service.prepare(s.recording.recordId, false)
-    await service.upload(p.token)
-    await expect(service.remove(s.recording.recordId)).rejects.toThrow('Delete the Cloud copy')
-    expect(await store.list()).toHaveLength(1)
-    cloud.request.mockResolvedValueOnce({ deleted: true })
-    await service.deleteCloud(s.recording.recordId)
-    await service.remove(s.recording.recordId)
-    expect(await store.list()).toHaveLength(0)
-  })
-  it('saves consent before submitting and permits reading/deleting without a subscription check', async () => {
-    const s = session()
-    await store.save(s, true)
-    const service = new PerformanceDiagnostics(store)
-    const result = {
-      recordId: s.recording.recordId,
-      status: 'queued',
-      report: null,
-      errorCode: null,
-      expiresAt: '2026-09-20T10:00:00Z'
-    }
-    cloud.request.mockImplementation(async () => {
-      expect((await store.get(s.recording.recordId)).upload?.consentAt).toBeTruthy()
-      return result
-    })
-    const p = await service.prepare(s.recording.recordId, true)
-    await service.upload(p.token)
-    await expect(service.prepare(s.recording.recordId, false)).rejects.toThrow(
-      'original sharing options'
-    )
-    cloud.capabilities.mockResolvedValue({ available: false })
-    await service.refresh(s.recording.recordId)
-    cloud.request.mockResolvedValue({ deleted: true })
-    await service.deleteCloud(s.recording.recordId)
-    expect((await store.get(s.recording.recordId)).cloud?.expiresAt).toBe(
-      '1970-01-01T00:00:00.000Z'
-    )
   })
 })

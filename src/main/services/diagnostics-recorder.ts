@@ -8,6 +8,7 @@ import type {
   DiagnosticSample
 } from '../../shared/performance-diagnostics'
 import type { DiagnosticsStore } from './diagnostics-store'
+import { cpuTimeTotals, type CpuTimeTotals } from './cpu-time-sampler'
 
 export const measurement = (value: unknown, max = 2 ** 50): number | null =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= max ? value : null
@@ -37,19 +38,14 @@ export function diagnosticProcesses(
       memoryBytes: measurement(p.memRss * 1024)
     }))
 }
-function cpuTimes(): { idle: number; total: number } {
-  return os.cpus().reduce(
-    (a, c) => ({
-      idle: a.idle + c.times.idle,
-      total: a.total + Object.values(c.times).reduce((x, y) => x + y, 0)
-    }),
-    { idle: 0, total: 0 }
-  )
+function cpuTimes(): CpuTimeTotals | null {
+  return cpuTimeTotals(os.cpus())
 }
 export function diagnosticCpu(
-  previous: { idle: number; total: number },
-  current: { idle: number; total: number }
+  previous: CpuTimeTotals | null,
+  current: CpuTimeTotals | null
 ): number | null {
+  if (!previous || !current) return null
   const delta = current.total - previous.total
   return delta > 0 && current.idle >= previous.idle
     ? measurement(100 * (1 - (current.idle - previous.idle) / delta), 100)
@@ -72,10 +68,7 @@ export class DiagnosticsRecorder {
   private diskBusy = false
   private diskAt = -5000
   private disk: { read: number | null; write: number | null; t: number } | null = null
-  constructor(
-    private store: DiagnosticsStore,
-    private authorize: () => Promise<boolean>
-  ) {}
+  constructor(private store: DiagnosticsStore) {}
   async start(seconds: unknown, includeProcesses: unknown): Promise<string> {
     if (![120, 300, 900].includes(seconds as number) || typeof includeProcesses !== 'boolean')
       throw new Error('Choose a supported recording duration')
@@ -83,8 +76,6 @@ export class DiagnosticsRecorder {
       throw new Error('A recording or measurement is still finishing')
     this.starting = true
     try {
-      if (!(await this.authorize()))
-        throw new Error('New diagnostics require an active Cloud Pro subscription.')
       const platform = process.platform
       if (platform !== 'win32' && platform !== 'darwin' && platform !== 'linux')
         throw new Error('Unsupported platform')
@@ -107,8 +98,7 @@ export class DiagnosticsRecorder {
         notes: '',
         pinned: false,
         state: 'recording',
-        cloud: null,
-        upload: null
+        report: null
       }
       await this.store.save(s, true)
       this.error = null

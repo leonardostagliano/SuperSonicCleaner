@@ -53,17 +53,6 @@
   "historyCategoryDisabled": "अक्षम",
   "historyCategoryRemoved": "हटाया गया",
   "removeButtonTitle": "{{name}} को हटाएँ",
-  "safetyLinkCloud": "अपने Startup प्रोग्राम के लिए AI सुरक्षा रेटिंग देखने हेतु Kudu Cloud से लिंक करें",
-  "safetyPending": "सुरक्षा का विश्लेषण किया जा रहा है...",
-  "safetyTooltipSafe": "सुरक्षित — विवरण के लिए क्लिक करें",
-  "safetyTooltipCaution": "सावधानी बरतें — विवरण के लिए क्लिक करें",
-  "safetyTooltipWarning": "संदिग्ध — विवरण के लिए क्लिक करें",
-  "safetyTooltipDanger": "संभावित रूप से असुरक्षित — विवरण के लिए क्लिक करें",
-  "safetyTooltipPending": "सुरक्षा विश्लेषण प्रगति पर है",
-  "safetyTooltipLocked": "सुरक्षा रेटिंग के लिए Kudu Cloud से लिंक करें",
-  "safetyScore": "सुरक्षा: {{score}}/10",
-  "safetyAnalyzed": "विश्लेषित: {{date}}",
-  "sortBySafety": "सुरक्षा के अनुसार क्रमबद्ध करें",
   "staleBadge": "इंस्टॉल नहीं है",
   "staleTooltip": "जिस प्रोग्राम की ओर यह प्रविष्टि संकेत करती है, वह मौजूद नहीं है, इसलिए अब वह प्रारंभ नहीं हो सकता। इस प्रविष्टि को हटाना सुरक्षित है।"
 }

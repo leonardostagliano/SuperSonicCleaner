@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "Buka Kudu",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "Buka SuperSonicCleaner",
   "quit": "Keluar",
-  "scheduledTaskNotificationTitle": "Kudu - Tugas Terjadwal",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Tugas Terjadwal",
   "scheduledTaskNotificationBody": "Menjalankan \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "Kudu - Pemindaian Selesai",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - Pemindaian Selesai",
   "scanCompleteNotificationBody": "Ditemukan {{itemCount}} item ({{sizeMB}} MB) yang dapat dibersihkan.",
   "scheduledScanName": "Pemindaian Terjadwal"
 }

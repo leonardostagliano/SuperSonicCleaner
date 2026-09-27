@@ -365,7 +365,7 @@ async function triggerScheduleEntry(
     autoApply: entry.autoApply,
     cleanerSubcategories: entry.cleanerSubcategories
   })
-  if (!process.argv.includes('--daemon') && Notification.isSupported()) {
+  if (Notification.isSupported()) {
     new Notification({
       title: t('scheduledTaskNotificationTitle'),
       body: t('scheduledTaskNotificationBody', { name: entry.name }),
@@ -399,7 +399,7 @@ export async function runScheduleNow(getMainWindow: () => BrowserWindow | null, 
  * Send a notification when a scheduled scan completes.
  */
 export function notifyScheduledScanComplete(totalSize: number, itemCount: number): void {
-  if (process.argv.includes('--daemon') || !Notification.isSupported()) return
+  if (!Notification.isSupported()) return
   const settings = getSettings()
   if (!settings.showNotificationOnComplete) return
 

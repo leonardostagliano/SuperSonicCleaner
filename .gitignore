@@ -2,6 +2,7 @@ node_modules/
 out/
 dist/
 test-results/
+.cache/
 *.log
 .DS_Store
 Thumbs.db

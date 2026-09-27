@@ -1,5 +1,5 @@
 // ─── Chromium Cache Targets ───────────────────────────────────
-// Shared by the browser cleaner IPC, the CLI, and the cloud agent so all three
+// Shared by the browser cleaner IPC and the CLI so both
 // scan the same set of directories. They used to keep their own copies of this
 // list, which is how Chromium's shader and CRX caches ended up missing from
 // every scan (issue #265).

@@ -1,119 +1,14 @@
-/* Pulse: charcoal surfaces, warm amber actions, calm mint telemetry. */
-:root {
-  --page-bg: #101519;
-  --sidebar-bg: #11171b;
-  --titlebar-bg: #11171b;
-  --card-bg: #171e23;
-  --bg-subtle: #ffffff04;
-  --bg-subtle-2: #ffffff08;
-  --bg-hover: #ffffff0c;
-  --bg-hover-2: #ffffff12;
-  --bg-active: #ffffff18;
-  --bg-elevated: #202b32;
-  --bg-overlay: #293239;
-  --flyout-bg: #1c252c;
-  --toast-bg: #1c252c;
-  --text-primary: #eef0f2;
-  --text-secondary: #b4bec8;
-  --text-muted: #9ba8b6;
-  --text-dim: #919eac;
-  --text-faint: #9199a2;
-  --text-ghost: #9ba8b6;
-  --text-ghost-2: #b3bec6;
-  --text-on-accent: #251e12;
-  --toast-text: #eef0f2;
-  --brand-solid: #f2b354;
-  --brand-ink: #251e12;
-  --brand-surface: #f2b3540d;
-  --brand-border: #f2b35429;
-  --nav-active-bg: #f2b35415;
-  --nav-active-fg: #f0bd6d;
-  --nav-inactive-fg: #bac3ca;
-  --nav-icon-fg: #a4b0b9;
-  --nav-section-fg: #9199a2;
-  --border-subtle: #ffffff08;
-  --border-default: #222d34;
-  --border-medium: #293239;
-  --border-strong: #34414a;
-  --border-stronger: #ffffff28;
-  --accent: #f2b354;
-  --accent-hover: #f6c577;
-  --accent-muted-bg: #f2b3540d;
-  --accent-muted-border: #f2b35430;
-  --success: #8cd4b0;
-  --warning: #f0bd6d;
-  --danger: #f18d87;
-  --info: #9cb8d6;
-  --gauge-track: #ffffff0c;
-  --grid-line: #ffffff0a;
-  --glass-bg: #171e23;
-  --glass-border: #ffffff0d;
-  --glass-inset: #ffffff03;
-  --glass-shadow: 0 2px 6px #00000008;
-  --glass-hover-bg: #1c252c;
-  --glass-hover-border: #ffffff22;
-  --glass-hover-shadow: 0 4px 15px #0000000c;
-  --scrollbar-thumb: #9cabb52b;
-  --scrollbar-thumb-hover: #9cabb54d;
-  --selection-bg: #f2b35438;
+/* Kudu Premium components. Theme values live in design-tokens.css. */
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
-.light {
-  --page-bg: #f2f4f5;
-  --sidebar-bg: #edf0f2;
-  --titlebar-bg: #edf0f2;
-  --card-bg: #fff;
-  --glass-bg: #fff;
-  --bg-subtle: #172c3a04;
-  --bg-subtle-2: #172c3a08;
-  --bg-hover: #172c3a0c;
-  --bg-hover-2: #172c3a12;
-  --bg-active: #172c3a18;
-  --bg-elevated: #e4eaee;
-  --bg-overlay: #d9e2e8;
-  --flyout-bg: #fff;
-  --toast-bg: #fff;
-  --text-primary: #23313a;
-  --text-secondary: #435661;
-  --text-muted: #536873;
-  --text-dim: #586d79;
-  --text-faint: #586d79;
-  --text-ghost: #536873;
-  --text-ghost-2: #435661;
-  --text-on-accent: #251e12;
-  --toast-text: #23313a;
-  --brand-solid: #946316;
-  --brand-ink: #fff;
-  --brand-surface: #e9aa370d;
-  --brand-border: #a7712230;
-  --nav-active-bg: #f2b35435;
-  --nav-active-fg: #76521c;
-  --nav-inactive-fg: #435661;
-  --nav-icon-fg: #536873;
-  --nav-section-fg: #586d79;
-  --border-subtle: #172c3a09;
-  --border-default: #172c3a12;
-  --border-medium: #172c3a18;
-  --border-strong: #172c3a25;
-  --border-stronger: #172c3a36;
-  --accent: #efb353;
-  --accent-hover: #e9a73c;
-  --accent-muted-bg: #efb35316;
-  --accent-muted-border: #a7712240;
-  --success: #357352;
-  --warning: #8b5f17;
-  --danger: #b93e38;
-  --info: #3d709e;
-  --gauge-track: #172c3a0c;
-  --grid-line: #172c3a10;
-  --glass-border: #172c3a12;
-  --glass-inset: #fff;
-  --glass-shadow: 0 2px 6px #172c3a03;
-  --glass-hover-bg: #fff;
-  --glass-hover-border: #172c3a28;
-  --glass-hover-shadow: 0 4px 15px #172c3a08;
-  --scrollbar-thumb: #172c3a25;
-  --scrollbar-thumb-hover: #172c3a40;
-  --selection-bg: #efb35345;
+:where(h1, h2, h3, .pulse-big-value, .pulse-resource-card strong, .pulse-lifetime b) {
+  font-family: var(--font-display);
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 .app-titlebar,
 .kudu-sidebar {
@@ -152,6 +47,22 @@
   font-size: 13px;
 }
 /* Switch tracks keep their explicit height so the thumb stays centered. */
+.toggle-switch {
+  border: 1px solid var(--toggle-off-border);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--toggle-off-border) 20%, transparent);
+}
+.toggle-switch[data-checked='true'] {
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.toggle-switch > div,
+.toggle-switch > span {
+  background: var(--toggle-off-thumb);
+}
+.toggle-switch[data-checked='true'] > div,
+.toggle-switch[data-checked='true'] > span {
+  background: var(--toggle-on-thumb);
+}
 .app-content :where(button:not(.toggle-switch), select) {
   min-height: 36px;
 }
@@ -159,8 +70,14 @@
   cursor: not-allowed;
 }
 .app-content :where(input, select, textarea):focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
+}
+.app-content :where(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  background: var(--surface) !important;
+  border-radius: var(--radius-control);
+  border-color: var(--border-default) !important;
+  box-shadow: none;
 }
 .app-content :where(h2, h3) {
   letter-spacing: -0.25px;
@@ -180,24 +97,26 @@
 }
 .glass-card,
 .feature-card {
-  box-shadow: none;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-color: var(--border-default);
+  box-shadow: var(--card-shadow), var(--card-highlight);
+  border-radius: var(--radius-card);
 }
 .app-content:not([data-route='/']) .glass-card {
-  box-shadow: none;
-  border-radius: 12px;
+  box-shadow: var(--card-shadow), var(--card-highlight);
+  border-radius: var(--radius-card);
 }
 .feature-card {
   padding: 22px;
 }
 .feature-button {
   min-height: 39px;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   font-size: 13px;
 }
 .feature-field {
   min-height: 40px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
 }
 .pulse-page-header {
   margin-bottom: 24px;
@@ -215,10 +134,10 @@
   min-width: 0;
 }
 .pulse-page-header h1 {
-  font-size: 30px;
+  font-size: var(--text-title);
   line-height: 1.25;
   letter-spacing: -1px;
-  font-weight: 580;
+  font-weight: 600;
   margin: 8px 0 10px;
 }
 .pulse-page-header p {
@@ -259,7 +178,7 @@
   margin: 23px 0 0;
   padding: 15px 18px;
   border: 1px solid var(--border-default);
-  border-radius: 10px;
+  border-radius: var(--radius-tile);
   background: var(--card-bg);
 }
 .pulse-workflow li {
@@ -285,24 +204,26 @@
   align-items: center;
   justify-content: center;
   gap: 9px;
-  padding: 10px 15px;
+  padding: 10px 18px;
   min-height: 40px;
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  background: var(--bg-subtle);
-  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-primary);
   font-size: 12px;
-  font-weight: 550;
+  font-weight: 600;
   transition:
-    background 0.15s,
-    border-color 0.15s;
+    background var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
 }
 .pulse-button:hover:not(:disabled) {
-  background: var(--bg-hover);
-  border-color: var(--border-stronger);
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
   color: var(--text-primary);
 }
 .pulse-button.pulse-primary,
+.pulse-button[aria-pressed='true'],
 .app-content .pulse-primary-action {
   background: var(--accent) !important;
   color: var(--text-on-accent) !important;
@@ -310,6 +231,7 @@
   box-shadow: none !important;
 }
 .pulse-button.pulse-primary:hover:not(:disabled),
+.pulse-button[aria-pressed='true']:hover:not(:disabled),
 .app-content .pulse-primary-action:hover:not(:disabled) {
   background: var(--accent-hover) !important;
 }
@@ -327,10 +249,11 @@
   color: var(--accent);
 }
 .pulse-card {
-  padding: 23px;
-  border: 1px solid var(--border-medium);
+  padding: 24px;
+  border: 1px solid var(--border-default);
   background: var(--card-bg);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--card-shadow), var(--card-highlight);
   min-width: 0;
 }
 .pulse-card-heading {
@@ -344,8 +267,8 @@
 }
 .pulse-card-heading h2 {
   margin: 0;
-  font-size: 14px;
-  font-weight: 550;
+  font-size: 15px;
+  font-weight: 600;
 }
 .pulse-card-heading p {
   color: var(--text-muted);
@@ -359,14 +282,14 @@
   width: 40px;
   height: 40px;
   border: 1px solid var(--accent-muted-border);
-  border-radius: 10px;
+  border-radius: var(--radius-tile);
   color: var(--accent);
   background: var(--accent-muted-bg);
   flex-shrink: 0;
 }
 .pulse-icon-tile.is-mint {
-  color: var(--success);
-  background: color-mix(in srgb, var(--success) 7%, transparent);
+  color: var(--success-text);
+  background: var(--success-bg);
   border-color: color-mix(in srgb, var(--success) 15%, transparent);
 }
 .pulse-home-heading {
@@ -380,13 +303,13 @@
   color: var(--text-dim);
   letter-spacing: 1.8px;
   font-size: 10px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .pulse-home h1 {
   margin: 9px 0 10px;
   font-size: 33px;
   letter-spacing: -1.2px;
-  font-weight: 550;
+  font-weight: 600;
   line-height: 1.25;
 }
 .pulse-home-heading p {
@@ -403,8 +326,8 @@
   flex-wrap: wrap;
   gap: 7px;
   align-items: baseline;
-  font-size: 34px;
-  font-weight: 450;
+  font-size: var(--text-display);
+  font-weight: 600;
   letter-spacing: -1.1px;
   line-height: 1.3;
   margin: 23px 0 21px;
@@ -441,7 +364,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--success);
+  color: var(--success-text);
   font-size: 11px;
   margin-top: 14px;
 }
@@ -462,7 +385,7 @@
 .pulse-storage-meter i {
   display: block;
   height: 100%;
-  background: var(--info);
+  background: linear-gradient(90deg, var(--info), var(--info-text));
   border-radius: inherit;
 }
 .pulse-home-storage .pulse-text-button {
@@ -480,7 +403,7 @@
 }
 .pulse-section-heading h2 {
   font-size: 16px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .pulse-section-heading > span {
   font-size: 11px;
@@ -496,17 +419,17 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 23px;
-  border: 1px solid var(--border-medium);
-  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
   background: var(--card-bg);
 }
 .pulse-action-card.is-primary {
-  border-color: var(--accent-muted-border);
-  background: linear-gradient(120deg, var(--accent-muted-bg), transparent), var(--card-bg);
+  border-color: var(--border-medium);
+  background: radial-gradient(ellipse at 0% 0%, var(--card-glow), transparent 65%), var(--card-bg);
 }
 .pulse-action-card h3 {
   font-size: 17px;
-  font-weight: 550;
+  font-weight: 600;
   margin: 16px 0 10px;
 }
 .pulse-action-card p {
@@ -618,7 +541,7 @@
 }
 .pulse-health-summary > h3 {
   font-size: 15px;
-  font-weight: 550;
+  font-weight: 600;
   line-height: 1.5;
   margin-top: 15px;
 }
@@ -647,7 +570,7 @@
 .pulse-count {
   display: inline-flex;
   padding: 3px 7px;
-  border-radius: 5px;
+  border-radius: var(--radius-pill);
   background: var(--bg-subtle-2);
   color: var(--text-muted);
   font-size: 11px;
@@ -674,7 +597,7 @@
 .pulse-attention b {
   display: block;
   font-size: 12px;
-  font-weight: 550;
+  font-weight: 600;
   line-height: 1.65;
 }
 .pulse-attention small {
@@ -762,7 +685,7 @@
   gap: 25px;
   padding: 25px;
   border: 1px solid var(--border-default);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   margin-top: 25px;
 }
 .pulse-lifetime span {
@@ -789,7 +712,7 @@
 }
 .pulse-quick-care h3 {
   font-size: 14px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .pulse-quick-care p {
   font-size: 12px;
@@ -848,7 +771,7 @@
   height: 59px;
   border: 1px solid var(--border-strong);
   background: var(--card-bg);
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   display: grid;
   place-items: center;
   color: var(--text-dim);
@@ -866,7 +789,7 @@
   right: 6px;
   width: 85px;
   height: 44px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   border: 1px solid var(--border-strong);
   background: var(--card-bg);
   padding: 10px;
@@ -920,13 +843,13 @@
 }
 .cleaner-categories {
   width: 230px !important;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: var(--card-bg);
   padding: 10px;
   box-shadow: none;
 }
 .cleaner-categories > button {
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   min-height: 61px;
 }
 .cleaner-results {
@@ -943,7 +866,7 @@
 .empty-state,
 .utility-empty-stage {
   background: var(--card-bg);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   min-height: 300px;
   padding: 38px 28px;
   box-shadow: none;
@@ -984,7 +907,7 @@
   border-color: var(--border-strong);
 }
 .utility-toolbar {
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   box-shadow: none;
   flex-wrap: wrap;
   gap: 12px;
@@ -1017,7 +940,7 @@
 }
 .malware-page .malware-tabs {
   border: 1px solid var(--border-medium);
-  border-radius: 10px !important;
+  border-radius: var(--radius-control) !important;
   background: var(--card-bg) !important;
   flex-wrap: wrap;
   gap: 5px;
@@ -1039,17 +962,17 @@
   gap: 13px;
   border: 1px solid var(--border-medium);
   background: var(--card-bg);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   min-width: 0;
 }
 .pulse-resource-card h2 {
   font-size: 13px;
-  font-weight: 550;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 .pulse-resource-card strong {
-  font-size: 31px;
-  font-weight: 450;
+  font-size: var(--text-display);
+  font-weight: 600;
   letter-spacing: -1px;
 }
 .pulse-resource-card strong small {
@@ -1069,14 +992,14 @@
 .pulse-time-chart {
   padding: 22px;
   border: 1px solid var(--border-medium);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: var(--card-bg);
 }
 .pulse-time-chart h3 {
   color: var(--text-secondary);
   font-size: 13px;
   margin-bottom: 18px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .pulse-time-chart footer {
   display: flex;
@@ -1104,7 +1027,7 @@
   text-transform: none;
 }
 .settings-section > div {
-  border-radius: 12px !important;
+  border-radius: var(--radius-card) !important;
   box-shadow: none;
   border-color: var(--border-medium) !important;
 }
@@ -1127,11 +1050,11 @@
 }
 .app-content[data-route='/services'] .service-groups > *,
 .app-content[data-route='/firewall'] .rounded-2xl {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
 }
 .app-content[data-route='/game-mode'] .game-mode-card {
   box-shadow: none !important;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
 }
 .app-content[data-route='/game-mode'] [class*='animate-game'] {
   animation: none;
@@ -1140,12 +1063,11 @@
 .app-content[data-route='/disk'] .recharts-wrapper {
   font-size: 11px;
 }
-.app-content[data-route='/cloud'] .rounded-2xl,
 .app-content[data-route='/about'] .rounded-2xl {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
 }
 .app-content[data-route='/schedules'] .rounded-2xl {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
 }
 @media (max-width: 1200px) {
   .app-content,
@@ -1370,28 +1292,38 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .glass-card-hover,
   .pulse-button {
     transition: none;
+  }
+  .glass-card-hover:hover {
+    transform: none;
   }
 }
 
 .pulse-settings-nav {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   flex-wrap: wrap;
   margin-bottom: 26px;
+  width: fit-content;
+  padding: 5px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle-2);
 }
 .pulse-settings-nav button {
-  padding: 9px 13px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   color: var(--text-secondary);
   font-size: 12px;
 }
 .pulse-settings-nav button:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--surface);
+  border-color: var(--border-default);
 }
 .settings-section {
   scroll-margin-top: 20px;
@@ -1502,7 +1434,7 @@
   padding: 20px;
   background: var(--card-bg);
   border: 1px solid var(--border-medium);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
 }
 .pulse-upcoming-list article > svg {
   margin-inline-start: auto;
@@ -1510,7 +1442,7 @@
 }
 .pulse-upcoming-list h3 {
   font-size: 14px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .pulse-upcoming-list p {
   font-size: 12px;
@@ -1547,7 +1479,7 @@
   gap: 20px;
   background: var(--card-bg);
   border: 1px solid var(--border-medium);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   padding: 22px;
   margin-bottom: 22px;
 }
@@ -1579,6 +1511,9 @@
 @media (max-width: 1100px) {
   .settings-grid > section {
     grid-column: 1 / -1;
+  }
+  .settings-section:first-child > div {
+    grid-template-columns: 1fr;
   }
   .pulse-updater-toolbar {
     align-items: stretch;
@@ -1619,9 +1554,9 @@
   box-shadow: none !important;
 }
 
-/* Original Pulse reference: cool graphite, compact telemetry, graph-first Home. */
+/* Advanced dashboard: compact telemetry with a dedicated system health card. */
 .pulse-home h1 {
-  font-size: 30px;
+  font-size: var(--text-title);
 }
 .pulse-home-heading {
   margin-bottom: 24px;
@@ -1632,9 +1567,10 @@
   margin-bottom: 20px;
 }
 .pulse-home-metrics > .pulse-card {
-  min-height: 164px;
-  padding: 19px;
+  min-height: 176px;
+  padding: 20px;
   position: relative;
+  background: radial-gradient(ellipse at 0% 0%, var(--card-glow), transparent 65%), var(--card-bg);
 }
 .pulse-home-metrics .pulse-card-heading {
   justify-content: flex-start;
@@ -1643,7 +1579,7 @@
 .pulse-home-metrics .pulse-card-heading h2 {
   font-size: 12px;
   color: var(--text-muted);
-  font-weight: 450;
+  font-weight: 500;
 }
 .pulse-home-metrics .pulse-card-heading > svg {
   order: -1;
@@ -1652,14 +1588,14 @@
   color: var(--text-muted);
 }
 .pulse-home-metrics .pulse-big-value {
-  font-size: 30px;
+  font-size: var(--text-display);
   margin: 20px 0 12px;
 }
 .pulse-home-metrics .pulse-big-value small {
-  font-size: 10px;
+  font-size: var(--text-caption);
 }
 .pulse-home-metrics p {
-  font-size: 10px;
+  font-size: var(--text-caption);
   margin-top: 10px;
 }
 .pulse-metric-sparkline {
@@ -1706,7 +1642,7 @@
   margin: 0;
 }
 .pulse-health-summary .pulse-card-heading h2 {
-  font-size: 9px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
@@ -1763,7 +1699,7 @@
   gap: 16px;
   padding: 25px;
   min-height: 290px;
-  background: radial-gradient(ellipse at 100% 0%, #f2b35408, transparent 70%), var(--card-bg);
+  background: radial-gradient(ellipse at 0% 0%, var(--card-glow), transparent 70%), var(--card-bg);
   border-color: var(--border-medium);
 }
 .pulse-cleanup-hero .pulse-icon-tile {
@@ -1804,8 +1740,8 @@
   font-size: 19px;
 }
 .app-content .feature-card {
-  border-radius: 12px;
-  box-shadow: none;
+  border-radius: var(--radius-card);
+  box-shadow: var(--card-shadow), var(--card-highlight);
   background: var(--card-bg);
 }
 .app-content .feature-status {
@@ -1814,7 +1750,7 @@
   color: var(--text-secondary);
 }
 .app-content .feature-button {
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
 }
 @media (max-width: 1250px) {
   .pulse-home-metrics {
@@ -1828,7 +1764,7 @@
     grid-template-columns: minmax(0, 1fr) 270px;
   }
 }
-@media (max-width: 950px) {
+@media (max-width: 1180px) {
   .pulse-home-columns {
     grid-template-columns: 1fr;
   }
@@ -1901,7 +1837,7 @@
 .pulse-storage-history-page table {
   border: 1px solid var(--border-medium);
   background: var(--card-bg);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   overflow: hidden;
 }
 .pulse-storage-history-page th,
@@ -1942,7 +1878,7 @@
 
 .pulse-storage-trend h2 {
   font-size: 16px;
-  font-weight: 550;
+  font-weight: 600;
 }
 .pulse-storage-trend > p {
   font-size: 12px;
@@ -1985,20 +1921,4 @@
   .pulse-schedule-options fieldset {
     grid-template-columns: 1fr;
   }
-}
-
-/* Plan labels are compact metadata, separate from navigation text sizing. */
-.cloud-tier-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  padding: 1px 4px;
-  border-radius: 3px;
-  font-size: 9px;
-  font-weight: 650;
-  line-height: 12px;
-  letter-spacing: 0.035em;
-  text-transform: uppercase;
-  white-space: nowrap;
 }

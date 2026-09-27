@@ -3,9 +3,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Zap,
   Shield,
-  ShieldCheck,
-  ShieldAlert,
-  ShieldOff,
   RefreshCw,
   Clock,
   Activity,
@@ -35,7 +32,6 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { cn } from '@/lib/utils'
 import { useStartupStore } from '@/stores/startup-store'
 import { useHistoryStore } from '@/stores/history-store'
-import { useSettingsStore } from '@/stores/settings-store'
 import type { StartupItem, StartupBootTrace } from '@shared/types'
 
 const impactStyles: Record<StartupItem['impact'], { bg: string; text: string }> = {
@@ -62,52 +58,6 @@ const sourceKeys: Record<StartupItem['source'], string> = {
   'systemd-user': 'sourceSystemdUser',
   'autostart-desktop': 'sourceAutostartDesktop',
   cron: 'sourceCron'
-}
-
-function safetyScoreColor(score: number): { bg: string; text: string } {
-  if (score >= 8) return { bg: 'rgba(34,197,94,0.10)', text: '#22c55e' }
-  if (score >= 5) return { bg: 'rgba(245,158,11,0.10)', text: '#f59e0b' }
-  if (score >= 3) return { bg: 'rgba(249,115,22,0.10)', text: '#f97316' }
-  return { bg: 'rgba(239,68,68,0.10)', text: '#ef4444' }
-}
-
-function safetyIcon(score: number) {
-  if (score >= 8) return ShieldCheck
-  if (score >= 5) return Shield
-  return ShieldAlert
-}
-
-function SafetyTooltip({ children, text }: { children: React.ReactNode; text: string }) {
-  const [show, setShow] = useState(false)
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-    >
-      {children}
-      {show && (
-        <div
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded-lg px-3 py-1.5 text-[11px] font-medium pointer-events-none z-50 shadow-lg"
-          style={{
-            background: 'var(--card-bg)',
-            border: '1px solid var(--border-strong)',
-            color: 'var(--text-primary)'
-          }}
-        >
-          {text}
-          <div
-            className="absolute top-full left-1/2 -translate-x-1/2 -mt-px w-0 h-0"
-            style={{
-              borderLeft: '5px solid transparent',
-              borderRight: '5px solid transparent',
-              borderTop: '5px solid var(--border-strong)'
-            }}
-          />
-        </div>
-      )}
-    </div>
-  )
 }
 
 function formatMs(ms: number): string {
@@ -431,11 +381,6 @@ export function StartupPage() {
   const bootTrace = useStartupStore((s) => s.bootTrace)
   const traceLoading = useStartupStore((s) => s.traceLoading)
   const deleteTarget = useStartupStore((s) => s.deleteTarget)
-  const safetyRatings = useStartupStore((s) => s.safetyRatings)
-  const safetyLoading = useStartupStore((s) => s.safetyLoading)
-  const expandedItemId = useStartupStore((s) => s.expandedItemId)
-
-  const isCloudLinked = !!useSettingsStore((s) => s.settings.cloud.apiKey)
 
   const store = useStartupStore
 
@@ -471,13 +416,6 @@ export function StartupPage() {
       loadBootTrace()
     }
   }, [loadItems, loadBootTrace])
-
-  // Fetch safety ratings when cloud is linked
-  useEffect(() => {
-    if (isCloudLinked && Object.keys(safetyRatings).length === 0) {
-      store.getState().fetchSafetyRatings()
-    }
-  }, [isCloudLinked])
 
   const handleToggle = async (item: StartupItem, enabled: boolean) => {
     const startTime = Date.now()
@@ -525,7 +463,6 @@ export function StartupPage() {
         ],
         errorCount: 0
       })
-      if (isCloudLinked) store.getState().fetchSafetyRatings()
     } catch {
       store.getState().updateItem(item.id, { enabled: !enabled })
       toast.error(
@@ -585,8 +522,6 @@ export function StartupPage() {
   const handleRefresh = () => {
     loadItems()
     loadBootTrace()
-    store.getState().setExpandedItemId(null)
-    if (isCloudLinked) store.getState().fetchSafetyRatings()
   }
 
   const impactOrder: Record<string, number> = { high: 0, medium: 1, low: 2, none: 3 }
@@ -595,11 +530,6 @@ export function StartupPage() {
   )
   const sorted = [...filtered].sort((a, b) => {
     if (sortBy === 'impact') return impactOrder[a.impact] - impactOrder[b.impact]
-    if (sortBy === 'safety') {
-      const sa = safetyRatings[a.name]?.safetyScore ?? 11
-      const sb = safetyRatings[b.name]?.safetyScore ?? 11
-      return sa - sb
-    }
     return a.displayName.localeCompare(b.displayName)
   })
 
@@ -628,7 +558,6 @@ export function StartupPage() {
             >
               <option value="impact">{t('sortByImpact')}</option>
               <option value="name">{t('sortByName')}</option>
-              <option value="safety">{t('sortBySafety')}</option>
             </select>
             <button
               onClick={handleRefresh}
@@ -663,21 +592,16 @@ export function StartupPage() {
 
       <div className="space-y-2.5">
         {sorted.map((item) => {
-          const rating = safetyRatings[item.name]
-          const isExpanded = expandedItemId === item.id
-
           return (
             <Fragment key={item.id}>
               <div
                 className={cn(
                   'flex items-center gap-5 rounded-2xl p-5 transition-all',
-                  !item.enabled && 'opacity-50',
-                  isExpanded && 'rounded-b-none'
+                  !item.enabled && 'opacity-50'
                 )}
                 style={{
                   background: 'var(--card-bg)',
-                  border: '1px solid var(--border-default)',
-                  ...(isExpanded ? { borderBottom: 'none' } : {})
+                  border: '1px solid var(--border-default)'
                 }}
               >
                 {/* Icon */}
@@ -731,74 +655,6 @@ export function StartupPage() {
                   </div>
                 </div>
 
-                {/* Safety Score */}
-                {isCloudLinked ? (
-                  rating ? (
-                    (() => {
-                      const colors = safetyScoreColor(rating.safetyScore)
-                      const Icon = safetyIcon(rating.safetyScore)
-                      const tooltipKey =
-                        rating.safetyScore >= 8
-                          ? 'safetyTooltipSafe'
-                          : rating.safetyScore >= 5
-                            ? 'safetyTooltipCaution'
-                            : rating.safetyScore >= 3
-                              ? 'safetyTooltipWarning'
-                              : 'safetyTooltipDanger'
-                      return (
-                        <SafetyTooltip text={t(tooltipKey)}>
-                          <button
-                            onClick={() =>
-                              store.getState().setExpandedItemId(isExpanded ? null : item.id)
-                            }
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl cursor-pointer transition-all hover:scale-110"
-                            style={{ background: colors.bg }}
-                          >
-                            <Icon
-                              className="h-[18px] w-[18px]"
-                              style={{ color: colors.text }}
-                              strokeWidth={1.8}
-                            />
-                          </button>
-                        </SafetyTooltip>
-                      )
-                    })()
-                  ) : (
-                    <SafetyTooltip
-                      text={t(safetyLoading ? 'safetyTooltipPending' : 'safetyPending')}
-                    >
-                      <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-                        style={{ background: 'var(--bg-subtle-2)' }}
-                      >
-                        {safetyLoading ? (
-                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-zinc-400" />
-                        ) : (
-                          <Shield
-                            className="h-[18px] w-[18px]"
-                            style={{ color: 'var(--text-faint)' }}
-                            strokeWidth={1.8}
-                          />
-                        )}
-                      </div>
-                    </SafetyTooltip>
-                  )
-                ) : (
-                  <SafetyTooltip text={t('safetyTooltipLocked')}>
-                    <button
-                      onClick={() => toast.info(t('safetyLinkCloud'))}
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl opacity-30 cursor-pointer transition-opacity hover:opacity-50"
-                      style={{ background: 'var(--bg-subtle-2)' }}
-                    >
-                      <ShieldOff
-                        className="h-[18px] w-[18px]"
-                        style={{ color: 'var(--text-faint)' }}
-                        strokeWidth={1.8}
-                      />
-                    </button>
-                  </SafetyTooltip>
-                )}
-
                 {/* Impact */}
                 <span
                   className="rounded-lg px-3 py-1.5 text-[11px] font-semibold capitalize shrink-0"
@@ -815,7 +671,8 @@ export function StartupPage() {
                   <button
                     onClick={() => handleToggle(item, !item.enabled)}
                     className="toggle-switch relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors"
-                    style={{ background: item.enabled ? 'var(--accent)' : 'var(--bg-active)' }}
+                    data-checked={item.enabled}
+                    style={{ background: item.enabled ? 'var(--accent)' : 'var(--toggle-off-bg)' }}
                   >
                     <div
                       className={cn(
@@ -834,66 +691,6 @@ export function StartupPage() {
                   </button>
                 </div>
               </div>
-
-              {/* Expanded safety detail */}
-              {isExpanded &&
-                rating &&
-                (() => {
-                  const colors = safetyScoreColor(rating.safetyScore)
-                  const DetailIcon = safetyIcon(rating.safetyScore)
-                  return (
-                    <div
-                      className="rounded-b-2xl px-5 py-4 -mt-px"
-                      style={{
-                        background: 'var(--bg-subtle)',
-                        border: '1px solid var(--border-default)',
-                        borderTop: '1px solid var(--border-subtle)'
-                      }}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-0.5"
-                          style={{ background: colors.bg }}
-                        >
-                          <DetailIcon
-                            className="h-4 w-4"
-                            style={{ color: colors.text }}
-                            strokeWidth={1.8}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span
-                              className="text-[13px] font-semibold tabular-nums"
-                              style={{ color: colors.text }}
-                            >
-                              {rating.safetyScore}/10
-                            </span>
-                            <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-                              {t('safetyScore', { score: rating.safetyScore })}
-                            </span>
-                          </div>
-                          <p
-                            className="mt-1 text-[13px]"
-                            style={{ color: 'var(--text-secondary)' }}
-                          >
-                            {rating.description || t('safetyPending')}
-                          </p>
-                          {rating.analyzedAt && (
-                            <p
-                              className="mt-1.5 text-[11px]"
-                              style={{ color: 'var(--text-faint)' }}
-                            >
-                              {t('safetyAnalyzed', {
-                                date: new Date(rating.analyzedAt).toLocaleDateString()
-                              })}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })()}
             </Fragment>
           )
         })}

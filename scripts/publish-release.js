@@ -1,6 +1,10 @@
 const assert = require('node:assert/strict')
 const { execFileSync } = require('node:child_process')
-const { verifyReleaseArtifacts, verifyUploadedAssets } = require('./release-artifacts')
+const {
+  verifyReleaseArtifacts,
+  verifyUploadedAssets,
+  writeChecksumManifest
+} = require('./release-artifacts')
 
 function findRelease(gh, repo, tag) {
   // GitHub's tag endpoint excludes drafts. List releases with authentication,
@@ -26,6 +30,7 @@ async function main() {
   assert(repo, 'GITHUB_REPOSITORY is required')
   const assets = await verifyReleaseArtifacts(process.argv[2], tag)
   console.log(`Verified ${assets.length} artifacts, including all four update manifests`)
+  assets.push(await writeChecksumManifest(process.argv[2], assets))
   const gh = (...args) =>
     execFileSync('gh', args, { encoding: 'utf8', timeout: 20 * 60 * 1000 }).trim()
   const { id } = findRelease(gh, repo, tag)

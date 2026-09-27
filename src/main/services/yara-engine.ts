@@ -547,7 +547,7 @@ export function isAdvisoryDetection(detectionName: string): boolean {
  * Advisory handling (see isAdvisoryDetection) is not enough here — an
  * unticked row on hundreds of files is still noise.
  *
- * Keyed by YARA identifier, compared case-insensitively. The cloud bundle
+ * Keyed by YARA identifier, compared case-insensitively. The signature bundle
  * should also drop them; this list exists so already-cached bundles and any
  * future re-add stop firing without waiting for a rule update.
  */

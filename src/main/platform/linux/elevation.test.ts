@@ -60,7 +60,7 @@ describe('linux elevation', () => {
       expect(command).toContain("DISPLAY=':0'")
       expect(command).toContain("HOME='/home/user'")
       expect(command).toContain("'/home/user/Kudu.AppImage' --no-sandbox")
-      expect(command).toContain("--kudu-data-dir='/home/user/.config/Kudu'")
+      expect(command).toContain("--supersonic-cleaner-data-dir='/home/user/.config/Kudu'")
       expect(command).toMatch(/ > \/dev\/null 2>&1 &$/)
     })
 
@@ -74,7 +74,7 @@ describe('linux elevation', () => {
 
       expect(command).toContain("DISPLAY=':0'\\''unsafe'")
       expect(command).toContain("'/home/user/Kudu'\\''s AppImage'")
-      expect(command).toContain("--kudu-data-dir='/home/user/Kudu'\\''s data'")
+      expect(command).toContain("--supersonic-cleaner-data-dir='/home/user/Kudu'\\''s data'")
     })
   })
 })

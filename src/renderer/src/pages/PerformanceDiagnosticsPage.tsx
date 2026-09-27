@@ -1,754 +1,393 @@
-import '@/components/shared/feature-layout.css'
-import '@/components/perf/diagnostics.css'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Activity,
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  ChevronRight,
-  Circle,
-  Cloud,
-  Cpu,
-  FileText,
-  History,
-  Loader2,
-  MemoryStick,
-  Plus,
-  ShieldCheck,
+  ChartNoAxesCombined,
+  Download,
+  Pin,
+  Play,
   Sparkles,
   Square,
-  Upload
+  Trash2,
+  X
 } from 'lucide-react'
-import { DiagnosticsAccess } from '@/components/perf/DiagnosticsAccess'
-import { DiagnosticReport } from '@/components/perf/DiagnosticReport'
-import { useSettingsStore } from '@/stores/settings-store'
-import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { formatBytes } from '@/lib/utils'
-import { diagnosticStats } from '@shared/performance-diagnostics'
-import type {
-  DiagnosticCapabilities,
-  DiagnosticPreview,
-  DiagnosticSession,
-  DiagnosticSummary
-} from '@shared/performance-diagnostics'
-
-const button = 'feature-button'
-const primary = `${button} feature-primary`
-const clock = (ms: number): string =>
-  `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`
+import { DiagnosticReport } from '@/components/perf/DiagnosticReport'
+import { useDiagnosticsStore } from '@/stores/diagnostics-store'
 
 export function PerformanceDiagnosticsPage() {
-  const { t } = useTranslation('diagnostics')
-  const [cap, setCap] = useState<DiagnosticCapabilities | null>(null)
-  const [checkingAccess, setCheckingAccess] = useState(true)
-  const [accessFailed, setAccessFailed] = useState(false)
-  const [accessAttempt, setAccessAttempt] = useState(0)
-  const cloudKey = useSettingsStore((s) => s.settings.cloud.apiKey)
-  const [rows, setRows] = useState<DiagnosticSummary[]>([])
-  const [active, setActive] = useState<string | null>(null)
-  const [elapsed, setElapsed] = useState(0)
-  const [seconds, setSeconds] = useState(120)
-  const [collectProcesses, setCollectProcesses] = useState(false)
-  const [shareProcesses, setShareProcesses] = useState(false)
-  const [selected, setSelected] = useState<DiagnosticSession | null>(null)
-  const [preview, setPreview] = useState<DiagnosticPreview | null>(null)
-  const [reviewing, setReviewing] = useState(false)
-  const [error, setError] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [confirm, setConfirm] = useState(false)
-  const detailRef = useRef<HTMLElement>(null)
-  const stepsRef = useRef<HTMLOListElement>(null)
-  const activeRef = useRef<string | null>(null)
-  const id = selected?.recording.recordId
-  const step = active || !selected ? 1 : reviewing || selected.upload || selected.cloud ? 3 : 2
-  const cloudGone = !!selected?.cloud && new Date(selected.cloud.expiresAt).getTime() < Date.now()
-  const report = selected?.cloud?.report
-  const processing = !cloudGone && ['queued', 'processing'].includes(selected?.cloud?.status ?? '')
-  const stats = selected ? diagnosticStats(selected.recording) : null
-  const hasProcesses = selected?.recording.samples.some((sample) => sample.processes.length > 0)
-  const tooShort =
-    !!selected && (selected.recording.samples.length < 2 || selected.recording.durationMs < 1000)
+  const { t, i18n } = useTranslation('diagnostics')
+  const {
+    status,
+    selectedId,
+    session,
+    title,
+    notes,
+    loading,
+    busy,
+    error,
+    statusError,
+    feedback,
+    aiEnabled,
+    aiConnection,
+    aiChecking,
+    aiCancelling,
+    aiErrorCode,
+    toggleAi,
+    checkAiConnection,
+    analyzeAi,
+    cancelAi,
+    refresh,
+    select,
+    setDraft,
+    start,
+    stop,
+    save,
+    analyze,
+    togglePinned,
+    remove,
+    export: exportRecording
+  } = useDiagnosticsStore()
+  const [duration, setDuration] = useState<120 | 300 | 900>(120)
+  const [includeProcesses, setIncludeProcesses] = useState(false)
+  const working = busy !== null
+  const ready = !loading && session?.recording.recordId === selectedId
+  const recording =
+    session?.state === 'recording' || (!!selectedId && status?.activeId === selectedId)
+  const dirty = !!session && (title.trim() !== session.title || notes !== session.notes)
 
-  const adopt = useCallback((session: DiagnosticSession) => {
-    setSelected((current) =>
-      current?.recording.recordId === session.recording.recordId
-        ? { ...session, title: current.title, notes: current.notes, pinned: current.pinned }
-        : current
-    )
-  }, [])
-  const open = useCallback(async (nextId: string) => {
-    const session = await window.kudu.diagnosticsGet(nextId)
-    setSelected(session)
-    setPreview(null)
-    setReviewing(false)
-    setConfirm(false)
-    setShareProcesses(session.upload?.includeProcesses ?? false)
-  }, [])
-  const refresh = useCallback(async () => {
-    const status = await window.kudu.diagnosticsStatus()
-    const previous = activeRef.current
-    setRows(status.rows)
-    setActive(status.activeId)
-    setElapsed(status.elapsedMs)
-    if (status.error) setError(status.error)
-    // Resume a recording after navigation, and advance automatically when its timer ends.
-    if (status.activeId && status.activeId !== previous) await open(status.activeId)
-    else if (previous && !status.activeId) await open(previous)
-    activeRef.current = status.activeId
-  }, [open])
-  const run = async (work: () => Promise<void>) => {
-    setBusy(true)
-    setError('')
-    try {
-      await work()
-      await refresh()
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t('operationFailed'))
-    } finally {
-      setBusy(false)
-    }
-  }
   useEffect(() => {
-    let disposed = false
-    let pending = false
-    const poll = async () => {
-      if (pending || disposed) return
-      pending = true
-      try {
-        await refresh()
-      } catch (e) {
-        if (!disposed) setError(String(e))
-      } finally {
-        pending = false
-      }
-    }
-    void poll()
-    const timer = setInterval(() => void poll(), 2000)
-    return () => {
-      disposed = true
-      clearInterval(timer)
-    }
+    void refresh()
+    const timer = window.setInterval(() => void refresh(), 1000)
+    return () => window.clearInterval(timer)
   }, [refresh])
-  useEffect(() => {
-    let disposed = false
-    setCheckingAccess(true)
-    setAccessFailed(false)
-    setCap(null)
-    setPreview(null)
-    void window.kudu
-      .diagnosticsCapabilities()
-      .then((value) => {
-        if (!disposed) setCap(value)
-      })
-      .catch(() => {
-        if (!disposed) setAccessFailed(true)
-      })
-      .finally(() => {
-        if (!disposed) setCheckingAccess(false)
-      })
-    return () => {
-      disposed = true
-    }
-  }, [cloudKey, accessAttempt])
-  useEffect(() => {
-    if (!id || !processing) return
-    let disposed = false
-    let pending = false
-    const timer = setInterval(() => {
-      if (pending) return
-      pending = true
-      void window.kudu
-        .diagnosticsRefresh(id)
-        .then((session) => {
-          if (!disposed) {
-            adopt(session)
-            setError('')
-          }
-        })
-        .catch((e) => {
-          if (!disposed) setError(String(e))
-        })
-        .finally(() => {
-          pending = false
-        })
-    }, 5000)
-    return () => {
-      disposed = true
-      clearInterval(timer)
-    }
-  }, [id, processing, adopt])
-  useEffect(() => {
-    if (!id) return
-    detailRef.current?.focus({ preventScroll: true })
-    if (step > 1) stepsRef.current?.scrollIntoView({ block: 'start' })
-  }, [step, id]) // Focus the next step without moving the page on every status update.
-
-  const newRecording = () => {
-    setSelected(null)
-    setReviewing(false)
-    setPreview(null)
-    setError('')
-    setShareProcesses(false)
-  }
-  const prepare = async () => {
-    if (!selected || !id) return
-    await window.kudu.diagnosticsEdit(id, selected)
-    setPreview(await window.kudu.diagnosticsPreview(id, shareProcesses))
-    setReviewing(true)
-  }
 
   return (
-    <div className="feature-page feature-layout diagnostics-page">
-      <PageHeader
-        title={t('title')}
-        description={t('flow.description')}
-        showWorkflow={false}
-        action={
-          <Link className={button} to="/performance">
-            <Activity size={15} />
-            {t('liveMonitor')}
-          </Link>
-        }
-      />
-      <div className="diagnostics-workspace">
-        <div className="diagnostics-topline">
-          <span className="diagnostics-eyebrow">
-            <Cloud size={15} />
-            {t('pro')}
-          </span>
-          {selected && !active && (
-            <button className={button} disabled={busy} onClick={newRecording}>
-              <Plus size={15} />
-              {t('flow.newSession')}
-            </button>
-          )}
-        </div>
-        <ol ref={stepsRef} className="diagnostics-steps" aria-label={t('flow.steps')}>
-          {(['record', 'details', 'analyze'] as const).map((key, index) => (
-            <li
-              key={key}
-              data-state={step > index + 1 ? 'done' : step === index + 1 ? 'current' : 'upcoming'}
-              aria-current={step === index + 1 ? 'step' : undefined}
-            >
-              <span className="diagnostics-step-number">
-                {step > index + 1 ? <Check size={17} /> : `0${index + 1}`}
-              </span>
-              <div>
-                <strong>{t(`flow.${key}`)}</strong>
-                <span>{t(`flow.${key}Caption`)}</span>
-              </div>
-            </li>
-          ))}
-        </ol>
-        {error && (
-          <div role="alert" className="diagnostics-error">
-            {error}
+    <div className="feature-page animate-fade-in">
+      <PageHeader title={t('title')} description={t('description')} />
+      {(error || statusError || status?.error) && (
+        <p role="alert" className="mb-4 text-sm text-[var(--danger-text)]">
+          {status?.error || t('operationFailed')}
+        </p>
+      )}
+      {feedback && (
+        <p role="status" className="mb-4 text-sm text-[var(--success-text)]">
+          {t(feedback)}
+        </p>
+      )}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.8fr)]">
+        <section className="pulse-card space-y-5" aria-labelledby="diagnostics-capture">
+          <div className="pulse-card-heading">
+            <div className="flex items-center gap-3">
+              <Activity size={21} aria-hidden="true" />
+              <h2 id="diagnostics-capture">{t('newRecording')}</h2>
+            </div>
           </div>
-        )}
-        {!cap?.available && !active && (
-          <DiagnosticsAccess
-            capabilities={cap}
-            checking={checkingAccess}
-            failed={accessFailed}
-            onRetry={() => setAccessAttempt((attempt) => attempt + 1)}
-          />
-        )}
-
-        {step === 1 && (cap?.available || active) && (
-          <section
-            className="diagnostics-stage diagnostics-capture"
-            ref={detailRef}
-            tabIndex={-1}
-            aria-labelledby="diagnostics-stage-title"
-          >
-            <div className="diagnostics-capture-main">
-              <span className="diagnostics-kicker">{t('flow.step', { number: 1 })}</span>
-              <h2 id="diagnostics-stage-title">
-                {t(active ? 'flow.recordingTitle' : 'newRecording')}
-              </h2>
-              <p className="diagnostics-description">
-                {t(active ? 'flow.recordingHint' : 'flow.recordHint')}
-              </p>
-              {active ? (
-                <>
-                  <div className="diagnostics-timer">
-                    <span className="diagnostics-record-dot" />
-                    <strong>{clock(elapsed)}</strong>
-                    <span>{t('recording')}</span>
-                  </div>
-                  <button
-                    className={primary}
-                    disabled={busy}
-                    onClick={() =>
-                      void run(async () => {
-                        await window.kudu.diagnosticsStop()
-                      })
-                    }
-                  >
-                    <Square size={14} fill="currentColor" />
-                    {t('flow.finishRecording')}
-                  </button>
-                  <p className="diagnostics-footnote">{t('sampling')}</p>
-                </>
-              ) : (
-                <>
-                  <fieldset className="diagnostics-duration" disabled={busy}>
-                    <legend>{t('flow.recordFor')}</legend>
-                    <div>
-                      {[120, 300, 900].map((duration) => (
-                        <button
-                          type="button"
-                          key={duration}
-                          aria-pressed={seconds === duration}
-                          onClick={() => setSeconds(duration)}
-                        >
-                          <strong>{t('minutes', { count: duration / 60 })}</strong>
-                          <span>{t(`flow.duration${duration}`)}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </fieldset>
-                  <label className="diagnostics-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={collectProcesses}
-                      disabled={busy}
-                      onChange={(e) => setCollectProcesses(e.target.checked)}
-                    />
-                    <span>
-                      {t('flow.collectProcesses')}
-                      <small>{t('flow.collectHint')}</small>
-                    </span>
-                  </label>
-                  <button
-                    className={primary}
-                    disabled={busy || !cap?.available}
-                    onClick={() =>
-                      void run(async () => {
-                        await window.kudu.diagnosticsStart(seconds, collectProcesses)
-                      })
-                    }
-                  >
-                    {busy ? (
-                      <Loader2 size={15} className="diagnostics-spin" />
-                    ) : (
-                      <Circle size={12} fill="currentColor" />
-                    )}
-                    {t('start')}
-                    <ArrowRight size={16} />
-                  </button>
-                  <p className="diagnostics-footnote">
-                    <ShieldCheck size={14} />
-                    {t('flow.uploadControl')}
-                  </p>
-                </>
-              )}
-            </div>
-            <aside className="diagnostics-capture-aside" aria-label={t('flow.whatWeRecord')}>
-              <div className="diagnostics-signal" data-recording={!!active} aria-hidden="true">
-                <Activity size={64} strokeWidth={1.1} />
-              </div>
-              <h3>{t('flow.whatWeRecord')}</h3>
-              <p>{t('flow.signalHint')}</p>
-              <div className="diagnostics-signal-tags">
-                <span>
-                  <Cpu size={14} />
-                  CPU
-                </span>
-                <span>
-                  <MemoryStick size={14} />
-                  {t('memory')}
-                </span>
-                <span>
-                  <Activity size={14} />
-                  {t('flow.disk')}
-                </span>
-              </div>
-            </aside>
-          </section>
-        )}
-
-        {step === 2 && selected && (
-          <section
-            className="diagnostics-stage"
-            ref={detailRef}
-            tabIndex={-1}
-            aria-labelledby="diagnostics-stage-title"
-          >
-            <div className="diagnostics-stage-heading">
-              <span className="diagnostics-icon">
-                <FileText size={24} />
+          <p className="text-sm text-[var(--text-secondary)]">{t('localFirst')}</p>
+          {status?.activeId ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <span role="status" className="text-sm text-[var(--success-text)]">
+                {t('recording')} · {Math.floor(status.elapsedMs / 1000)}s
               </span>
-              <div>
-                <span className="diagnostics-kicker">{t('flow.step', { number: 2 })}</span>
-                <h2 id="diagnostics-stage-title">{t('flow.detailsTitle')}</h2>
-                <p className="diagnostics-description">{t('flow.detailsHint')}</p>
-              </div>
+              <button
+                className="pulse-button pulse-primary"
+                disabled={working}
+                onClick={() => void stop()}
+              >
+                <Square size={15} aria-hidden="true" /> {t('stop')}
+              </button>
             </div>
-            <div className="diagnostics-details-grid">
-              <form
-                className="diagnostics-form"
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  void run(prepare)
+          ) : (
+            <>
+              <fieldset className="flex flex-wrap gap-2">
+                <legend className="mb-2 text-sm font-medium">{t('duration')}</legend>
+                {([120, 300, 900] as const).map((seconds) => (
+                  <button
+                    key={seconds}
+                    type="button"
+                    className="pulse-button"
+                    aria-pressed={duration === seconds}
+                    disabled={working}
+                    onClick={() => setDuration(seconds)}
+                  >
+                    {t('minutes', { count: seconds / 60 })}
+                  </button>
+                ))}
+              </fieldset>
+              <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <input
+                  type="checkbox"
+                  checked={includeProcesses}
+                  disabled={working}
+                  onChange={(event) => setIncludeProcesses(event.target.checked)}
+                />
+                {t('collectProcesses')}
+              </label>
+              <button
+                className="pulse-button pulse-primary"
+                disabled={working || !status || status.rows.length >= 30}
+                onClick={() => {
+                  if (dirty && !window.confirm(t('discardDetails'))) return
+                  void start(duration, includeProcesses)
                 }}
               >
-                <label>
-                  {t('name')}
-                  <input
-                    className="feature-field"
-                    required
-                    maxLength={120}
-                    disabled={busy}
-                    value={selected.title}
-                    placeholder={t('flow.namePlaceholder')}
-                    onChange={(e) => setSelected({ ...selected, title: e.target.value })}
-                  />
-                </label>
-                <label>
-                  {t('flow.notes')}
-                  <textarea
-                    className="feature-field"
-                    maxLength={2000}
-                    rows={4}
-                    disabled={busy}
-                    value={selected.notes}
-                    placeholder={t('flow.notesPlaceholder')}
-                    onChange={(e) => setSelected({ ...selected, notes: e.target.value })}
-                  />
-                  <small>{t('flow.notesHint')}</small>
-                </label>
-                {hasProcesses && (
-                  <label className="diagnostics-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={shareProcesses}
-                      disabled={busy}
-                      onChange={(e) => setShareProcesses(e.target.checked)}
-                    />
-                    <span>{t('flow.shareProcesses')}</span>
-                  </label>
-                )}
-                <div className="diagnostics-actions">
-                  <button
-                    type="submit"
-                    className={primary}
-                    disabled={busy || !cap?.available || !selected.title.trim() || tooShort}
-                  >
-                    {busy ? (
-                      <Loader2 className="diagnostics-spin" size={16} />
-                    ) : (
-                      <Cloud size={16} />
-                    )}
-                    {t('flow.continue')}
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              </form>
-              <aside className="diagnostics-summary">
-                <span className="diagnostics-summary-check">
-                  <Check size={20} />
-                </span>
-                <h3>
-                  {t(selected.state === 'interrupted' ? 'interrupted' : 'flow.recordingReady')}
-                </h3>
-                <p>
-                  {t('flow.captured', {
-                    duration: clock(selected.recording.durationMs),
-                    count: selected.recording.samples.length
-                  })}
-                </p>
-                <dl>
-                  <div>
-                    <dt>{t('flow.averageCpu')}</dt>
-                    <dd>{stats?.cpuMean == null ? '—' : `${stats.cpuMean.toFixed(1)}%`}</dd>
-                  </div>
-                  <div>
-                    <dt>{t('flow.averageMemory')}</dt>
-                    <dd>{stats?.memoryMean == null ? '—' : `${stats.memoryMean.toFixed(1)}%`}</dd>
-                  </div>
-                </dl>
-                <p className="diagnostics-footnote">
-                  {t(tooShort ? 'flow.tooShort' : 'flow.measurementHint')}
-                </p>
-              </aside>
-            </div>
-          </section>
-        )}
-
-        {step === 3 && selected && (
-          <section
-            className="diagnostics-stage"
-            ref={detailRef}
-            tabIndex={-1}
-            aria-labelledby="diagnostics-stage-title"
-          >
-            <div className="diagnostics-stage-heading">
-              <span className="diagnostics-icon">
-                <Sparkles size={24} />
-              </span>
-              <div>
-                <span className="diagnostics-kicker">{t('flow.step', { number: 3 })}</span>
-                <h2 id="diagnostics-stage-title">
-                  {t(report ? 'flow.reportTitle' : 'flow.analyzeTitle')}
-                </h2>
-                <p className="diagnostics-description">
-                  {selected.title} · {clock(selected.recording.durationMs)}
-                </p>
-              </div>
-            </div>
-            <ol className="diagnostics-cloud-progress" aria-label={t('flow.cloudProgress')}>
-              {(
-                [
-                  ['uploadStage', Upload],
-                  ['analyzeStage', Sparkles],
-                  ['reportStage', FileText]
-                ] as const
-              ).map(([key, Icon], index) => {
-                const completed = !!report || (index === 0 && !!selected.cloud)
-                const current =
-                  !cloudGone &&
-                  !report &&
-                  selected.cloud?.status !== 'failed' &&
-                  (index === 0 ? uploading : index === 1 ? processing : false)
-                return (
-                  <li key={key} data-state={completed ? 'done' : current ? 'current' : 'upcoming'}>
-                    <span>
-                      {completed ? (
-                        <Check size={18} />
-                      ) : current ? (
-                        <Loader2 size={18} className="diagnostics-spin" />
-                      ) : (
-                        <Icon size={18} />
-                      )}
-                    </span>
-                    <div>
-                      <strong>{t(`flow.${key}`)}</strong>
-                      <small>{t(`flow.${key}Hint`)}</small>
-                    </div>
-                  </li>
-                )
-              })}
-            </ol>
-            {selected.notes && (
-              <details className="diagnostics-context">
-                <summary>{t('flow.recordingNotes')}</summary>
-                <p>{selected.notes}</p>
-              </details>
-            )}
-            {!selected.cloud && (!selected.upload || preview) && !uploading && (
-              <div className="diagnostics-consent">
-                <h3>{t('flow.readyTitle')}</h3>
-                <p>{t('flow.readyHint')}</p>
-                <div className="diagnostics-upload-facts">
-                  <span>
-                    <ShieldCheck size={16} />
-                    {t(shareProcesses ? 'flow.withProcesses' : 'flow.withoutProcesses')}
-                  </span>
-                  {preview && <span>{formatBytes(preview.bytes)}</span>}
-                </div>
-                <details className="diagnostics-disclosure">
-                  <summary>{t('flow.privacyDetails')}</summary>
-                  <p>{t('cloudPrivacy')}</p>
-                  {preview && (
-                    <details>
-                      <summary>{t('exactUpload')}</summary>
-                      <pre>{JSON.stringify(JSON.parse(preview.json), null, 2)}</pre>
-                    </details>
-                  )}
-                </details>
-                <p className="diagnostics-footnote">{t('flow.consent')}</p>
-                <div className="diagnostics-actions">
-                  <button
-                    className={button}
-                    disabled={busy}
-                    onClick={() => {
-                      setReviewing(false)
-                      setPreview(null)
-                    }}
-                  >
-                    <ArrowLeft size={15} />
-                    {t(selected.upload ? 'cancel' : 'flow.backDetails')}
-                  </button>
-                  <button
-                    className={primary}
-                    disabled={busy || !cap?.available}
-                    onClick={() =>
-                      void run(async () => {
-                        if (!preview) {
-                          await prepare()
-                          return
-                        }
-                        setUploading(true)
-                        try {
-                          adopt(await window.kudu.diagnosticsUpload(preview.token))
-                        } finally {
-                          setUploading(false)
-                          setPreview(null)
-                          // A timeout can still leave a Cloud copy. Reload its reference so it can be retrieved or deleted.
-                          adopt(await window.kudu.diagnosticsGet(id!))
-                        }
-                      })
-                    }
-                  >
-                    <Sparkles size={16} />
-                    {t(preview ? 'flow.analyzeButton' : 'flow.reviewAgain')}
-                  </button>
-                </div>
-              </div>
-            )}
-            {(uploading || processing) && (
-              <div className="diagnostics-analysis-status" role="status">
-                <h3>
-                  {t(
-                    uploading
-                      ? 'flow.uploadingTitle'
-                      : selected.cloud?.status === 'queued'
-                        ? 'flow.queuedTitle'
-                        : 'flow.processingTitle'
-                  )}
-                </h3>
-                <p>{t(uploading ? 'flow.uploadingHint' : 'flow.processingHint')}</p>
-              </div>
-            )}
-            {selected.upload && !selected.cloud && !preview && !uploading && (
-              <div className="diagnostics-analysis-status" role="status">
-                <h3>{t('flow.pendingTitle')}</h3>
-                <p>{t('flow.pendingHint')}</p>
-              </div>
-            )}
-            {cloudGone && (
-              <p className="diagnostics-error" role="status">
-                {t('cloudGone')}
-              </p>
-            )}
-            {selected.cloud?.status === 'failed' && !cloudGone && (
-              <div className="diagnostics-analysis-status" role="status">
-                <h3>{t('failed')}</h3>
-                <p>{t('analysisFailed')}</p>
-                <button className={primary} disabled={busy} onClick={newRecording}>
-                  <Plus size={15} />
-                  {t('flow.newSession')}
-                </button>
-              </div>
-            )}
-            {report && <DiagnosticReport key={id} report={report} recording={selected.recording} />}
-            {selected.upload && !cloudGone && !preview && (
-              <div className="diagnostics-actions">
+                <Play size={15} aria-hidden="true" /> {t('start')}
+              </button>
+            </>
+          )}
+          <p className="text-xs text-[var(--text-muted)]">{t('retention')}</p>
+          {!!status && status.rows.length >= 30 && (
+            <p className="text-sm text-[var(--text-muted)]">{t('capacityReached')}</p>
+          )}
+        </section>
+        <section className="pulse-card" aria-labelledby="diagnostics-history">
+          <div className="pulse-card-heading">
+            <h2 id="diagnostics-history">{t('history')}</h2>
+          </div>
+          {status && status.rows.length === 0 && (
+            <p className="text-sm text-[var(--text-muted)]">{t('emptyHint')}</p>
+          )}
+          <ul className="mt-3 space-y-2">
+            {status?.rows.map((row) => (
+              <li key={row.id}>
                 <button
-                  className={button}
-                  disabled={busy || uploading}
-                  onClick={() =>
-                    void run(async () => adopt(await window.kudu.diagnosticsRefresh(id!)))
-                  }
+                  type="button"
+                  className="w-full rounded-[var(--radius-control)] border border-[var(--border-default)] bg-[var(--surface)] px-3 py-3 text-left text-sm hover:bg-[var(--surface-hover)] aria-[current=true]:border-[var(--accent)]"
+                  aria-current={selectedId === row.id ? 'true' : undefined}
+                  disabled={working}
+                  onClick={() => {
+                    if (row.id !== selectedId && dirty && !window.confirm(t('discardDetails')))
+                      return
+                    void select(row.id)
+                  }}
                 >
-                  {t('refreshReport')}
+                  <span className="block font-semibold text-[var(--text-primary)]">
+                    {row.title}
+                    {row.pinned && <Pin className="ml-2 inline" size={13} aria-label={t('pin')} />}
+                  </span>
+                  <span className="text-xs text-[var(--text-muted)]">
+                    {new Date(row.startedAt).toLocaleString()} · {Math.round(row.durationMs / 1000)}
+                    s · {row.samples} {t('samples')}
+                  </span>
                 </button>
-                {!selected.cloud && (
-                  <button
-                    className={button}
-                    disabled={busy || !cap?.available}
-                    onClick={() =>
-                      void run(async () => {
-                        setPreview(
-                          await window.kudu.diagnosticsPreview(
-                            id!,
-                            selected.upload!.includeProcesses
-                          )
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+      {loading && (
+        <p role="status" className="mt-5 text-sm text-[var(--text-muted)]">
+          {t('loadingDetails')}
+        </p>
+      )}
+      {session && selectedId && (
+        <section className="pulse-card mt-5 space-y-4" aria-labelledby="diagnostics-details">
+          <div className="pulse-card-heading">
+            <h2 id="diagnostics-details">{t('recordingDetails')}</h2>
+          </div>
+          <div className="rounded-[var(--radius-control)] border border-[var(--border-default)] bg-[var(--surface)] p-4">
+            <h3 className="font-semibold text-[var(--text-primary)]">{t('localAnalysis')}</h3>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('analysisDescription')}</p>
+            <button
+              type="button"
+              className="pulse-button pulse-primary mt-3"
+              disabled={working || !ready || recording}
+              onClick={() => void analyze(i18n.resolvedLanguage?.startsWith('it') ? 'it' : 'en')}
+            >
+              <ChartNoAxesCombined size={16} aria-hidden="true" />
+              {busy === 'analyze'
+                ? t('analyzing')
+                : session.report
+                  ? t('analyzeAgain')
+                  : t('analyzeRecording')}
+            </button>
+            <p className="mt-2 text-xs text-[var(--text-muted)]">
+              {recording ? t('stopBeforeAnalysis') : t('analysisPrivacy')}
+            </p>
+          </div>
+          <div className="rounded-[var(--radius-control)] border border-[var(--border-default)] bg-[var(--surface)] p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <h3 className="flex items-center gap-2 font-semibold text-[var(--text-primary)]">
+                  <Sparkles size={17} aria-hidden="true" /> {t('aiAnalysis')}
+                </h3>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('aiDescription')}</p>
+              </div>
+              <button
+                className="relative h-7 w-12 rounded-full border border-[var(--toggle-off-border)] bg-[var(--toggle-off-bg)] p-0.5 transition-colors aria-[checked=true]:border-[var(--accent)] aria-[checked=true]:bg-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                type="button"
+                role="switch"
+                aria-label={t('aiEnable')}
+                aria-checked={aiEnabled}
+                disabled={busy === 'analyzeAi'}
+                onClick={toggleAi}
+              >
+                <span
+                  className={`block h-5 w-5 rounded-full shadow-sm transition-transform ${aiEnabled ? 'translate-x-5 bg-[var(--toggle-on-thumb)]' : 'bg-[var(--toggle-off-thumb)]'}`}
+                />
+              </button>
+            </div>
+            {aiEnabled && (
+              <div className="mt-4 space-y-3 border-t border-[var(--border-default)] pt-4">
+                <p className="text-sm text-[var(--text-secondary)]">{t('aiPrivacy')}</p>
+                <p className="text-xs text-[var(--text-muted)]">{t('aiAccess')}</p>
+                {aiChecking ? (
+                  <p role="status" className="text-sm text-[var(--text-muted)]">
+                    {t('aiChecking')}
+                  </p>
+                ) : !aiConnection?.available || !aiConnection.connected ? (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <p role="status" className="text-sm text-[var(--text-secondary)]">
+                      {t(`aiErrors.${aiConnection?.errorCode ?? 'codex-unavailable'}`)}
+                    </p>
+                    <button
+                      type="button"
+                      className="pulse-button"
+                      onClick={() => void checkAiConnection()}
+                    >
+                      {t('aiRetryConnection')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className="pulse-button pulse-primary"
+                      disabled={working || !ready || recording}
+                      onClick={() =>
+                        void analyzeAi(
+                          selectedId,
+                          i18n.resolvedLanguage?.startsWith('it') ? 'it' : 'en'
                         )
-                        setReviewing(true)
-                      })
-                    }
-                  >
-                    {t('flow.reviewAgain')}
-                  </button>
+                      }
+                    >
+                      <Sparkles size={16} aria-hidden="true" />
+                      {busy === 'analyzeAi'
+                        ? aiCancelling
+                          ? t('aiCancelling')
+                          : t('aiAnalyzing')
+                        : session.aiReport
+                          ? t('aiAnalyzeAgain')
+                          : t('aiAnalyze')}
+                    </button>
+                    {busy === 'analyzeAi' && !aiCancelling && (
+                      <button
+                        type="button"
+                        className="pulse-button"
+                        onClick={() => void cancelAi()}
+                      >
+                        <X size={15} aria-hidden="true" /> {t('aiCancel')}
+                      </button>
+                    )}
+                  </div>
+                )}
+                {recording && (
+                  <p className="text-xs text-[var(--text-muted)]">{t('aiStopFirst')}</p>
+                )}
+                {busy === 'analyzeAi' && (
+                  <p role="status" className="text-xs text-[var(--text-muted)]">
+                    {t('aiBackground')}
+                  </p>
+                )}
+                {aiErrorCode && (
+                  <p role="alert" className="text-sm text-[var(--danger-text)]">
+                    {t(`aiErrors.${aiErrorCode}`, { defaultValue: t('aiErrors.analysis-failed') })}
+                  </p>
                 )}
               </div>
             )}
-          </section>
-        )}
-        {selected && !active && (
-          <div className="diagnostics-session-footer">
-            <span>
-              <ShieldCheck size={14} />
-              {t('flow.cloudOnly')}
-            </span>
+          </div>
+          {recording && (
+            <p className="text-sm text-[var(--text-secondary)]">{t('stopBeforeDetails')}</p>
+          )}
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="text-sm">
+              {t('name')}
+              <input
+                className="mt-2 w-full rounded-[var(--radius-control)] border border-[var(--border-medium)] bg-[var(--surface)] p-2 text-[var(--text-primary)]"
+                value={title}
+                disabled={working || !ready}
+                aria-invalid={!title.trim()}
+                onChange={(event) => setDraft('title', event.target.value)}
+                maxLength={120}
+              />
+            </label>
+            <label className="text-sm">
+              {t('notes')}
+              <textarea
+                className="mt-2 w-full rounded-[var(--radius-control)] border border-[var(--border-medium)] bg-[var(--surface)] p-2 text-[var(--text-primary)]"
+                value={notes}
+                disabled={working || !ready}
+                onChange={(event) => setDraft('notes', event.target.value)}
+                maxLength={2000}
+                rows={3}
+              />
+            </label>
+          </div>
+          {!title.trim() && (
+            <p className="text-sm text-[var(--danger-text)]">{t('nameRequired')}</p>
+          )}
+          {dirty && <p className="text-xs text-[var(--text-muted)]">{t('unsavedDetails')}</p>}
+          <div className="flex flex-wrap gap-2">
             <button
-              className="diagnostics-text-button"
-              disabled={busy}
-              onClick={() => setConfirm(true)}
+              className="pulse-button pulse-primary"
+              disabled={working || !ready || recording || !dirty || !title.trim()}
+              onClick={() => void save()}
             >
-              {t('flow.deleteSession')}
+              {busy === 'save' ? t('saving') : t('save')}
+            </button>
+            <button
+              className="pulse-button"
+              aria-pressed={session.pinned}
+              disabled={working || !ready || recording}
+              onClick={() => void togglePinned()}
+            >
+              <Pin size={15} aria-hidden="true" /> {session.pinned ? t('unpin') : t('pin')}
+            </button>
+            <button
+              className="pulse-button"
+              disabled={working || !ready || dirty}
+              onClick={() => void exportRecording()}
+            >
+              <Download size={15} aria-hidden="true" /> {t('export')}
+            </button>
+            <button
+              className="pulse-button"
+              disabled={working || !ready || session.pinned || recording}
+              onClick={() => {
+                if (!window.confirm(t('confirmDelete'))) return
+                void remove()
+              }}
+            >
+              <Trash2 size={15} aria-hidden="true" /> {t('deleteLocal')}
             </button>
           </div>
-        )}
-        {rows.length > 0 && !active && (
-          <details className="diagnostics-history">
-            <summary>
-              <History size={17} />
-              <span>{t('flow.history')}</span>
-              <span className="diagnostics-history-count">{rows.length}</span>
-            </summary>
-            <div>
-              {rows.map((row) => (
-                <button
-                  className="diagnostics-history-row"
-                  key={row.id}
-                  disabled={busy}
-                  aria-pressed={row.id === id}
-                  onClick={() => void run(() => open(row.id))}
-                >
-                  <span className="diagnostics-history-icon">
-                    {row.cloudStatus === 'complete' ? (
-                      <FileText size={18} />
-                    ) : (
-                      <Activity size={18} />
-                    )}
-                  </span>
-                  <span>
-                    <strong>{row.title}</strong>
-                    <small>
-                      {new Date(row.startedAt).toLocaleString()} · {clock(row.durationMs)}
-                    </small>
-                  </span>
-                  <span className="diagnostics-history-status">
-                    {t(
-                      row.cloudStatus ??
-                        (row.state === 'saved' ? 'flow.awaitingAnalysis' : row.state)
-                    )}
-                  </span>
-                  <ChevronRight size={16} />
-                </button>
-              ))}
-            </div>
-          </details>
-        )}
-      </div>
-      <ConfirmDialog
-        open={confirm}
-        variant="danger"
-        title={t('flow.deleteSession')}
-        description={t('flow.confirmDelete')}
-        details={selected?.title}
-        confirmLabel={t('confirmDelete')}
-        onCancel={() => setConfirm(false)}
-        onConfirm={() => {
-          setConfirm(false)
-          void run(async () => {
-            if (!id || !selected) return
-            if (selected.upload && !cloudGone) await window.kudu.diagnosticsDeleteCloud(id)
-            if (selected.pinned)
-              await window.kudu.diagnosticsEdit(id, { ...selected, pinned: false })
-            await window.kudu.diagnosticsRemove(id)
-            newRecording()
-          })
-        }}
-      />
+          <p className="text-xs text-[var(--text-muted)]">{t('exportPrivacy')}</p>
+          {session.report && (
+            <section className="space-y-3" aria-label={t('localReport')}>
+              <h3 className="font-semibold text-[var(--text-primary)]">{t('localReport')}</h3>
+              <DiagnosticReport
+                key={`${selectedId}:${session.report.generatedAt}`}
+                report={session.report}
+                recording={session.recording}
+              />
+            </section>
+          )}
+          {session.aiReport && (
+            <section
+              className="space-y-3 border-t border-[var(--border-default)] pt-4"
+              aria-label={t('aiReport')}
+            >
+              <h3 className="font-semibold text-[var(--text-primary)]">{t('aiReport')}</h3>
+              <DiagnosticReport
+                key={`${selectedId}:${session.aiReport.generatedAt}`}
+                report={session.aiReport}
+                recording={session.recording}
+              />
+            </section>
+          )}
+        </section>
+      )}
     </div>
   )
 }

@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "系統清理工具",
   "dashboard": "首頁",
   "securityHeading": "防護",
   "malwareScanner": "惡意軟體掃描",
-  "threatMonitor": "威脅監控",
   "systemHardening": "系統強化",
-  "cveScanner": "弱點",
   "monitoring": "監控",
   "maintainHeading": "管理",
   "cleaner": "清理",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "活動與復原",
   "history": "活動",
   "settings": "偏好設定",
-  "breachMonitor": "外洩監控",
   "gameMode": "遊戲模式",
   "firewallAudit": "防火牆稽核"
 }

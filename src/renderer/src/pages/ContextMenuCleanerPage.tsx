@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   MousePointerClick,
@@ -128,17 +128,6 @@ function ContextMenuCleanerPageContent() {
     }
   })
   const [pendingDelete, setPendingDelete] = useState<ContextMenuApplyRequest[] | null>(null)
-  const cleanupRef = useRef<(() => void) | null>(null)
-
-  // Subscribe to apply-progress events from main.
-  useEffect(() => {
-    const cleanup = window.kudu.onContextMenuApplyProgress((data) => {
-      useContextMenuStore.getState().setApplyProgress(data)
-    })
-    cleanupRef.current = cleanup
-    return () => cleanup()
-  }, [])
-
   const handleScan = useCallback(async () => {
     const store = useContextMenuStore.getState()
     store.setScanning(true)
@@ -532,7 +521,8 @@ function ContextMenuCleanerPageContent() {
                         useContextMenuStore.getState().toggleAllVisible(eligibleIds, !allSelected)
                       }
                       className="toggle-switch relative h-6 w-11 rounded-full transition-colors"
-                      style={{ background: allSelected ? pill.text : 'var(--bg-active)' }}
+                      data-checked={allSelected}
+                      style={{ background: allSelected ? pill.text : 'var(--toggle-off-bg)' }}
                       aria-label="toggle all"
                     >
                       <div

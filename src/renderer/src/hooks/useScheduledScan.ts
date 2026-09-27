@@ -136,7 +136,9 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
       restorePointAttempted = true
       if (!useSettingsStore.getState().settings.cleaner.createRestorePoint) return
       try {
-        await window.kudu.createRestorePoint(`Kudu scheduled clean — ${payload.scheduleName}`)
+        await window.kudu.createRestorePoint(
+          `SuperSonicCleaner scheduled clean — ${payload.scheduleName}`
+        )
       } catch (error) {
         if (error instanceof ScheduleConditionChanged) throw error
         // Best-effort — don't block the clean
@@ -283,16 +285,6 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
           }
         } catch (error) {
           if (error instanceof ScheduleConditionChanged) throw error
-          status = 'partial'
-        }
-      }
-      if (taskType === 'cve-scan') {
-        try {
-          markStarted(taskType)
-          const result = await window.kudu.cveFetch()
-          totalItems += result.total
-          categoryResults['Vulnerabilities'] = { found: result.total, cleaned: 0, size: 0 }
-        } catch {
           status = 'partial'
         }
       }

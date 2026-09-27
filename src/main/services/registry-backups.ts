@@ -662,7 +662,7 @@ async function createPreRestoreBackup(
   if (!(await sealBackup(dir, name, body))) {
     await rm(join(dir, name), { force: true }).catch(() => {})
     throw new Error(
-      'Could not record the integrity seal for the pre-restore backup, so nothing was imported. Relaunch Kudu as administrator.'
+      'Could not record the integrity seal for the pre-restore backup, so nothing was imported. Relaunch SuperSonicCleaner as administrator.'
     )
   }
   await prunePreRestoreBackups(dir, name)
@@ -697,21 +697,22 @@ async function prunePreRestoreBackups(dir: string, current: string): Promise<voi
 
 const BLOCK_MESSAGES: Record<RegistryBackupBlock, string> = {
   'full-export':
-    'This is a full-branch export. Importing it would roll back unrelated changes made since, so Kudu will not restore it.',
-  'too-large': 'This backup is too large to be a targeted backup, so Kudu will not restore it.',
-  format: 'This file is not a registry export in the format Kudu writes.',
-  deletion: 'This file deletes registry data, which Kudu backups never do.',
-  'forbidden-key': 'This file contains keys outside the areas Kudu changes.',
+    'This is a full-branch export. Importing it would roll back unrelated changes made since, so SuperSonicCleaner will not restore it.',
+  'too-large':
+    'This backup is too large to be a targeted backup, so SuperSonicCleaner will not restore it.',
+  format: 'This file is not a registry export in the format SuperSonicCleaner writes.',
+  deletion: 'This file deletes registry data, which SuperSonicCleaner backups never do.',
+  'forbidden-key': 'This file contains keys outside the areas SuperSonicCleaner changes.',
   empty: 'This backup contains no registry keys.',
   unreadable: 'This backup could not be read.',
   'classes-root':
-    "This backup contains HKEY_CLASSES_ROOT keys. That view merges the machine and per-user classes, so Kudu can't tell which of them each key belongs to and will not restore it.",
+    "This backup contains HKEY_CLASSES_ROOT keys. That view merges the machine and per-user classes, so SuperSonicCleaner can't tell which of them each key belongs to and will not restore it.",
   unverified:
-    "This backup can't be verified — it may have been changed since Kudu wrote it, so Kudu will not restore it."
+    "This backup can't be verified — it may have been changed since SuperSonicCleaner wrote it, so SuperSonicCleaner will not restore it."
 }
 
 const ADMIN_REQUIRED =
-  'Restoring a registry backup requires administrator privileges. Relaunch Kudu as administrator.'
+  'Restoring a registry backup requires administrator privileges. Relaunch SuperSonicCleaner as administrator.'
 
 let restoring = false
 

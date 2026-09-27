@@ -8,6 +8,7 @@ import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ScanProgress } from '@/components/shared/ScanProgress'
 import { cn, formatBytes } from '@/lib/utils'
 import { useDiskStore } from '@/stores/disk-store'
+import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
 import { usePlatform } from '@/hooks/usePlatform'
 import type { DiskNode, DriveInfo } from '@shared/types'
 
@@ -350,6 +351,17 @@ export function DiskAnalyzerPage() {
         <>
           {viewMode === 'folders' && currentNode && (
             <>
+              {currentNode.children && currentNode.children.length > 0 && (
+                <AiAnalysisPanel
+                  source="disk"
+                  sourceRevision={currentNode}
+                  candidates={currentNode.children.map((child) => ({
+                    path: child.path,
+                    size: child.size,
+                    isDirectory: !child.isFile
+                  }))}
+                />
+              )}
               <div className="mb-5 flex min-h-9 items-center gap-2">
                 {breadcrumb.length > 1 && (
                   <button

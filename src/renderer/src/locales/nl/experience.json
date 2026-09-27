@@ -18,10 +18,6 @@
     "recoveryDescription": "Vind herstelopties voor ondersteunde systeemwijzigingen.",
     "reviewFirst": "Open een hulpmiddel om de opties te bekijken voordat u wijzigingen aanbrengt.",
     "advancedPrompt": "Wilt u grafieken en systeemdetails? Schakel over naar Geavanceerd",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Ik heb meer ruimte nodig",
@@ -129,7 +125,6 @@
     "handleThreats": "Kies hoe u wilt reageren",
     "reviewPaths": "Geselecteerde paden bekijken",
     "chooseOptimizations": "Optimalisaties kiezen",
-    "reviewCloud": "Voorkeuren voor delen bekijken",
     "trackFolder": "Een map kiezen om te volgen",
     "captureSnapshot": "Lokale momentopnamen maken",
     "compareGrowth": "Wijzigingen in opslag vergelijken",
@@ -154,15 +149,13 @@
     "maintenance": "Geef elk station de juiste zorg. Bekijk het type station en beschikbaar onderhoud voordat u een taak uitvoert.",
     "network": "Bekijk opgeslagen netwerkgegevens. Wis caches of verwijder oude verbindingen afzonderlijk, wanneer u dat nodig hebt.",
     "malware": "Controleer op malware en verdachte bestanden. Bekijk de bevindingen en kies hoe u met elke detectie wilt omgaan.",
-    "threatMonitor": "Volg verbindingen en beveiligingsactiviteit. Onderzoek een waarschuwing om de bron en context te begrijpen.",
     "cve": "Maak van kwetsbaarheidsbevindingen een plan. Bekijk problemen met een hogere ernst en werk betrokken software bij.",
     "gameMode": "Maak ruimte om te spelen. Bekijk de optimalisaties en activeer ze wanneer u klaar bent.",
     "performance": "Begrijp wat uw PC doet. Vergelijk trends in systeembronnen en zoek de processen achter de belasting.",
     "uninstaller": "Behoud de apps die u gebruikt. Bekijk de details van een app voordat u deze verwijdert of restbestanden opruimt.",
     "history": "Zie wat er is gewijzigd, wat is hersteld en wat nog een keer bekeken moet worden. Elke voltooide taak laat een overzicht achter.",
-    "settings": "Laat Kudu goed bij u passen. Stel uw uiterlijk, meldingen, uitsluitingen en voorkeuren voor opschonen in.",
+    "settings": "Laat SuperSonicCleaner goed bij u passen. Stel uw uiterlijk, meldingen, uitsluitingen en voorkeuren voor opschonen in.",
     "about": "Open source, met zorg gemaakt. Vind uw versie, controleer op updates en leer het project kennen.",
-    "cloud": "Breng uw apparaten samen. Koppel deze computer om de cloudverbinding en beveiligingsfuncties te beheren.",
     "breach": "Controleer of een e-mailadres voorkomt in bekende datalekken. Bekijk wat is blootgesteld en wat de aanbevolen volgende stappen zijn.",
     "privacy": "Kies wat uw computer deelt. Bekijk elke aanbeveling en behoud de instellingen waarop u vertrouwt.",
     "services": "Begrijp de services achter uw systeem. Controleer doel en veiligheid voordat u het opstartgedrag wijzigt.",
@@ -172,8 +165,7 @@
     "schedules": "Goed onderhoud, volgens uw planning. Kies de taken, tijden en frequentie die bij deze computer passen.",
     "drivers": "Bekijk stuurprogramma-updates en oudere pakketten op één plek. Controleer de voorgestelde wijzigingen voordat u ze toepast.",
     "storageHistory": "Zie wat groeit. Sla lokale momentopnamen van mappen op en vergelijk waar de opslag is veranderd.",
-    "recovery": "Een duidelijke weg terug. Bekijk ondersteunde wijzigingen en hersteldetails voordat u iets ongedaan maakt.",
-    "diagnostics": "Maak van een traag moment bruikbaar bewijs. Neem lokaal op, onderzoek de gegevens en kies of u Cloud AI-analyse wilt aanvragen."
+    "recovery": "Een duidelijke weg terug. Bekijk ondersteunde wijzigingen en hersteldetails voordat u iets ongedaan maakt."
   },
   "home": {
     "eyebrow": "UW SYSTEEM IN ÉÉN OOGOPSLAG",
@@ -187,7 +179,7 @@
     "protectDescription": "Voer een malware-scan uit en bekijk alle bestanden die aandacht nodig hebben.",
     "protectAction": "Beveiliging openen",
     "automateTitle": "Maak zorg een routine",
-    "automateDescription": "Kies wanneer Kudu uw computer controleert en opschoont.",
+    "automateDescription": "Kies wanneer SuperSonicCleaner uw computer controleert en opschoont.",
     "automateAction": "Een planning instellen",
     "cpu": "CPU-gebruik",
     "memory": "Geheugen",

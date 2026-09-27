@@ -18,7 +18,6 @@
     "recoveryDescription": "Find restore options for supported system changes.",
     "reviewFirst": "Open a tool to review its options before making changes.",
     "advancedPrompt": "Want graphs and system details? Switch to Advanced",
-    "cloud": { "pro": "Cloud Pro", "basic": "Cloud Basic" },
     "goals": {
       "space": {
         "title": "I need more space",
@@ -126,7 +125,6 @@
     "handleThreats": "Choose how to respond",
     "reviewPaths": "Review selected paths",
     "chooseOptimizations": "Choose optimizations",
-    "reviewCloud": "Review sharing preferences",
     "trackFolder": "Choose a folder to track",
     "captureSnapshot": "Capture local snapshots",
     "compareGrowth": "Compare storage changes",
@@ -135,7 +133,7 @@
     "restoreSupported": "Restore supported items",
     "recordSession": "Record a session",
     "inspectRecording": "Inspect the recording",
-    "consentAnalysis": "Choose whether to share"
+    "analyzeLocally": "Analyze on this device"
   },
   "routes": {
     "cleaner": "Make space for what matters. Scan for clutter, compare categories, then review what to remove.",
@@ -151,15 +149,13 @@
     "maintenance": "Give each drive the right care. Review drive type and available maintenance before running a task.",
     "network": "Review saved network data. Clear caches or remove old connections individually, when you need to.",
     "malware": "Check for malware and suspicious files. Review the findings and choose how to handle each detection.",
-    "threatMonitor": "Follow connections and security activity. Inspect an alert to understand its source and context.",
     "cve": "Turn vulnerability findings into a plan. Review higher-severity issues and update affected software.",
     "gameMode": "Make room for play. Review the optimizations and activate them when you're ready.",
     "performance": "Understand what your PC is doing. Compare resource trends and find the processes behind the load.",
     "uninstaller": "Keep the apps you use. Review an app's details before uninstalling or removing leftover files.",
     "history": "See what changed, what was recovered, and what needs another look. Every completed task leaves a record.",
-    "settings": "Make Kudu feel right for you. Set your appearance, notifications, exclusions, and cleanup preferences.",
+    "settings": "Make SuperSonicCleaner feel right for you. Set your appearance, notifications, exclusions, and cleanup preferences.",
     "about": "Open source, thoughtfully made. Find your version, check for updates, and meet the project.",
-    "cloud": "Bring your devices together. Link this computer to manage its cloud connection and security features.",
     "breach": "Check whether an email appears in known breaches. Review what was exposed and the recommended next steps.",
     "privacy": "Choose what your computer shares. Review each recommendation and keep the settings you rely on.",
     "services": "Understand the services behind your system. Check purpose and safety before changing startup behavior.",
@@ -170,7 +166,7 @@
     "drivers": "Review driver updates and older packages in one place. Check the proposed changes before applying them.",
     "storageHistory": "See what is growing. Save local folder snapshots and compare where storage has changed.",
     "recovery": "A clear way back. Review supported changes and the restore details before undoing anything.",
-    "diagnostics": "Turn a slow moment into evidence. Record locally, inspect the data, and choose whether to request Cloud AI analysis."
+    "diagnostics": "Record a slowdown, stop and save, then analyze the measurements on this device."
   },
   "home": {
     "eyebrow": "YOUR SYSTEM, AT A GLANCE",
@@ -184,7 +180,7 @@
     "protectDescription": "Run a malware scan and review any files that need attention.",
     "protectAction": "Open protection",
     "automateTitle": "Make care a routine",
-    "automateDescription": "Choose when Kudu checks and cleans your computer.",
+    "automateDescription": "Choose when SuperSonicCleaner checks and cleans your computer.",
     "automateAction": "Set up a schedule",
     "cpu": "CPU usage",
     "memory": "Memory",

@@ -13,6 +13,7 @@ import type {
   StartupItem
 } from '../../shared/types'
 import { psUtf8 } from './exec-utf8'
+import { CpuTimeSampler } from './cpu-time-sampler'
 
 const execFileAsync = promisify(execFile)
 
@@ -20,14 +21,27 @@ export class PerfMonitorService {
   private fastTimer: ReturnType<typeof setInterval> | null = null
   private slowTimer: ReturnType<typeof setInterval> | null = null
   private sender: Electron.WebContents | null = null
+  private snapshotListeners = new Set<(snapshot: PerfSnapshot) => void>()
+  private monitoringGeneration = 0
   private cachedSystemInfo: PerfSystemInfo | null = null
   private startupExeMap: Map<string, string> = new Map()
   // Guards to prevent overlapping async calls from piling up if si hangs
   private snapshotRunning = false
   private processesRunning = false
+  private readonly cpuSampler = new CpuTimeSampler()
+  private snapshotGeneration = 0
   // Cache expensive si.networkStats() — poll every 5s, reuse in between
   private cachedNetworkStats = { rxBytesPerSec: 0, txBytesPerSec: 0 }
-  private lastNetworkPoll = 0
+  private lastNetworkPoll = -Infinity
+  private networkPollRunning = false
+  private diskPollRunning = false
+  private lastDiskPoll = -Infinity
+  private diskUpdatedAt = -Infinity
+  private cachedDiskStats: PerfSnapshot['disk'] = {
+    readBytesPerSec: 0,
+    writeBytesPerSec: 0,
+    available: false
+  }
   private readonly NETWORK_POLL_INTERVAL_MS = 5000
 
   async getSystemInfo(): Promise<PerfSystemInfo> {
@@ -50,18 +64,15 @@ export class PerfMonitorService {
     sender: Electron.WebContents,
     getStartupItems?: () => Promise<StartupItem[]>
   ): Promise<void> {
-    // If already running, just update the sender
-    if (this.fastTimer) {
-      this.sender = sender
-      return
-    }
-
+    const generation = ++this.monitoringGeneration
     this.sender = sender
+    if (this.slowTimer) return
 
     // Build startup exe map for correlation
     if (getStartupItems) {
       try {
         const items = await getStartupItems()
+        if (generation !== this.monitoringGeneration || this.sender !== sender) return
         this.startupExeMap.clear()
         for (const item of items) {
           // Extract exe name from command string
@@ -75,10 +86,11 @@ export class PerfMonitorService {
       }
     }
 
+    if (generation !== this.monitoringGeneration || this.sender !== sender || sender.isDestroyed())
+      return
+
     // Fast interval: system metrics every 1s
-    this.fastTimer = setInterval(() => this.collectSnapshot(), 1000)
-    // Collect immediately
-    this.collectSnapshot()
+    this.ensureSnapshotTimer()
 
     // Slow interval: process list every 10s (si.processes() is expensive)
     this.slowTimer = setInterval(() => this.collectProcesses(), 10000)
@@ -86,15 +98,42 @@ export class PerfMonitorService {
   }
 
   stopMonitoring(): void {
-    if (this.fastTimer) {
-      clearInterval(this.fastTimer)
-      this.fastTimer = null
-    }
+    this.monitoringGeneration++
     if (this.slowTimer) {
       clearInterval(this.slowTimer)
       this.slowTimer = null
     }
     this.sender = null
+    this.stopUnusedSnapshotTimer()
+  }
+
+  /** Shared system metrics without starting the expensive process-list collector. */
+  subscribeSnapshots(listener: (snapshot: PerfSnapshot) => void): () => void {
+    this.snapshotListeners.add(listener)
+    this.ensureSnapshotTimer()
+    return () => {
+      this.snapshotListeners.delete(listener)
+      this.stopUnusedSnapshotTimer()
+    }
+  }
+
+  private ensureSnapshotTimer(): void {
+    if (this.fastTimer) return
+    this.snapshotGeneration++
+    this.cpuSampler.reset()
+    this.fastTimer = setInterval(() => void this.collectSnapshot(), 1000)
+    void this.collectSnapshot()
+  }
+
+  private stopUnusedSnapshotTimer(): void {
+    if (!this.sender && this.snapshotListeners.size === 0 && this.fastTimer) {
+      clearInterval(this.fastTimer)
+      this.fastTimer = null
+      this.snapshotGeneration++
+      this.cpuSampler.reset()
+      this.lastNetworkPoll = -Infinity
+      this.lastDiskPoll = -Infinity
+    }
   }
 
   async getProcessName(pid: number): Promise<string | null> {
@@ -129,7 +168,7 @@ export class PerfMonitorService {
         return {
           success: false,
           error: requiresAdmin
-            ? 'Access denied. Run Kudu as Administrator to end this process.'
+            ? 'Access denied. Run SuperSonicCleaner as Administrator to end this process.'
             : `Failed to end process: ${message}`,
           requiresAdmin
         }
@@ -236,18 +275,73 @@ export class PerfMonitorService {
     return map
   }
 
+  private pollSlowMetrics(now: number): void {
+    // Notch subscribers need only CPU/memory; disk capacity is collected by
+    // the notch separately. Never make fast snapshots wait for I/O probes.
+    if (!this.sender) return
+    const generation = this.snapshotGeneration
+    if (!this.diskPollRunning && now - this.lastDiskPoll >= 5000) {
+      this.diskPollRunning = true
+      this.lastDiskPoll = now
+      void si
+        .fsStats()
+        .then((disk) => {
+          if (generation !== this.snapshotGeneration) return
+          const read = disk?.rx_sec
+          const write = disk?.wx_sec
+          const available =
+            typeof read === 'number' &&
+            Number.isFinite(read) &&
+            read >= 0 &&
+            typeof write === 'number' &&
+            Number.isFinite(write) &&
+            write >= 0
+          this.cachedDiskStats = {
+            readBytesPerSec: available ? read : 0,
+            writeBytesPerSec: available ? write : 0,
+            available
+          }
+          this.diskUpdatedAt = performance.now()
+        })
+        .catch(() => {
+          if (generation === this.snapshotGeneration)
+            this.cachedDiskStats = { readBytesPerSec: 0, writeBytesPerSec: 0, available: false }
+        })
+        .finally(() => {
+          this.diskPollRunning = false
+        })
+    }
+    if (!this.networkPollRunning && now - this.lastNetworkPoll >= this.NETWORK_POLL_INTERVAL_MS) {
+      this.networkPollRunning = true
+      this.lastNetworkPoll = now
+      void si
+        .networkStats()
+        .then((net) => {
+          if (generation !== this.snapshotGeneration) return
+          this.cachedNetworkStats = {
+            rxBytesPerSec: net.reduce((sum, entry) => sum + Math.max(0, entry.rx_sec || 0), 0),
+            txBytesPerSec: net.reduce((sum, entry) => sum + Math.max(0, entry.tx_sec || 0), 0)
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          this.networkPollRunning = false
+        })
+    }
+  }
+
   private async collectSnapshot(): Promise<void> {
-    if (!this.sender || this.sender.isDestroyed()) {
-      this.stopMonitoring()
+    if (this.sender?.isDestroyed()) this.stopMonitoring()
+    if (!this.sender && this.snapshotListeners.size === 0) {
+      this.stopUnusedSnapshotTimer()
       return
     }
     if (this.snapshotRunning) return
     this.snapshotRunning = true
+    const generation = this.snapshotGeneration
 
     try {
-      // Only poll si.networkStats() every 5s — it costs ~320ms per call.
-      const now = Date.now()
-      const needsNetworkPoll = now - this.lastNetworkPoll >= this.NETWORK_POLL_INTERVAL_MS
+      this.pollSlowMetrics(performance.now())
 
       // On Windows, si.mem() costs ~290ms per call — use os.totalmem()/os.freemem()
       // instead (identical values, near-zero cost). On Linux/macOS, si.mem() is cheap
@@ -255,20 +349,11 @@ export class PerfMonitorService {
       // so we must keep si.mem() to avoid overstating memory pressure.
       const isWindows = process.platform === 'win32'
 
-      const [load, disk, net, mem] = await Promise.all([
-        si.currentLoad(),
-        si.disksIO(),
-        needsNetworkPoll ? si.networkStats() : Promise.resolve(null),
-        isWindows ? Promise.resolve(null) : si.mem()
-      ])
-
-      if (net) {
-        this.cachedNetworkStats = {
-          rxBytesPerSec: net.reduce((sum, n) => sum + n.rx_sec, 0),
-          txBytesPerSec: net.reduce((sum, n) => sum + n.tx_sec, 0)
-        }
-        this.lastNetworkPoll = now
-      }
+      const mem = isWindows ? null : await si.mem()
+      if (generation !== this.snapshotGeneration) return
+      const cpu = this.cpuSampler.sample(os.cpus(), performance.now())
+      if (!cpu) return
+      const measuredAt = Date.now()
 
       let usedMem: number, totalMem: number, cachedMem: number
       if (isWindows) {
@@ -288,28 +373,26 @@ export class PerfMonitorService {
       }
 
       const snapshot: PerfSnapshot = {
-        timestamp: Date.now(),
-        cpu: {
-          overall: load.currentLoad,
-          perCore: load.cpus.map((c) => c.load)
-        },
+        timestamp: measuredAt,
+        cpu,
         memory: {
           usedBytes: usedMem,
           totalBytes: totalMem,
           cachedBytes: cachedMem,
           percent: (usedMem / totalMem) * 100
         },
-        disk: {
-          readBytesPerSec: disk?.rIO_sec ?? 0,
-          writeBytesPerSec: disk?.wIO_sec ?? 0
-        },
+        disk:
+          performance.now() - this.diskUpdatedAt <= 10000
+            ? this.cachedDiskStats
+            : { readBytesPerSec: 0, writeBytesPerSec: 0, available: false },
         network: this.cachedNetworkStats,
         uptime: si.time().uptime
       }
 
-      if (!this.sender.isDestroyed()) {
+      if (this.sender && !this.sender.isDestroyed()) {
         this.sender.send(IPC.PERF_SNAPSHOT, snapshot)
       }
+      for (const listener of this.snapshotListeners) listener(snapshot)
     } catch {
       // Silently skip failed ticks
     } finally {
@@ -357,7 +440,7 @@ export class PerfMonitorService {
         totalCount: data.all
       }
 
-      if (!this.sender.isDestroyed()) {
+      if (this.sender && !this.sender.isDestroyed()) {
         this.sender.send(IPC.PERF_PROCESS_LIST, result)
       }
     } catch {
@@ -367,3 +450,5 @@ export class PerfMonitorService {
     }
   }
 }
+
+export const perfMonitor = new PerfMonitorService()

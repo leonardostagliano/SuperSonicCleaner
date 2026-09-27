@@ -35,7 +35,7 @@
     "unprotectedBadge": "{{count}} niezabezpieczonych",
     "protectAllCategoryButton": "Chroń wszystko",
     "adminBadge": "Administrator",
-    "adminWarning": "Niektóre ustawienia wymagają uprawnień administratora do modyfikacji. Uruchom Kudu jako administrator, aby uzyskać pełną ochronę.",
+    "adminWarning": "Niektóre ustawienia wymagają uprawnień administratora do modyfikacji. Uruchom SuperSonicCleaner jako administrator, aby uzyskać pełną ochronę.",
     "scanFailed": "Skanowanie prywatności nie powiodło się",
     "applyFailed": "Nie udało się zastosować ustawień prywatności",
     "applyFailedDescription": "Spróbuj uruchomić jako administrator",

@@ -13,14 +13,12 @@ import {
   Info,
   ShieldAlert,
   Shield,
-  Radar,
   Activity,
   Trash2,
   Download,
   CalendarClock,
   Gamepad2,
   RotateCcw,
-  Bug,
   ChevronRight,
   CopyCheck,
   FileUp,
@@ -34,20 +32,15 @@ import {
   Server,
   Flame,
   PackageMinus,
-  Cloud,
-  Mail,
   MousePointerClick,
   X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { LucideIcon } from 'lucide-react'
-import { useThreatMonitorStore } from '@/stores/threat-monitor-store'
 import { useAppUpdateStore } from '@/stores/app-update-store'
 import { useUpdaterStore } from '@/stores/updater-store'
 import { useDriverStore } from '@/stores/driver-store'
 import { useGameModeStore } from '@/stores/game-mode-store'
-import { useCveStore } from '@/stores/cve-store'
-import { useBreachStore } from '@/stores/breach-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useSettingsStore } from '@/stores/settings-store'
 
@@ -57,7 +50,6 @@ interface SubItemDef {
   labelKey?: string
   path: string
   badge?: boolean
-  cloudTier?: 'basic' | 'pro'
 }
 
 interface NavItemDef {
@@ -119,28 +111,7 @@ const navGroups: NavGroup[] = [
             label: 'Privacy',
             path: '/privacy'
           },
-          {
-            icon: Radar,
-            labelKey: 'threatMonitor:pageTitle',
-            label: 'Threat Monitor',
-            path: '/threat-monitor',
-            cloudTier: 'pro'
-          },
-          { icon: Flame, labelKey: 'firewallAudit', label: 'Firewall Audit', path: '/firewall' },
-          {
-            icon: Bug,
-            labelKey: 'cveScanner:pageTitle',
-            label: 'Vulnerability Scanner',
-            path: '/cve',
-            cloudTier: 'pro'
-          },
-          {
-            icon: Mail,
-            labelKey: 'breachMonitor:pageTitle',
-            label: 'Breach Monitor',
-            path: '/breach-monitor',
-            cloudTier: 'basic'
-          }
+          { icon: Flame, labelKey: 'firewallAudit', label: 'Firewall Audit', path: '/firewall' }
         ]
       },
       {
@@ -159,8 +130,7 @@ const navGroups: NavGroup[] = [
             icon: Activity,
             labelKey: 'diagnostics:title',
             label: 'Diagnostics',
-            path: '/performance-diagnostics',
-            cloudTier: 'pro'
+            path: '/performance-diagnostics'
           },
           {
             icon: Server,
@@ -296,7 +266,7 @@ function useBottomNavItems(): NavItemDef[] {
       path: '/settings',
       children: [
         { icon: Settings, labelKey: 'settings:pageTitle', label: 'Preferences', path: '/settings' },
-        { icon: Cloud, labelKey: 'cloud:pageTitle', label: 'Cloud', path: '/cloud' },
+        { icon: Sparkles, labelKey: 'ai:title', label: 'AI analysis', path: '/ai' },
         {
           icon: Info,
           labelKey: 'settings:sectionAbout',
@@ -316,16 +286,7 @@ function useBadgeCounts(): Record<string, number> {
   )
   const updaterApps = useUpdaterStore((s) => s.apps)
   const driverUpdates = useDriverStore((s) => s.updates)
-  const threatSnapshot = useThreatMonitorStore((s) => s.snapshot)
-  const threatCount =
-    (threatSnapshot?.flaggedConnections.length ?? 0) + (threatSnapshot?.flaggedDns.length ?? 0)
   const gameModeActive = useGameModeStore((s) => s.active)
-  const cveTotal = useCveStore((s) => s.total)
-  const breachEmails = useBreachStore((s) => s.emails)
-  const breachTotal = breachEmails.reduce(
-    (sum, e) => sum + e.breaches.filter((b) => !b.acknowledgedAt).length,
-    0
-  )
 
   const softwareUpdateCount = softwareUpdaterNotifications ? updaterApps.length : 0
   const updatesCount = softwareUpdateCount + driverUpdates.length
@@ -334,10 +295,7 @@ function useBadgeCounts(): Record<string, number> {
     '/updates': softwareUpdateCount,
     '/software': updatesCount,
     '/drivers': driverUpdates.length,
-    '/threat-monitor': threatCount,
-    '/game-mode': gameModeActive ? 1 : 0,
-    '/cve': cveTotal,
-    '/breach-monitor': breachTotal
+    '/game-mode': gameModeActive ? 1 : 0
   }
 }
 
@@ -362,7 +320,7 @@ export function Sidebar() {
     window.kudu?.settingsSet?.({ scheduleNudgeDismissed: true }).catch(() => {})
   }, [updateSettings])
 
-  // Filter nav items based on platform features and cloud state
+  // Filter nav items based on platform features.
   const filteredNavGroups = navGroups.map((group) => ({
     ...group,
     items: group.items
@@ -391,13 +349,27 @@ export function Sidebar() {
   }))
 
   useEffect(() => {
+    // Compact navigation uses an overlay. Keep it closed on route changes so
+    // the selected tool does not obscure the destination page.
+    if (window.matchMedia('(max-width: 980px)').matches) {
+      setOpenSubmenu(null)
+      return
+    }
     const activeParent = navGroups
       .flatMap((group) => group.items)
       .find((item) => item.children?.some((child) => child.path === location.pathname))
     if (activeParent) setOpenSubmenu(activeParent.path)
-    else if (['/settings', '/cloud', '/about'].includes(location.pathname))
-      setOpenSubmenu('/settings')
+    else if (['/settings', '/about', '/ai'].includes(location.pathname)) setOpenSubmenu('/settings')
   }, [location.pathname])
+
+  useEffect(() => {
+    const compact = window.matchMedia('(max-width: 980px)')
+    const closeCompactFlyout = () => {
+      if (compact.matches) setOpenSubmenu(null)
+    }
+    compact.addEventListener('change', closeCompactFlyout)
+    return () => compact.removeEventListener('change', closeCompactFlyout)
+  }, [])
 
   // Compute parent badge counts from visible children only
   const effectiveBadgeCounts = { ...badgeCounts }
@@ -598,6 +570,9 @@ function NavItem({
     <div className="relative">
       <button
         ref={buttonRef}
+        data-active={isActive}
+        aria-label={itemLabel}
+        title={isCompact ? itemLabel : undefined}
         onClick={handleClick}
         aria-current={isActive && !hasChildren ? 'page' : undefined}
         aria-expanded={hasChildren ? !!submenuOpen : undefined}
@@ -609,20 +584,11 @@ function NavItem({
             ? {
                 background: 'var(--nav-active-bg)',
                 color: 'var(--nav-active-fg)',
-                boxShadow: '0 6px 18px rgba(11,40,31,.12)'
+                boxShadow: 'inset 0 1px var(--border-subtle)'
               }
             : { color: 'var(--nav-inactive-fg)' }
         }
       >
-        {isActive && (
-          <div
-            className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full"
-            style={{
-              background: 'var(--accent)',
-              boxShadow: 'none'
-            }}
-          />
-        )}
         <item.icon
           className={cn(
             'h-[17px] w-[17px] shrink-0 transition-colors duration-200',
@@ -637,9 +603,9 @@ function NavItem({
           <span
             className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
             style={{
-              background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-              color: '#0a0600',
-              boxShadow: '0 0 8px rgba(245,158,11,0.3)'
+              background: 'var(--warning)',
+              color: 'var(--page-bg)',
+              boxShadow: 'none'
             }}
             aria-label={`${badgeCount ?? 1}`}
           >
@@ -689,7 +655,6 @@ function NavItem({
                 {(badgeCounts?.[child.path] ?? 0) > 0 && (
                   <b aria-label={`${badgeCounts![child.path]} items`}>{badgeCounts![child.path]}</b>
                 )}
-                {child.cloudTier && <CloudTierBadge tier={child.cloudTier} />}
                 {child.badge && <b>NEW</b>}
               </button>
             )
@@ -792,7 +757,7 @@ function FlyoutMenu({
         className="glass-card w-56 rounded-xl py-1.5"
         style={{
           background: 'var(--flyout-bg)',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 var(--glass-inset)'
+          boxShadow: 'var(--shadow-flyout)'
         }}
       >
         {items.map((child) => {
@@ -825,23 +790,22 @@ function FlyoutMenu({
                 <span
                   className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
                   style={{
-                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                    color: '#0a0600',
-                    boxShadow: '0 0 6px rgba(245,158,11,0.3)'
+                    background: 'var(--warning)',
+                    color: 'var(--page-bg)',
+                    boxShadow: 'none'
                   }}
                   aria-hidden="true"
                 >
                   {badgeCounts![child.path]}
                 </span>
               )}
-              {child.cloudTier && <CloudTierBadge tier={child.cloudTier} />}
               {child.badge && (
                 <span
                   className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[8px] font-bold leading-none"
                   style={{
-                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                    color: '#0a0600',
-                    boxShadow: '0 0 6px rgba(245,158,11,0.3)'
+                    background: 'var(--warning)',
+                    color: 'var(--page-bg)',
+                    boxShadow: 'none'
                   }}
                 >
                   NEW
@@ -852,26 +816,5 @@ function FlyoutMenu({
         })}
       </div>
     </div>
-  )
-}
-
-function CloudTierBadge({ tier }: { tier: 'basic' | 'pro' }) {
-  const { t } = useTranslation('cloud')
-  const label = tier === 'pro' ? t('planProName') : t('planBasicName')
-  return (
-    <span
-      className="cloud-tier-badge"
-      style={{
-        background:
-          tier === 'pro'
-            ? 'var(--accent-muted-bg)'
-            : 'color-mix(in srgb, var(--info), transparent 89%)',
-        border: `1px solid ${tier === 'pro' ? 'var(--accent-muted-border)' : 'color-mix(in srgb, var(--info), transparent 72%)'}`,
-        color: tier === 'pro' ? 'var(--warning)' : 'var(--info)'
-      }}
-      aria-label={t('pageTitle') + ' ' + label}
-    >
-      {label}
-    </span>
   )
 }

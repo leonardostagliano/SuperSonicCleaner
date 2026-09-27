@@ -1,19 +1,20 @@
 // Dedicated browser-only QA entry. This module is never imported by the Electron entry.
 import { defaultSettings, useSettingsStore } from '../stores/settings-store'
 import { featureReads } from './feature-fixtures'
-import type { ScanHistoryEntry, StartupItem, PerfSnapshot } from '@shared/types'
+import { installNotchPreview } from './notch-fixture'
+import type { ScanHistoryEntry, StartupItem, PerfSnapshot, UpdateStatus } from '@shared/types'
+import type { AiAnalysisRequest } from '@shared/ai-analysis'
 
 const GB = 1024 ** 3
 const now = Date.now()
 const empty = new URLSearchParams(location.search).get('state') === 'empty'
+const slowScanPreview = new URLSearchParams(location.search).get('scan') === 'slow'
 // Explicit sample access states for checking conversion and recovery flows.
-const cloudPreview = new URLSearchParams(location.search).get('cloud') ?? 'unlinked'
 const settings = structuredClone(defaultSettings)
-if (cloudPreview !== 'unlinked') settings.cloud.apiKey = 'preview-only'
 settings.dashboardView =
   localStorage.getItem('kudu-preview-dashboard-view') === 'advanced' ? 'advanced' : 'simple'
 settings.theme = new URLSearchParams(location.search).get('theme') === 'light' ? 'light' : 'dark'
-settings.language = 'en'
+settings.language = new URLSearchParams(location.search).get('lang') === 'it' ? 'it' : 'en'
 settings.schedules = empty
   ? []
   : [
@@ -62,8 +63,32 @@ const startup: StartupItem[] = empty
 const callbacks = new Map<string, Set<(value: any) => void>>()
 const emit = (name: string, data: unknown) =>
   callbacks.get(name)?.forEach((callback) => callback(data))
+const updatePreview = new URLSearchParams(location.search).get('update')
+let updateStatus: UpdateStatus = {
+  state:
+    updatePreview === 'available' || updatePreview === 'downloaded' || updatePreview === 'error'
+      ? updatePreview
+      : 'idle',
+  ...(updatePreview
+    ? {
+        version: '3.5.0',
+        releaseNotes:
+          'A refined workspace in light and dark.\nImproved release and installation flow.'
+      }
+    : {}),
+  ...(updatePreview === 'error'
+    ? { error: 'Preview: the update server is temporarily unavailable.' }
+    : {})
+}
+const updateProgress = (next: UpdateStatus) => {
+  updateStatus = next
+  emit('onUpdaterStatus', next)
+}
 let quickCount = 0
 let monitoring: ReturnType<typeof setInterval> | undefined
+const slowAiPreview = new URLSearchParams(location.search).get('ai') === 'slow'
+let aiPreviewRunning = false
+let aiPreviewCancelled = false
 const snapshot = (i: number): PerfSnapshot => ({
   timestamp: Date.now() - (90 - i) * 1000,
   cpu: { overall: 12 + Math.round(Math.abs(Math.sin(i * 0.9)) * 22), perCore: Array(12).fill(12) },
@@ -94,8 +119,8 @@ const reads: Record<string, (...args: any[]) => unknown> = {
       contextMenu: true
     }
   }),
-  systemScan: () =>
-    empty
+  systemScan: async () => {
+    const results = empty
       ? []
       : ['Temporary files', 'Windows logs', 'Crash reports'].map((subcategory, group) => ({
           category: 'system',
@@ -111,7 +136,24 @@ const reads: Record<string, (...args: any[]) => unknown> = {
             lastModified: now - 604800000,
             selected: true
           }))
-        })),
+        }))
+    if (slowScanPreview) {
+      for (const progress of [25, 50, 75, 100]) {
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        emit('onScanProgress', {
+          phase: 'scanning',
+          category: 'system',
+          currentPath: 'C:\\Users\\Preview\\AppData\\Local\\Temp',
+          progress,
+          itemsFound: Math.floor((results.length * 3 * progress) / 100),
+          sizeFound: Math.floor(
+            (results.reduce((sum, item) => sum + item.totalSize, 0) * progress) / 100
+          )
+        })
+      }
+    }
+    return results
+  },
   browserScan: () => [],
   appScan: () => [],
   gamingScan: () => [],
@@ -184,49 +226,73 @@ const reads: Record<string, (...args: any[]) => unknown> = {
     }))
   }),
   ...featureReads(empty),
-  diagnosticsCapabilities: () => {
-    if (cloudPreview === 'offline') throw new Error('Preview connection unavailable')
-    return {
-      available: cloudPreview === 'pro',
-      requiredPlan: 'Pro',
-      provider: 'OpenAI',
-      retentionDays: 7,
-      ...(cloudPreview === 'pro'
-        ? {}
-        : {
-            accessReason:
-              cloudPreview === 'unlinked'
-                ? 'unlinked'
-                : cloudPreview === 'authorization'
-                  ? 'authorization'
-                  : 'subscription'
-          })
-    }
-  },
   settingsGet: () => settings,
   settingsSet: (partial) => {
-    Object.assign(settings, partial)
+    if (new URLSearchParams(location.search).get('settings-error') === '1') {
+      throw new Error('Synthetic settings save failure')
+    }
+    const cleaner = { ...settings.cleaner, ...partial.cleaner }
+    const schedule = { ...settings.schedule, ...partial.schedule }
+    const gameMode = { ...settings.gameMode, ...partial.gameMode }
+    Object.assign(settings, partial, { cleaner, schedule, gameMode })
     if (partial.dashboardView)
       localStorage.setItem('kudu-preview-dashboard-view', partial.dashboardView)
     return settings
   },
   onboardingGet: () => true,
   elevationCheck: () => ({ isAdmin: true, isElevated: true }),
-  updaterGetStatus: () => ({ state: 'idle' }),
+  updaterGetStatus: () => updateStatus,
+  updaterCheck: () => {
+    updateProgress({ state: 'checking' })
+    setTimeout(
+      () => updateProgress({ state: 'not-available', checkedAt: new Date().toISOString() }),
+      800
+    )
+  },
+  updaterDownload: () => {
+    updateProgress({ ...updateStatus, state: 'downloading', progress: 0 })
+    const downloadTimer = setInterval(() => {
+      const progress = (updateStatus.progress ?? 0) + 20
+      updateProgress({
+        ...updateStatus,
+        state: progress >= 100 ? 'downloaded' : 'downloading',
+        progress
+      })
+      if (progress >= 100) clearInterval(downloadTimer)
+    }, 400)
+  },
+  updaterInstall: () => updateProgress({ state: 'idle' }),
+  aiAnalysisStatus: () => ({ connected: true, available: true }),
+  aiAnalysisRun: async (request: AiAnalysisRequest) => {
+    if (aiPreviewRunning) throw new Error('busy')
+    aiPreviewRunning = true
+    aiPreviewCancelled = false
+    try {
+      if (slowAiPreview) await new Promise((resolve) => setTimeout(resolve, 8000))
+      if (aiPreviewCancelled) throw new Error('cancelled')
+      return {
+        summary:
+          'Sample analysis of the selected metadata. Review each suggestion before taking action.',
+        recommendations: request.items.slice(0, 2).map((item) => ({
+          fileId: item.id,
+          priority: 'medium' as const,
+          reason: 'This sample item is among the largest in the current results.'
+        }))
+      }
+    } finally {
+      aiPreviewRunning = false
+    }
+  },
+  aiAnalysisCancel: () => {
+    aiPreviewCancelled = true
+  },
   historyGet: () => history,
   historyAdd: (entry) => {
     history.unshift(entry)
     emit('onHistoryChanged', undefined)
   },
-  cloudHistoryGet: () => [],
-  cloudGetStatus: () => ({
-    status: cloudPreview === 'pro' || cloudPreview === 'basic' ? 'connected' : 'disconnected'
-  }),
-  threatMonitorGetSnapshot: () => null,
   startupList: () => startup,
   startupBootTrace: () => null,
-  startupSafetyFetch: () => ({}),
-  programSafetyFetch: () => ({}),
   diskDrives: () => (empty ? [] : [drive]),
   diskTrimList: () =>
     empty
@@ -347,9 +413,7 @@ const reads: Record<string, (...args: any[]) => unknown> = {
   largeFilesSelectDir: () => 'C:\\Users\\Preview\\Downloads',
   emptyFoldersSelectDir: () => 'C:\\Users\\Preview\\Downloads',
   shredderSelectFiles: () => [],
-  shredderSelectFolders: () => [],
-  cveFetch: () => ({ vulnerabilities: [], total: 0 }),
-  breachMonitorFetch: () => ({ emails: [], breaches: [] })
+  shredderSelectFolders: () => []
 }
 
 window.kudu = new Proxy(
@@ -375,6 +439,7 @@ window.kudu = new Proxy(
 ) as typeof window.kudu
 
 useSettingsStore.getState().setSettings(settings)
+installNotchPreview(settings)
 
 const badge = document.createElement('div')
 badge.setAttribute('role', 'status')

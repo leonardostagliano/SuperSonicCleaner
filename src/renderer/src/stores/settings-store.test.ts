@@ -33,18 +33,7 @@ describe('settings-store', () => {
           day: 1,
           hour: 9
         },
-        schedules: [],
-        cloud: {
-          apiKey: '',
-          telemetryIntervalSec: 60,
-          shareDiskHealth: true,
-          shareProcessList: true,
-          shareThreatMonitor: true,
-          allowRemotePower: false,
-          allowRemoteCleanup: false,
-          allowRemoteInstalls: false,
-          allowRemoteConfig: false
-        }
+        schedules: []
       },
       loaded: false
     })
@@ -100,25 +89,11 @@ describe('settings-store', () => {
     expect(schedule.day).toBe(1)
   })
 
-  it('updateSettings deep-merges cloud settings', () => {
-    useSettingsStore.getState().updateSettings({
-      cloud: { apiKey: 'test-key', allowRemotePower: false }
-    } as any)
-
-    const { cloud } = useSettingsStore.getState().settings
-    expect(cloud.apiKey).toBe('test-key')
-    expect(cloud.allowRemotePower).toBe(false)
-    // Preserved
-    expect(cloud.telemetryIntervalSec).toBe(60)
-    expect(cloud.shareProcessList).toBe(true)
-  })
-
   it('updateSettings does not clobber nested objects when only top-level changes', () => {
     useSettingsStore.getState().updateSettings({ autoRestart: false })
-    const { cleaner, schedule, cloud } = useSettingsStore.getState().settings
+    const { cleaner, schedule } = useSettingsStore.getState().settings
     expect(cleaner.skipRecentMinutes).toBe(60)
     expect(schedule.frequency).toBe('weekly')
-    expect(cloud.telemetryIntervalSec).toBe(60)
   })
 
   it('default settings have sensible values', () => {

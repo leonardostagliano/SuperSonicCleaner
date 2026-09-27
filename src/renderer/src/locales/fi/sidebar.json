@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "JÄRJESTELMÄN PUHDISTUS",
   "dashboard": "Etusivu",
   "securityHeading": "Suojaus",
   "malwareScanner": "Haittaohjelmien tarkistus",
-  "threatMonitor": "Uhkamonitori",
   "systemHardening": "Järjestelmän suojaus",
-  "cveScanner": "Haavoittuvuudet",
   "monitoring": "Valvonta",
   "maintainHeading": "Hallinta",
   "cleaner": "Siivoa",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Toiminta ja palautus",
   "history": "Toiminta",
   "settings": "Asetukset",
-  "breachMonitor": "Tietomurtovalvonta",
   "gameMode": "Pelitila",
   "firewallAudit": "Palomuurin tarkistus"
 }

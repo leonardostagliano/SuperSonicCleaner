@@ -2,7 +2,6 @@ import {
   Activity,
   AppWindow,
   CalendarClock,
-  Cloud,
   CopyCheck,
   Database,
   Download,
@@ -15,10 +14,8 @@ import {
   HardDrive,
   History,
   Info,
-  Mail,
   MousePointerClick,
   PackageMinus,
-  Radar,
   Server,
   Settings2,
   Shield,
@@ -57,7 +54,7 @@ export const pageExperiences: Record<string, PageExperience> = {
     key: 'diagnostics',
     icon: Activity,
     family: 'performance',
-    steps: ['recordSession', 'inspectRecording', 'consentAnalysis']
+    steps: ['recordSession', 'inspectRecording', 'analyzeLocally']
   },
   '/cleaner': {
     key: 'cleaner',
@@ -137,18 +134,6 @@ export const pageExperiences: Record<string, PageExperience> = {
     family: 'protection',
     steps: ['scanThreats', 'reviewFindings', 'handleThreats']
   },
-  '/threat-monitor': {
-    key: 'threatMonitor',
-    icon: Radar,
-    family: 'protection',
-    steps: ['checkConnection', 'reviewActivity', 'inspectAlerts']
-  },
-  '/cve': {
-    key: 'cve',
-    icon: Shield,
-    family: 'protection',
-    steps: ['refreshFindings', 'prioritizeSeverity', 'updateApps']
-  },
   '/game-mode': {
     key: 'gameMode',
     icon: Gamepad2,
@@ -170,18 +155,6 @@ export const pageExperiences: Record<string, PageExperience> = {
   '/history': { key: 'history', icon: History, family: 'workspace' },
   '/settings': { key: 'settings', icon: Settings2, family: 'workspace' },
   '/about': { key: 'about', icon: Info, family: 'workspace' },
-  '/cloud': {
-    key: 'cloud',
-    icon: Cloud,
-    family: 'workspace',
-    steps: ['linkAccount', 'reviewCloud', 'checkConnection']
-  },
-  '/breach-monitor': {
-    key: 'breach',
-    icon: Mail,
-    family: 'protection',
-    steps: ['addEmail', 'checkExposure', 'reviewBreach']
-  },
   '/privacy': {
     key: 'privacy',
     icon: Eye,

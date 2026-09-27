@@ -14,6 +14,14 @@ export default defineConfig({
   optimizeDeps: { entries: ['ui-preview.html'] },
   build: {
     outDir: resolve('out/ui-preview'),
-    rollupOptions: { input: resolve('src/renderer/ui-preview.html') }
+    rollupOptions: {
+      input: resolve('src/renderer/ui-preview.html'),
+      output: {
+        manualChunks(id) {
+          const locale = id.replace(/\\/g, '/').match(/\/locales\/([^/]+)\/[^/]+\.json$/)?.[1]
+          if (locale && locale !== 'en') return `locale-${locale}`
+        }
+      }
+    }
   }
 })

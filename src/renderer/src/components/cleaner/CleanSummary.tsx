@@ -163,16 +163,8 @@ export function CleanSummary({ summary, onRelaunchAsAdmin, platform }: CleanSumm
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="mb-5 rounded-2xl overflow-hidden"
-      style={{ background: 'var(--card-bg)', border: '1px solid rgba(34,197,94,0.15)' }}
+      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
     >
-      {/* Green accent line */}
-      <div
-        className="h-[2px]"
-        style={{
-          background: 'linear-gradient(90deg, transparent, rgba(34,197,94,0.5), transparent)'
-        }}
-      />
-
       <div className="p-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">

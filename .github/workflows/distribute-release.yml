@@ -35,6 +35,8 @@ concurrency:
 jobs:
   verify-release:
     name: Verify Published Release
+    # These package IDs and deployment secrets belong to the upstream project.
+    if: github.repository == 'AdventDevInc/kudu'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

@@ -99,12 +99,6 @@ export function DiskMaintenancePage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [showLog, setShowLog] = useState<string | null>(null)
 
-  // Listen for trim progress events
-  useEffect(() => {
-    if (!window.kudu?.onDiskTrimProgress) return
-    return window.kudu.onDiskTrimProgress((data) => store.setProgress(data))
-  }, [])
-
   // Initial load
   useEffect(() => {
     refresh()

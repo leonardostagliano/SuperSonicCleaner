@@ -40,6 +40,8 @@ export interface DiagnosticRecording {
 }
 export interface DiagnosticReport {
   version: 1
+  source?: 'local'
+  language?: 'en' | 'it'
   analyzerVersion: string
   generatedAt: string
   summary: string
@@ -53,12 +55,17 @@ export interface DiagnosticReport {
   }[]
   limitations: string[]
 }
-export interface DiagnosticCloudResult {
-  recordId: string
-  status: 'queued' | 'processing' | 'complete' | 'failed'
-  report: DiagnosticReport | null
-  errorCode: string | null
-  expiresAt: string
+export interface DiagnosticAiReport extends Omit<DiagnosticReport, 'source' | 'findings'> {
+  source: 'codex'
+  findings: Array<
+    Omit<DiagnosticReport['findings'][number], 'evidence'> & {
+      evidence: Array<
+        DiagnosticReport['findings'][number]['evidence'][number] & { processId: string | null }
+      >
+    }
+  >
+  /** Local-only pointers into this recording; never included in an inference request. */
+  processRefs: Array<{ id: string; sampleIndex: number; processIndex: number }>
 }
 export interface DiagnosticSession {
   recording: DiagnosticRecording
@@ -66,29 +73,41 @@ export interface DiagnosticSession {
   notes: string
   pinned: boolean
   state: 'recording' | 'saved' | 'interrupted'
-  cloud: DiagnosticCloudResult | null
-  /** `digest` and `account` are main-process only and stripped before reaching the renderer. */
-  upload: { consentAt: string; includeProcesses: boolean; digest?: string; account?: string } | null
+  report: DiagnosticReport | null
+  aiReport?: DiagnosticAiReport | null
 }
 export type DiagnosticSummary = Pick<DiagnosticSession, 'title' | 'pinned' | 'state'> & {
   id: string
   startedAt: string
   durationMs: number
   samples: number
-  cloudStatus: DiagnosticCloudResult['status'] | null
 }
-export interface DiagnosticPreview {
-  token: string
-  json: string
-  bytes: number
-  includeProcesses: boolean
+
+export type DiagnosticDetails = Pick<DiagnosticSession, 'title' | 'notes' | 'pinned'>
+
+export function validDiagnosticDetails(value: unknown): value is DiagnosticDetails {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false
+  const details = value as Record<string, unknown>
+  return (
+    typeof details.title === 'string' &&
+    !!details.title.trim() &&
+    details.title.length <= 120 &&
+    typeof details.notes === 'string' &&
+    details.notes.length <= 2000 &&
+    typeof details.pinned === 'boolean'
+  )
 }
-export interface DiagnosticCapabilities {
-  available: boolean
-  accessReason?: 'unlinked' | 'subscription' | 'authorization'
-  requiredPlan: string
-  retentionDays: number
-  provider: string
+
+/** Explicit export fields prevent retired account metadata from leaving local storage. */
+export function diagnosticExportPayload(session: DiagnosticSession) {
+  return {
+    version: 1,
+    title: session.title,
+    notes: session.notes,
+    recording: session.recording,
+    report: session.report,
+    ...(session.aiReport ? { aiReport: session.aiReport } : {})
+  }
 }
 
 export function diagnosticId(value: unknown): value is string {
@@ -110,6 +129,8 @@ export function validDiagnosticReport(v: unknown, duration: number): v is Diagno
   if (
     !object(v) ||
     v.version !== 1 ||
+    (v.source !== undefined && v.source !== 'local') ||
+    (v.language !== undefined && v.language !== 'en' && v.language !== 'it') ||
     !text(v.analyzerVersion, 80) ||
     !text(v.generatedAt, 40) ||
     !text(v.summary, 1500) ||
@@ -142,6 +163,42 @@ export function validDiagnosticReport(v: unknown, duration: number): v is Diagno
           e.endMs >= e.startMs &&
           e.endMs <= duration
       )
+  )
+}
+
+export function validDiagnosticAiReport(
+  value: unknown,
+  recording: DiagnosticRecording
+): value is DiagnosticAiReport {
+  if (
+    !object(value) ||
+    value.source !== 'codex' ||
+    !validDiagnosticReport({ ...value, source: 'local' }, recording.durationMs) ||
+    !Array.isArray(value.processRefs) ||
+    value.processRefs.length > 24
+  )
+    return false
+  const ids = new Set<string>()
+  for (const ref of value.processRefs) {
+    if (
+      !object(ref) ||
+      !diagnosticId(ref.id) ||
+      ids.has(ref.id) ||
+      typeof ref.sampleIndex !== 'number' ||
+      !Number.isInteger(ref.sampleIndex) ||
+      typeof ref.processIndex !== 'number' ||
+      !Number.isInteger(ref.processIndex) ||
+      !recording.samples[ref.sampleIndex]?.processes[ref.processIndex]
+    )
+      return false
+    ids.add(ref.id)
+  }
+  return (value.findings as DiagnosticAiReport['findings']).every((finding) =>
+    finding.evidence.every((evidence) =>
+      evidence.metric.startsWith('process')
+        ? typeof evidence.processId === 'string' && ids.has(evidence.processId)
+        : evidence.processId === null
+    )
   )
 }
 
@@ -206,43 +263,6 @@ export function validDiagnosticRecording(v: unknown): v is DiagnosticRecording {
       )
     )
   })
-}
-
-/** Fresh allow-list: no local notes, paths, account details or unknown metadata. */
-export function diagnosticUpload(
-  r: DiagnosticRecording,
-  includeProcesses: boolean
-): DiagnosticRecording {
-  return {
-    version: 1,
-    recordId: r.recordId,
-    startedAt: r.startedAt,
-    durationMs: r.durationMs,
-    system: {
-      platform: r.system.platform,
-      cpuModel: r.system.cpuModel,
-      logicalCores: r.system.logicalCores,
-      totalMemoryBytes: r.system.totalMemoryBytes,
-      osVersion: r.system.osVersion
-    },
-    samples: r.samples.map((s) => ({
-      t: s.t,
-      cpuPercent: s.cpuPercent,
-      memoryPercent: s.memoryPercent,
-      memoryUsedBytes: s.memoryUsedBytes,
-      diskReadBytesPerSec: s.diskReadBytesPerSec,
-      diskWriteBytesPerSec: s.diskWriteBytesPerSec,
-      processes: includeProcesses
-        ? s.processes.map((p) => ({
-            pid: p.pid,
-            name: p.name,
-            startedAt: p.startedAt,
-            cpuPercent: p.cpuPercent,
-            memoryBytes: p.memoryBytes
-          }))
-        : []
-    }))
-  }
 }
 
 export function diagnosticStats(r: DiagnosticRecording): {

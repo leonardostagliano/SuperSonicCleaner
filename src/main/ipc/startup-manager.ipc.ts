@@ -356,7 +356,7 @@ async function getScheduledLogonTasks(): Promise<StartupItem[]> {
             $hasLogon = $true; break
           }
         }
-        if ($hasLogon -and $task.TaskName -ne 'KuduStartup' -and $task.TaskPath -notmatch '^\\\\Microsoft\\\\' -and $task.TaskPath -notmatch '^\\\\ASUS\\\\') {
+        if ($hasLogon -and $task.TaskName -notin @('KuduStartup', 'SuperSonicCleanerStartup') -and $task.TaskPath -notmatch '^\\\\Microsoft\\\\' -and $task.TaskPath -notmatch '^\\\\ASUS\\\\') {
           $action = ($task.Actions | Where-Object { $_.CimClass.CimClassName -eq 'MSFT_TaskExecAction' } | Select-Object -First 1)
           if ($action) {
             $exe = $action.Execute

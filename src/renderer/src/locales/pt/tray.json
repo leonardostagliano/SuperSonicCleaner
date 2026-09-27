@@ -1,10 +1,10 @@
 {
-  "trayTooltip": "Kudu",
-  "openKudu": "Abrir Kudu",
+  "trayTooltip": "SuperSonicCleaner",
+  "openKudu": "Abrir SuperSonicCleaner",
   "quit": "Sair",
-  "scheduledTaskNotificationTitle": "Kudu - Tarefa Agendada",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Tarefa Agendada",
   "scheduledTaskNotificationBody": "A executar \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "Kudu - Verificação Concluída",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner - Verificação Concluída",
   "scanCompleteNotificationBody": "Foram encontrados {{itemCount}} itens ({{sizeMB}} MB) que podem ser limpos.",
   "scheduledScanName": "Verificação Agendada"
 }

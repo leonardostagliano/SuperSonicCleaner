@@ -1,5 +1,5 @@
 import { ToolIllustration } from '@/components/shared/ToolIllustration'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
@@ -30,13 +30,6 @@ export function FileShredderPage() {
   const { t } = useTranslation('fileShredder')
   const store = useFileShredderStore()
   const [showConfirm, setShowConfirm] = useState(false)
-
-  useEffect(() => {
-    if (!window.kudu?.onShredderProgress) return
-    return window.kudu.onShredderProgress((data) => {
-      useFileShredderStore.getState().setProgress(data)
-    })
-  }, [])
 
   const totalSize = useMemo(
     () => store.entries.reduce((sum, e) => sum + e.size, 0),

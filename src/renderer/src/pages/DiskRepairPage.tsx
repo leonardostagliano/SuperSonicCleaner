@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   RefreshCw,
@@ -27,12 +27,6 @@ export function DiskRepairPage() {
   const chkdskResult = useDiskStore((s) => s.chkdskResult)
   const store = useDiskStore()
   const [showRepairLog, setShowRepairLog] = useState<'sfc' | 'dism' | 'chkdsk' | null>(null)
-
-  // Listen for disk repair progress events
-  useEffect(() => {
-    if (!window.kudu?.onDiskRepairProgress) return
-    return window.kudu.onDiskRepairProgress((data) => store.setRepairProgress(data))
-  }, [])
 
   const handleRunSfc = async () => {
     store.setRepairRunning(true)

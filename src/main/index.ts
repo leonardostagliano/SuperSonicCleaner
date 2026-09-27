@@ -1,7 +1,7 @@
 import { startStorageHistory, stopStorageHistory } from './services/storage-history'
 import { app, BrowserWindow, ipcMain, Menu, nativeImage, screen, shell, Tray } from 'electron'
 import { execFile } from 'child_process'
-import { readFileSync } from 'fs'
+import { mkdirSync, readFileSync } from 'fs'
 import { randomUUID } from 'crypto'
 import { promisify } from 'util'
 import { join } from 'path'
@@ -31,17 +31,24 @@ import {
 } from './services/scheduler'
 import { initAutoUpdater } from './services/auto-updater'
 import { attachRendererDiagnostics } from './services/renderer-diagnostics'
-import { cloudAgent } from './services/cloud-agent'
 import {
   shouldDisableGpu,
   applyGpuFallbackSwitches,
   registerGpuCrashRecovery
 } from './services/gpu-fallback'
 import { runCli } from './cli'
-import { runDaemon } from './daemon'
 import { createWindowsTrayIcon } from './tray-icon'
 import { isAdmin } from './services/elevation'
 import { skipPortableStartup } from './services/portable'
+import { initDesktopNotch } from './services/desktop-notch'
+import {
+  APP_ID,
+  APP_NAME,
+  STARTUP_TASK_NAME,
+  resolveProfileDirectory
+} from './services/app-identity'
+import { windowsAppDetails } from './services/windows-app-details'
+import { openMainWindow as restoreOrCreateMainWindow } from './services/main-window-lifecycle'
 
 // ─── Disable hardware acceleration ──────────────────────────
 // Must be called before app.whenReady().  On machines with incompatible
@@ -52,12 +59,12 @@ import { skipPortableStartup } from './services/portable'
 app.disableHardwareAcceleration()
 
 // ─── Headless mode flags ─────────────────────────────────────
-// When running without a GUI (daemon or CLI), disable sandbox
+// When running the CLI without a GUI, disable sandbox
 // so Electron works on headless Linux servers without X11/Wayland.
 // IMPORTANT: Clear DISPLAY before Chromium initializes — otherwise the
 // native layer picks the X11 ozone backend before app.commandLine
 // switches are processed, and crashes if no X server is running.
-if (process.argv.includes('--daemon') || process.argv.includes('--cli')) {
+if (process.argv.includes('--cli')) {
   delete process.env.DISPLAY
   delete process.env.WAYLAND_DISPLAY
   app.commandLine.appendSwitch('no-sandbox')
@@ -65,16 +72,13 @@ if (process.argv.includes('--daemon') || process.argv.includes('--cli')) {
 }
 
 // ─── Data directory override ────────────────────────────────
-// When relaunched as root (macOS/Linux), the elevated process receives
-// --kudu-data-dir=<path> so it reads/writes the original user's config
-// instead of /var/root/... or /root/...
-const dataDirFlag = process.argv.find((a) => a.startsWith('--kudu-data-dir='))
-if (dataDirFlag) {
-  const dir = dataDirFlag.slice('--kudu-data-dir='.length)
-  if (dir && require('path').isAbsolute(dir)) {
-    app.setPath('userData', dir)
-  }
-}
+// Elevation preserves the selected profile. Fresh launches use a separate
+// product directory, while both explicit data-directory aliases remain valid.
+app.setName(APP_NAME)
+if (process.platform === 'win32') app.setAppUserModelId(APP_ID)
+const profileDirectory = resolveProfileDirectory(process.argv, app.getPath('appData'))
+mkdirSync(profileDirectory, { recursive: true })
+app.setPath('userData', profileDirectory)
 
 // ─── GPU process fallback ───────────────────────────────────
 // disableHardwareAcceleration() still spawns a GPU process; on stripped
@@ -109,13 +113,10 @@ if (isRoot) {
   }
 }
 
-// ─── CLI / Daemon mode ───────────────────────────────────────
+// ─── CLI mode ────────────────────────────────────────────────
 // If --cli is passed, run headless and exit — no GUI, no tray.
-// If --daemon is passed, run headless cloud agent and stay alive.
 if (process.argv.includes('--cli')) {
   app.whenReady().then(() => runCli())
-} else if (process.argv.includes('--daemon')) {
-  app.whenReady().then(() => runDaemon())
 } else {
   initGui()
 }
@@ -136,6 +137,19 @@ function initGui(): void {
   // Set once the app is actually quitting (Cmd+Q, tray Quit, OS shutdown) so the
   // minimize-to-tray close interceptor lets windows close instead of aborting quit
   let isQuitting = false
+  let stopDesktopNotch: (() => void) | null = null
+  let reopenOnReady = false
+  let pendingMainWindow: BrowserWindow | null = null
+  let revealPendingMainWindow = false
+
+  function openMainWindow(): void {
+    if (isQuitting) return
+    if (mainWindow && mainWindow === pendingMainWindow && !mainWindow.isDestroyed()) {
+      revealPendingMainWindow = true
+      return
+    }
+    restoreOrCreateMainWindow(mainWindow, () => createWindow(true))
+  }
 
   function getIconPath(): string {
     const ext =
@@ -186,7 +200,7 @@ function initGui(): void {
     return nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 })
   }
 
-  const TASK_NAME = 'KuduStartup'
+  const TASK_NAME = STARTUP_TASK_NAME
   /** The only arguments the startup task is allowed to carry — verified after registration. */
   const TASK_ARGUMENTS = '--startup'
 
@@ -385,14 +399,7 @@ function initGui(): void {
     const contextMenu = Menu.buildFromTemplate([
       {
         label: t('openKudu'),
-        click: () => {
-          if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.show()
-            mainWindow.focus()
-          } else {
-            createWindow()
-          }
-        }
+        click: openMainWindow
       },
       { type: 'separator' },
       {
@@ -404,14 +411,7 @@ function initGui(): void {
     ])
 
     tray.setContextMenu(contextMenu)
-    tray.on('double-click', () => {
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.show()
-        mainWindow.focus()
-      } else {
-        createWindow()
-      }
-    })
+    tray.on('double-click', openMainWindow)
   }
 
   /** Rebuild the tray context menu (e.g. after a language change) */
@@ -421,14 +421,7 @@ function initGui(): void {
     const contextMenu = Menu.buildFromTemplate([
       {
         label: t('openKudu'),
-        click: () => {
-          if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.show()
-            mainWindow.focus()
-          } else {
-            createWindow()
-          }
-        }
+        click: openMainWindow
       },
       { type: 'separator' },
       {
@@ -448,7 +441,11 @@ function initGui(): void {
     }
   }
 
-  function createWindow(): void {
+  function createWindow(showOnReady = false): void {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (showOnReady) openMainWindow()
+      return
+    }
     const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
     const defaultWidth = Math.round(screenWidth * 0.75)
     const defaultHeight = Math.round(screenHeight * 0.8)
@@ -462,6 +459,7 @@ function initGui(): void {
     const icon = nativeImage.createFromPath(getIconPath())
 
     mainWindow = new BrowserWindow({
+      title: APP_NAME,
       width,
       height,
       // Omitted when no saved position survived validation, so Electron centres.
@@ -473,14 +471,14 @@ function initGui(): void {
         ? {
             titleBarOverlay: {
               color: '#00000000',
-              symbolColor: '#edf3ef',
+              symbolColor: '#f5f5f7',
               height: 48
             }
           }
         : {}),
       ...(process.platform === 'win32' ? { backgroundMaterial: 'mica' as const } : {}),
       roundedCorners: true,
-      backgroundColor: process.platform === 'win32' ? '#00000000' : '#101713',
+      backgroundColor: process.platform === 'win32' ? '#00000000' : '#121216',
       icon,
       show: false,
       webPreferences: {
@@ -494,17 +492,35 @@ function initGui(): void {
         sandbox: !isRoot
       }
     })
+    const window = mainWindow
+    pendingMainWindow = window
+    revealPendingMainWindow = showOnReady
+
+    window.on('closed', () => {
+      if (mainWindow === window) mainWindow = null
+      if (pendingMainWindow === window) pendingMainWindow = null
+    })
 
     if (process.platform === 'win32') {
+      window.setAppDetails(
+        windowsAppDetails({
+          executable: process.execPath,
+          userDataDir: app.getPath('userData'),
+          isPackaged: app.isPackaged,
+          appPath: app.getAppPath(),
+          resourcesPath: process.resourcesPath,
+          iconPath: getIconPath()
+        })
+      )
       // Respect the user's Windows accent preference for the native active-window border.
-      mainWindow.setAccentColor(true)
+      window.setAccentColor(true)
     }
 
     // Maximize before first paint so the window never flashes at its restored
     // size; getNormalBounds() keeps the un-maximized geometry for later.
-    if (isMaximized) mainWindow.maximize()
+    if (isMaximized) window.maximize()
 
-    trackWindowState(mainWindow)
+    trackWindowState(window)
 
     const settings = getSettings()
     // Detect startup launch: --startup flag (Windows Task Scheduler / Linux),
@@ -513,29 +529,32 @@ function initGui(): void {
       process.argv.includes('--startup') ||
       (process.platform === 'darwin' && app.getLoginItemSettings().wasOpenedAtLogin)
 
-    attachRendererDiagnostics(mainWindow)
+    attachRendererDiagnostics(window)
 
-    mainWindow.on('ready-to-show', () => {
+    window.on('ready-to-show', () => {
+      if (window.isDestroyed()) return
+      const shouldReveal = pendingMainWindow === window && revealPendingMainWindow
+      if (pendingMainWindow === window) pendingMainWindow = null
       // If launched at startup with minimize-to-tray, stay hidden — only when a
       // tray exists to restore the window (elevated Linux skips the tray, #383).
-      if (isStartupLaunch && settings.minimizeToTray && tray) {
+      if (!shouldReveal && isStartupLaunch && settings.minimizeToTray && tray) {
         // Don't show — just sit in tray
       } else {
-        mainWindow?.show()
+        window.show()
       }
     })
 
     // Intercept close to minimize to tray if enabled
-    mainWindow.on('close', (e) => {
+    window.on('close', (e) => {
       if (isQuitting) return
       const currentSettings = getSettings()
-      if (currentSettings.minimizeToTray && tray && mainWindow && !mainWindow.isDestroyed()) {
+      if (currentSettings.minimizeToTray && tray && !window.isDestroyed()) {
         e.preventDefault()
-        mainWindow.hide()
+        window.hide()
       }
     })
 
-    mainWindow.webContents.setWindowOpenHandler((details) => {
+    window.webContents.setWindowOpenHandler((details) => {
       // Only allow opening HTTPS URLs externally
       try {
         const url = new URL(details.url)
@@ -551,44 +570,44 @@ function initGui(): void {
     // Register IPC handlers only once to avoid stacking on window recreation
     if (!ipcRegistered) {
       // Window control IPC — use current mainWindow reference
-      ipcMain.on(IPC.WINDOW_MINIMIZE, () => mainWindow?.minimize())
-      ipcMain.on(IPC.WINDOW_MAXIMIZE, () => {
-        if (mainWindow?.isMaximized()) {
-          mainWindow.unmaximize()
-        } else {
-          mainWindow?.maximize()
-        }
+      ipcMain.on(IPC.WINDOW_MINIMIZE, () => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.minimize()
       })
-      ipcMain.on(IPC.WINDOW_CLOSE, () => mainWindow?.close())
+      ipcMain.on(IPC.WINDOW_MAXIMIZE, () => {
+        if (!mainWindow || mainWindow.isDestroyed()) return
+        if (mainWindow.isMaximized()) mainWindow.unmaximize()
+        else mainWindow.maximize()
+      })
+      ipcMain.on(IPC.WINDOW_CLOSE, () => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.close()
+      })
       ipcMain.on(IPC.WINDOW_SET_CHROME_THEME, (_event, theme: unknown) => {
         if (process.platform === 'darwin' || (theme !== 'light' && theme !== 'dark')) return
-        mainWindow?.setTitleBarOverlay({
+        if (!mainWindow || mainWindow.isDestroyed()) return
+        mainWindow.setTitleBarOverlay({
           color: '#00000000',
-          symbolColor: theme === 'light' ? '#17372f' : '#edf3ef',
+          symbolColor: theme === 'light' ? '#18181b' : '#f5f5f7',
           height: 48
         })
       })
 
       // Register all IPC handlers (pass getter so handlers always use current window)
-      registerCleanerIpc(() => mainWindow)
+      registerCleanerIpc(() => (mainWindow && !mainWindow.isDestroyed() ? mainWindow : null))
 
       ipcRegistered = true
     }
 
     // Load the app
     if (process.env['ELECTRON_RENDERER_URL']) {
-      mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+      window.loadURL(process.env['ELECTRON_RENDERER_URL'])
     } else {
-      mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+      window.loadFile(join(__dirname, '../renderer/index.html'))
     }
   }
 
   app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      if (!mainWindow.isVisible()) mainWindow.show()
-      mainWindow.focus()
-    }
+    if (!app.isReady()) reopenOnReady = true
+    else openMainWindow()
   })
 
   app.whenReady().then(() => {
@@ -633,7 +652,9 @@ function initGui(): void {
       createTray()
     }
 
-    createWindow()
+    createWindow(reopenOnReady)
+
+    stopDesktopNotch = initDesktopNotch(() => mainWindow, openMainWindow)
 
     // Initialize auto-updater
     initAutoUpdater()
@@ -641,11 +662,6 @@ function initGui(): void {
     // Start the scheduled scan checker
     startScheduler(() => mainWindow)
     startStorageHistory()
-
-    // Start cloud agent if linked
-    if (settings.cloud.apiKey) {
-      cloudAgent.start()
-    }
 
     // Listen for settings changes to update auto-launch and tray
     ipcMain.handle(IPC.SETTINGS_APPLY_STARTUP, async (_event, enabled: boolean) => {
@@ -710,15 +726,7 @@ function initGui(): void {
       }
     )
 
-    app.on('activate', () => {
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        // Window exists but may be hidden (minimize-to-tray) — restore it
-        mainWindow.show()
-        mainWindow.focus()
-      } else if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow()
-      }
-    })
+    app.on('activate', openMainWindow)
   })
 
   app.on('window-all-closed', () => {
@@ -745,9 +753,10 @@ function initGui(): void {
 
   app.on('before-quit', () => {
     isQuitting = true
+    stopDesktopNotch?.()
+    stopDesktopNotch = null
     stopScheduler()
     stopStorageHistory()
-    cloudAgent.stop()
     // Kill any active child processes (reg.exe, cmd.exe, etc.) to prevent orphans
     killAllChildren()
   })

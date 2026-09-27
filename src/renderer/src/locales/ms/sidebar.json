@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "PEMBERSIH SISTEM",
   "dashboard": "Laman Utama",
   "securityHeading": "Perlindungan",
   "malwareScanner": "Pengimbas Malware",
-  "threatMonitor": "Pemantau Ancaman",
   "systemHardening": "Pengerasan Sistem",
-  "cveScanner": "Kerentanan",
   "monitoring": "Pemantauan",
   "maintainHeading": "Urus",
   "cleaner": "Pembersihan",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Aktiviti & Pemulihan",
   "history": "Aktiviti",
   "settings": "Keutamaan",
-  "breachMonitor": "Pemantau Kebocoran",
   "gameMode": "Mod Permainan",
   "firewallAudit": "Audit Firewall"
 }

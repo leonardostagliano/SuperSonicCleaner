@@ -1,15 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Check, Monitor, Moon, Sun } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
+import { Check, Download, Monitor, Moon, Sun } from 'lucide-react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Sidebar } from './Sidebar'
 import { AdminBanner } from './AdminBanner'
+import { AppUpdateNotice } from '@/components/updates/AppUpdates'
+import { NotchToggle } from '@/components/notch/NotchToggle'
 import { useSettingsStore } from '@/stores/settings-store'
+import { useAppUpdateStore } from '@/stores/app-update-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import logoSrc from '@/assets/logo.png'
+import { BrandWordmark } from '@/components/shared/BrandWordmark'
+import './shell.css'
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { t } = useTranslation('settings')
   const { platform } = usePlatform()
+  const updateState = useAppUpdateStore((s) => s.status.state)
+  const hasUpdate = updateState === 'available' || updateState === 'downloaded'
   const handleSkip = useCallback((e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault()
     const el = document.getElementById('main-content')
@@ -21,32 +32,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="app-shell h-screen overflow-hidden" data-platform={platform}>
-      <a href="#" className="skip-nav" onClick={handleSkip}>
-        Skip to main content
+      <a href="#main-content" className="skip-nav" onClick={handleSkip}>
+        {t('skipToContent')}
       </a>
-
-      <header className="app-titlebar drag-region" aria-label="Kudu window titlebar">
+      <header className="app-titlebar drag-region" aria-label="SuperSonicCleaner">
         <div className="app-brand">
-          <img src={logoSrc} alt="" className="h-6 w-6 rounded-full" />
-          <div>
-            <div
-              className="text-[12px] font-bold leading-none"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              Kudu
-            </div>
-          </div>
+          <img src={logoSrc} alt="SuperSonicCleaner" className="brand-icon" />
+          <BrandWordmark />
         </div>
         <div className="app-titlebar-drag flex-1" aria-hidden="true" />
         <div className="app-titlebar-actions no-drag flex h-full items-center">
+          <button
+            className="shell-version"
+            type="button"
+            onClick={() => navigate('/about')}
+            aria-label={`${t('appVersion', { version: __APP_VERSION__ })} · ${t('sectionAbout')}`}
+          >
+            {hasUpdate && <Download size={12} aria-hidden="true" />}
+            <span>v{__APP_VERSION__}</span>
+            {hasUpdate && <i aria-hidden="true" />}
+          </button>
+          <NotchToggle />
           <AppearanceMenu />
         </div>
       </header>
-
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <Sidebar />
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
           <AdminBanner />
+          <AppUpdateNotice />
           <main
             id="main-content"
             data-route={location.pathname}
@@ -64,20 +78,39 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 type ThemeMode = 'system' | 'light' | 'dark'
 
 function AppearanceMenu() {
+  const { t } = useTranslation('settings')
   const theme = useSettingsStore((s) => s.settings.theme)
-  const updateSettings = useSettingsStore((s) => s.updateSettings)
+  const saveSettings = useSettingsStore((s) => s.saveSettings)
   const [open, setOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const options: { id: ThemeMode; label: string; description: string; icon: typeof Sun }[] = [
-    { id: 'system', label: 'System', description: 'Follow your computer', icon: Monitor },
-    { id: 'light', label: 'Light', description: 'Warm daylight', icon: Sun },
-    { id: 'dark', label: 'Dark', description: 'Low-light comfort', icon: Moon }
+    {
+      id: 'system',
+      label: t('appearanceSystem'),
+      description: t('appearanceSystemDescription'),
+      icon: Monitor
+    },
+    {
+      id: 'light',
+      label: t('appearanceLight'),
+      description: t('appearanceLightDescription'),
+      icon: Sun
+    },
+    {
+      id: 'dark',
+      label: t('appearanceDark'),
+      description: t('appearanceDarkDescription'),
+      icon: Moon
+    }
   ]
   const active = options.find((option) => option.id === theme) ?? options[0]
   const ActiveIcon = active.icon
 
   useEffect(() => {
     if (!open) return
+    menuRef.current?.querySelector<HTMLElement>('[aria-checked="true"]')?.focus()
     const close = (event: PointerEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setOpen(false)
     }
@@ -85,33 +118,66 @@ function AppearanceMenu() {
     return () => window.removeEventListener('pointerdown', close)
   }, [open])
 
-  const selectTheme = (nextTheme: ThemeMode) => {
-    updateSettings({ theme: nextTheme })
-    window.kudu?.settingsSet?.({ theme: nextTheme }).catch(() => {})
-    setOpen(false)
+  const selectTheme = async (nextTheme: ThemeMode) => {
+    if (saving) return
+    setSaving(true)
+    try {
+      await saveSettings({ theme: nextTheme })
+      setOpen(false)
+      triggerRef.current?.focus()
+    } catch {
+      toast.error(t('appearanceSaveFailed'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape' || event.key === 'Tab') {
+      setOpen(false)
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        triggerRef.current?.focus()
+      }
+      return
+    }
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+    event.preventDefault()
+    const items = Array.from(
+      menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]') ?? []
+    )
+    const index = items.indexOf(document.activeElement as HTMLButtonElement)
+    const next =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? items.length - 1
+          : (index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length
+    items[next]?.focus()
   }
 
   return (
     <div className="relative" ref={menuRef}>
       <button
+        ref={triggerRef}
         type="button"
         className="titlebar-icon-button"
-        aria-label={`Appearance: ${active.label}`}
+        aria-label={t('appearanceCurrent', { theme: active.label })}
         aria-expanded={open}
         aria-haspopup="menu"
-        title={`Appearance: ${active.label}`}
+        title={t('appearanceCurrent', { theme: active.label })}
         onClick={() => setOpen((value) => !value)}
       >
         <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.8} />
       </button>
       {open && (
-        <div className="appearance-menu animate-scale-in" role="menu" aria-label="Appearance">
-          <div
-            className="px-3 pb-2 pt-2.5 text-[9px] font-bold uppercase tracking-[0.16em]"
-            style={{ color: 'var(--text-dim)' }}
-          >
-            Appearance
-          </div>
+        <div
+          className="appearance-menu animate-scale-in"
+          role="menu"
+          aria-label={t('appearance')}
+          onKeyDown={handleKeyDown}
+        >
+          <div className="appearance-menu-label">{t('appearance')}</div>
           {options.map((option) => {
             const Icon = option.icon
             const selected = option.id === theme
@@ -121,7 +187,8 @@ function AppearanceMenu() {
                 type="button"
                 role="menuitemradio"
                 aria-checked={selected}
-                onClick={() => selectTheme(option.id)}
+                disabled={saving}
+                onClick={() => void selectTheme(option.id)}
               >
                 <span className="appearance-option-icon">
                   <Icon className="h-4 w-4" strokeWidth={1.8} />

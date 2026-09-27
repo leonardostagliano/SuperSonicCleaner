@@ -1,5 +1,5 @@
 import { ToolIllustration } from '@/components/shared/ToolIllustration'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
@@ -34,13 +34,6 @@ export function EmptyFolderCleanerPage() {
   const [showSettings, setShowSettings] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [excludeInput, setExcludeInput] = useState('')
-
-  useEffect(() => {
-    if (!window.kudu?.onEmptyFoldersProgress) return
-    return window.kudu.onEmptyFoldersProgress((data) => {
-      useEmptyFolderStore.getState().setProgress(data)
-    })
-  }, [])
 
   const selectedCount = store.selectedPaths.size
 

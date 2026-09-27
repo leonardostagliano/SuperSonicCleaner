@@ -35,7 +35,7 @@
     "unprotectedBadge": "{{count}} onbeschermd",
     "protectAllCategoryButton": "Alles beschermen",
     "adminBadge": "Admin",
-    "adminWarning": "Voor sommige instellingen zijn beheerdersrechten vereist om ze te wijzigen. Voer Kudu uit als administrator voor volledige bescherming.",
+    "adminWarning": "Voor sommige instellingen zijn beheerdersrechten vereist om ze te wijzigen. Voer SuperSonicCleaner uit als administrator voor volledige bescherming.",
     "scanFailed": "Privacyscan mislukt",
     "applyFailed": "Toepassen van privacy-instellingen mislukt",
     "applyFailedDescription": "Probeer uit te voeren als administrator",

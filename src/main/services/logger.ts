@@ -2,13 +2,6 @@ import { join } from 'path'
 import { appendFileSync, mkdirSync, statSync, renameSync, unlinkSync } from 'fs'
 import { app } from 'electron'
 
-let _daemonMode = false
-
-/** When enabled, all log lines are also written to stdout (for daemon/journald) */
-export function setDaemonMode(enabled: boolean): void {
-  _daemonMode = enabled
-}
-
 const MAX_LOG_SIZE = 5 * 1024 * 1024 // 5 MB
 const ROTATION_CHECK_INTERVAL_MS = 60_000 // only stat the file every 60s
 
@@ -32,13 +25,6 @@ function logFile(): string {
 function logFileOld(): string {
   return join(logDir(), 'kudu.old.log')
 }
-function cloudLogFile(): string {
-  return join(logDir(), 'cloud-agent.log')
-}
-function cloudLogFileOld(): string {
-  return join(logDir(), 'cloud-agent.old.log')
-}
-
 const lastRotationCheck = new Map<string, number>()
 
 function rotateIfNeeded(file: string, oldFile: string): void {
@@ -95,23 +81,5 @@ export function logDebug(message: string, data?: unknown): void {
     appendFileSync(logFile(), line)
   } catch {
     // Ignore
-  }
-}
-
-export function cloudLog(level: 'INFO' | 'ERROR' | 'DEBUG', message: string, data?: unknown): void {
-  const extra = data !== undefined ? ` ${JSON.stringify(data)}` : ''
-  const line = `[${timestamp()}] ${level}: ${message}${extra}\n`
-  try {
-    rotateIfNeeded(cloudLogFile(), cloudLogFileOld())
-    appendFileSync(cloudLogFile(), line)
-  } catch {
-    // Ignore
-  }
-  // Also write to main log for INFO/ERROR
-  if (level === 'ERROR') logError(message)
-  else if (level === 'INFO') logInfo(message)
-  // Mirror to stdout in daemon mode (for journald / foreground use)
-  if (_daemonMode) {
-    process.stdout.write(`[${timestamp()}] [cloud:${level}] ${message}${extra}\n`)
   }
 }

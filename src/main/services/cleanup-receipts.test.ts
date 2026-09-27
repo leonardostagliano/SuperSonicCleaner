@@ -8,7 +8,9 @@ const state = vi.hoisted(() => ({
   root: '',
   logPaths: false,
   lockReleases: [] as string[],
-  unlinkGate: null as Promise<void> | null
+  unlinkGate: null as Promise<void> | null,
+  onUnlinkBlocked: null as (() => void) | null,
+  onLockRefresh: null as (() => void) | null
 }))
 vi.mock('electron', () => ({ app: { isPackaged: true, getPath: () => state.root } }))
 // Record the owner token of every lock the service releases so tests can prove a writer only
@@ -17,8 +19,15 @@ vi.mock('fs/promises', async (importOriginal) => {
   const actual = await importOriginal<typeof import('fs/promises')>()
   return {
     ...actual,
+    utimes: async (...args: Parameters<typeof actual.utimes>) => {
+      await actual.utimes(...args)
+      if (String(args[0]).endsWith('receipts.lock')) state.onLockRefresh?.()
+    },
     unlink: async (path: Parameters<typeof actual.unlink>[0]) => {
-      if (state.unlinkGate && String(path).endsWith('.json')) await state.unlinkGate
+      if (state.unlinkGate && String(path).endsWith('.json')) {
+        state.onUnlinkBlocked?.()
+        await state.unlinkGate
+      }
       if (String(path).endsWith('receipts.lock'))
         state.lockReleases.push(await actual.readFile(path, 'utf8').catch(() => '<missing>'))
       return actual.unlink(path)
@@ -239,23 +248,35 @@ describe('receipt persistence and retry authorization', () => {
     receipt.add(item, 'deleted', '', true, 50)
     await receipt.finish()
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] })
+    let release!: () => void
+    let blocked = false
+    let refreshed = false
+    state.unlinkGate = new Promise<void>((resolve) => (release = resolve))
+    state.onUnlinkBlocked = () => {
+      blocked = true
+    }
+    const clearing = clearCleanupReceipts()
     try {
-      let release!: () => void
-      state.unlinkGate = new Promise<void>((resolve) => (release = resolve))
-      const clearing = clearCleanupReceipts()
-      await new Promise((resolve) => setTimeout(resolve, 100))
+      // The interval is registered only after the lock is acquired. Wait for
+      // the critical section, not an arbitrary delay before advancing timers.
+      await vi.waitFor(() => expect(blocked).toBe(true), { timeout: 2_000 })
       const lock = join(dir, 'receipts.lock')
       const old = new Date(Date.now() - 60_000)
       await utimes(lock, old, old)
+      state.onLockRefresh = () => {
+        refreshed = true
+      }
       await vi.advanceTimersByTimeAsync(10_000)
-      await new Promise((resolve) => setTimeout(resolve, 100))
+      await vi.waitFor(() => expect(refreshed).toBe(true), { timeout: 2_000 })
       expect(Date.now() - (await stat(lock)).mtimeMs).toBeLessThan(5_000)
+    } finally {
+      // A failed assertion must not leave the service write queue awaiting an
+      // unresolved gate and poison every test that follows this one.
       release()
       state.unlinkGate = null
-      await clearing
-    } finally {
-      state.unlinkGate = null
-      vi.useRealTimers()
+      state.onUnlinkBlocked = null
+      state.onLockRefresh = null
+      await clearing.finally(() => vi.useRealTimers())
     }
     expect(await readdir(dir)).not.toContain('receipts.lock')
   })

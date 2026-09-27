@@ -1,6 +1,7 @@
-appId: com.kudu.app
-productName: Kudu
-copyright: Copyright © 2024-2026 Kudu Contributors
+appId: com.leonardostagliano.supersoniccleaner
+productName: SuperSonicCleaner
+executableName: SuperSonicCleaner
+copyright: Copyright (c) 2026 Advent Development Inc; SuperSonicCleaner contributors
 
 directories:
   buildResources: resources
@@ -8,6 +9,7 @@ directories:
 
 files:
   - out/**/*
+  - LICENSE
 
 # Archive a separate copy so the portable marker never enters the installer.
 afterAllArtifactBuild: scripts/build-portable-zip.js
@@ -16,15 +18,19 @@ extraResources:
   - from: resources/icon.ico
     to: icon.ico
     filter:
-      - "**/*"
+      - '**/*'
   - from: resources/icon.png
     to: icon.png
     filter:
-      - "**/*"
+      - '**/*'
+  - from: resources/icon.icns
+    to: icon.icns
+    filter:
+      - '**/*'
   - from: resources/icons
     to: icons
     filter:
-      - "**/*"
+      - '**/*'
 
 win:
   target:
@@ -40,7 +46,7 @@ win:
 nsis:
   oneClick: true
   # Must stay in sync with win.requestedExecutionLevel above.
-  # requestedExecutionLevel only patches the manifest of Kudu.exe — it has no
+  # requestedExecutionLevel only patches the manifest of SuperSonicCleaner.exe — it has no
   # effect on the installer. Left per-user (the default), the installer compiles
   # with `RequestExecutionLevel user`, so it never elevates and then drops an
   # admin-manifested exe into the user-writable %LOCALAPPDATA%\Programs. Going
@@ -49,11 +55,11 @@ nsis:
   perMachine: true
   allowToChangeInstallationDirectory: false
   deleteAppDataOnUninstall: false
-  shortcutName: Kudu
-  artifactName: Kudu-Setup-${version}.${ext}
+  shortcutName: SuperSonicCleaner
+  artifactName: SuperSonicCleaner-Setup-${version}.${ext}
 
 portable:
-  artifactName: Kudu-Portable-${version}.${ext}
+  artifactName: SuperSonicCleaner-Portable-${version}.${ext}
   requestExecutionLevel: admin
 
 mac:
@@ -66,13 +72,13 @@ mac:
       arch:
         - x64
         - arm64
-  icon: resources/icon.png
+  icon: resources/icon.icns
   category: public.app-categories.utilities
   hardenedRuntime: true
   entitlements: resources/entitlements.mac.plist
   entitlementsInherit: resources/entitlements.mac.plist
   notarize: true
-  artifactName: Kudu-${version}-${arch}.${ext}
+  artifactName: SuperSonicCleaner-${version}-${arch}.${ext}
 
 linux:
   target:
@@ -91,10 +97,10 @@ linux:
 # A versioned basename makes doInstall delete the old file and write a new
 # name, leaving desktop/menu Exec= paths pointing at a missing binary.
 appImage:
-  artifactName: Kudu-${arch}.${ext}
+  artifactName: SuperSonicCleaner-${arch}.${ext}
 
 deb:
-  artifactName: Kudu-${version}-${arch}.${ext}
+  artifactName: SuperSonicCleaner-${version}-${arch}.${ext}
   depends:
     - libgtk-3-0
     - libnss3
@@ -106,4 +112,6 @@ deb:
 
 publish:
   provider: github
+  owner: leonardostagliano
+  repo: SuperSonicCleaner
   releaseType: release

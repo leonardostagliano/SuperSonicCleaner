@@ -87,7 +87,7 @@ async function runPackagedSmoke() {
         : []
     // Keep all CLI state in a disposable directory, including on developer machines.
     const cli = (...args) => run([...flags, `--kudu-data-dir=${temporary}`, '--cli', ...args])
-    assert.match(cli('--version'), /Kudu v\d+\.\d+\.\d+/)
+    assert.match(cli('--version'), /SuperSonicCleaner v\d+\.\d+\.\d+/)
     assert.match(cli('--help'), /usage/i)
     JSON.parse(cli('config', '--json', 'get'))
     JSON.parse(cli('history', '--json', 'list'))

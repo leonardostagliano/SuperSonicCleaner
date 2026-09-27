@@ -106,7 +106,7 @@ jobs:
           const expected = ['latest-mac.yml']
           for (const arch of ['x64', 'arm64']) {
             for (const extension of ['dmg', 'dmg.blockmap', 'zip', 'zip.blockmap']) {
-              expected.push(`Kudu-${version}-${arch}.${extension}`)
+              expected.push(`SuperSonicCleaner-${version}-${arch}.${extension}`)
             }
           }
           for (const name of expected) {

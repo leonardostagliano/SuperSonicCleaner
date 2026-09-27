@@ -2,10 +2,48 @@ import { useEffect, useRef } from 'react'
 import { useUpdaterStore } from '@/stores/updater-store'
 import { useDriverStore } from '@/stores/driver-store'
 import { refreshSettings, useSettingsStore } from '@/stores/settings-store'
+import { useScanStore } from '@/stores/scan-store'
+import { useDiskStore } from '@/stores/disk-store'
+import { useDuplicateStore } from '@/stores/duplicate-store'
+import { useLargeFileStore } from '@/stores/large-file-store'
+import { useEmptyFolderStore } from '@/stores/empty-folder-store'
+import { useMalwareStore } from '@/stores/malware-store'
+import { deferBackgroundScans } from '@/lib/deferred-background-scans'
+import { ScanStatus } from '@shared/enums'
+
+function foregroundWorkActive(): boolean {
+  const updater = useUpdaterStore.getState()
+  const drivers = useDriverStore.getState()
+  const scan = useScanStore.getState().status
+  const disk = useDiskStore.getState()
+  const fileScans = [
+    useDuplicateStore.getState().status,
+    useLargeFileStore.getState().status,
+    useEmptyFolderStore.getState().status
+  ]
+  const malware = useMalwareStore.getState().status
+  return (
+    updater.loading ||
+    updater.updating ||
+    drivers.scanning ||
+    drivers.updateScanning ||
+    drivers.applying ||
+    drivers.cleaning ||
+    drivers.installing ||
+    scan === ScanStatus.Scanning ||
+    scan === ScanStatus.Cleaning ||
+    disk.analyzing ||
+    disk.fileTypesLoading ||
+    disk.repairRunning ||
+    fileScans.some((status) => status === 'scanning' || status === 'deleting') ||
+    malware === 'scanning' ||
+    malware === 'acting'
+  )
+}
 
 /**
  * Runs software-update and driver-update scans silently in the background
- * on first app launch. Populates stores so badge counts appear in the sidebar.
+ * after startup settles. Populates stores so badge counts appear in the sidebar.
  */
 export function useBackgroundScans(): void {
   const driverRan = useRef(false)
@@ -36,55 +74,57 @@ export function useBackgroundScans(): void {
     }
   }, [settingsLoaded, ignoredSoftwareUpdates])
 
-  // Software update check (silent — no toasts). Deferred while reminders are
-  // off, and started on the off-to-on transition without needing a restart.
+  // Only automatic checks join this queue. Manual checks keep their direct IPC
+  // path and win if they start while the deferred work is still pending.
   useEffect(() => {
-    if (!settingsLoaded || !softwareUpdaterNotifications || softwareRan.current) return
-
-    const store = useUpdaterStore.getState()
-    if (store.hasChecked || store.loading) return
-    softwareRan.current = true
-    store.setLoading(true)
-
-    void (async () => {
-      try {
-        const result = await window.kudu.softwareUpdateCheck()
-        const s = useUpdaterStore.getState()
-        s.setApps(result.apps)
-        s.setUpToDate(result.upToDate)
-        s.setPackageManagerAvailable(result.packageManagerAvailable)
-        s.setPackageManagerName(result.packageManagerName)
-        s.setManagers(result.managers)
-        s.setHasChecked(true)
-      } catch {
-        // Silent — don't set error so the page still shows its initial state
-      } finally {
-        useUpdaterStore.getState().setLoading(false)
-      }
-    })()
+    if (!settingsLoaded) return
+    return deferBackgroundScans(
+      [
+        {
+          shouldRun: () =>
+            !softwareRan.current &&
+            (useSettingsStore.getState().settings.softwareUpdaterNotifications ?? true) &&
+            !useUpdaterStore.getState().hasChecked,
+          run: async () => {
+            softwareRan.current = true
+            useUpdaterStore.getState().setLoading(true)
+            try {
+              const result = await window.kudu.softwareUpdateCheck()
+              const s = useUpdaterStore.getState()
+              s.setApps(result.apps)
+              s.setUpToDate(result.upToDate)
+              s.setPackageManagerAvailable(result.packageManagerAvailable)
+              s.setPackageManagerName(result.packageManagerName)
+              s.setManagers(result.managers)
+              s.setHasChecked(true)
+            } catch {
+              // Silent — don't set error so the page still shows its initial state.
+            } finally {
+              useUpdaterStore.getState().setLoading(false)
+            }
+          }
+        },
+        {
+          // The badge needs update availability, not the heavier stale-package scan.
+          shouldRun: () => !driverRan.current && !useDriverStore.getState().hasScanned,
+          run: async () => {
+            driverRan.current = true
+            useDriverStore.getState().setUpdateScanning(true)
+            try {
+              const result = await window.kudu.driverUpdateScan()
+              useDriverStore.getState().setUpdates(result.updates)
+              useDriverStore.getState().setIgnoredUpdates(result.ignoredUpdates ?? [])
+            } catch {
+              // Silent.
+            } finally {
+              const s = useDriverStore.getState()
+              s.setUpdateScanning(false)
+              s.setUpdateProgress(null)
+            }
+          }
+        }
+      ],
+      foregroundWorkActive
+    )
   }, [settingsLoaded, softwareUpdaterNotifications])
-
-  // Driver update scan only (we skip the stale-packages scan since it's heavier
-  // and less relevant for the badge — the badge shows available driver *updates*)
-  useEffect(() => {
-    if (driverRan.current) return
-    driverRan.current = true
-
-    void (async () => {
-      const store = useDriverStore.getState()
-      if (store.hasScanned || store.updateScanning) return
-      store.setUpdateScanning(true)
-      try {
-        const result = await window.kudu.driverUpdateScan()
-        useDriverStore.getState().setUpdates(result.updates)
-        useDriverStore.getState().setIgnoredUpdates(result.ignoredUpdates ?? [])
-      } catch {
-        // Silent
-      } finally {
-        const s = useDriverStore.getState()
-        s.setUpdateScanning(false)
-        s.setUpdateProgress(null)
-      }
-    })()
-  }, [])
 }

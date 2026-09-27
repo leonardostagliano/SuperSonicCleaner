@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mkdtempSync, mkdirSync, rmSync, existsSync, writeFileSync, symlinkSync } from 'fs'
+import type { Stats } from 'fs'
+import { lstat } from 'fs/promises'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import type { DeletedFileRecord, ScanItem } from '../../shared/types'
@@ -9,7 +11,8 @@ const state = vi.hoisted(() => ({
   items: [] as any[],
   recorded: [] as any[],
   batches: 0,
-  failRm: false
+  failRm: false,
+  virtualFiles: new Map<string, Stats>()
 }))
 
 // Pass through to the real fs, with a switch to force a delete failure so we
@@ -18,10 +21,16 @@ vi.mock('fs/promises', async (importOriginal) => {
   const actual = await importOriginal<typeof import('fs/promises')>()
   return {
     ...actual,
-    rm: (...args: Parameters<typeof actual.rm>) =>
-      state.failRm
-        ? Promise.reject(Object.assign(new Error('denied'), { code: 'EACCES' }))
-        : actual.rm(...args)
+    lstat: (...args: Parameters<typeof actual.lstat>) => {
+      const info = state.virtualFiles.get(String(args[0]))
+      return info ? Promise.resolve(info) : actual.lstat(...args)
+    },
+    rm: (...args: Parameters<typeof actual.rm>) => {
+      if (state.failRm)
+        return Promise.reject(Object.assign(new Error('denied'), { code: 'EACCES' }))
+      if (state.virtualFiles.delete(String(args[0]))) return Promise.resolve()
+      return actual.rm(...args)
+    }
   }
 })
 
@@ -82,6 +91,7 @@ describe('cleanItems deletion logging', () => {
     state.recorded = []
     state.batches = 0
     state.failRm = false
+    state.virtualFiles.clear()
   })
 
   afterEach(() => {
@@ -122,15 +132,19 @@ describe('cleanItems deletion logging', () => {
     expect(state.recorded[0].category).toBe('system')
   })
 
-  // The 1200 is load-bearing: flushPending() fires every 500 records, so it takes
-  // more than 1000 items to prove a remainder flush happens on top of two full
-  // batches. That means 1200 real files created and deleted, which runs ~2s on a
-  // developer machine but has timed out against the 5s default on the Windows CI
-  // runner. Give it room rather than weakening the assertion.
+  // Keep all 1200 items: two full batches plus a remainder are load-bearing.
+  // Simulate only this bulk fixture's filesystem calls; the surrounding tests
+  // cover actual deletion, permissions, links and directory traversal.
   it('flushes in batches so a large clean never buffers everything', async () => {
     state.keepDeletionLog = true
-    seedItems(1200)
-    const ids = Array.from({ length: 1200 }, (_, i) => `id-${i}`)
+    const [fixture] = seedItems(1)
+    const info = await lstat(fixture.path)
+    state.items = Array.from({ length: 1200 }, (_, i) => {
+      const item = { ...fixture, id: `id-${i}`, path: join(testDir, `virtual-${i}.tmp`) }
+      state.virtualFiles.set(item.path, info)
+      return item
+    })
+    const ids = state.items.map((item) => item.id)
 
     const result = await cleanItems(ids)
 
@@ -138,7 +152,9 @@ describe('cleanItems deletion logging', () => {
     expect(state.recorded).toHaveLength(1200)
     // 500 + 500 + a final flush of the 200 remainder.
     expect(state.batches).toBe(3)
-  }, 30_000)
+    expect(state.virtualFiles.size).toBe(0)
+    expect(new Set(state.recorded.map((record) => record.path)).size).toBe(1200)
+  })
 
   it('tags records with the calling surface, defaulting to local', async () => {
     state.keepDeletionLog = true

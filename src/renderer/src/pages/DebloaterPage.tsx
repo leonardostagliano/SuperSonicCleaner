@@ -50,13 +50,6 @@ export function DebloaterPage({ embedded }: { embedded?: boolean }) {
   const historyStore = useHistoryStore()
   const recomputeStats = useStatsStore((s) => s.recompute)
 
-  useEffect(() => {
-    const cleanup = window.kudu.onDebloaterRemoveProgress((data) => {
-      store.getState().setRemoveProgress(data)
-    })
-    return cleanup
-  }, [])
-
   const handleScan = useCallback(async () => {
     store.getState().setScanning(true)
     store.getState().setApps([])

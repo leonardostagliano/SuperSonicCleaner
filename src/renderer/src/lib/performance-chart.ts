@@ -18,8 +18,8 @@ export function buildTimeSeries(
     metric === 'disk'
       ? {
           time: sample.timestamp,
-          read: sample.disk.readBytesPerSec / 1048576,
-          write: sample.disk.writeBytesPerSec / 1048576
+          read: sample.disk.available === false ? null : sample.disk.readBytesPerSec / 1048576,
+          write: sample.disk.available === false ? null : sample.disk.writeBytesPerSec / 1048576
         }
       : {
           time: sample.timestamp,

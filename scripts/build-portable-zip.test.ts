@@ -24,7 +24,7 @@ describe('portable ZIP packaging', () => {
     directories.push(outDir)
     const resources = join(outDir, 'win-unpacked', 'resources')
     await mkdir(join(resources, 'app.asar.unpacked'), { recursive: true })
-    await writeFile(join(outDir, 'win-unpacked', 'Kudu.exe'), 'signed executable')
+    await writeFile(join(outDir, 'win-unpacked', 'SuperSonicCleaner.exe'), 'signed executable')
     await writeFile(join(resources, 'app.asar'), 'app code')
     await writeFile(join(resources, 'app.asar.unpacked', 'native.node'), 'native dependency')
     const context = {
@@ -45,9 +45,9 @@ describe('portable ZIP packaging', () => {
       ])
     }
     const [zip] = await buildPortableZip(context)
-    expect(zip).toBe(join(outDir, 'Kudu-Portable-3.0.1-x64.zip'))
+    expect(zip).toBe(join(outDir, 'SuperSonicCleaner-Portable-3.0.1-x64.zip'))
     for (const [file, contents] of [
-      ['Kudu.exe', 'signed executable'],
+      ['SuperSonicCleaner.exe', 'signed executable'],
       ['resources/app.asar', 'app code'],
       ['resources/app.asar.unpacked/native.node', 'native dependency'],
       ['resources/portable.json', '{"portable":true}\n']
@@ -58,7 +58,10 @@ describe('portable ZIP packaging', () => {
     await expect(readFile(join(resources, 'portable.json'))).rejects.toMatchObject({
       code: 'ENOENT'
     })
-    expect((await readdir(outDir)).sort()).toEqual(['Kudu-Portable-3.0.1-x64.zip', 'win-unpacked'])
+    expect((await readdir(outDir)).sort()).toEqual([
+      'SuperSonicCleaner-Portable-3.0.1-x64.zip',
+      'win-unpacked'
+    ])
   }, 60000)
 
   it('does not create Windows archives for other platforms or unpacked-only builds', async () => {

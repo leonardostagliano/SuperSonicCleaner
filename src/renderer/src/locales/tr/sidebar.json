@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "SİSTEM TEMİZLEYİCİ",
   "dashboard": "Ana Sayfa",
   "securityHeading": "Koruma",
   "malwareScanner": "Kötü Amaçlı Yazılım Tarayıcısı",
-  "threatMonitor": "Tehdit İzleyicisi",
   "systemHardening": "Sistem Güçlendirme",
-  "cveScanner": "Güvenlik Açıkları",
   "monitoring": "İzleme",
   "maintainHeading": "Yönet",
   "cleaner": "Temizleme",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "Etkinlik ve Kurtarma",
   "history": "Etkinlik",
   "settings": "Tercihler",
-  "breachMonitor": "İhlal İzleyicisi",
   "gameMode": "Oyun Modu",
   "firewallAudit": "Güvenlik Duvarı Denetimi"
 }

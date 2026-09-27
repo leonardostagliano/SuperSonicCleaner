@@ -1,4 +1,5 @@
 import { registerStorageHistoryIpc } from './storage-history.ipc'
+import { registerAiAnalysisIpc } from './ai-analysis.ipc'
 import { isPortable } from '../services/portable'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { registerRecoveryIpc } from './recovery.ipc'
@@ -36,26 +37,19 @@ import { registerEnvironmentCleanerIpc } from './environment-cleaner.ipc'
 import { registerPrivacyTracesIpc } from './privacy-traces.ipc'
 import { showOpenDialog } from './open-dialog'
 import { registerDatabaseOptimizerIpc } from './database-optimizer.ipc'
-import { registerCloudAgentIpc } from './cloud-agent.ipc'
 import { registerLargeFileFinderIpc } from './large-file-finder.ipc'
 import { registerEmptyFolderCleanerIpc } from './empty-folder-cleaner.ipc'
 import { registerFileShredderIpc } from './file-shredder.ipc'
 import { registerGameModeIpc, refreshGameDetector } from './game-mode.ipc'
-import { registerCveScannerIpc } from './cve-scanner.ipc'
-import { registerBreachMonitorIpc } from './breach-monitor.ipc'
-import { registerStartupSafetyIpc } from './startup-safety.ipc'
-import { registerProgramSafetyIpc } from './program-safety.ipc'
 import {
   getSettings,
   setSettings,
-  flushSettings,
   getOnboardingComplete,
   setOnboardingComplete
 } from '../services/settings-store'
 import { getBackupDir } from '../services/backup-dir'
 import { isAdmin } from '../services/elevation'
 import { getHistory, addHistoryEntry, clearHistory } from '../services/history-store'
-import { getCloudHistory, clearCloudHistory } from '../services/cloud-history-store'
 import {
   queryDeletions,
   queryAllDeletions,
@@ -77,11 +71,13 @@ import {
   updateCheckInterval
 } from '../services/auto-updater'
 import { buildLinuxElevationCommand, getLinuxRelaunchExecutable } from '../platform/linux/elevation'
+import { buildWindowsElevationCommand } from '../platform/win32/elevation'
 import { findCleanerBlockers } from '../services/cleaner-blockers'
 
 export type WindowGetter = () => BrowserWindow | null
 
 export function registerCleanerIpc(getWindow: WindowGetter): void {
+  registerAiAnalysisIpc(getWindow)
   registerRecoveryIpc()
   registerCleanupReceiptsIpc()
   registerSystemCleanerIpc(getWindow)
@@ -109,16 +105,11 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
   registerPrivacyShieldIpc(getWindow)
   registerDriverManagerIpc(getWindow)
   registerPerfMonitorIpc(getWindow)
-  registerPerformanceDiagnosticsIpc()
+  registerPerformanceDiagnosticsIpc(getWindow)
   registerProgramUninstallerIpc(getWindow)
   registerServiceManagerIpc(getWindow)
   registerFirewallAuditIpc(getWindow)
   registerSoftwareUpdaterIpc(getWindow)
-  registerCloudAgentIpc()
-  registerCveScannerIpc()
-  registerBreachMonitorIpc()
-  registerStartupSafetyIpc()
-  registerProgramSafetyIpc()
   registerFileShredderIpc(getWindow)
   registerGameModeIpc(getWindow)
 
@@ -156,11 +147,10 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
   ipcMain.handle(IPC.SETTINGS_GET, () => getSettings())
   ipcMain.handle(IPC.SETTINGS_SET, async (_event, settings) => {
     const validated = validateSettingsPartial(settings)
-    if (!validated) return { success: false, error: 'Invalid settings' }
-    const write = setSettings(validated)
-    if ('dashboardView' in validated) await write
-    // The schedules editor reads settings back right after saving.
-    if ('schedules' in validated) await flushSettings()
+    if (!validated) throw new Error('Invalid settings')
+    // Await the caller's write promise: flushSettings only waits for the queue
+    // and intentionally does not propagate individual persistence failures.
+    await setSettings(validated)
     if (typeof validated.autoUpdate === 'boolean') {
       setAutoDownload(validated.autoUpdate)
     }
@@ -168,12 +158,10 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
       updateCheckInterval(validated.updateCheckIntervalHours)
     }
     if (typeof validated.language === 'string') {
-      await flushSettings()
       app.emit('kudu:language-changed')
     }
     // Restart game detector when gameMode settings change
     if ('gameMode' in validated) {
-      await flushSettings()
       refreshGameDetector(getWindow)
     }
     return { success: true }
@@ -183,7 +171,7 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
   ipcMain.handle(IPC.SETTINGS_SELECT_BACKUP_DIR, async () => {
     const win = getWindow()
     const opts: Electron.OpenDialogOptions = {
-      title: 'Choose Kudu backup folder',
+      title: 'Choose SuperSonicCleaner backup folder',
       properties: ['openDirectory', 'createDirectory'],
       defaultPath: getBackupDir()
     }
@@ -220,11 +208,14 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
     const userDataDir = app.getPath('userData')
 
     if (process.platform === 'win32') {
-      // Use execFile so we wait for PowerShell to finish (including the UAC
-      // prompt).  Start-Process -Verb RunAs blocks until the user accepts or
-      // declines UAC, then returns.  If the user declines, PowerShell exits
-      // with an error and we don't quit.
-      const psScript = `Start-Process -FilePath '${exePath.replace(/'/g, "''")}' -Verb RunAs`
+      // The helper starts only after UAC succeeds, then waits for this process
+      // to exit before relaunching the same app and profile with elevation.
+      const psScript = buildWindowsElevationCommand({
+        executable: exePath,
+        userDataDir,
+        isPackaged: app.isPackaged,
+        appPath: app.getAppPath()
+      })
       execFile(
         'powershell.exe',
         ['-NoProfile', '-Command', psUtf8(psScript)],
@@ -266,7 +257,7 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
   ipcMain.handle(IPC.RESTORE_POINT_CREATE, (_event, description: string) => {
     if (typeof description !== 'string') description = ''
     // Sanitize: restrict to safe characters and cap length
-    const sanitized = (description || 'Kudu pre-clean restore point')
+    const sanitized = (description || 'SuperSonicCleaner pre-clean restore point')
       .replace(/[^A-Za-z0-9 ._\-()]/g, '')
       .slice(0, 200)
     return createRestorePoint(sanitized)
@@ -308,7 +299,7 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
     const win = getWindow()
     const opts: Electron.SaveDialogOptions = {
       title: 'Export deleted files',
-      defaultPath: 'kudu-deleted-files.csv',
+      defaultPath: 'supersonic-cleaner-deleted-files.csv',
       filters: [{ name: 'CSV', extensions: ['csv'] }]
     }
     const result =
@@ -345,10 +336,6 @@ export function registerCleanerIpc(getWindow: WindowGetter): void {
   })
 
   ipcMain.handle(IPC.DELETION_LOG_CLEAR, () => clearDeletionLog())
-
-  // Cloud action history
-  ipcMain.handle(IPC.CLOUD_HISTORY_GET, () => getCloudHistory())
-  ipcMain.handle(IPC.CLOUD_HISTORY_CLEAR, () => clearCloudHistory())
 
   // Auto-updater
   ipcMain.handle(IPC.UPDATER_CHECK, () => checkForUpdates())

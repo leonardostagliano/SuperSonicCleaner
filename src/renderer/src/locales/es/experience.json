@@ -18,10 +18,6 @@
     "recoveryDescription": "Encuentre opciones de restauración para los cambios del sistema compatibles.",
     "reviewFirst": "Abra una herramienta para revisar sus opciones antes de realizar cambios.",
     "advancedPrompt": "¿Quiere gráficos y detalles del sistema? Cambie a Avanzado",
-    "cloud": {
-      "pro": "Cloud Pro",
-      "basic": "Cloud Basic"
-    },
     "goals": {
       "space": {
         "title": "Necesito más espacio",
@@ -129,7 +125,6 @@
     "handleThreats": "Elegir cómo responder",
     "reviewPaths": "Revisar las rutas seleccionadas",
     "chooseOptimizations": "Elegir optimizaciones",
-    "reviewCloud": "Revisar preferencias de uso compartido",
     "trackFolder": "Elegir una carpeta para supervisar",
     "captureSnapshot": "Capturar instantáneas locales",
     "compareGrowth": "Comparar cambios de almacenamiento",
@@ -154,15 +149,13 @@
     "maintenance": "Dé a cada unidad el cuidado adecuado. Revise el tipo de unidad y el mantenimiento disponible antes de ejecutar una tarea.",
     "network": "Revise los datos de red guardados. Borre cachés o elimine conexiones antiguas de forma individual, cuando lo necesite.",
     "malware": "Compruebe si hay malware y archivos sospechosos. Revise los resultados y elija cómo gestionar cada detección.",
-    "threatMonitor": "Siga las conexiones y la actividad de seguridad. Inspeccione una alerta para comprender su origen y contexto.",
     "cve": "Convierta los hallazgos de vulnerabilidades en un plan. Revise los problemas más graves y actualice el software afectado.",
     "gameMode": "Haga espacio para jugar. Revise las optimizaciones y actívelas cuando esté listo.",
     "performance": "Comprenda qué está haciendo su PC. Compare tendencias de recursos y encuentre los procesos detrás de la carga.",
     "uninstaller": "Conserve las aplicaciones que usa. Revise los detalles de una aplicación antes de desinstalarla o eliminar archivos restantes.",
     "history": "Vea qué cambió, qué se recuperó y qué necesita otra revisión. Cada tarea completada deja un registro.",
-    "settings": "Haga que Kudu se adapte a usted. Configure la apariencia, las notificaciones, las exclusiones y las preferencias de limpieza.",
+    "settings": "Haga que SuperSonicCleaner se adapte a usted. Configure la apariencia, las notificaciones, las exclusiones y las preferencias de limpieza.",
     "about": "Código abierto, creado con cuidado. Encuentre su versión, busque actualizaciones y conozca el proyecto.",
-    "cloud": "Reúna sus dispositivos. Vincule este equipo para gestionar su conexión en la nube y sus funciones de seguridad.",
     "breach": "Compruebe si una dirección de correo electrónico aparece en filtraciones conocidas. Revise qué se expuso y los siguientes pasos recomendados.",
     "privacy": "Elija qué comparte su equipo. Revise cada recomendación y conserve la configuración de la que depende.",
     "services": "Comprenda los servicios detrás de su sistema. Compruebe su propósito y seguridad antes de cambiar el comportamiento de inicio.",
@@ -172,8 +165,7 @@
     "schedules": "Buen cuidado, según su horario. Elija las tareas, los horarios y la frecuencia que mejor se adapten a este equipo.",
     "drivers": "Revise actualizaciones de controladores y paquetes antiguos en un solo lugar. Compruebe los cambios propuestos antes de aplicarlos.",
     "storageHistory": "Vea qué está creciendo. Guarde instantáneas locales de carpetas y compare dónde ha cambiado el almacenamiento.",
-    "recovery": "Una forma clara de volver atrás. Revise los cambios compatibles y los detalles de restauración antes de deshacer nada.",
-    "diagnostics": "Convierta un momento de lentitud en evidencia. Registre localmente, inspeccione los datos y elija si desea solicitar análisis de Cloud AI."
+    "recovery": "Una forma clara de volver atrás. Revise los cambios compatibles y los detalles de restauración antes de deshacer nada."
   },
   "home": {
     "eyebrow": "SU SISTEMA, DE UN VISTAZO",
@@ -187,7 +179,7 @@
     "protectDescription": "Ejecute un análisis de malware y revise cualquier archivo que necesite atención.",
     "protectAction": "Abrir protección",
     "automateTitle": "Convierta el cuidado en una rutina",
-    "automateDescription": "Elija cuándo Kudu comprueba y limpia su equipo.",
+    "automateDescription": "Elija cuándo SuperSonicCleaner comprueba y limpia su equipo.",
     "automateAction": "Configurar una programación",
     "cpu": "Uso de CPU",
     "memory": "Memoria",

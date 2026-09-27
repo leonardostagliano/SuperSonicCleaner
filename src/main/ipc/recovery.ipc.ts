@@ -66,7 +66,7 @@ export function registerRecoveryIpc(): void {
   ipcMain.handle(IPC.RECOVERY_EXPORT, async () => {
     const entries = await listRecoveryEntries()
     const result = await dialog.showSaveDialog({
-      defaultPath: 'kudu-recovery-history.json',
+      defaultPath: 'supersonic-cleaner-recovery-history.json',
       filters: [{ name: 'JSON', extensions: ['json'] }]
     })
     if (result.canceled || !result.filePath) return false

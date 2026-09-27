@@ -1,12 +1,10 @@
 {
-  "appName": "Kudu",
+  "appName": "SuperSonicCleaner",
   "subtitle": "システム クリーナー",
   "dashboard": "ホーム",
   "securityHeading": "保護",
   "malwareScanner": "マルウェア スキャナー",
-  "threatMonitor": "脅威モニター",
   "systemHardening": "システム強化",
-  "cveScanner": "脆弱性",
   "monitoring": "監視",
   "maintainHeading": "管理",
   "cleaner": "クリーンアップ",
@@ -22,7 +20,6 @@
   "activityAndRecovery": "アクティビティと回復",
   "history": "アクティビティ",
   "settings": "環境設定",
-  "breachMonitor": "侵害モニター",
   "gameMode": "ゲーム モード",
   "firewallAudit": "ファイアウォール監査"
 }

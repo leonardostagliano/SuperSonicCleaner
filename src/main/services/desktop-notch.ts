@@ -1,0 +1,462 @@
+import { BrowserWindow, ipcMain, nativeTheme, screen } from 'electron'
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { statfs } from 'node:fs/promises'
+import { join, parse } from 'node:path'
+import { app } from 'electron'
+import {
+  NOTCH_IPC,
+  NOTCH_MOTION_MS,
+  type NotchMetrics,
+  type NotchPosition,
+  type NotchState
+} from '../../shared/desktop-notch'
+import { getDataDir, getSettings } from './settings-store'
+import { perfMonitor } from './perf-monitor'
+import { restoreNotchBounds, saveNotchPosition } from './notch-position'
+
+interface NotchConfig {
+  enabled: boolean
+  pinned: boolean
+  position: NotchPosition | null
+}
+
+export function initDesktopNotch(
+  getMainWindow: () => BrowserWindow | null,
+  openMainWindow: () => void
+): () => void {
+  const configPath = join(getDataDir(), 'desktop-notch.json')
+  let config: NotchConfig = { enabled: false, pinned: false, position: null }
+  try {
+    const data = JSON.parse(readFileSync(configPath, 'utf8'))
+    const position = data.position
+    config = {
+      enabled: data.enabled === true,
+      pinned: data.pinned === true,
+      position:
+        position &&
+        Number.isFinite(position.displayId) &&
+        Number.isFinite(position.x) &&
+        Number.isFinite(position.y)
+          ? { displayId: position.displayId, x: position.x, y: position.y }
+          : null
+    }
+  } catch {
+    /* First run or invalid geometry: use a visible default. */
+  }
+
+  let win: BrowserWindow | null = null
+  let observedMain: BrowserWindow | null = null
+  let notchReady = false
+  let expanded = config.pinned
+  let metrics: NotchMetrics | null = null
+  let disk: NotchMetrics['disk'] = null
+  let unsubscribe: (() => void) | null = null
+  let diskTimer: ReturnType<typeof setInterval> | null = null
+  let moveTimer: ReturnType<typeof setTimeout> | null = null
+  let collapseTimer: ReturnType<typeof setTimeout> | null = null
+  let expandTimer: ReturnType<typeof setTimeout> | null = null
+  let shrinkTimer: ReturnType<typeof setTimeout> | null = null
+  let movingUntil = 0
+  let placingUntil = 0
+  let shuttingDown = false
+  let diskRunning = false
+
+  const persist = () => {
+    try {
+      mkdirSync(getDataDir(), { recursive: true })
+      writeFileSync(`${configPath}.tmp`, JSON.stringify(config))
+      renameSync(`${configPath}.tmp`, configPath)
+    } catch (error) {
+      console.error('Could not save desktop notch settings:', error)
+    }
+  }
+  const state = (): NotchState => {
+    const settings = getSettings()
+    const availableDisplays = displays()
+    const compact = restoreNotchBounds(config.position, availableDisplays, false)
+    const open = restoreNotchBounds(config.position, availableDisplays, true)
+    return {
+      enabled: config.enabled,
+      pinned: config.pinned,
+      expanded,
+      compactOffset: { x: compact.x - open.x, y: compact.y - open.y },
+      theme:
+        settings.theme === 'system'
+          ? nativeTheme.shouldUseDarkColors
+            ? 'dark'
+            : 'light'
+          : settings.theme,
+      language: settings.language,
+      metrics
+    }
+  }
+  const broadcast = () => {
+    for (const target of [win, getMainWindow()]) {
+      if (target && !target.isDestroyed() && !target.webContents.isDestroyed()) {
+        try {
+          target.webContents.send(NOTCH_IPC.STATE, state())
+        } catch {
+          /* Window closing. */
+        }
+      }
+    }
+  }
+  const displays = () => {
+    const primary = screen.getPrimaryDisplay()
+    return [primary, ...screen.getAllDisplays().filter((display) => display.id !== primary.id)]
+  }
+  const syncVisibility = () => {
+    if (!win || win.isDestroyed() || !notchReady) return
+    const main = getMainWindow()
+    const mainOpen = main && !main.isDestroyed() && main.isVisible() && !main.isMinimized()
+    if (!config.enabled || mainOpen) {
+      if (win.isVisible()) win.hide()
+      stopMetrics()
+    } else if (!win.isVisible()) {
+      win.showInactive()
+      startMetrics()
+    } else {
+      startMetrics()
+    }
+  }
+  const watchMainVisibility = (main: BrowserWindow) => {
+    main.on('show', syncVisibility)
+    main.on('hide', syncVisibility)
+    main.on('minimize', syncVisibility)
+    main.on('restore', syncVisibility)
+    main.on('closed', syncVisibility)
+  }
+  const unwatchMainVisibility = (main: BrowserWindow) => {
+    main.removeListener('show', syncVisibility)
+    main.removeListener('hide', syncVisibility)
+    main.removeListener('minimize', syncVisibility)
+    main.removeListener('restore', syncVisibility)
+    main.removeListener('closed', syncVisibility)
+  }
+  const observeMain = () => {
+    const current = getMainWindow()
+    const next = current && !current.isDestroyed() ? current : null
+    if (next === observedMain) {
+      syncVisibility()
+      return
+    }
+    if (observedMain) unwatchMainVisibility(observedMain)
+    observedMain = next
+    if (observedMain) watchMainVisibility(observedMain)
+    syncVisibility()
+  }
+  const place = () => {
+    if (!win || win.isDestroyed()) return
+    const bounds = restoreNotchBounds(config.position, displays(), true)
+    placingUntil = Date.now() + 200
+    const current = win.getBounds()
+    if (
+      current.x !== bounds.x ||
+      current.y !== bounds.y ||
+      current.width !== bounds.width ||
+      current.height !== bounds.height
+    )
+      win.setBounds(bounds)
+    shapeWindow()
+  }
+  const shapeWindow = () => {
+    if (!win || win.isDestroyed()) return
+    if (process.platform === 'darwin') return
+    const bounds = restoreNotchBounds(config.position, displays(), true)
+    const compact = restoreNotchBounds(config.position, displays(), false)
+    win.setShape(
+      expanded || shrinkTimer
+        ? [{ x: 0, y: 0, width: bounds.width, height: bounds.height }]
+        : [
+            {
+              x: compact.x - bounds.x,
+              y: compact.y - bounds.y,
+              width: compact.width,
+              height: compact.height
+            }
+          ]
+    )
+  }
+  const cancelShrink = () => {
+    if (shrinkTimer) clearTimeout(shrinkTimer)
+    shrinkTimer = null
+  }
+  const finishCollapse = () => {
+    if (expanded || !shrinkTimer) return
+    cancelShrink()
+    shapeWindow()
+  }
+  const beginCollapse = () => {
+    if (config.pinned || !expanded) return
+    expanded = false
+    broadcast()
+    // Keep the full input region until the renderer has finished sliding out.
+    // The timer is a fallback for a crashed or throttled renderer.
+    shrinkTimer = setTimeout(finishCollapse, NOTCH_MOTION_MS + 120)
+  }
+  const rememberPosition = () => {
+    if (!win || win.isDestroyed()) return
+    const bounds = win.getBounds()
+    const compact = restoreNotchBounds(config.position, displays(), false)
+    const expandedBounds = restoreNotchBounds(config.position, displays(), true)
+    config.position = saveNotchPosition(
+      {
+        ...compact,
+        x: bounds.x + compact.x - expandedBounds.x,
+        y: bounds.y + compact.y - expandedBounds.y
+      },
+      screen.getDisplayMatching(bounds)
+    )
+    persist()
+  }
+  const cancelCollapse = () => {
+    if (collapseTimer) clearTimeout(collapseTimer)
+    collapseTimer = null
+  }
+  const cancelExpand = () => {
+    if (expandTimer) clearTimeout(expandTimer)
+    expandTimer = null
+  }
+  const expandWhenStationary = () => {
+    cancelExpand()
+    if (!win || win.isDestroyed() || !config.enabled) return
+    const delay = movingUntil - Date.now()
+    if (delay > 0) {
+      expandTimer = setTimeout(expandWhenStationary, delay + 20)
+      return
+    }
+    if (expanded) return
+    expanded = true
+    cancelShrink()
+    shapeWindow()
+    broadcast()
+  }
+  const collapseWhenStationary = () => {
+    cancelCollapse()
+    const delay = movingUntil - Date.now()
+    if (delay > 0) {
+      collapseTimer = setTimeout(collapseWhenStationary, delay + 50)
+      return
+    }
+    beginCollapse()
+  }
+  const refreshDisk = async () => {
+    if (diskRunning) return
+    diskRunning = true
+    try {
+      const volume = process.platform === 'win32' ? parse(app.getPath('home')).root : '/'
+      const stats = await statfs(volume)
+      const total = stats.blocks * stats.bsize
+      const used = Math.max(0, total - stats.bfree * stats.bsize)
+      disk = total > 0 ? { percent: (used / total) * 100, used, total, volume } : null
+    } catch {
+      disk = null
+    } finally {
+      diskRunning = false
+    }
+  }
+  const stopMetrics = () => {
+    unsubscribe?.()
+    unsubscribe = null
+    if (diskTimer) clearInterval(diskTimer)
+    diskTimer = null
+  }
+  const startMetrics = () => {
+    if (unsubscribe) return
+    void refreshDisk()
+    diskTimer = setInterval(() => void refreshDisk(), 30000)
+    unsubscribe = perfMonitor.subscribeSnapshots((snapshot) => {
+      metrics = {
+        timestamp: snapshot.timestamp,
+        cpu: snapshot.cpu.overall,
+        memory: {
+          percent: snapshot.memory.percent,
+          used: snapshot.memory.usedBytes,
+          total: snapshot.memory.totalBytes
+        },
+        disk
+      }
+      broadcast()
+    })
+  }
+  const create = () => {
+    if (win && !win.isDestroyed()) return
+    expanded = config.pinned
+    notchReady = false
+    win = new BrowserWindow({
+      ...restoreNotchBounds(config.position, displays(), true),
+      title: 'SuperSonicCleaner · Desktop monitor',
+      frame: false,
+      transparent: true,
+      backgroundColor: '#00000000',
+      hasShadow: false,
+      resizable: false,
+      maximizable: false,
+      minimizable: false,
+      fullscreenable: false,
+      skipTaskbar: true,
+      alwaysOnTop: true,
+      show: false,
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true,
+        backgroundThrottling: false,
+        additionalArguments: ['--kudu-desktop-notch']
+      }
+    })
+    shapeWindow()
+    win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
+    win.webContents.on('will-navigate', (event) => event.preventDefault())
+    win.on('ready-to-show', () => {
+      notchReady = true
+      if (config.enabled) {
+        syncVisibility()
+        broadcast()
+      }
+    })
+    win.on('move', () => {
+      if (Date.now() < placingUntil) return
+      movingUntil = Date.now() + 600
+      if (moveTimer) clearTimeout(moveTimer)
+      moveTimer = setTimeout(() => {
+        moveTimer = null
+        rememberPosition()
+        place()
+      }, 400)
+    })
+    win.on('closed', () => {
+      win = null
+      notchReady = false
+      cancelCollapse()
+      cancelExpand()
+      cancelShrink()
+      stopMetrics()
+      if (!shuttingDown) {
+        config.enabled = false
+        persist()
+        broadcast()
+      }
+    })
+    if (process.env.ELECTRON_RENDERER_URL) {
+      const url = new URL(process.env.ELECTRON_RENDERER_URL)
+      url.searchParams.set('desktop-notch', '1')
+      void win.loadURL(url.toString())
+    } else {
+      void win.loadFile(join(__dirname, '../renderer/index.html'), {
+        query: { 'desktop-notch': '1' }
+      })
+    }
+  }
+  const allowed = (event: Electron.IpcMainInvokeEvent) => {
+    const main = getMainWindow()
+    return (
+      event.senderFrame === event.sender.mainFrame &&
+      (event.sender === win?.webContents ||
+        (!!main && !main.isDestroyed() && event.sender === main.webContents))
+    )
+  }
+  const overlayOnly = (event: Electron.IpcMainInvokeEvent) =>
+    allowed(event) && event.sender === win?.webContents
+  ipcMain.handle(NOTCH_IPC.GET, (event) => {
+    if (!allowed(event)) throw new Error('Unknown notch client')
+    return state()
+  })
+  ipcMain.handle(NOTCH_IPC.VISIBLE, (event, visible: unknown) => {
+    if (!allowed(event) || typeof visible !== 'boolean') return
+    config.enabled = visible
+    persist()
+    if (visible) create()
+    else {
+      cancelExpand()
+      if (moveTimer) {
+        clearTimeout(moveTimer)
+        moveTimer = null
+        rememberPosition()
+      }
+      win?.close()
+      stopMetrics()
+    }
+    broadcast()
+  })
+  ipcMain.handle(NOTCH_IPC.PINNED, (event, pinned: unknown) => {
+    if (!overlayOnly(event) || typeof pinned !== 'boolean') return
+    config.pinned = pinned
+    cancelCollapse()
+    if (pinned) cancelExpand()
+    if (pinned) cancelShrink()
+    if (pinned) expanded = true
+    persist()
+    shapeWindow()
+    broadcast()
+  })
+  ipcMain.handle(NOTCH_IPC.EXPANDED, (event, value: unknown) => {
+    if (!overlayOnly(event) || typeof value !== 'boolean') return
+    cancelCollapse()
+    if (!value) {
+      cancelExpand()
+      collapseWhenStationary()
+      return
+    }
+    expandWhenStationary()
+  })
+  ipcMain.handle(NOTCH_IPC.COLLAPSE_FINISHED, (event) => {
+    if (overlayOnly(event)) finishCollapse()
+  })
+  ipcMain.handle(NOTCH_IPC.MOVE, (event, dx: unknown, dy: unknown) => {
+    if (
+      !overlayOnly(event) ||
+      !win ||
+      !Number.isInteger(dx) ||
+      !Number.isInteger(dy) ||
+      Math.abs(dx as number) > 50 ||
+      Math.abs(dy as number) > 50
+    )
+      return
+    const bounds = win.getBounds()
+    win.setPosition(bounds.x + (dx as number), bounds.y + (dy as number))
+    rememberPosition()
+    place()
+    broadcast()
+  })
+  ipcMain.handle(NOTCH_IPC.OPEN, (event) => {
+    if (overlayOnly(event)) openMainWindow()
+  })
+  nativeTheme.on('updated', broadcast)
+  const reposition = () => {
+    place()
+    broadcast()
+  }
+  screen.on('display-added', reposition)
+  screen.on('display-removed', reposition)
+  screen.on('display-metrics-changed', reposition)
+  const onWindowCreated = () => {
+    setImmediate(() => {
+      if (!shuttingDown) observeMain()
+    })
+  }
+  app.on('browser-window-created', onWindowCreated)
+  observeMain()
+  if (config.enabled) create()
+
+  return () => {
+    shuttingDown = true
+    cancelCollapse()
+    cancelExpand()
+    cancelShrink()
+    if (moveTimer) {
+      clearTimeout(moveTimer)
+      rememberPosition()
+    }
+    stopMetrics()
+    win?.destroy()
+    if (observedMain) unwatchMainVisibility(observedMain)
+    app.removeListener('browser-window-created', onWindowCreated)
+    nativeTheme.removeListener('updated', broadcast)
+    screen.removeListener('display-added', reposition)
+    screen.removeListener('display-removed', reposition)
+    screen.removeListener('display-metrics-changed', reposition)
+    for (const channel of Object.values(NOTCH_IPC)) ipcMain.removeHandler(channel)
+  }
+}

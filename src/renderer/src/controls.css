@@ -1,0 +1,100 @@
+/* Native semantics and keyboard support, with a shared appearance for every picker. */
+select:not([multiple]):not([size]) {
+  min-height: 36px;
+  max-width: 100%;
+  padding: 8px 12px !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-control) !important;
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  font: 500 13px/1.4 var(--font-sans);
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+select:not([multiple]):not([size]):hover:not(:disabled) {
+  border-color: var(--border-stronger) !important;
+}
+select:not([multiple]):not([size]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+select option,
+select optgroup {
+  background: var(--flyout-bg);
+  color: var(--text-primary);
+}
+@supports (appearance: base-select) {
+  select:not([multiple]):not([size]),
+  select:not([multiple]):not([size])::picker(select) {
+    appearance: base-select;
+  }
+  select:not([multiple]):not([size]) {
+    gap: 16px;
+  }
+  select::picker-icon {
+    color: var(--text-muted);
+    transition: rotate 160ms ease;
+  }
+  select:open::picker-icon {
+    rotate: 180deg;
+  }
+  select:open {
+    border-color: var(--focus) !important;
+  }
+  select::picker(select) {
+    margin-block: 6px;
+    padding: 5px;
+    max-height: min(320px, 60vh);
+    overflow-y: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--flyout-bg);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-flyout);
+    font: 500 13px/1.4 var(--font-sans);
+  }
+  select option {
+    min-height: 34px;
+    padding: 8px 10px;
+    gap: 14px;
+    border-radius: 7px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  select option:hover,
+  select option:focus-visible {
+    outline: none;
+    background: var(--surface-hover);
+  }
+  select option:checked {
+    background: var(--bg-active);
+    color: var(--text-primary);
+    font-weight: 650;
+  }
+  select option::checkmark {
+    order: 1;
+    margin-inline-start: auto;
+    color: var(--text-primary);
+  }
+  select option:disabled {
+    color: var(--text-disabled);
+    cursor: not-allowed;
+  }
+  select optgroup {
+    padding: 7px 5px 3px;
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  select,
+  select::picker-icon {
+    transition: none !important;
+  }
+}
