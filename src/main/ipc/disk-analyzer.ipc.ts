@@ -15,6 +15,7 @@ import type {
 } from '../../shared/types'
 import type { WindowGetter } from './index'
 import { psUtf8, ConsoleOutputDecoder } from '../services/exec-utf8'
+import { createDriveCache, readSystemDrive } from '../services/system-drive'
 
 const execFileAsync = promisify(execFile)
 
@@ -210,6 +211,8 @@ export async function getDrives(): Promise<DriveInfo[]> {
     return []
   }
 }
+
+const driveCache = createDriveCache(getDrives)
 
 /** Resolve a drive identifier to a root path (Windows letter or Unix mount path) */
 function resolveRootPath(drive: string): string | null {
@@ -616,7 +619,11 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
 // ── IPC registration ──
 
 export function registerDiskAnalyzerIpc(getWindow: WindowGetter): void {
-  ipcMain.handle(IPC.DISK_DRIVES, () => getDrives())
+  ipcMain.handle(IPC.DISK_DRIVES, () => driveCache.get())
+  // Label from the cached list when there is one; never waits for PowerShell
+  ipcMain.handle(IPC.DISK_SYSTEM_DRIVE, () =>
+    readSystemDrive({ knownDrives: driveCache.peek() ?? [] })
+  )
 
   ipcMain.handle(IPC.DISK_FILE_TYPES, async (_event, drive: string): Promise<FileTypeInfo[]> => {
     const rootPath = resolveRootPath(drive)

@@ -306,6 +306,7 @@ const api = {
   diskAnalyze: (driveLetter: string): Promise<DiskNode> =>
     ipcRenderer.invoke(IPC.DISK_ANALYZE, driveLetter),
   diskDrives: (): Promise<DriveInfo[]> => ipcRenderer.invoke(IPC.DISK_DRIVES),
+  diskSystemDrive: (): Promise<DriveInfo | null> => ipcRenderer.invoke(IPC.DISK_SYSTEM_DRIVE),
   diskFileTypes: (driveLetter: string): Promise<FileTypeInfo[]> =>
     ipcRenderer.invoke(IPC.DISK_FILE_TYPES, driveLetter),
 

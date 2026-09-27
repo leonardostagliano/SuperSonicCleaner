@@ -294,6 +294,7 @@ const reads: Record<string, (...args: any[]) => unknown> = {
   startupList: () => startup,
   startupBootTrace: () => null,
   diskDrives: () => (empty ? [] : [drive]),
+  diskSystemDrive: () => (empty ? null : drive),
   diskTrimList: () =>
     empty
       ? []

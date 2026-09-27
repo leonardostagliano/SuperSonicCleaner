@@ -107,6 +107,7 @@ export const IPC = {
   // Disk analyzer
   DISK_ANALYZE: 'disk:analyze',
   DISK_DRIVES: 'disk:drives',
+  DISK_SYSTEM_DRIVE: 'disk:system-drive',
   DISK_FILE_TYPES: 'disk:file-types',
 
   // Disk repair (SFC/DISM/CHKDSK)

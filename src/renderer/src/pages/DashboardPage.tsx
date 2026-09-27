@@ -41,7 +41,8 @@ import { useServiceStore } from '@/stores/service-store'
 import { useStartupStore } from '@/stores/startup-store'
 import { useGameModeStore } from '@/stores/game-mode-store'
 import { useMalwareStore } from '@/stores/malware-store'
-import type { DriveInfo, ScanResult, CleanResult } from '@shared/types'
+import { useDrivesStore } from '@/stores/drives-store'
+import type { ScanResult, CleanResult } from '@shared/types'
 import { CleanerType } from '@shared/enums'
 import { usePlatform } from '@/hooks/usePlatform'
 import { SimpleDashboard } from '@/components/dashboard/SimpleDashboard'
@@ -185,8 +186,9 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
   const cleanStartRef = useRef<number>(0)
   const startupLoadAttemptedRef = useRef(false)
   const navigate = useNavigate()
-  const [drives, setDrives] = useState<DriveInfo[]>([])
-  const [driveStatus, setDriveStatus] = useState<'loading' | 'ready' | 'unavailable'>('loading')
+  const drives = useDrivesStore((s) => s.drives)
+  const driveStatus = useDrivesStore((s) => s.status)
+  const refreshDrives = useDrivesStore((s) => s.refresh)
   const [phase, setPhase] = useState<OneClickPhase>('idle')
   useEffect(() => {
     onBusyChange(phase === 'scanning' || phase === 'cleaning')
@@ -215,22 +217,8 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     return () => clearInterval(iv)
   }, [gameModeActive, gameModeActivatedAt])
 
-  const refreshDrives = useCallback(() => {
-    setDriveStatus('loading')
-    window.kudu
-      ?.diskDrives?.()
-      .then((nextDrives) => {
-        setDrives(nextDrives)
-        setDriveStatus(nextDrives.length > 0 ? 'ready' : 'unavailable')
-      })
-      .catch(() => {
-        setDrives([])
-        setDriveStatus('unavailable')
-      })
-  }, [])
-
   useEffect(() => {
-    refreshDrives()
+    void refreshDrives()
   }, [refreshDrives])
 
   // The dashboard owns its status claims, so it loads startup state instead
@@ -548,7 +536,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     setResult(oneClickResult)
     setPhase('done')
     setPhaseLabel('')
-    refreshDrives()
+    void refreshDrives()
   }, [phase, runCleaners, runRegistry, historyStore, recomputeStats, features])
 
   const handleFullClean = useCallback(async () => {
@@ -646,7 +634,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     setResult(oneClickResult)
     setPhase('done')
     setPhaseLabel('')
-    refreshDrives()
+    void refreshDrives()
   }, [
     phase,
     runCleaners,
@@ -797,7 +785,11 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
                     size: formatBytes(primaryDrive.totalSize),
                     drive: primaryDrive.label || primaryDrive.letter
                   })
-                : t(driveStatus === 'loading' ? 'glanceChecking' : 'glanceStorageUnavailable')}
+                : t(
+                    driveStatus === 'loading' || driveStatus === 'idle'
+                      ? 'glanceChecking'
+                      : 'glanceStorageUnavailable'
+                  )}
             </p>
             <button className="pulse-text-button" onClick={() => navigate('/disk')}>
               {tx('home.storageAction')}
