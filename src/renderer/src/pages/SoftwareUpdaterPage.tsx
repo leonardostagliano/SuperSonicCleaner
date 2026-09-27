@@ -890,7 +890,7 @@ function AppRow({
 
   return (
     <div
-      className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors"
+      className="update-row @container flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors"
       style={{
         background: app.selected ? 'rgba(245,158,11,0.03)' : 'var(--bg-subtle)',
         border: `1px solid ${app.selected ? 'rgba(245,158,11,0.1)' : 'var(--border-subtle)'}`
@@ -928,12 +928,18 @@ function AppRow({
       {/* App icon */}
       <SoftwareAppIcon app={app} />
 
-      {/* App info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2.5">
-          <span className="text-[13px] font-medium text-zinc-200 truncate">{app.name}</span>
+      {/* App info: never narrower than 120px */}
+      <div className="min-w-[120px] flex-1">
+        <div className="flex min-w-0 items-center gap-2.5">
           <span
-            className="rounded-md px-2 py-0.5 text-[10px] font-medium shrink-0"
+            data-audit="app-name"
+            className="truncate text-[13px] font-medium text-zinc-200"
+            title={app.name}
+          >
+            {app.name}
+          </span>
+          <span
+            className="shrink-0 rounded-md px-2 py-0.5 text-[10px] font-medium"
             style={{
               background: severity.bg,
               border: `1px solid ${severity.border}`,
@@ -943,16 +949,46 @@ function AppRow({
             {severity.label}
           </span>
         </div>
-        <p className="mt-0.5 text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
+        <p className="mt-0.5 truncate text-[11px]" style={{ color: 'var(--text-muted)' }}>
           {app.id}
+        </p>
+        {/* Narrow rows: versions move under the id */}
+        <p className="mt-0.5 hidden min-w-0 items-center gap-1.5 text-[11px] font-mono @max-[820px]:flex">
+          <span
+            data-audit="version-current"
+            className="truncate text-zinc-500"
+            title={app.currentVersion}
+          >
+            {app.currentVersion}
+          </span>
+          <ArrowRight className="h-3 w-3 shrink-0 text-zinc-600" strokeWidth={2} />
+          <span
+            data-audit="version-available"
+            className="truncate font-medium"
+            style={{ color: severity.text }}
+            title={app.availableVersion}
+          >
+            {app.availableVersion}
+          </span>
         </p>
       </div>
 
-      {/* Version comparison */}
-      <div className="shrink-0 flex items-center gap-2">
-        <span className="text-[12px] font-mono text-zinc-500">{app.currentVersion}</span>
-        <ArrowRight className="h-3 w-3 text-zinc-600" strokeWidth={2} />
-        <span className="text-[12px] font-mono font-medium" style={{ color: severity.text }}>
+      {/* Version comparison: bounded, truncated with the full value on hover */}
+      <div className="flex max-w-[40%] min-w-0 items-center gap-2 @max-[820px]:hidden">
+        <span
+          data-audit="version-current"
+          className="truncate text-[12px] font-mono text-zinc-500"
+          title={app.currentVersion}
+        >
+          {app.currentVersion}
+        </span>
+        <ArrowRight className="h-3 w-3 shrink-0 text-zinc-600" strokeWidth={2} />
+        <span
+          data-audit="version-available"
+          className="truncate text-[12px] font-mono font-medium"
+          style={{ color: severity.text }}
+          title={app.availableVersion}
+        >
           {app.availableVersion}
         </span>
       </div>
@@ -970,21 +1006,24 @@ function AppRow({
         onClick={onIgnore}
         disabled={updating}
         title={t('softwareUpdater.ignoreButton')}
-        className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium text-zinc-500 transition-all hover:bg-white/5 hover:text-zinc-300 disabled:opacity-30 shrink-0"
+        aria-label={t('softwareUpdater.ignoreButton')}
+        className="flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300 disabled:opacity-30"
         style={{ border: '1px solid var(--border-medium)' }}
       >
         <EyeOff className="h-3.5 w-3.5" strokeWidth={1.8} />
       </button>
 
-      {/* Update button */}
+      {/* Update button: icon only in narrow rows, aria-label keeps the name for screen readers */}
       <button
         onClick={onUpdate}
         disabled={updating}
-        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-green-400 transition-all hover:bg-green-500/10 disabled:opacity-30 shrink-0"
+        title={t('softwareUpdater.updateButton')}
+        aria-label={t('softwareUpdater.updateButton')}
+        className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-green-400 transition-colors hover:bg-green-500/10 disabled:opacity-30"
         style={{ border: '1px solid rgba(34,197,94,0.15)' }}
       >
         <Download className="h-3.5 w-3.5" strokeWidth={1.8} />
-        {t('softwareUpdater.updateButton')}
+        <span className="@max-[820px]:hidden">{t('softwareUpdater.updateButton')}</span>
       </button>
     </div>
   )

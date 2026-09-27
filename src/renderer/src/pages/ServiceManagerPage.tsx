@@ -698,6 +698,9 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
 
 // ─── Sub-components ──────────────────────────────────────────
 
+/** Header and rows are separate grids, so they must share one template to align. */
+const SERVICE_GRID_COLUMNS = '32px minmax(240px, 1fr) 132px 110px 76px'
+
 function SafetyGroup({
   safetyKey,
   label,
@@ -765,7 +768,7 @@ function SafetyGroup({
           <div
             className="service-column-header grid items-center gap-3 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider"
             style={{
-              gridTemplateColumns: '32px minmax(240px, 1fr) 132px 110px 64px',
+              gridTemplateColumns: SERVICE_GRID_COLUMNS,
               color: 'var(--text-muted)',
               borderTop: `1px solid ${colors.border}`,
               borderBottom: '1px solid var(--border-subtle)'
@@ -775,7 +778,9 @@ function SafetyGroup({
             <span>{t('serviceManager.columnService')}</span>
             <span>{t('serviceManager.columnStartupType')}</span>
             <span>{t('serviceManager.columnStatus')}</span>
-            <span className="text-center">{t('serviceManager.columnDeps')}</span>
+            <span className="text-center leading-tight tracking-normal hyphens-auto [overflow-wrap:anywhere]">
+              {t('serviceManager.columnDeps')}
+            </span>
           </div>
 
           {/* Rows */}
@@ -808,7 +813,7 @@ function ServiceRow({ service: svc }: { service: WindowsService }) {
       }
       className="service-row grid w-full items-center gap-3 px-5 py-3 text-left transition-colors duration-100"
       style={{
-        gridTemplateColumns: '32px minmax(240px, 1fr) 132px 110px 64px',
+        gridTemplateColumns: SERVICE_GRID_COLUMNS,
         background: svc.selected ? colors.bg : 'transparent',
         borderBottom: '1px solid var(--border-subtle)',
         cursor: locked ? 'default' : 'pointer'
