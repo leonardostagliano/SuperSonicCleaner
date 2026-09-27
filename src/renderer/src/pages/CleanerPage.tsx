@@ -688,7 +688,7 @@ export function CleanerPage() {
               onClick={handleScan}
               disabled={isScanning || isCleaning || preparingClean}
               className={cn(
-                'pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40',
+                'pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40',
                 !hasResults && 'pulse-primary-action'
               )}
               style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
@@ -718,7 +718,7 @@ export function CleanerPage() {
                 preparingClean ||
                 store.getSelectedIds().length === 0
               }
-              className="pulse-primary-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-30"
+              className="pulse-primary-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)',
@@ -755,7 +755,7 @@ export function CleanerPage() {
                   )
                   openContextMenu(e, t(cat.labelKey), ids)
                 }}
-                className="relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
+                className="relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition"
                 style={{
                   background: isActive ? 'var(--accent-muted-bg)' : 'transparent',
                   color: isActive ? 'var(--text-primary)' : 'var(--text-muted)'
@@ -950,7 +950,7 @@ export function CleanerPage() {
               action={
                 <button
                   onClick={() => navigate('/settings')}
-                  className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all"
+                  className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition"
                   style={{
                     background: 'var(--bg-hover)',
                     border: '1px solid var(--border-medium)',
@@ -972,7 +972,7 @@ export function CleanerPage() {
                 <button
                   onClick={handleScan}
                   disabled={isCleaning || preparingClean}
-                  className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+                  className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
                   style={{
                     background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                     color: 'var(--text-on-accent)'

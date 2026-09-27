@@ -52,7 +52,7 @@ export function ScanProgress({
         aria-label={`${status === 'scanning' ? t('scanning') : t('cleaning')} ${Math.round(progress)}%`}
       >
         <div
-          className="h-full rounded-full transition-all duration-300 ease-out"
+          className="h-full rounded-full transition-[width] duration-300 ease-out"
           style={{
             width: `${progress}%`,
             background: 'var(--accent)'

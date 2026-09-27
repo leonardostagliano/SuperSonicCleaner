@@ -844,7 +844,7 @@ export function GameModePage() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: catIndex * 0.05, duration: 0.3 }}
-              className="group overflow-hidden rounded-xl transition-all duration-300"
+              className="group overflow-hidden rounded-xl transition-[border-color,background-color] duration-300"
               style={{
                 border: `1px solid ${isExpanded ? `${cat.color}22` : 'var(--border-default)'}`,
                 background: isExpanded
@@ -858,7 +858,7 @@ export function GameModePage() {
                 className="flex w-full items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.02]"
               >
                 <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-300"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition duration-300"
                   style={{
                     background: `${cat.color}14`,
                     boxShadow: isExpanded ? `0 0 12px ${cat.color}20` : 'none'

@@ -166,7 +166,7 @@ export function DiskRepairPage() {
           </div>
           <div className="h-2 rounded-full" style={{ background: 'var(--bg-subtle-2)' }}>
             <div
-              className="h-full rounded-full transition-all duration-500"
+              className="h-full rounded-full transition-[width] duration-500"
               style={{
                 width: `${repairProgress.percent}%`,
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
@@ -210,7 +210,7 @@ export function DiskRepairPage() {
             <button
               onClick={handleRunDism}
               disabled={repairRunning}
-              className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+              className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'
@@ -299,7 +299,7 @@ export function DiskRepairPage() {
             <button
               onClick={handleRunSfc}
               disabled={repairRunning}
-              className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+              className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'
@@ -388,7 +388,7 @@ export function DiskRepairPage() {
             <button
               onClick={handleRunChkdsk}
               disabled={repairRunning}
-              className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+              className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'

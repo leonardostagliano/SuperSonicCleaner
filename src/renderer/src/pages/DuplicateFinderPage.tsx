@@ -428,7 +428,7 @@ export function DuplicateFinderPage() {
               style={{ background: 'var(--bg-hover-2)' }}
             >
               <div
-                className="h-full rounded-full transition-all duration-300"
+                className="h-full rounded-full transition-[width] duration-300"
                 style={{ background: 'var(--accent)', width: `${store.progress.progress}%` }}
               />
             </div>

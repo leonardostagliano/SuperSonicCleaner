@@ -162,7 +162,7 @@ export function NetworkCleanupPage() {
             <button
               onClick={handleScan}
               disabled={isScanning || isCleaning}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40"
+              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
               style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
             >
               <Search className="h-4 w-4" strokeWidth={1.8} />
@@ -171,7 +171,7 @@ export function NetworkCleanupPage() {
             <button
               onClick={() => setShowConfirm(true)}
               disabled={!hasItems || isScanning || isCleaning || selectedIds.size === 0}
-              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-30"
+              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)',
@@ -195,7 +195,7 @@ export function NetworkCleanupPage() {
               <button
                 key={cat.type}
                 onClick={() => useNetworkStore.getState().setActiveCategory(cat.type)}
-                className="relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
+                className="relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition"
                 style={{
                   background: isActive ? 'var(--accent-muted-bg)' : 'transparent',
                   color: isActive ? 'var(--accent-hover)' : 'var(--text-muted)'
@@ -311,7 +311,7 @@ export function NetworkCleanupPage() {
                 <button
                   onClick={handleScan}
                   disabled={isCleaning}
-                  className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+                  className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
                   style={{
                     background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                     color: 'var(--text-on-accent)'
@@ -360,7 +360,7 @@ export function NetworkCleanupPage() {
                     <label
                       key={item.id}
                       className={cn(
-                        'flex cursor-pointer items-center gap-3 rounded-xl px-4 py-3.5 transition-all',
+                        'flex cursor-pointer items-center gap-3 rounded-xl px-4 py-3.5 transition',
                         checked && 'ring-1 ring-amber-500/20'
                       )}
                       style={{

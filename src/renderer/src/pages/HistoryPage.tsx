@@ -323,7 +323,7 @@ export function HistoryPage() {
             {viewMode !== 'receipts' && (
               <button
                 onClick={() => setShowClearConfirm(true)}
-                className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-500 transition-all hover:text-zinc-300"
+                className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-500 transition hover:text-zinc-300"
                 style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-medium)' }}
               >
                 <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />

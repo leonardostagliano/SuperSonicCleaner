@@ -13,15 +13,11 @@ import {
   Download,
   Server,
   Gamepad2,
-  MemoryStick,
   AlertTriangle
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
-import { MetricSparkline } from '@/components/perf/MetricSparkline'
-import { QuickTelemetryChart } from '@/components/perf/QuickTelemetryChart'
-import { useQuickTelemetry } from '@/hooks/useQuickTelemetry'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -46,6 +42,7 @@ import type { ScanResult, CleanResult } from '@shared/types'
 import { CleanerType } from '@shared/enums'
 import { usePlatform } from '@/hooks/usePlatform'
 import { SimpleDashboard } from '@/components/dashboard/SimpleDashboard'
+import { CpuCard, MemoryCard, TelemetryPanel } from '@/components/dashboard/LiveMetricCards'
 
 type OneClickPhase = 'idle' | 'scanning' | 'cleaning' | 'done'
 
@@ -168,8 +165,9 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
   const { features } = usePlatform()
   const stats = useStatsStore((s) => s.stats)
   const recomputeStats = useStatsStore((s) => s.recompute)
-  const historyStore = useHistoryStore()
-  const scanStore = useScanStore()
+  const historyEntries = useHistoryStore((s) => s.entries)
+  const addHistoryEntry = useHistoryStore((s) => s.addEntry)
+  const excludedSubcategories = useScanStore((s) => s.excludedSubcategories)
   const updaterHasChecked = useUpdaterStore((s) => s.hasChecked)
   const updaterApps = useUpdaterStore((s) => s.apps)
   const updaterRemindersEnabled = useSettingsStore(
@@ -199,9 +197,6 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
   const [showQuickConfirm, setShowQuickConfirm] = useState(false)
   const [showFullConfirm, setShowFullConfirm] = useState(false)
   const [stepProgress, setStepProgress] = useState({ current: 0, total: 0 })
-
-  // ── Lightweight system metrics (no heavy process polling) ──
-  const { current: perf, samples } = useQuickTelemetry()
 
   // ── Game Mode elapsed timer ────────────────────────────────
   const [gmElapsed, setGmElapsed] = useState(0)
@@ -238,7 +233,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
   // ── Health score ───────────────────────────────────────────
 
   const toolCoverage = (() => {
-    const entries = historyStore.entries
+    const entries = historyEntries
     const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000
     const recentEntries = entries.filter((e) => new Date(e.timestamp).getTime() > twoWeeksAgo)
     const recentTypes = new Set(recentEntries.map((e) => e.type))
@@ -338,7 +333,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
   const protectRecycleBin = useSettingsStore((s) => s.settings.cleaner.protectRecycleBin)
 
   const runCleaners = useCallback(async (): Promise<{ space: number; files: number }> => {
-    const excluded = scanStore.excludedSubcategories
+    const excluded = excludedSubcategories
     let totalSpace = 0
     let totalFiles = 0
 
@@ -363,7 +358,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
       }
     }
     return { space: totalSpace, files: totalFiles }
-  }, [scanStore.excludedSubcategories, protectRecycleBin, t])
+  }, [excludedSubcategories, protectRecycleBin, t])
 
   const runRegistry = useCallback(async (): Promise<number> => {
     try {
@@ -511,7 +506,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
 
     const totalItems = files + regFixed
     if (totalItems > 0) {
-      await historyStore.addEntry({
+      await addHistoryEntry({
         id: Date.now().toString(),
         type: 'cleaner',
         timestamp: new Date().toISOString(),
@@ -537,7 +532,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     setPhase('done')
     setPhaseLabel('')
     void refreshDrives({ fresh: true })
-  }, [phase, runCleaners, runRegistry, historyStore, recomputeStats, features])
+  }, [phase, runCleaners, runRegistry, addHistoryEntry, recomputeStats, features])
 
   const handleFullClean = useCallback(async () => {
     if (phase !== 'idle' && phase !== 'done') return
@@ -589,7 +584,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
 
     const totalItems = files + regFixed + drivers.removed + malware.quarantined
     if (totalItems > 0 || malware.found > 0) {
-      await historyStore.addEntry({
+      await addHistoryEntry({
         id: Date.now().toString(),
         type: 'cleaner',
         timestamp: new Date().toISOString(),
@@ -644,7 +639,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
     runPrivacyCheck,
     runStartupCheck,
     runSoftwareUpdateCheck,
-    historyStore,
+    addHistoryEntry,
     recomputeStats,
     features
   ])
@@ -653,8 +648,6 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
 
   // ── Helpers ────────────────────────────────────────────────
 
-  const cpuPct = perf?.cpuPercent ?? 0
-  const ramPct = perf?.memPercent ?? 0
   const diskPct =
     drives.length > 0
       ? Math.round(
@@ -705,7 +698,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
             ? t('healthHeadlineGoodShape')
             : t('healthHeadlineReady')
 
-  const recentActivity = [...historyStore.entries]
+  const recentActivity = [...historyEntries]
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     .slice(0, 3)
   return (
@@ -723,43 +716,8 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
         </button>
       </header>
       <div className="pulse-home-metrics">
-        <section className="pulse-card pulse-cpu">
-          <div className="pulse-metric">
-            <div className="pulse-card-heading">
-              <h2>{tx('home.cpu')}</h2>
-              <Cpu size={19} />
-            </div>
-            <div className="pulse-big-value">
-              {perf ? Math.round(cpuPct) : '\u2014'}
-              <small>{perf ? '%' : ''}</small>
-            </div>
-            <MetricSparkline samples={samples} metric="cpu" label={tx('home.cpu')} />
-            <p>
-              {perf ? tx(cpuPct >= 70 ? 'home.loadHigh' : 'home.loadLow') : tx('home.unavailable')}
-            </p>
-          </div>
-        </section>
-        <section className="pulse-card pulse-memory">
-          <div className="pulse-metric">
-            <div className="pulse-card-heading">
-              <h2>{tx('home.memory')}</h2>
-              <MemoryStick size={20} />
-            </div>
-            <div className="pulse-big-value">
-              {perf ? formatBytes(perf.memUsedBytes) : '\u2014'}
-              <small>{perf ? ' / ' + formatBytes(perf.memTotalBytes) : ''}</small>
-            </div>
-            <MetricSparkline samples={samples} metric="memory" label={tx('home.memory')} />
-            <p>
-              {tx(
-                !perf ? 'home.memoryUnknown' : ramPct >= 80 ? 'home.memoryBusy' : 'home.memoryRoom'
-              )}
-            </p>
-            <span className="pulse-live-label">
-              {perf ? tx('home.used', { percent: Math.round(ramPct) }) : tx('home.unavailable')}
-            </span>
-          </div>
-        </section>
+        <CpuCard />
+        <MemoryCard />
         <section className="pulse-card pulse-home-storage">
           <div className="pulse-metric">
             <div className="pulse-card-heading">
@@ -816,32 +774,7 @@ function AdvancedDashboard({ onBusyChange }: { onBusyChange: (busy: boolean) => 
       </div>
       <div className="pulse-home-columns">
         <div className="pulse-home-main">
-          <section className="pulse-card pulse-home-telemetry">
-            <div className="pulse-card-heading">
-              <div>
-                <h2>{tx('home.telemetry')}</h2>
-                <p>{tx('home.telemetryDescription')}</p>
-              </div>
-              <Activity size={18} />
-            </div>
-            <div className="pulse-chart-legend">
-              <span>
-                <i />
-                {tx('home.cpu')}
-                <b>{perf ? Math.round(cpuPct) + '%' : '\u2014'}</b>
-              </span>
-              <span>
-                <i />
-                {t('glanceMemory')}
-                <b>{perf ? Math.round(ramPct) + '%' : '\u2014'}</b>
-              </span>
-            </div>
-            <QuickTelemetryChart samples={samples} />
-            <button className="pulse-text-button" onClick={() => navigate('/performance')}>
-              {tx('home.telemetryAction')}
-              <ArrowRight size={15} />
-            </button>
-          </section>
+          <TelemetryPanel />
           <section className="pulse-card pulse-recent">
             <div className="pulse-card-heading">
               <h2>{tx('home.activity')}</h2>

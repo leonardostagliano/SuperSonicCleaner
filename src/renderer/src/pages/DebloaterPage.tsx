@@ -153,7 +153,7 @@ export function DebloaterPage({ embedded }: { embedded?: boolean }) {
       <button
         onClick={handleScan}
         disabled={scanning || removing}
-        className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40"
+        className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
         style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
       >
         <Search className="h-4 w-4" strokeWidth={1.8} /> {t('debloater.scanButton')}
@@ -161,7 +161,7 @@ export function DebloaterPage({ embedded }: { embedded?: boolean }) {
       <button
         onClick={() => setShowConfirm(true)}
         disabled={selectedCount === 0 || scanning || removing}
-        className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-30"
+        className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
         style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: '#fff' }}
       >
         {removing ? (
@@ -240,7 +240,7 @@ export function DebloaterPage({ embedded }: { embedded?: boolean }) {
             style={{ background: 'var(--bg-hover-2)' }}
           >
             <div
-              className="h-full rounded-full transition-all duration-300"
+              className="h-full rounded-full transition-[width] duration-300"
               style={{
                 width: `${(removeProgress.current / removeProgress.total) * 100}%`,
                 background: 'linear-gradient(90deg, #ef4444 0%, #f87171 100%)'

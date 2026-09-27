@@ -98,7 +98,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           {Array.from({ length: TOTAL_STEPS }, (_, i) => (
             <div
               key={i}
-              className="h-1.5 rounded-full transition-all duration-300"
+              className="h-1.5 rounded-full transition-[width,background-color] duration-300"
               style={{
                 width: i === step ? 24 : 8,
                 background: i === step ? 'var(--accent)' : 'var(--bg-active)'

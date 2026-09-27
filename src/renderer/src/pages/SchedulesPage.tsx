@@ -499,7 +499,7 @@ function ScheduleCard({
 
   return (
     <div
-      className={cn('group rounded-2xl p-5 transition-all')}
+      className={cn('group rounded-2xl p-5 transition')}
       style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
     >
       {/* Top row */}
@@ -1219,7 +1219,7 @@ function TaskCheckbox({
     <button
       onClick={onChange}
       className={cn(
-        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium transition-all',
+        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium transition',
         checked ? 'text-zinc-200' : 'text-zinc-600'
       )}
       style={{

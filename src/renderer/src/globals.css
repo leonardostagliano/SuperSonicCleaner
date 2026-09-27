@@ -530,8 +530,6 @@ summary,
 /* ── glass card system ───────────────────────── */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
   box-shadow:
     inset 0 1px 0 0 var(--glass-inset),
@@ -539,7 +537,11 @@ summary,
 }
 
 .glass-card-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 .glass-card-hover:hover {
   background: var(--glass-hover-bg);
@@ -691,7 +693,12 @@ summary,
   border-radius: 10px;
   background: transparent;
   color: var(--text-muted);
-  transition: 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 .titlebar-icon-button:hover,
 .titlebar-icon-button[aria-expanded='true'] {
@@ -712,7 +719,6 @@ summary,
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.22),
     inset 0 1px var(--glass-inset);
-  backdrop-filter: blur(22px);
 }
 .appearance-menu > button {
   display: flex;
@@ -760,7 +766,12 @@ summary,
   border: 0;
   background: transparent;
   color: var(--text-dim);
-  transition: 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 .window-control:hover {
   background: var(--bg-hover);
@@ -921,7 +932,12 @@ summary,
   border-radius: 13px;
   background: var(--bg-subtle);
   color: var(--text-secondary);
-  transition: 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 .automatic-care-card:hover {
   border-color: var(--border-strong);
@@ -960,7 +976,12 @@ summary,
   border-radius: 6px;
   color: var(--text-faint);
   opacity: 0;
-  transition: 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 .automatic-care-card:hover .automatic-care-dismiss,
 .automatic-care-dismiss:focus-visible {
@@ -1036,10 +1057,6 @@ summary,
 }
 
 /* Shared page language: quiet surfaces, generous hierarchy, tactile controls. */
-.glass-card {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
 .glass-card-hover {
   transition:
     background 0.2s ease,
@@ -1304,7 +1321,13 @@ thead {
   color: var(--text-primary);
   text-align: left;
   box-shadow: var(--glass-shadow);
-  transition: 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .calm-action-card:hover {
   transform: translateY(-1px);
@@ -3069,8 +3092,6 @@ body,
   border-bottom-color: color-mix(in srgb, var(--border-default), transparent 18%);
   background: var(--titlebar-bg);
   box-shadow: inset 0 1px color-mix(in srgb, white, transparent 96%);
-  backdrop-filter: blur(30px) saturate(1.12);
-  -webkit-backdrop-filter: blur(30px) saturate(1.12);
 }
 
 .app-brand {
@@ -3111,8 +3132,6 @@ body,
 
 .kudu-sidebar {
   background: var(--sidebar-bg) !important;
-  backdrop-filter: blur(32px) saturate(1.08);
-  -webkit-backdrop-filter: blur(32px) saturate(1.08);
 }
 .app-content {
   background: var(--page-bg);

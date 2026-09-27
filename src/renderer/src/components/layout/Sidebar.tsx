@@ -602,7 +602,7 @@ function NavItem({
         aria-current={isActive && !hasChildren ? 'page' : undefined}
         aria-expanded={hasChildren ? !!submenuOpen : undefined}
         className={cn(
-          'calm-nav-item group relative flex w-full items-center gap-3 rounded-[14px] px-3.5 py-2.5 text-[12px] font-semibold transition-all duration-200'
+          'calm-nav-item group relative flex w-full items-center gap-3 rounded-[14px] px-3.5 py-2.5 text-[12px] font-semibold transition duration-200'
         )}
         style={
           isActive
@@ -639,10 +639,7 @@ function NavItem({
         )}
         {hasChildren && (
           <ChevronRight
-            className={cn(
-              'h-3.5 w-3.5 transition-all duration-200',
-              submenuOpen ? 'rotate-90' : ''
-            )}
+            className={cn('h-3.5 w-3.5 transition duration-200', submenuOpen ? 'rotate-90' : '')}
             style={{ color: isActive ? 'var(--nav-active-fg)' : 'var(--nav-icon-fg)' }}
             strokeWidth={1.7}
             aria-hidden="true"
@@ -804,7 +801,7 @@ function FlyoutMenu({
               onPointerEnter={() => prefetchRoute(child.path)}
               onFocus={() => prefetchRoute(child.path)}
               className={cn(
-                'flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-[12.5px] font-medium transition-all duration-150',
+                'flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-[12.5px] font-medium transition duration-150',
                 'hover:bg-white/[0.04]'
               )}
               style={{

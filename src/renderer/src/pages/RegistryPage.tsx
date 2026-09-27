@@ -167,7 +167,7 @@ function HealthRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="transition-all duration-500"
+          className="transition-[stroke-dashoffset,stroke] duration-500"
         />
       </svg>
       <span
@@ -332,7 +332,7 @@ function RegistryPageContent() {
             <button
               onClick={handleScan}
               disabled={busy}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40"
+              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
               style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
             >
               <Search className="h-4 w-4" strokeWidth={1.8} /> {t('scanButton')}
@@ -340,7 +340,7 @@ function RegistryPageContent() {
             <button
               onClick={() => setShowConfirm(true)}
               disabled={selectedCount === 0 || busy}
-              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-30"
+              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'
@@ -379,7 +379,7 @@ function RegistryPageContent() {
           </div>
           <button
             onClick={handleScanCancel}
-            className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-[12px] font-medium text-red-400 transition-all hover:text-red-300"
+            className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-[12px] font-medium text-red-400 transition hover:text-red-300"
             style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)' }}
           >
             <StopCircle className="h-3.5 w-3.5" strokeWidth={2} /> {t('cancelButton')}
@@ -407,7 +407,7 @@ function RegistryPageContent() {
             style={{ background: 'var(--bg-subtle-2)' }}
           >
             <div
-              className="h-full rounded-full transition-all duration-200 ease-out"
+              className="h-full rounded-full transition-[width] duration-200 ease-out"
               style={{
                 width: `${fixProgress.total > 0 ? (fixProgress.current / fixProgress.total) * 100 : 0}%`,
                 background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)'
@@ -420,7 +420,7 @@ function RegistryPageContent() {
             </p>
             <button
               onClick={handleFixCancel}
-              className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-red-400 transition-all hover:text-red-300"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-red-400 transition hover:text-red-300"
               style={{
                 background: 'rgba(239,68,68,0.08)',
                 border: '1px solid rgba(239,68,68,0.15)'
@@ -491,7 +491,7 @@ function RegistryPageContent() {
             <button
               onClick={handleScan}
               disabled={fixing}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'
@@ -639,9 +639,9 @@ function RegistryPageContent() {
                         style={{ background: allSelected ? color.text : 'var(--toggle-off-bg)' }}
                       >
                         <div
-                          className="absolute top-0.5 h-5 w-5 rounded-full transition-all"
+                          className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full transition"
                           style={{
-                            left: allSelected ? '22px' : '2px',
+                            transform: allSelected ? 'translateX(20px)' : undefined,
                             background: allSelected ? '#fff' : 'var(--text-secondary)'
                           }}
                         />

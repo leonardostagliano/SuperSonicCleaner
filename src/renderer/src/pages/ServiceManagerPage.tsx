@@ -319,7 +319,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
         <button
           onClick={handleScan}
           disabled={isBusy}
-          className="pulse-primary-action pulse-scan-action service-primary-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition-all"
+          className="pulse-primary-action pulse-scan-action service-primary-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition"
           style={{
             background: 'var(--accent)',
             color: 'var(--text-on-accent)'
@@ -338,7 +338,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
             <button
               onClick={handleSelectRecommended}
               disabled={isBusy || totalSafeToDisable === 0}
-              className="service-recommended-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-all"
+              className="service-recommended-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition"
               style={{
                 background: 'color-mix(in srgb, var(--success), transparent 88%)',
                 color: 'var(--success)',
@@ -352,7 +352,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
             <button
               onClick={() => setConfirmMode('disable')}
               disabled={isBusy || disableCount === 0}
-              className="service-danger-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition-all"
+              className="service-danger-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition"
               style={{
                 background: 'var(--danger)'
               }}
@@ -372,7 +372,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
                 <button
                   onClick={() => setConfirmMode('enable')}
                   disabled={isBusy}
-                  className="service-info-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-all"
+                  className="service-info-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition"
                   style={{ background: 'var(--info)' }}
                 >
                   {applying && appliedMode === 'enable' ? (
@@ -466,7 +466,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
           {scanProgress.total > 0 && (
             <div className="h-1.5 overflow-hidden rounded-full" style={{ background: '#27272a' }}>
               <div
-                className="h-full rounded-full transition-all duration-300"
+                className="h-full rounded-full transition-[width] duration-300"
                 style={{
                   background: 'var(--accent)',
                   width: `${Math.round((scanProgress.current / scanProgress.total) * 100)}%`
@@ -531,7 +531,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
           action={
             <button
               onClick={handleScan}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all"
+              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'

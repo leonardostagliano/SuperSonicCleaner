@@ -62,7 +62,7 @@ export function UpdateProgressPanel({ progress }: { progress: UpdateProgress }) 
         style={{ background: 'var(--bg-hover-2)' }}
       >
         <div
-          className="h-full rounded-full transition-all duration-300"
+          className="h-full rounded-full transition-[width] duration-300"
           style={{
             width: `${progress.percent}%`,
             background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)'

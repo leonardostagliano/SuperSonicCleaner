@@ -170,7 +170,7 @@ function ScoreRing({ score, size = 80 }: { score: number; size?: number }) {
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="transition-all duration-700"
+          className="transition-[stroke-dashoffset,stroke] duration-700"
         />
       </svg>
       <div className="absolute flex flex-col items-center">
@@ -443,7 +443,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
       <button
         onClick={handleScan}
         disabled={busy}
-        className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40"
+        className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
         style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
       >
         <Eye className="h-4 w-4" strokeWidth={1.8} />
@@ -453,7 +453,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
         <button
           onClick={handleApplyAll}
           disabled={busy}
-          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-30"
+          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
           style={{
             background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
             color: '#fff',
@@ -522,7 +522,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
                 style={{ background: 'var(--bg-hover-2)' }}
               >
                 <div
-                  className="h-full rounded-full transition-all duration-500"
+                  className="h-full rounded-full transition-[width,background-color] duration-500"
                   style={{
                     width: `${(state.protected / state.total) * 100}%`,
                     background:
@@ -601,7 +601,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
             style={{ background: 'var(--bg-hover-2)' }}
           >
             <div
-              className="h-full rounded-full transition-all duration-300"
+              className="h-full rounded-full transition-[width] duration-300"
               style={{
                 width: `${progress ? (progress.current / progress.total) * 100 : 0}%`,
                 background: 'linear-gradient(90deg, #22c55e, #16a34a)'
@@ -887,9 +887,9 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
                             }}
                           >
                             <div
-                              className="absolute top-0.5 h-5 w-5 rounded-full transition-all"
+                              className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full transition"
                               style={{
-                                left: setting.enabled ? '22px' : '2px',
+                                transform: setting.enabled ? 'translateX(20px)' : undefined,
                                 background: setting.enabled ? '#fff' : 'var(--text-muted)'
                               }}
                             />

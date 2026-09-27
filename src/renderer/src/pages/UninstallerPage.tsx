@@ -388,7 +388,7 @@ export function UninstallerPage() {
         <button
           onClick={handleLoad}
           disabled={isBusy}
-          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40"
+          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
           style={{
             background: 'var(--bg-hover)',
             border: '1px solid var(--border-medium)'
@@ -458,7 +458,7 @@ export function UninstallerPage() {
           <div className="relative" ref={sortMenuRef}>
             <button
               onClick={() => setShowSortMenu(!showSortMenu)}
-              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-400 transition-all"
+              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-400 transition"
               style={{
                 background: 'var(--bg-subtle)',
                 border: '1px solid var(--border-medium)'
@@ -510,7 +510,7 @@ export function UninstallerPage() {
           <button
             onClick={() => setConfirmBatch(true)}
             disabled={uninstalling}
-            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-red-400 transition-all disabled:opacity-30"
+            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-red-400 transition disabled:opacity-30"
             style={{
               background: 'rgba(239,68,68,0.06)',
               border: '1px solid rgba(239,68,68,0.15)'
@@ -623,7 +623,7 @@ export function UninstallerPage() {
             style={{ background: 'var(--bg-hover-2)' }}
           >
             <div
-              className="h-full rounded-full transition-all duration-300"
+              className="h-full rounded-full transition-[width] duration-300"
               style={{
                 width: `${progress.progress}%`,
                 background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)'
@@ -690,7 +690,7 @@ export function UninstallerPage() {
               <button
                 onClick={() => setConfirmForceRemove(lastFailedProgramRef.current)}
                 disabled={uninstalling}
-                className="ml-auto shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-amber-400 transition-all hover:bg-amber-500/10 disabled:opacity-30"
+                className="ml-auto shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-amber-400 transition hover:bg-amber-500/10 disabled:opacity-30"
                 style={{ border: '1px solid rgba(245,158,11,0.15)' }}
               >
                 <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -710,7 +710,7 @@ export function UninstallerPage() {
             <button
               onClick={handleLoad}
               disabled={isBusy}
-              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'
@@ -898,7 +898,7 @@ export function UninstallerPage() {
                       <button
                         onClick={() => setConfirmProgram(prog)}
                         disabled={uninstalling}
-                        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-red-400 transition-all hover:bg-red-500/10 disabled:opacity-30"
+                        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-red-400 transition hover:bg-red-500/10 disabled:opacity-30"
                         style={{ border: '1px solid rgba(239,68,68,0.15)' }}
                       >
                         <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />

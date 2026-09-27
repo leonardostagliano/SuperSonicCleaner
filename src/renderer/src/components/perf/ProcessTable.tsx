@@ -167,7 +167,7 @@ export function ProcessTable() {
                 style={{ background: 'var(--bg-subtle-2)' }}
               >
                 <div
-                  className="h-full rounded-full transition-all"
+                  className="h-full rounded-full transition-[width,background-color]"
                   style={{
                     width: `${Math.min(100, p.cpuPercent)}%`,
                     background: cpuBarColor(p.cpuPercent)
@@ -188,7 +188,7 @@ export function ProcessTable() {
             <div style={{ width: '10%' }} className="flex justify-end">
               <button
                 onClick={() => setKillTarget(p)}
-                className="rounded-lg px-2 py-1 text-[10px] font-medium opacity-0 transition-all group-hover:opacity-100"
+                className="rounded-lg px-2 py-1 text-[10px] font-medium opacity-0 transition group-hover:opacity-100"
                 style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444' }}
               >
                 {t('endButton')}

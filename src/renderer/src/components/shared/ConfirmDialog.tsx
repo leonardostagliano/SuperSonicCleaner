@@ -153,7 +153,7 @@ export function ConfirmDialog({
           </button>
           <button
             onClick={onConfirm}
-            className="rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all duration-200"
+            className="rounded-xl px-5 py-2.5 text-[13px] font-semibold transition duration-200"
             style={{
               background:
                 variant === 'danger'

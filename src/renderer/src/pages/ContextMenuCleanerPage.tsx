@@ -280,7 +280,7 @@ function ContextMenuCleanerPageContent() {
             <button
               onClick={handleScan}
               disabled={scanning || applying}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition-all disabled:opacity-40"
+              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
               style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
             >
               {scanned ? (
@@ -334,7 +334,7 @@ function ContextMenuCleanerPageContent() {
           </div>
           <button
             onClick={handleScanCancel}
-            className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-[12px] font-medium text-red-400 transition-all hover:text-red-300"
+            className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-[12px] font-medium text-red-400 transition hover:text-red-300"
             style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)' }}
           >
             <StopCircle className="h-3.5 w-3.5" strokeWidth={2} /> {t('cancelButton')}
@@ -362,7 +362,7 @@ function ContextMenuCleanerPageContent() {
             style={{ background: 'var(--bg-subtle-2)' }}
           >
             <div
-              className="h-full rounded-full transition-all duration-200 ease-out"
+              className="h-full rounded-full transition-[width] duration-200 ease-out"
               style={{
                 width: `${applyProg.total > 0 ? (applyProg.current / applyProg.total) * 100 : 0}%`,
                 background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)'
@@ -436,7 +436,7 @@ function ContextMenuCleanerPageContent() {
             <button
               onClick={handleScan}
               disabled={applying}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all disabled:opacity-40"
+              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 color: 'var(--text-on-accent)'
@@ -526,9 +526,9 @@ function ContextMenuCleanerPageContent() {
                       aria-label="toggle all"
                     >
                       <div
-                        className="absolute top-0.5 h-5 w-5 rounded-full transition-all"
+                        className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full transition"
                         style={{
-                          left: allSelected ? '22px' : '2px',
+                          transform: allSelected ? 'translateX(20px)' : undefined,
                           background: allSelected ? '#fff' : 'var(--text-secondary)'
                         }}
                       />

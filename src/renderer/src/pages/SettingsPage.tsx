@@ -607,7 +607,7 @@ function ThemeSelector({
           <button
             key={opt.id}
             onClick={() => onChange(opt.id)}
-            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[12px] font-medium transition-all"
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[12px] font-medium transition"
             style={{
               background: active ? 'var(--accent)' : 'transparent',
               color: active ? 'var(--text-on-accent)' : 'var(--text-muted)'
