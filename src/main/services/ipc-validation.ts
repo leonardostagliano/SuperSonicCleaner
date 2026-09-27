@@ -27,6 +27,7 @@ export function validateSettingsPartial(input: unknown): Record<string, unknown>
     'updateCheckIntervalHours',
     'softwareUpdaterNotifications',
     'preferElevatedLaunch',
+    'scheduleNudgeDismissed',
     'cleaner',
     'exclusions',
     'ignoredSoftwareUpdates',
@@ -73,7 +74,8 @@ export function validateSettingsPartial(input: unknown): Record<string, unknown>
     'autoUpdate',
     'autoRestart',
     'softwareUpdaterNotifications',
-    'preferElevatedLaunch'
+    'preferElevatedLaunch',
+    'scheduleNudgeDismissed'
   ] as const
   for (const bk of boolKeys) {
     if (bk in obj && obj[bk] !== undefined && typeof obj[bk] !== 'boolean') return null

@@ -43,6 +43,8 @@ import { useDriverStore } from '@/stores/driver-store'
 import { useGameModeStore } from '@/stores/game-mode-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useSettingsStore } from '@/stores/settings-store'
+import { activeGroupFor, toggleGroup, withActiveGroup } from '@/lib/sidebar-groups'
+import { useCompactSidebar } from '@/hooks/useCompactSidebar'
 
 interface SubItemDef {
   icon: LucideIcon
@@ -305,7 +307,12 @@ export function Sidebar() {
   const navigate = useNavigate()
   const badgeCounts = useBadgeCounts()
   const { features } = usePlatform()
-  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null)
+  const compact = useCompactSidebar()
+  // Full width: any number of groups stay open. Compact: one flyout at a time.
+  const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set())
+  const [flyout, setFlyout] = useState<string | null>(null)
+  const navRef = useRef<HTMLElement>(null)
+  const [fade, setFade] = useState('')
 
   // Schedules promo card: auto-hides once the user has any schedule (even a paused
   // one — they've found the feature), including the legacy single-schedule setting.
@@ -348,27 +355,46 @@ export function Sidebar() {
       })
   }))
 
+  // Route changes and leaving compact mode reopen the active group; nothing else closes
   useEffect(() => {
-    // Compact navigation uses an overlay. Keep it closed on route changes so
-    // the selected tool does not obscure the destination page.
-    if (window.matchMedia('(max-width: 980px)').matches) {
-      setOpenSubmenu(null)
+    if (compact) {
+      setFlyout(null)
       return
     }
-    const activeParent = navGroups
-      .flatMap((group) => group.items)
-      .find((item) => item.children?.some((child) => child.path === location.pathname))
-    if (activeParent) setOpenSubmenu(activeParent.path)
-    else if (['/settings', '/about', '/ai'].includes(location.pathname)) setOpenSubmenu('/settings')
+    const allItems = [...navGroups.flatMap((group) => group.items)]
+    setExpanded((open) => withActiveGroup(open, activeGroupFor(location.pathname, allItems)))
+  }, [location.pathname, compact])
+
+  // Bring the current page into view once its group has expanded
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const timer = setTimeout(
+      () => {
+        navRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest' })
+      },
+      reduced ? 0 : 200
+    )
+    return () => clearTimeout(timer)
   }, [location.pathname])
 
+  // Fade the edges of the nav while there is more to scroll
   useEffect(() => {
-    const compact = window.matchMedia('(max-width: 980px)')
-    const closeCompactFlyout = () => {
-      if (compact.matches) setOpenSubmenu(null)
+    const nav = navRef.current
+    if (!nav) return
+    const update = () => {
+      const top = nav.scrollTop > 2
+      const bottom = nav.scrollTop + nav.clientHeight < nav.scrollHeight - 2
+      setFade([top && 'top', bottom && 'bottom'].filter(Boolean).join(' '))
     }
-    compact.addEventListener('change', closeCompactFlyout)
-    return () => compact.removeEventListener('change', closeCompactFlyout)
+    update()
+    nav.addEventListener('scroll', update, { passive: true })
+    const observer = new ResizeObserver(update)
+    observer.observe(nav)
+    for (const child of Array.from(nav.children)) observer.observe(child)
+    return () => {
+      nav.removeEventListener('scroll', update)
+      observer.disconnect()
+    }
   }, [])
 
   // Compute parent badge counts from visible children only
@@ -391,10 +417,13 @@ export function Sidebar() {
     return location.pathname === item.path
   }
 
+  const isOpen = (path: string) => (compact ? flyout === path : expanded.has(path))
   const submenuProps = {
-    openSubmenu,
-    onToggleSubmenu: (path: string) => setOpenSubmenu((prev) => (prev === path ? null : path)),
-    onCloseSubmenu: () => setOpenSubmenu(null)
+    onToggleSubmenu: (path: string) => {
+      if (compact) setFlyout((prev) => (prev === path ? null : path))
+      else setExpanded((open) => toggleGroup(open, path))
+    },
+    onCloseSubmenu: () => setFlyout(null)
   }
 
   return (
@@ -408,6 +437,8 @@ export function Sidebar() {
       {/* Logo — doubles as drag region */}
       {/* Nav items */}
       <nav
+        ref={navRef}
+        data-fade={fade || undefined}
         className="min-h-0 flex-1 overflow-y-auto px-3 pb-2 pt-4"
         aria-label={t('mainNavigation', 'Main navigation')}
       >
@@ -438,7 +469,7 @@ export function Sidebar() {
                   badgeCount={effectiveBadgeCounts[item.path]}
                   badgeCounts={effectiveBadgeCounts}
                   isActive={isPathActive(item)}
-                  submenuOpen={openSubmenu === item.path}
+                  submenuOpen={isOpen(item.path)}
                   {...submenuProps}
                 />
               ))}
@@ -477,7 +508,7 @@ export function Sidebar() {
       {/* Bottom */}
       <BottomNav
         submenuProps={submenuProps}
-        openSubmenu={openSubmenu}
+        isOpen={isOpen}
         isPathActive={isPathActive}
         badgeCounts={effectiveBadgeCounts}
       />
@@ -487,16 +518,15 @@ export function Sidebar() {
 
 function BottomNav({
   submenuProps,
-  openSubmenu,
+  isOpen,
   isPathActive,
   badgeCounts
 }: {
   submenuProps: {
-    openSubmenu: string | null
     onToggleSubmenu: (path: string) => void
     onCloseSubmenu: () => void
   }
-  openSubmenu: string | null
+  isOpen: (path: string) => boolean
   isPathActive: (item: NavItemDef) => boolean
   badgeCounts: Record<string, number>
 }) {
@@ -511,7 +541,7 @@ function BottomNav({
           badgeCount={badgeCounts[item.path]}
           badgeCounts={badgeCounts}
           isActive={isPathActive(item)}
-          submenuOpen={openSubmenu === item.path}
+          submenuOpen={isOpen(item.path)}
           {...submenuProps}
         />
       ))}
@@ -535,7 +565,6 @@ function NavItem({
   badgeCounts?: Record<string, number>
   isActive?: boolean
   submenuOpen?: boolean
-  openSubmenu?: string | null
   onToggleSubmenu?: (path: string) => void
   onCloseSubmenu?: () => void
 }) {
@@ -549,14 +578,7 @@ function NavItem({
     : (item.label ?? '')
   const buttonRef = useRef<HTMLButtonElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
-  const [isCompact, setIsCompact] = useState(() => window.matchMedia('(max-width: 980px)').matches)
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 980px)')
-    const update = () => setIsCompact(media.matches)
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [])
+  const isCompact = useCompactSidebar()
 
   const handleClick = () => {
     if (hasChildren) {
@@ -601,7 +623,7 @@ function NavItem({
         <span className="flex-1 text-left">{itemLabel}</span>
         {(badge || (badgeCount != null && badgeCount > 0)) && (
           <span
-            className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
+            className="nav-badge flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
             style={{
               background: 'var(--warning)',
               color: 'var(--page-bg)',
@@ -626,39 +648,43 @@ function NavItem({
       </button>
 
       {/* Flyout submenu — rendered fixed to escape sidebar overflow */}
-      {hasChildren && submenuOpen && !isCompact && (
+      {hasChildren && !isCompact && (
         <div
-          className="sidebar-submenu animate-fade-in"
-          role="group"
-          aria-label={`${itemLabel} tools`}
+          className="sidebar-submenu-collapse"
+          data-open={submenuOpen ? 'true' : 'false'}
+          inert={!submenuOpen}
         >
-          {item.children!.map((child) => {
-            const isChildActive = location.pathname === child.path
-            const childLabel = child.labelKey
-              ? t(child.labelKey, { defaultValue: child.label ?? '' })
-              : (child.label ?? '')
-            return (
-              <button
-                key={child.path}
-                type="button"
-                onClick={() => navigate(child.path)}
-                aria-current={isChildActive ? 'page' : undefined}
-                title={childLabel}
-                className="sidebar-submenu-item"
-                style={{
-                  background: isChildActive ? 'var(--brand-surface)' : 'transparent',
-                  color: isChildActive ? 'var(--brand-solid)' : 'var(--text-secondary)'
-                }}
-              >
-                <child.icon aria-hidden="true" strokeWidth={isChildActive ? 2.1 : 1.7} />
-                <span>{childLabel}</span>
-                {(badgeCounts?.[child.path] ?? 0) > 0 && (
-                  <b aria-label={`${badgeCounts![child.path]} items`}>{badgeCounts![child.path]}</b>
-                )}
-                {child.badge && <b>NEW</b>}
-              </button>
-            )
-          })}
+          <div className="sidebar-submenu" role="group" aria-label={`${itemLabel} tools`}>
+            {item.children!.map((child) => {
+              const isChildActive = location.pathname === child.path
+              const childLabel = child.labelKey
+                ? t(child.labelKey, { defaultValue: child.label ?? '' })
+                : (child.label ?? '')
+              return (
+                <button
+                  key={child.path}
+                  type="button"
+                  onClick={() => navigate(child.path)}
+                  aria-current={isChildActive ? 'page' : undefined}
+                  title={childLabel}
+                  className="sidebar-submenu-item"
+                  style={{
+                    background: isChildActive ? 'var(--brand-surface)' : 'transparent',
+                    color: isChildActive ? 'var(--brand-solid)' : 'var(--text-secondary)'
+                  }}
+                >
+                  <child.icon aria-hidden="true" strokeWidth={isChildActive ? 2.1 : 1.7} />
+                  <span>{childLabel}</span>
+                  {(badgeCounts?.[child.path] ?? 0) > 0 && (
+                    <b aria-label={`${badgeCounts![child.path]} items`}>
+                      {badgeCounts![child.path]}
+                    </b>
+                  )}
+                  {child.badge && <b>NEW</b>}
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
       {hasChildren && submenuOpen && isCompact && (

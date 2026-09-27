@@ -541,6 +541,16 @@ describe('validateSettingsPartial', () => {
   it('rejects an oversized registryIgnoredTweaks list', () => {
     expect(validateSettingsPartial({ registryIgnoredTweaks: Array(201).fill('a|b') })).toBeNull()
   })
+
+  it('accepts scheduleNudgeDismissed boolean', () => {
+    expect(validateSettingsPartial({ scheduleNudgeDismissed: true })).toEqual({
+      scheduleNudgeDismissed: true
+    })
+  })
+
+  it('rejects non-boolean scheduleNudgeDismissed', () => {
+    expect(validateSettingsPartial({ scheduleNudgeDismissed: 'yes' })).toBeNull()
+  })
 })
 
 describe('validateHistoryEntry', () => {

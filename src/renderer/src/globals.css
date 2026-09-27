@@ -945,6 +945,70 @@ summary,
   background: var(--bg-hover);
   color: var(--text-primary);
 }
+/* Submenus collapse with a height transition instead of popping in one frame. */
+.sidebar-submenu-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 180ms ease;
+}
+.sidebar-submenu-collapse[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+.sidebar-submenu-collapse > .sidebar-submenu {
+  min-height: 0;
+  /* Margins sit outside the clipped track: keep them only while open, or a
+     closed group would still leave a 14px gap under its header. */
+  margin-top: 0;
+  margin-bottom: 0;
+  transition:
+    margin-top 180ms ease,
+    margin-bottom 180ms ease;
+}
+.sidebar-submenu-collapse[data-open='true'] > .sidebar-submenu {
+  margin-top: 5px;
+  margin-bottom: 9px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-submenu-collapse,
+  .sidebar-submenu-collapse > .sidebar-submenu {
+    transition: none;
+  }
+}
+/* More items above or below: fade that edge instead of cutting a row in half. */
+.kudu-sidebar nav[data-fade='top'] {
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22px);
+}
+.kudu-sidebar nav[data-fade='bottom'] {
+  mask-image: linear-gradient(to top, transparent 0, #000 22px);
+}
+.kudu-sidebar nav[data-fade='top bottom'] {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 22px,
+    #000 calc(100% - 22px),
+    transparent 100%
+  );
+}
+/* Scrolling the active item into view stops clear of the faded edges. */
+.kudu-sidebar nav {
+  scroll-padding-block: 22px;
+}
+/* Short windows: the schedules card shrinks to one line and gives the nav room.
+   Scoped to the sidebar so it wins over the later readability-pass padding. */
+@media (max-height: 820px) {
+  .kudu-sidebar .automatic-care-card,
+  .kudu-sidebar .automatic-care-card > button {
+    align-items: center;
+  }
+  .kudu-sidebar .automatic-care-card {
+    padding: 8px 11px;
+  }
+  .automatic-care-card small {
+    display: none;
+  }
+}
 
 /* Shared page language: quiet surfaces, generous hierarchy, tactile controls. */
 .glass-card {
@@ -1046,6 +1110,20 @@ thead {
   .automatic-care-card,
   .sidebar-submenu {
     display: none;
+  }
+  /* Collapsed sidebar: pending counts survive as a dot on the icon.
+     The !important values beat the sidebar's badge accessibility floor. */
+  .kudu-sidebar .calm-nav-item > span.nav-badge {
+    display: block;
+    position: absolute;
+    top: 7px;
+    inset-inline-end: 20px;
+    width: 7px;
+    height: 7px !important;
+    min-width: 0 !important;
+    padding: 0;
+    font-size: 0 !important;
+    border-radius: 50%;
   }
 }
 
