@@ -2081,16 +2081,16 @@ thead {
   color: var(--text-dim);
   font-style: normal;
 }
+/* In the page flow above the content, so it never covers row actions. */
 .admin-banner {
-  position: absolute;
-  right: 20px;
-  bottom: 18px;
-  z-index: 250;
-  max-width: min(520px, calc(100% - 40px));
+  margin: 12px 24px 0;
   border: 1px solid var(--accent-muted-border);
   background: var(--flyout-bg) !important;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.17);
-  backdrop-filter: blur(18px);
+}
+/* The window itself is transparent (Mica on Windows): paint the page background
+   around the banners that sit above the content. */
+.app-shell div:has(> #main-content) {
+  background: var(--page-bg);
 }
 
 .dark .kudu-briefing {

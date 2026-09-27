@@ -6,7 +6,7 @@ import { RotateCcw } from 'lucide-react'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
-import { formatBytes } from '@/lib/utils'
+import { formatBytes, NO_VALUE } from '@/lib/utils'
 import { usePlatform } from '@/hooks/usePlatform'
 import type { RecoveryEntry, RegistryBackup } from '@shared/recovery'
 
@@ -17,12 +17,15 @@ const ipcMessage = (e: unknown) =>
     ''
   )
 
+type RecoveryList = Awaited<ReturnType<typeof window.kudu.recoveryList>>
+
+/** First page of the last visit: shown at once next time while it revalidates. */
+let lastFirstPage: { data: RecoveryList; registry: RegistryBackup[] } | null = null
+
 export function RecoveryPage() {
   const { t } = useTranslation('history')
   const { t: tx } = useTranslation('experience')
-  const [data, setData] = useState<Awaited<ReturnType<typeof window.kudu.recoveryList>> | null>(
-    null
-  )
+  const [data, setData] = useState<RecoveryList | null>(lastFirstPage?.data ?? null)
   const [offset, setOffset] = useState(0)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -30,7 +33,9 @@ export function RecoveryPage() {
   const [remove, setRemove] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<RecoveryEntry | null>(null)
   const isWin = usePlatform().platform === 'win32'
-  const [registryBackups, setRegistryBackups] = useState<RegistryBackup[]>([])
+  const [registryBackups, setRegistryBackups] = useState<RegistryBackup[]>(
+    lastFirstPage?.registry ?? []
+  )
   const [registryConfirm, setRegistryConfirm] = useState<RegistryBackup | null>(null)
   // Restoring a registry backup always needs elevation; null until known.
   const [elevated, setElevated] = useState<boolean | null>(null)
@@ -58,6 +63,7 @@ export function RecoveryPage() {
       if (token !== request.current) return
       setData(result)
       setRegistryBackups(registry)
+      if (offset === 0) lastFirstPage = { data: result, registry }
       setError('')
     } catch (e) {
       if (token !== request.current) return
@@ -105,23 +111,23 @@ export function RecoveryPage() {
   return (
     <div className="feature-page feature-layout pulse-recovery-page space-y-5">
       <PageHeader title={t('recovery.title')} description={t('recovery.description')} />
-      {data && (
-        <div className="pulse-recovery-overview">
-          <section className="feature-card">
-            <span>{tx('recovery.recorded')}</span>
-            <strong>{data.total}</strong>
-          </section>
-          <section className="feature-card">
-            <span>{tx('recovery.backups')}</span>
-            {/* On Windows the list below is the registry backup list, so count that. */}
-            <strong>{isWin ? registryBackups.length : data.backups.length}</strong>
-          </section>
-          <section className="feature-card pulse-recovery-context">
-            <RotateCcw size={24} />
-            <p>{tx('recovery.hint')}</p>
-          </section>
-        </div>
-      )}
+      <div className="pulse-recovery-overview" aria-busy={!data}>
+        <section className="feature-card">
+          <span>{tx('recovery.recorded')}</span>
+          <strong>{data ? data.total : NO_VALUE}</strong>
+        </section>
+        <section className="feature-card">
+          <span>{tx('recovery.backups')}</span>
+          {/* On Windows the list below is the registry backup list, so count that. */}
+          <strong>
+            {data ? (isWin ? registryBackups.length : data.backups.length) : NO_VALUE}
+          </strong>
+        </section>
+        <section className="feature-card pulse-recovery-context">
+          <RotateCcw size={24} />
+          <p>{tx('recovery.hint')}</p>
+        </section>
+      </div>
       <p className="feature-note">{t('recovery.limits')}</p>
       <div className="flex flex-wrap items-center gap-3">
         <button className={button} disabled={busy} onClick={() => void refresh()}>
@@ -149,8 +155,9 @@ export function RecoveryPage() {
           </Link>
         </div>
       )}
-      {loading && <p role="status">{t('recovery.loading')}</p>}
-      {!loading && data && !data.entries.length && !data.unreadable.length && (
+      {/* While a known result revalidates, keep showing it instead of a loading line. */}
+      {loading && !data && <p role="status">{t('recovery.loading')}</p>}
+      {data && !data.entries.length && !data.unreadable.length && (
         <EmptyState
           icon={RotateCcw}
           title={t('recovery.emptyTitle')}
@@ -266,7 +273,7 @@ export function RecoveryPage() {
               {b.name} · {formatBytes(b.size)} · {new Date(b.modifiedAt).toLocaleString()}
             </p>
           ))}
-        {isWin && !loading && !registryBackups.length && (
+        {isWin && data && !registryBackups.length && (
           <p className="text-sm">{t('recovery.registryBackups.empty')}</p>
         )}
         {registryBackups.map((backup) => (

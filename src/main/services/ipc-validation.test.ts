@@ -551,6 +551,21 @@ describe('validateSettingsPartial', () => {
   it('rejects non-boolean scheduleNudgeDismissed', () => {
     expect(validateSettingsPartial({ scheduleNudgeDismissed: 'yes' })).toBeNull()
   })
+
+  it('accepts the app version at which the admin banner was dismissed', () => {
+    expect(validateSettingsPartial({ adminBannerDismissedVersion: '3.4.0' })).toEqual({
+      adminBannerDismissedVersion: '3.4.0'
+    })
+    expect(validateSettingsPartial({ adminBannerDismissedVersion: '' })).toEqual({
+      adminBannerDismissedVersion: ''
+    })
+  })
+
+  it('rejects a malformed admin banner version', () => {
+    expect(validateSettingsPartial({ adminBannerDismissedVersion: 3 })).toBeNull()
+    expect(validateSettingsPartial({ adminBannerDismissedVersion: '<script>' })).toBeNull()
+    expect(validateSettingsPartial({ adminBannerDismissedVersion: '1'.repeat(40) })).toBeNull()
+  })
 })
 
 describe('validateHistoryEntry', () => {

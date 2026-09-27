@@ -781,6 +781,11 @@ export interface KuduSettings {
    */
   scheduleNudgeDismissed: boolean
   /**
+   * App version at which the "run as administrator" banner was dismissed; the
+   * banner returns after an update. Empty until the user dismisses it.
+   */
+  adminBannerDismissedVersion: string
+  /**
    * When true, prompt for elevation (UAC / pkexec) on launch if not already
    * elevated. Opt-in — default stays unelevated (#390). Hidden on macOS.
    */

@@ -22,6 +22,7 @@ export const defaultSettings: KuduSettings = {
   updateCheckIntervalHours: 4,
   softwareUpdaterNotifications: true,
   scheduleNudgeDismissed: false,
+  adminBannerDismissedVersion: '',
   preferElevatedLaunch: false,
   cleaner: {
     skipRecentMinutes: 60,

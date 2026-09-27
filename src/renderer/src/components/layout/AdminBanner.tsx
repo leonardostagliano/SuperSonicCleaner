@@ -9,8 +9,9 @@ export function AdminBanner() {
   const { platform } = usePlatform()
   const loaded = useSettingsStore((s) => s.loaded)
   const preferElevatedLaunch = useSettingsStore((s) => s.settings.preferElevatedLaunch ?? false)
+  const dismissedVersion = useSettingsStore((s) => s.settings.adminBannerDismissedVersion ?? '')
+  const updateSettings = useSettingsStore((s) => s.updateSettings)
   const [visible, setVisible] = useState(false)
-  const [dismissed, setDismissed] = useState(false)
   const autoRelaunchTried = useRef(false)
 
   useEffect(() => {
@@ -23,9 +24,15 @@ export function AdminBanner() {
     })
   }, [loaded, preferElevatedLaunch])
 
+  // Dismissal holds until the app is updated
+  const dismiss = () => {
+    updateSettings({ adminBannerDismissedVersion: __APP_VERSION__ })
+    window.kudu.settingsSet({ adminBannerDismissedVersion: __APP_VERSION__ }).catch(() => {})
+  }
+
   // On macOS the relaunch-as-admin flow doesn't work properly — hide the banner entirely
   if (platform === 'darwin') return null
-  if (!visible || dismissed) return null
+  if (!visible || !loaded || dismissedVersion === __APP_VERSION__) return null
 
   return (
     <div
@@ -51,7 +58,7 @@ export function AdminBanner() {
         {t('relaunchAsAdmin')}
       </button>
       <button
-        onClick={() => setDismissed(true)}
+        onClick={dismiss}
         aria-label={t('dismiss', 'Dismiss')}
         className="ml-auto shrink-0 text-zinc-600 transition-colors hover:text-zinc-400"
       >

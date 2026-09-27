@@ -28,6 +28,7 @@ export function validateSettingsPartial(input: unknown): Record<string, unknown>
     'softwareUpdaterNotifications',
     'preferElevatedLaunch',
     'scheduleNudgeDismissed',
+    'adminBannerDismissedVersion',
     'cleaner',
     'exclusions',
     'ignoredSoftwareUpdates',
@@ -79,6 +80,11 @@ export function validateSettingsPartial(input: unknown): Record<string, unknown>
   ] as const
   for (const bk of boolKeys) {
     if (bk in obj && obj[bk] !== undefined && typeof obj[bk] !== 'boolean') return null
+  }
+
+  if ('adminBannerDismissedVersion' in obj && obj.adminBannerDismissedVersion !== undefined) {
+    const v = obj.adminBannerDismissedVersion
+    if (typeof v !== 'string' || v.length > 32 || !/^[0-9A-Za-z.+-]*$/.test(v)) return null
   }
 
   // Validate updateCheckIntervalHours is a reasonable number
