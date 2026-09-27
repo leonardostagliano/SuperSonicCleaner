@@ -27,7 +27,7 @@ export function AdminBanner() {
   // Dismissal holds until the app is updated
   const dismiss = () => {
     updateSettings({ adminBannerDismissedVersion: __APP_VERSION__ })
-    window.kudu.settingsSet({ adminBannerDismissedVersion: __APP_VERSION__ }).catch(() => {})
+    window.kudu?.settingsSet?.({ adminBannerDismissedVersion: __APP_VERSION__ }).catch(() => {})
   }
 
   // On macOS the relaunch-as-admin flow doesn't work properly — hide the banner entirely

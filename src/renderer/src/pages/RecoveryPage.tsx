@@ -2,7 +2,7 @@ import '@/components/shared/feature-layout.css'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { RotateCcw } from 'lucide-react'
+import { RefreshCw, RotateCcw } from 'lucide-react'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
@@ -108,10 +108,14 @@ export function RecoveryPage() {
     setBusy(false)
   }
   const button = 'feature-button'
+  // Until the first result (or error) arrives, the list and the backups below it are
+  // unknown: a placeholder holds their place and they mount with the result, so
+  // nothing already painted has to move.
+  const settled = data !== null || !loading
   return (
     <div className="feature-page feature-layout pulse-recovery-page space-y-5">
       <PageHeader title={t('recovery.title')} description={t('recovery.description')} />
-      <div className="pulse-recovery-overview" aria-busy={!data}>
+      <div className="pulse-recovery-overview" aria-busy={loading}>
         <section className="feature-card">
           <span>{tx('recovery.recorded')}</span>
           <strong>{data ? data.total : NO_VALUE}</strong>
@@ -130,7 +134,17 @@ export function RecoveryPage() {
       </div>
       <p className="feature-note">{t('recovery.limits')}</p>
       <div className="flex flex-wrap items-center gap-3">
-        <button className={button} disabled={busy} onClick={() => void refresh()}>
+        <button
+          className={button}
+          disabled={busy || loading}
+          aria-busy={loading}
+          onClick={() => void refresh()}
+        >
+          <RefreshCw
+            size={14}
+            className={loading ? 'animate-spin' : undefined}
+            aria-hidden="true"
+          />
           {t('recovery.refresh')}
         </button>
         <button
@@ -155,8 +169,12 @@ export function RecoveryPage() {
           </Link>
         </div>
       )}
-      {/* While a known result revalidates, keep showing it instead of a loading line. */}
-      {loading && !data && <p role="status">{t('recovery.loading')}</p>}
+      {/* While a known result revalidates it stays on screen; the Refresh button spins. */}
+      {!settled && (
+        <div className="feature-card grid min-h-[300px] place-items-center text-sm text-[var(--text-muted)]">
+          <p role="status">{t('recovery.loading')}</p>
+        </div>
+      )}
       {data && !data.entries.length && !data.unreadable.length && (
         <EmptyState
           icon={RotateCcw}
@@ -164,7 +182,7 @@ export function RecoveryPage() {
           description={t('recovery.empty')}
         />
       )}
-      <div className="space-y-3">
+      <div className="space-y-3" aria-busy={loading}>
         {data?.unreadable.map((id) => (
           <article key={id} className="feature-card">
             <p className="text-sm">{t('recovery.unreadable')}</p>
@@ -253,41 +271,43 @@ export function RecoveryPage() {
           </button>
         </div>
       )}
-      <section className="feature-card space-y-3">
-        <h2 className="font-semibold">
-          {t(isWin ? 'recovery.registryBackups.title' : 'recovery.backups')}
-        </h2>
-        <p className="text-sm">
-          {t(isWin ? 'recovery.registryBackups.description' : 'recovery.backupDescription')}
-        </p>
-        <button
-          className={button}
-          disabled={busy}
-          onClick={() => void run(() => window.kudu.recoveryOpenBackups())}
-        >
-          {t('recovery.openBackups')}
-        </button>
-        {!isWin &&
-          data?.backups.map((b) => (
-            <p key={b.name} className="break-all text-sm">
-              {b.name} · {formatBytes(b.size)} · {new Date(b.modifiedAt).toLocaleString()}
-            </p>
+      {settled && (
+        <section className="feature-card space-y-3">
+          <h2 className="font-semibold">
+            {t(isWin ? 'recovery.registryBackups.title' : 'recovery.backups')}
+          </h2>
+          <p className="text-sm">
+            {t(isWin ? 'recovery.registryBackups.description' : 'recovery.backupDescription')}
+          </p>
+          <button
+            className={button}
+            disabled={busy}
+            onClick={() => void run(() => window.kudu.recoveryOpenBackups())}
+          >
+            {t('recovery.openBackups')}
+          </button>
+          {!isWin &&
+            data?.backups.map((b) => (
+              <p key={b.name} className="break-all text-sm">
+                {b.name} · {formatBytes(b.size)} · {new Date(b.modifiedAt).toLocaleString()}
+              </p>
+            ))}
+          {isWin && data && !registryBackups.length && (
+            <p className="text-sm">{t('recovery.registryBackups.empty')}</p>
+          )}
+          {registryBackups.map((backup) => (
+            <RegistryBackupCard
+              key={backup.name}
+              backup={backup}
+              result={registryResults[backup.name]}
+              busy={busy}
+              elevated={elevated}
+              onRestore={() => setRegistryConfirm(backup)}
+              onShow={() => void run(() => window.kudu.recoveryShowBackup(backup.name))}
+            />
           ))}
-        {isWin && data && !registryBackups.length && (
-          <p className="text-sm">{t('recovery.registryBackups.empty')}</p>
-        )}
-        {registryBackups.map((backup) => (
-          <RegistryBackupCard
-            key={backup.name}
-            backup={backup}
-            result={registryResults[backup.name]}
-            busy={busy}
-            elevated={elevated}
-            onRestore={() => setRegistryConfirm(backup)}
-            onShow={() => void run(() => window.kudu.recoveryShowBackup(backup.name))}
-          />
-        ))}
-      </section>
+        </section>
+      )}
       <ConfirmDialog
         open={!!remove}
         variant="danger"
