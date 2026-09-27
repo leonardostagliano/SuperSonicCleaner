@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { PAGE_ENTRIES, prefetchRoute, retryPageLoad, LazyPages } from './routes'
+import { PAGE_ENTRIES, prefetchRoute, isChunkLoadError } from './routes'
 
 const ROUTED = [
   '/cleaner',
@@ -62,19 +62,34 @@ describe('lazy routes', () => {
   it('ignores unknown paths', () => {
     expect(() => prefetchRoute('/nope')).not.toThrow()
   })
+})
 
-  it('retries a page load that failed by creating a fresh lazy component', () => {
-    // React's `lazy()` calls its loader once per instance and remembers a
-    // rejection forever, so the only way to make a page whose chunk failed to
-    // load try again is to swap in a brand-new lazy component for that route
-    // — reusing the same one would just re-throw the cached rejection.
-    const before = LazyPages['/about']()
-    retryPageLoad('/about')
-    const after = LazyPages['/about']()
-    expect(after.type).not.toBe(before.type)
+describe('isChunkLoadError', () => {
+  it('recognises a browser "failed to fetch dynamically imported module" rejection', () => {
+    const error = new TypeError(
+      'Failed to fetch dynamically imported module: http://localhost/x.tsx'
+    )
+    expect(isChunkLoadError(error)).toBe(true)
   })
 
-  it('does nothing when retrying an unknown path', () => {
-    expect(() => retryPageLoad('/nope')).not.toThrow()
+  it('recognises a browser "Importing a module script failed" rejection', () => {
+    expect(isChunkLoadError(new TypeError('Importing a module script failed.'))).toBe(true)
+  })
+
+  it('recognises a bundler ChunkLoadError by name', () => {
+    const error = new Error('Loading chunk 12 failed')
+    error.name = 'ChunkLoadError'
+    expect(isChunkLoadError(error)).toBe(true)
+  })
+
+  it('does not flag an unrelated render error', () => {
+    const error = new TypeError("Cannot read properties of undefined (reading 'foo')")
+    expect(isChunkLoadError(error)).toBe(false)
+  })
+
+  it('does not throw for non-Error values', () => {
+    expect(isChunkLoadError('nope')).toBe(false)
+    expect(isChunkLoadError(null)).toBe(false)
+    expect(isChunkLoadError(undefined)).toBe(false)
   })
 })

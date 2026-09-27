@@ -15,7 +15,7 @@ import { initGameModeStore } from './stores/game-mode-store'
 import { useSettingsStore } from './stores/settings-store'
 import { initAiAnalysisSources } from './lib/ai-analysis-lifecycle'
 import { initGlobalProgressBridge } from './lib/global-progress-bridge'
-import { LazyPages, PageSkeleton, prefetchAllRoutes, retryPageLoad } from './routes'
+import { LazyPages, PageSkeleton, prefetchAllRoutes, isChunkLoadError } from './routes'
 import i18nInstance from './i18n'
 
 const Onboarding = lazy(() =>
@@ -252,12 +252,23 @@ interface PageErrorBoundaryState {
   error: Error | null
 }
 
+const boundaryButtonStyle = {
+  padding: '8px 16px',
+  background: '#27272a',
+  color: '#fafafa',
+  border: '1px solid #3f3f46',
+  borderRadius: 6,
+  cursor: 'pointer'
+} as const
+
 /**
  * Same look as the app-wide `ErrorBoundary` in main.tsx, scoped to the content
- * area instead of the whole renderer. "Try again" recreates the lazy component
- * for this route (`retryPageLoad`) so a chunk whose `import()` rejected is
- * actually retried rather than re-thrown from React's cached rejection; the
- * last-resort button reloads the window, same as the app-wide boundary.
+ * area instead of the whole renderer. A failed lazy-chunk import
+ * (`isChunkLoadError`) can only be fixed by reloading the window — browsers
+ * permanently memoize a rejected dynamic `import()` per URL for the life of
+ * the document, so re-rendering here can never recover it — while a page that
+ * threw during its own render can simply be re-rendered by resetting this
+ * boundary, with reload kept as the secondary, always-available action.
  */
 class PageErrorBoundary extends Component<
   { path: string; children: ReactNode },
@@ -270,12 +281,17 @@ class PageErrorBoundary extends Component<
   }
 
   handleRetry = () => {
-    retryPageLoad(this.props.path)
     this.setState({ error: null })
   }
 
+  handleReload = () => {
+    window.location.reload()
+  }
+
   render() {
-    if (this.state.error) {
+    const { error } = this.state
+    if (error) {
+      const chunkFailure = isChunkLoadError(error)
       // Same hardcoded colors as the app-wide boundary — CSS variables may not
       // be loaded when the error boundary triggers, which would make the text
       // invisible.
@@ -290,35 +306,23 @@ class PageErrorBoundary extends Component<
         >
           <h1 style={{ fontSize: 20, marginBottom: 8 }}>Something went wrong</h1>
           <pre style={{ color: '#a1a1aa', fontSize: 13, whiteSpace: 'pre-wrap' }}>
-            {this.state.error.message}
+            {error.message}
           </pre>
           <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-            <button
-              onClick={this.handleRetry}
-              style={{
-                padding: '8px 16px',
-                background: '#27272a',
-                color: '#fafafa',
-                border: '1px solid #3f3f46',
-                borderRadius: 6,
-                cursor: 'pointer'
-              }}
-            >
-              {i18nInstance.t('settings:retry')}
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                padding: '8px 16px',
-                background: '#27272a',
-                color: '#fafafa',
-                border: '1px solid #3f3f46',
-                borderRadius: 6,
-                cursor: 'pointer'
-              }}
-            >
-              Reload
-            </button>
+            {chunkFailure ? (
+              <button onClick={this.handleReload} style={boundaryButtonStyle}>
+                Reload
+              </button>
+            ) : (
+              <>
+                <button onClick={this.handleRetry} style={boundaryButtonStyle}>
+                  {i18nInstance.t('settings:retry')}
+                </button>
+                <button onClick={this.handleReload} style={boundaryButtonStyle}>
+                  Reload
+                </button>
+              </>
+            )}
           </div>
         </div>
       )
