@@ -1934,6 +1934,8 @@ body {
   text-overflow: clip;
   line-height: 1.4;
   overflow: visible;
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 .pulse-schedule-options summary {
   color: var(--text-secondary);

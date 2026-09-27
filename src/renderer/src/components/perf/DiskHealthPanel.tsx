@@ -9,7 +9,7 @@ import {
   ShieldAlert
 } from 'lucide-react'
 import type { DiskSmartInfo } from '@shared/types'
-import { formatBytes } from '@/lib/utils'
+import { formatBytes, NO_VALUE } from '@/lib/utils'
 
 interface DiskHealthPanelProps {
   disks: DiskSmartInfo[]
@@ -76,16 +76,16 @@ function DiskCard({ disk }: { disk: DiskSmartInfo }) {
         <StatItem
           icon={<Thermometer className="h-3.5 w-3.5" />}
           label={t('temperature')}
-          value={disk.temperature !== null ? `${disk.temperature}°C` : '--'}
+          value={disk.temperature !== null ? `${disk.temperature}°C` : NO_VALUE}
           warn={disk.temperature !== null && disk.temperature > 60}
         />
         <StatItem
           label={t('powerOnHours')}
-          value={disk.powerOnHours !== null ? formatHours(disk.powerOnHours) : '--'}
+          value={disk.powerOnHours !== null ? formatHours(disk.powerOnHours) : NO_VALUE}
         />
         <StatItem
           label={t('remainingLife')}
-          value={disk.remainingLife !== null ? `${disk.remainingLife}%` : '--'}
+          value={disk.remainingLife !== null ? `${disk.remainingLife}%` : NO_VALUE}
           warn={disk.remainingLife !== null && disk.remainingLife < 20}
         />
       </div>

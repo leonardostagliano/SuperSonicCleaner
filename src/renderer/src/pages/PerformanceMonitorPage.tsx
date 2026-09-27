@@ -10,7 +10,7 @@ import { AlertBanner } from '@/components/perf/AlertBanner'
 import { DiskHealthPanel } from '@/components/perf/DiskHealthPanel'
 import { ProcessTable } from '@/components/perf/ProcessTable'
 import { usePerfStore } from '@/stores/perf-store'
-import { formatBytes, formatSpeed } from '@/lib/utils'
+import { formatBytes, formatSpeed, NO_VALUE } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 export function PerformanceMonitorPage() {
@@ -142,9 +142,7 @@ export function PerformanceMonitorPage() {
           label={t('gaugeCpu')}
           percent={snapshot?.cpu.overall ?? null}
           detail={
-            snapshot
-              ? t('cpuThreadsDetail', { count: snapshot.cpu.perCore.length })
-              : t('noDataPlaceholder')
+            snapshot ? t('cpuThreadsDetail', { count: snapshot.cpu.perCore.length }) : NO_VALUE
           }
         />
         <GaugeCard
@@ -153,7 +151,7 @@ export function PerformanceMonitorPage() {
           detail={
             snapshot
               ? `${formatBytes(snapshot.memory.usedBytes)} / ${formatBytes(snapshot.memory.totalBytes)}`
-              : t('noDataPlaceholder')
+              : NO_VALUE
           }
         />
         <GaugeCard
@@ -162,7 +160,7 @@ export function PerformanceMonitorPage() {
           value={
             snapshot && snapshot.disk.available !== false
               ? formatSpeed(snapshot.disk.readBytesPerSec + snapshot.disk.writeBytesPerSec)
-              : t('noDataPlaceholder')
+              : NO_VALUE
           }
           detail={
             snapshot && snapshot.disk.available !== false
@@ -170,7 +168,7 @@ export function PerformanceMonitorPage() {
                   read: formatSpeed(snapshot.disk.readBytesPerSec),
                   write: formatSpeed(snapshot.disk.writeBytesPerSec)
                 })
-              : t('noDataPlaceholder')
+              : NO_VALUE
           }
         />
         <GaugeCard
@@ -179,12 +177,12 @@ export function PerformanceMonitorPage() {
           value={
             snapshot
               ? formatSpeed(snapshot.network.rxBytesPerSec + snapshot.network.txBytesPerSec)
-              : '?'
+              : NO_VALUE
           }
           detail={
             snapshot
               ? `${formatSpeed(snapshot.network.rxBytesPerSec)} / ${formatSpeed(snapshot.network.txBytesPerSec)}`
-              : t('noDataPlaceholder')
+              : NO_VALUE
           }
         />
       </div>

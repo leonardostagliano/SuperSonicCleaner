@@ -84,9 +84,10 @@ export function App() {
     }
   }, [theme])
 
-  // Sync RTL direction based on current language
+  // Keep direction and language in sync: hyphenation and screen readers use `lang`
   useEffect(() => {
     document.documentElement.dir = RTL_LANGUAGES.includes(i18n.language) ? 'rtl' : 'ltr'
+    document.documentElement.lang = i18n.language || 'en'
   }, [i18n.language])
 
   useEffect(() => {

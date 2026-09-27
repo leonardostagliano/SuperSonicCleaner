@@ -14,6 +14,7 @@ import type {
 } from '../../shared/types'
 import { psUtf8 } from './exec-utf8'
 import { CpuTimeSampler } from './cpu-time-sampler'
+import { cpuModelName } from './cpu-model'
 
 const execFileAsync = promisify(execFile)
 
@@ -47,15 +48,15 @@ export class PerfMonitorService {
   async getSystemInfo(): Promise<PerfSystemInfo> {
     if (this.cachedSystemInfo) return this.cachedSystemInfo
 
-    const [cpu, os, mem] = await Promise.all([si.cpu(), si.osInfo(), si.mem()])
+    const [cpu, osInfo, mem] = await Promise.all([si.cpu(), si.osInfo(), si.mem()])
 
     this.cachedSystemInfo = {
-      cpuModel: `${cpu.manufacturer} ${cpu.brand}`,
+      cpuModel: cpuModelName(cpu.manufacturer, cpu.brand, os.cpus()[0]?.model),
       cpuCores: cpu.physicalCores,
       cpuThreads: cpu.cores,
       totalMemBytes: mem.total,
-      osVersion: `${os.distro} ${os.release}`,
-      hostname: os.hostname
+      osVersion: `${osInfo.distro} ${osInfo.release}`,
+      hostname: osInfo.hostname
     }
     return this.cachedSystemInfo
   }

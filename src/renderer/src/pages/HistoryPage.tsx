@@ -47,6 +47,7 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { useHistoryStore } from '@/stores/history-store'
 import { formatBytes } from '@/lib/utils'
+import { historyCategoryLabel, normalizeHistoryCategory } from '@/lib/history-categories'
 import { usePlatform } from '@/hooks/usePlatform'
 import type { ScanHistoryEntry, HistoryEntryType, DeletedFileRecord } from '@shared/types'
 
@@ -151,7 +152,7 @@ type ViewMode = 'overview' | 'timeline' | 'receipts'
 
 export function HistoryPage() {
   const [searchParams] = useSearchParams()
-  const { t } = useTranslation('history')
+  const { t, i18n } = useTranslation('history')
   const typeConfig = useTypeConfig()
   const { features } = usePlatform()
   const { entries, loaded, load, clear } = useHistoryStore()
@@ -217,16 +218,18 @@ export function HistoryPage() {
     const byCategory: Record<string, { items: number; space: number }> = {}
     for (const e of entries) {
       for (const c of e.categories) {
-        if (!byCategory[c.name]) byCategory[c.name] = { items: 0, space: 0 }
-        byCategory[c.name].items += c.itemsCleaned
-        byCategory[c.name].space += c.spaceSaved
+        const key = normalizeHistoryCategory(c.name)
+        if (!byCategory[key]) byCategory[key] = { items: 0, space: 0 }
+        byCategory[key].items += c.itemsCleaned
+        byCategory[key].space += c.spaceSaved
       }
     }
     return Object.entries(byCategory)
-      .map(([name, d]) => ({ name, ...d }))
+      .map(([key, d]) => ({ name: historyCategoryLabel(key), ...d }))
       .sort((a, b) => b.space - a.space || b.items - a.items)
       .slice(0, 8)
-  }, [entries])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- labels are read from i18next
+  }, [entries, i18n.language])
 
   // --- Weekly trend data ---
   const weeklyData = useMemo(() => {
@@ -1046,8 +1049,8 @@ function ScanDetailPopup({ entry, onClose }: { entry: ScanHistoryEntry; onClose:
                 const percent = (cat.itemsCleaned / maxItems) * 100
                 return (
                   <div key={cat.name} className="flex items-center gap-3">
-                    <span className="w-24 shrink-0 truncate text-[12px] capitalize text-zinc-400">
-                      {cat.name}
+                    <span className="w-24 shrink-0 truncate text-[12px] text-zinc-400">
+                      {historyCategoryLabel(cat.name)}
                     </span>
                     <div
                       className="flex-1 h-[6px] rounded-full overflow-hidden"

@@ -30,11 +30,17 @@ import {
   UPDATE_SUMMARY_TOAST_ID
 } from '@/components/updates/UpdateSummaryToast'
 import { buildUpdateSummary } from '@/lib/update-summary'
+import { softwareUpdateCategory } from '@/lib/history-categories'
 import { useUpdaterStore, severityOrder, appKey } from '@/stores/updater-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { usePlatform } from '@/hooks/usePlatform'
-import type { UpdatableApp, UpToDateApp, WindowsPackageManager } from '@shared/types'
+import type {
+  UpdatableApp,
+  UpdateSeverity,
+  UpToDateApp,
+  WindowsPackageManager
+} from '@shared/types'
 
 /** Windows managers Kudu can aggregate, with their display labels. */
 const WINDOWS_MANAGER_OPTIONS: { id: WindowsPackageManager; label: string }[] = [
@@ -239,7 +245,7 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
         totalItemsSkipped: 0,
         totalSpaceSaved: 0,
         categories: Object.entries(bySeverity).map(([name, d]) => ({
-          name: `${name} updates`,
+          name: softwareUpdateCategory(name as UpdateSeverity),
           itemsFound: d.found,
           itemsCleaned: d.updated,
           spaceSaved: 0

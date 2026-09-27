@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Cpu, MemoryStick, Monitor, Clock } from 'lucide-react'
-import { formatBytes } from '@/lib/utils'
+import { formatBytes, NO_VALUE } from '@/lib/utils'
 import type { PerfSystemInfo } from '@shared/types'
 
 interface SystemInfoHeaderProps {
@@ -35,7 +35,12 @@ export function SystemInfoHeader({ info, uptime }: SystemInfoHeaderProps) {
       sub: ''
     },
     { icon: Monitor, label: t('systemInfoOs'), value: info.osVersion, sub: '' },
-    { icon: Clock, label: t('systemInfoUptime'), value: formatUptime(uptime), sub: '' }
+    {
+      icon: Clock,
+      label: t('systemInfoUptime'),
+      value: uptime > 0 ? formatUptime(uptime) : NO_VALUE,
+      sub: ''
+    }
   ]
 
   return (
