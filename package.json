@@ -25,6 +25,8 @@
     "find-cache": "node scripts/find-cache.js",
     "preview-rule": "node scripts/preview-rule.js",
     "parity-check": "node scripts/parity-check.js",
+    "ui:audit": "node scripts/ui-audit/run.mjs",
+    "ui:perf": "node scripts/ui-audit/perf.mjs",
     "catalog": "node scripts/generate-catalog.js",
     "translate": "node scripts/translate.js",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",

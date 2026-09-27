@@ -76,5 +76,15 @@ export default tseslint.config(
     languageOptions: { sourceType: 'commonjs', globals: { ...globals.node } },
     rules: { '@typescript-eslint/no-require-imports': 'off' }
   },
+  {
+    // ES-module tooling scripts (e.g. the CDP UI audit) run on Node
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: { ...globals.node } }
+  },
+  {
+    // Injected into the dev renderer as a single expression
+    files: ['scripts/ui-audit/detect.js'],
+    languageOptions: { sourceType: 'script', globals: { ...globals.browser } }
+  },
   prettier
 )
