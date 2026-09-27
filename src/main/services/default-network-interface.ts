@@ -20,6 +20,8 @@ export function parseWindowsDefaultRoute(output: string): string | null {
   let best: { address: string; metric: number } | null = null
   for (const raw of output.split(/\r?\n/)) {
     const line = raw.replace(/\s+/g, ' ').trim()
+    // Inherited from systeminformation: a gateway in Latin letters ("On-link") is skipped,
+    // so an on-link (VPN) default route falls back to the first external adapter
     if (!line.startsWith('0.0.0.0 0.0.0.0 ') || /[a-z]/i.test(line)) continue
     const parts = line.split(' ')
     if (parts.length < 5) continue

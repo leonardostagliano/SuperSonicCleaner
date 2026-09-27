@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
+import * as os from 'os'
 import type { NetworkInterfaceInfo } from 'os'
+import { execFile } from 'child_process'
 import {
   DefaultInterfaceCache,
   INTERFACE_REFRESH_MS,
@@ -8,8 +10,12 @@ import {
   interfaceWithAddress,
   parseDarwinDefaultRoute,
   parseLinuxDefaultRoute,
-  parseWindowsDefaultRoute
+  parseWindowsDefaultRoute,
+  resolveDefaultInterface
 } from './default-network-interface'
+
+vi.mock('os', () => ({ networkInterfaces: vi.fn(() => ({})) }))
+vi.mock('child_process', () => ({ execFile: vi.fn() }))
 
 const address = (ip: string, internal = false, scopeid?: number) =>
   ({
@@ -114,6 +120,37 @@ describe('interface lookup', () => {
       })
     ).toBe('eth0')
     expect(firstExternalInterface({ lo: [address('127.0.0.1', true)] })).toBeNull()
+  })
+
+  // Adapter names on localized Windows, as os.networkInterfaces() reports them
+  const localized = {
+    'Connessione alla rete locale (LAN) 2': [address('10.0.0.5')],
+    'Wi\u2011Fi': [address('192.168.1.23')], // non-breaking hyphen
+    'Ethernet \u2014 Ufficio': [address('172.16.0.9')], // em dash
+    '\u0421\u0435\u0442\u044c': [address('10.8.0.6')] // Cyrillic 'network'
+  }
+
+  it('maps route addresses to non-ASCII adapter names unchanged', () => {
+    expect(interfaceWithAddress(localized, '10.0.0.5')).toBe('Connessione alla rete locale (LAN) 2')
+    expect(interfaceWithAddress(localized, '192.168.1.23')).toBe('Wi\u2011Fi')
+    expect(interfaceWithAddress(localized, '172.16.0.9')).toBe('Ethernet \u2014 Ufficio')
+    expect(interfaceWithAddress(localized, '10.8.0.6')).toBe('\u0421\u0435\u0442\u044c')
+  })
+
+  it('resolves the Windows default route to a non-ASCII adapter name', async () => {
+    vi.mocked(os.networkInterfaces).mockReturnValue(localized)
+    vi.mocked(execFile).mockImplementation(((...args: unknown[]) => {
+      const done = args.at(-1) as (error: null, result: { stdout: string }) => void
+      done(null, { stdout: NETSTAT })
+    }) as never)
+    // The lowest-metric default route goes out through 10.8.0.6
+    expect(await resolveDefaultInterface('win32')).toBe('\u0421\u0435\u0442\u044c')
+    expect(execFile).toHaveBeenCalledWith(
+      'netstat',
+      ['-r'],
+      expect.anything(),
+      expect.any(Function)
+    )
   })
 })
 

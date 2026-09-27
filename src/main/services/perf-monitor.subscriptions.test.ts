@@ -207,6 +207,55 @@ describe('shared performance snapshots', () => {
     off()
   })
 
+  it('keeps the shared network reading when the page stops while another subscriber stays', async () => {
+    vi.useFakeTimers()
+    network.read.mockResolvedValue({ rxBytesPerSec: 2048, txBytesPerSec: 512 })
+    const service = new PerfMonitorService()
+    const listener = vi.fn()
+    const off = service.subscribeSnapshots(listener)
+    const sender = { isDestroyed: () => false, send: vi.fn() }
+    await service.startMonitoring(sender as unknown as Electron.WebContents)
+    await vi.advanceTimersByTimeAsync(2000)
+    expect(network.read).toHaveBeenCalledTimes(1)
+    service.stopMonitoring()
+    // The timer keeps running for the subscriber: nothing about the network restarts
+    expect(network.reset).not.toHaveBeenCalled()
+    const count = listener.mock.calls.length
+    await vi.advanceTimersByTimeAsync(3000)
+    expect(listener).toHaveBeenCalledTimes(count + 3)
+    for (const [snapshot] of listener.mock.calls.slice(count))
+      expect(snapshot.network).toEqual({ rxBytesPerSec: 2048, txBytesPerSec: 512 })
+    // The page comes back: readings continue from the same baseline
+    await service.startMonitoring(sender as unknown as Electron.WebContents)
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(network.read).toHaveBeenCalledTimes(2)
+    expect(network.reset).not.toHaveBeenCalled()
+    service.stopMonitoring()
+    off()
+    // Only when the shared timer really stops does the next session prime again
+    expect(network.reset).toHaveBeenCalledTimes(1)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('keeps disk and network polling when a CPU sample fails after priming', async () => {
+    vi.useFakeTimers()
+    vi.mocked(si.fsStats).mockResolvedValue({ rx_sec: 1, wx_sec: 2 } as never)
+    const service = new PerfMonitorService()
+    const sender = { isDestroyed: () => false, send: vi.fn() }
+    await service.startMonitoring(sender as unknown as Electron.WebContents)
+    await vi.advanceTimersByTimeAsync(0)
+    expect(network.read).not.toHaveBeenCalled()
+    // Counters become unusable right after priming: no CPU reading at all
+    vi.mocked(os.cpus).mockReturnValue([
+      { model: 'Broken CPU', speed: 0, times: { user: -1, idle: 0, nice: 0, sys: 0, irq: 0 } }
+    ])
+    await vi.advanceTimersByTimeAsync(FIRST_SAMPLE_MS)
+    expect(sender.send).not.toHaveBeenCalledWith('perf:snapshot', expect.anything())
+    expect(network.read).toHaveBeenCalledTimes(1)
+    expect(si.fsStats).toHaveBeenCalledTimes(1)
+    service.stopMonitoring()
+  })
+
   it('keeps CPU and memory updating while disk and network probes never settle', async () => {
     vi.useFakeTimers()
     vi.mocked(si.fsStats).mockImplementation(() => new Promise(() => {}))

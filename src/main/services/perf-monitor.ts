@@ -44,6 +44,8 @@ export class PerfMonitorService {
   private processesRunning = false
   private readonly cpuSampler = new CpuTimeSampler()
   private snapshotGeneration = 0
+  // The first tick after the timer starts only takes the CPU baseline
+  private primingTick = false
   // Network counters cost a child process: poll every 5s, reuse in between
   private readonly network = new NetworkThroughput()
   private cachedNetworkStats = { rxBytesPerSec: 0, txBytesPerSec: 0 }
@@ -177,8 +179,6 @@ export class PerfMonitorService {
     }
     this.sender = null
     this.lastProcessList = null
-    // The next page visit primes network rates instead of averaging over the pause
-    this.network.reset()
     this.stopUnusedSnapshotTimer()
   }
 
@@ -196,6 +196,7 @@ export class PerfMonitorService {
     if (this.fastTimer || this.firstSampleTimer) return
     this.snapshotGeneration++
     this.cpuSampler.reset()
+    this.primingTick = true
     this.firstReadingWaiters ??= []
     // Prime now and read shortly after instead of a full second later, then every second
     this.firstSampleTimer = setTimeout(() => {
@@ -217,6 +218,8 @@ export class PerfMonitorService {
     this.cpuSampler.reset()
     this.lastNetworkPoll = -Infinity
     this.lastDiskPoll = -Infinity
+    // The next session primes network rates instead of averaging over the pause
+    this.network.reset()
     this.releaseFirstReadingWaiters()
   }
 
@@ -431,6 +434,8 @@ export class PerfMonitorService {
     if (this.snapshotRunning) return
     this.snapshotRunning = true
     const generation = this.snapshotGeneration
+    const priming = this.primingTick
+    this.primingTick = false
 
     try {
       // On Windows, si.mem() costs ~290ms per call — use os.totalmem()/os.freemem()
@@ -483,13 +488,16 @@ export class PerfMonitorService {
         this.sender.send(IPC.PERF_SNAPSHOT, snapshot)
       }
       for (const listener of this.snapshotListeners) listener(snapshot)
-      // Probes that spawn child processes start once a reading is out, never on the priming tick
+      // One-off probes that spawn child processes start once a reading is out
       this.releaseFirstReadingWaiters()
-      this.pollSlowMetrics(performance.now())
     } catch {
       // Silently skip failed ticks
     } finally {
       this.snapshotRunning = false
+      // Disk and network keep their cadence even on a tick without a CPU reading,
+      // but never spawn on the priming tick, in front of the first value
+      if (!priming && generation === this.snapshotGeneration)
+        this.pollSlowMetrics(performance.now())
     }
   }
 
