@@ -30,8 +30,21 @@ vi.mock('./elevation', () => ({ isAdmin: () => false }))
 vi.mock('./settings-store', () => ({
   getSettings: () => ({ windowsPackageManagers: ['winget'] })
 }))
+// Upgrades run through the install runner; keep its real output parser
+const mockRunInstall = vi.fn()
+vi.mock('./install-runner', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./install-runner')>()
+  return { ...actual, runInstallCommand: (...args: unknown[]) => mockRunInstall(...args) }
+})
 
-import { checkForUpdates, resetWingetCache, runUpdates } from './software-updater'
+import {
+  checkForUpdates,
+  resetStillInstalling,
+  resetWingetCache,
+  runUpdates
+} from './software-updater'
+import type { InstallRun, InstallRunOptions } from './install-runner'
+import type { UpdateProgress } from '../../shared/types'
 
 type ExecCb = (err: unknown, stdout: string, stderr: string) => void
 
@@ -39,7 +52,43 @@ interface Scripted {
   stdout?: string
   /** Reject with this error (its stdout is attached like execFile does). */
   error?: Record<string, unknown>
+  /** The install runner stopped waiting; the process is still going. */
+  timedOut?: boolean
+  /** Output streamed to the runner's onOutput before it settles. */
+  chunks?: string[]
+  /** When a process left running (timedOut) exits; never, by default. */
+  exited?: Promise<void>
 }
+
+/** The install runner's view of a scripted response. */
+function toInstallRun(s: Scripted): InstallRun {
+  const stdout = s.stdout ?? ''
+  const exited = Promise.resolve()
+  if (s.timedOut) {
+    return {
+      code: null,
+      stdout,
+      stderr: '',
+      timedOut: true,
+      exited: s.exited ?? new Promise<void>(() => {})
+    }
+  }
+  if (!s.error) return { code: 0, stdout, stderr: '', timedOut: false, exited }
+  if (typeof s.error.code === 'number') {
+    return { code: s.error.code, stdout, stderr: '', timedOut: false, exited }
+  }
+  return {
+    code: null,
+    stdout,
+    stderr: '',
+    timedOut: false,
+    error: Object.assign(new Error('failed'), { code: s.error.code as string }),
+    exited
+  }
+}
+
+/** Printed by the elevation wrapper once Windows started the elevated process. */
+const ELEVATED_STARTED = 'SSC-ELEVATED-PROCESS-STARTED\r\n'
 
 /** Route each winget invocation to a scripted response keyed by subcommand. */
 function scriptWinget(responses: Record<string, Scripted>): void {
@@ -78,6 +127,8 @@ beforeEach(() => {
   Object.defineProperty(process, 'platform', { value: 'win32' })
   resetWingetCache()
   mockExecFile.mockReset()
+  mockRunInstall.mockReset()
+  resetStillInstalling()
 })
 
 afterEach(() => {
@@ -221,12 +272,14 @@ describe('runUpdates (winget)', () => {
   interface Call {
     file: string
     args: string[]
+    opts?: InstallRunOptions
   }
 
   /**
    * Script winget: `upgrade <id>` runs through `attempts` in order (the last
    * one repeats), the bare `upgrade` rescan returns `rescan`, and the
-   * elevated PowerShell run returns `elevatedRun`.
+   * elevated PowerShell run returns `elevatedRun`. Upgrades go through the
+   * install runner, everything else through execFile; both share the script.
    */
   function scriptUpgrade(
     attempts: Scripted[],
@@ -235,13 +288,16 @@ describe('runUpdates (winget)', () => {
   ): Call[] {
     const calls: Call[] = []
     let attempt = 0
+    const respond = (file: string, args: string[]): Scripted => {
+      if (file === 'powershell.exe') return elevatedRun
+      if (args[0] === '--version') return { stdout: 'v1.9.0' }
+      if (args[0] === 'upgrade' && args[1]?.startsWith('--')) return rescan
+      if (args[0] === 'upgrade') return attempts[Math.min(attempt++, attempts.length - 1)]
+      return { stdout: '' }
+    }
     mockExecFile.mockImplementation((file: string, args: string[], _o: unknown, cb: ExecCb) => {
       calls.push({ file, args })
-      let scripted: Scripted = { stdout: '' }
-      if (file === 'powershell.exe') scripted = elevatedRun
-      else if (args[0] === '--version') scripted = { stdout: 'v1.9.0' }
-      else if (args[0] === 'upgrade' && args[1]?.startsWith('--')) scripted = rescan
-      else if (args[0] === 'upgrade') scripted = attempts[Math.min(attempt++, attempts.length - 1)]
+      const scripted = respond(file, args)
       if (scripted.error) {
         cb(
           Object.assign(new Error('failed'), { stdout: scripted.stdout ?? '' }, scripted.error),
@@ -252,19 +308,29 @@ describe('runUpdates (winget)', () => {
         cb(null, scripted.stdout ?? '', '')
       }
     })
+    mockRunInstall.mockImplementation(
+      async (file: string, args: string[], opts: InstallRunOptions) => {
+        calls.push({ file, args, opts })
+        const scripted = respond(file, args)
+        for (const chunk of scripted.chunks ?? []) opts.onOutput?.(chunk)
+        return toInstallRun(scripted)
+      }
+    )
     return calls
   }
 
   const upgradeCalls = (calls: Call[]): Call[] =>
     calls.filter((c) => c.args[0] === 'upgrade' && !c.args[1]?.startsWith('--'))
   const elevated = (calls: Call[]): boolean => calls.some((c) => c.file === 'powershell.exe')
-  const update = (id = 'Recol.DLSSUpdater') => runUpdates([{ id, source: 'winget' }], () => {})
+  const update = (id = 'Recol.DLSSUpdater', name?: string, onProgress = () => {}) =>
+    runUpdates([{ id, source: 'winget', ...(name ? { name } : {}) }], onProgress)
+  const DLSS = { appId: 'Recol.DLSSUpdater', name: 'Recol.DLSSUpdater', source: 'winget' }
 
   it('counts a clean exit as success whatever language winget speaks', async () => {
     const calls = scriptUpgrade([{ stdout: ITALIAN_SUCCESS }])
 
     const result = await update()
-    expect(result).toEqual({ succeeded: 1, failed: 0, errors: [] })
+    expect(result).toEqual({ succeeded: 1, failed: 0, updated: [DLSS], pending: [], errors: [] })
     expect(upgradeCalls(calls)).toHaveLength(1)
   })
 
@@ -281,7 +347,7 @@ describe('runUpdates (winget)', () => {
     ])
 
     const result = await update()
-    expect(result).toEqual({ succeeded: 1, failed: 0, errors: [] })
+    expect(result).toEqual({ succeeded: 1, failed: 0, updated: [DLSS], pending: [], errors: [] })
     expect(upgradeCalls(calls)).toHaveLength(1)
   })
 
@@ -316,7 +382,7 @@ describe('runUpdates (winget)', () => {
     })
 
     const result = await update()
-    expect(result).toEqual({ succeeded: 1, failed: 0, errors: [] })
+    expect(result).toEqual({ succeeded: 1, failed: 0, updated: [DLSS], pending: [], errors: [] })
   })
 
   it('accepts a reboot-pending exit from the elevated run', async () => {
@@ -328,7 +394,363 @@ describe('runUpdates (winget)', () => {
     )
 
     const result = await update()
-    expect(result).toEqual({ succeeded: 1, failed: 0, errors: [] })
+    expect(result).toEqual({ succeeded: 1, failed: 0, updated: [DLSS], pending: [], errors: [] })
     expect(upgradeCalls(calls).some((c) => c.args.includes('--force'))).toBe(false)
+  })
+
+  // A large installer (PowerToys from the Store) outlived the old 10-minute
+  // timeout: winget was killed, its installer kept running orphaned, and the
+  // --force retry reported "no applicable update" — counted as a success while
+  // the install was still going.
+  it('gives an install up to 30 minutes', async () => {
+    const calls = scriptUpgrade([{ stdout: ITALIAN_SUCCESS }])
+
+    await update()
+    expect(upgradeCalls(calls)[0].opts?.waitLimitMs).toBe(30 * 60 * 1000)
+  })
+
+  it('reports an install that outlasts the wait as still running, without retrying it', async () => {
+    const calls = scriptUpgrade([
+      { stdout: "Avvio dell'installazione del pacchetto in corso...\r\n", timedOut: true }
+    ])
+
+    const result = await update('XP89DCGQ3K6VLD', 'Microsoft PowerToys')
+    expect(result).toEqual({
+      succeeded: 0,
+      failed: 0,
+      updated: [],
+      pending: [{ appId: 'XP89DCGQ3K6VLD', name: 'Microsoft PowerToys', source: 'winget' }],
+      errors: []
+    })
+    expect(upgradeCalls(calls)).toHaveLength(1)
+    expect(elevated(calls)).toBe(false)
+  })
+
+  it('does not force a retry while an elevated install is still running', async () => {
+    const calls = scriptUpgrade(
+      [{ stdout: 'Accesso negato.\r\n', error: { code: 0x80070005 } }],
+      { stdout: '' },
+      { timedOut: true, chunks: [ELEVATED_STARTED] }
+    )
+
+    const result = await update()
+    expect(result.pending).toEqual([DLSS])
+    expect(result.failed).toBe(0)
+    expect(upgradeCalls(calls).some((c) => c.args.includes('--force'))).toBe(false)
+    const elevatedRun = calls.find((c) => c.file === 'powershell.exe')
+    expect(elevatedRun?.opts?.waitLimitMs).toBe(30 * 60 * 1000)
+  })
+
+  // Until the UAC prompt is accepted nothing installs: an unanswered prompt
+  // is a failure, and a --force retry could run alongside a late approval
+  it('gives up on an unanswered UAC prompt, without calling it installing or retrying', async () => {
+    const calls = scriptUpgrade(
+      [{ stdout: 'Accesso negato.\r\n', error: { code: 0x80070005 } }],
+      { stdout: '' },
+      { timedOut: true }
+    )
+
+    const result = await update()
+    expect(result.pending).toEqual([])
+    expect(result.errors).toEqual([{ ...DLSS, reason: 'Administrator approval was not given' }])
+    expect(upgradeCalls(calls).some((c) => c.args.includes('--force'))).toBe(false)
+  })
+
+  it('runs winget detached, so an install left running outlives the app', async () => {
+    const calls = scriptUpgrade([{ stdout: ITALIAN_SUCCESS }])
+
+    await update()
+    expect(upgradeCalls(calls)[0].opts?.detached).toBe(true)
+  })
+
+  it('replaces a failed attempt’s last line with an administrator notice while elevated', async () => {
+    scriptUpgrade(
+      [
+        {
+          stdout: 'Programma di installazione non riuscito: 1603\r\n',
+          chunks: ['Programma di installazione non riuscito: 1603\r\n'],
+          error: { code: 1603 }
+        }
+      ],
+      { stdout: '' },
+      { stdout: '', chunks: [ELEVATED_STARTED] }
+    )
+    const events: UpdateProgress[] = []
+
+    await update('Recol.DLSSUpdater', 'DLSS Updater', (p) => events.push(p))
+
+    const stale = events.findIndex((e) => e.detail?.includes('1603'))
+    const elevatedEvent = events.findIndex((e) => e.elevated)
+    expect(stale).toBeGreaterThanOrEqual(0)
+    expect(elevatedEvent).toBeGreaterThan(stale)
+    expect(events[elevatedEvent].detail).toBeUndefined()
+  })
+
+  it('reports a forced retry that outlasts the wait as still running', async () => {
+    scriptUpgrade(
+      [
+        { stdout: 'Programma di installazione non riuscito: 1603\r\n', error: { code: 1603 } },
+        { stdout: '', timedOut: true }
+      ],
+      { stdout: UPGRADE_TABLE.replace('GitHub.cli', 'Recol.DLSSUpdater') }
+    )
+
+    const result = await update()
+    expect(result.pending).toEqual([DLSS])
+    expect(result.errors).toEqual([])
+  })
+
+  it('names each package in results and progress, falling back to its id', async () => {
+    scriptUpgrade([{ stdout: "L'applicazione è in esecuzione.\r\n", error: { code: 0x8a150101 } }])
+    const events: UpdateProgress[] = []
+
+    const failed = await update('XP89DCGQ3K6VLD', 'Microsoft PowerToys', (p) => events.push(p))
+    expect(failed.errors[0]).toMatchObject({ appId: 'XP89DCGQ3K6VLD', name: 'Microsoft PowerToys' })
+    expect(events.map((e) => e.currentAppName)).toEqual([
+      'Microsoft PowerToys',
+      'Microsoft PowerToys'
+    ])
+
+    scriptUpgrade([{ stdout: ITALIAN_SUCCESS }])
+    const unnamed = await update('XP89DCGQ3K6VLD')
+    expect(unnamed.updated[0].name).toBe('XP89DCGQ3K6VLD')
+  })
+
+  it('streams what winget is doing into the progress events', async () => {
+    scriptUpgrade([
+      {
+        stdout: ITALIAN_SUCCESS,
+        chunks: [
+          'Download in corso https://example.com/file\r\n',
+          '  ████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  1.00 MB / 4.00 MB'
+        ]
+      }
+    ])
+    const events: UpdateProgress[] = []
+
+    await update('Recol.DLSSUpdater', 'DLSS Updater', (p) => events.push(p))
+
+    const running = events.filter((e) => e.status === 'in-progress')
+    expect(running[0]).toMatchObject({ current: 1, total: 1, currentAppName: 'DLSS Updater' })
+    expect(typeof running[0].startedAt).toBe('number')
+    expect(running).toContainEqual(
+      expect.objectContaining({ detail: 'Download in corso', stepPercent: 25 })
+    )
+    // Every event for the item carries the same start time
+    expect(new Set(events.map((e) => e.startedAt)).size).toBe(1)
+    expect(events[events.length - 1]).toMatchObject({ status: 'done', percent: 100 })
+  })
+
+  it('keeps the status line on screen through a long stretch of spinner output', async () => {
+    const spinner = ['\r  -', '\r  \\', '\r  |', '\r  /'].join('').repeat(1500)
+    scriptUpgrade([
+      {
+        stdout: ITALIAN_SUCCESS,
+        chunks: ["Avvio dell'installazione del pacchetto in corso...\r\n", spinner, spinner]
+      }
+    ])
+    const events: UpdateProgress[] = []
+
+    await update('Recol.DLSSUpdater', 'DLSS Updater', (p) => events.push(p))
+
+    const withDetail = events.filter((e) => e.status === 'in-progress' && e.detail)
+    expect(withDetail).toHaveLength(1)
+    expect(withDetail[0].detail).toBe("Avvio dell'installazione del pacchetto in corso...")
+  })
+
+  /** Script upgrades per package id: each id runs through its own attempts. */
+  function scriptById(byId: Record<string, Scripted[]>): Call[] {
+    const calls: Call[] = []
+    const next: Record<string, number> = {}
+    const respond = (file: string, args: string[]): Scripted => {
+      if (args[0] === '--version') return { stdout: 'v1.9.0' }
+      if (file === 'powershell.exe' || args[1]?.startsWith('--')) return { stdout: '' }
+      const attempts = byId[args[1]] ?? [{ stdout: '' }]
+      const i = next[args[1]] ?? 0
+      next[args[1]] = i + 1
+      return attempts[Math.min(i, attempts.length - 1)]
+    }
+    mockExecFile.mockImplementation((file: string, args: string[], _o: unknown, cb: ExecCb) => {
+      calls.push({ file, args })
+      cb(null, respond(file, args).stdout ?? '', '')
+    })
+    mockRunInstall.mockImplementation(
+      async (file: string, args: string[], opts: InstallRunOptions) => {
+        calls.push({ file, args, opts })
+        const scripted = respond(file, args)
+        for (const chunk of scripted.chunks ?? []) opts.onOutput?.(chunk)
+        return toInstallRun(scripted)
+      }
+    )
+    return calls
+  }
+
+  // winget runs one install at a time: behind an install left running, every
+  // other package would queue for the whole wait and then be "still running" too
+  it('does not queue other winget packages behind an install left running', async () => {
+    const calls = scriptById({
+      XP89DCGQ3K6VLD: [{ stdout: '', timedOut: true }],
+      'Git.Git': [{ stdout: ITALIAN_SUCCESS }],
+      git: [{ stdout: 'Chocolatey upgraded 0/1 packages.' }]
+    })
+    const events: UpdateProgress[] = []
+
+    const result = await runUpdates(
+      [
+        { id: 'XP89DCGQ3K6VLD', source: 'msstore', name: 'Microsoft PowerToys' },
+        { id: 'Git.Git', source: 'winget', name: 'Git' },
+        { id: 'git', source: 'choco', name: 'Git (choco)' }
+      ],
+      (p) => events.push(p)
+    )
+
+    expect(result.pending).toEqual([
+      { appId: 'XP89DCGQ3K6VLD', name: 'Microsoft PowerToys', source: 'msstore' }
+    ])
+    expect(result.updated).toEqual([])
+    expect(result.errors).toEqual([
+      {
+        appId: 'Git.Git',
+        name: 'Git',
+        source: 'winget',
+        reason:
+          'Not started: Microsoft PowerToys is still installing — update again once it finishes'
+      },
+      {
+        appId: 'git',
+        name: 'Git (choco)',
+        source: 'choco',
+        reason: 'Chocolatey upgraded 0/1 packages.'
+      }
+    ])
+    // Git.Git was never handed to winget; the choco package was
+    expect(upgradeCalls(calls).map((c) => [c.file, c.args[1]])).toEqual([
+      ['winget', 'XP89DCGQ3K6VLD'],
+      ['choco', 'git'],
+      ['choco', 'git']
+    ])
+    expect(events.filter((e) => e.status !== 'in-progress').map((e) => e.status)).toEqual([
+      'pending',
+      'failed',
+      'failed'
+    ])
+    const choco = events.find((e) => e.currentApp === 'git')
+    expect(choco).toMatchObject({ current: 3, total: 3, currentAppName: 'Git (choco)' })
+    expect(choco?.detail).toBeUndefined()
+  })
+
+  it('never starts a package that is still installing from an earlier run', async () => {
+    let finish: () => void = () => {}
+    const exited = new Promise<void>((r) => (finish = r))
+    const calls = scriptById({
+      XP89DCGQ3K6VLD: [{ stdout: '', timedOut: true, exited }, { stdout: ITALIAN_SUCCESS }],
+      'Git.Git': [{ stdout: ITALIAN_SUCCESS }]
+    })
+    const powertoys = { id: 'XP89DCGQ3K6VLD', source: 'msstore', name: 'Microsoft PowerToys' }
+    const git = { id: 'Git.Git', source: 'winget', name: 'Git' }
+
+    await runUpdates([powertoys], () => {})
+    const again = await runUpdates([powertoys], () => {})
+    const other = await runUpdates([git], () => {})
+    expect(again.pending).toHaveLength(1)
+    expect(other.errors[0].reason).toContain('Microsoft PowerToys is still installing')
+    expect(upgradeCalls(calls)).toHaveLength(1)
+
+    // Once it exits, both can run again
+    finish()
+    await exited
+    await Promise.resolve()
+    const later = await runUpdates([powertoys, git], () => {})
+    expect(later.updated.map((u) => u.appId)).toEqual(['XP89DCGQ3K6VLD', 'Git.Git'])
+  })
+})
+
+describe('runUpdates (choco)', () => {
+  interface ChocoCall {
+    file: string
+    args: string[]
+    opts?: InstallRunOptions
+  }
+
+  /** choco and its elevated PowerShell wrapper run through `attempts` in call order. */
+  function scriptChoco(attempts: Scripted[]): ChocoCall[] {
+    const calls: ChocoCall[] = []
+    let attempt = 0
+    const respond = (): Scripted => attempts[Math.min(attempt++, attempts.length - 1)]
+    mockRunInstall.mockImplementation(
+      async (file: string, args: string[], opts: InstallRunOptions) => {
+        calls.push({ file, args, opts })
+        const scripted = respond()
+        for (const chunk of scripted.chunks ?? []) opts.onOutput?.(chunk)
+        return toInstallRun(scripted)
+      }
+    )
+    mockExecFile.mockImplementation((file: string, args: string[], _o: unknown, cb: ExecCb) => {
+      calls.push({ file, args })
+      cb(null, '', '')
+    })
+    return calls
+  }
+
+  const GIT = { appId: 'git', name: 'Git', source: 'choco' }
+  const update = () => runUpdates([{ id: 'git', source: 'choco', name: 'Git' }], () => {})
+  const DENIED = { stdout: "Access to the path 'C:\\ProgramData\\chocolatey\\lib' is denied." }
+
+  it('reports an upgrade that outlasts the wait as still running, without retrying it', async () => {
+    const calls = scriptChoco([
+      { stdout: 'Progress: Downloading git 2.45.1... 45%', timedOut: true }
+    ])
+
+    const result = await update()
+    expect(result.pending).toEqual([GIT])
+    expect(result.failed).toBe(0)
+    expect(calls).toHaveLength(1)
+    // Waited as long as winget is, but not detached: choco prints nothing without a console
+    expect(calls[0].opts?.waitLimitMs).toBe(30 * 60 * 1000)
+    expect(calls[0].opts?.detached).toBeFalsy()
+  })
+
+  it('does not force a retry while an elevated upgrade is still running', async () => {
+    const calls = scriptChoco([DENIED, { timedOut: true, chunks: [ELEVATED_STARTED] }])
+
+    const result = await update()
+    expect(result.pending).toEqual([GIT])
+    expect(result.failed).toBe(0)
+    expect(calls.map((c) => c.file)).toEqual(['choco', 'powershell.exe'])
+    expect(calls[1].opts?.waitLimitMs).toBe(30 * 60 * 1000)
+  })
+
+  it('gives up on an unanswered UAC prompt without retrying', async () => {
+    const calls = scriptChoco([DENIED, { timedOut: true }])
+
+    const result = await update()
+    expect(result.pending).toEqual([])
+    expect(result.errors).toEqual([{ ...GIT, reason: 'Administrator approval was not given' }])
+    expect(calls.map((c) => c.file)).toEqual(['choco', 'powershell.exe'])
+  })
+
+  it('reports a forced retry that outlasts the wait as still running', async () => {
+    const calls = scriptChoco([
+      { stdout: 'Chocolatey upgraded 0/1 packages.' },
+      { stdout: '', timedOut: true }
+    ])
+
+    const result = await update()
+    expect(result.pending).toEqual([GIT])
+    expect(result.errors).toEqual([])
+    expect(calls.map((c) => c.args.includes('--force'))).toEqual([false, true])
+  })
+
+  it('names an upgraded package in the result', async () => {
+    scriptChoco([{ stdout: 'Chocolatey upgraded 1/1 packages.' }])
+
+    const result = await update()
+    expect(result).toEqual({
+      succeeded: 1,
+      failed: 0,
+      updated: [{ appId: 'git', name: 'Git', source: 'choco' }],
+      pending: [],
+      errors: []
+    })
   })
 })

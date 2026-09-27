@@ -722,9 +722,9 @@ describe('groupWindowsUpdateItems', () => {
       { id: 'git', source: 'scoop' },
       { id: 'vscode', source: 'winget' }
     ])
-    expect(groups.get('choco')).toEqual([{ id: 'git', source: 'choco' }])
-    expect(groups.get('scoop')).toEqual([{ id: 'git', source: 'scoop' }])
-    expect(groups.get('winget')).toEqual([{ id: 'vscode', source: 'winget' }])
+    expect(groups.get('choco')).toEqual([{ id: 'git', source: 'choco', name: 'git' }])
+    expect(groups.get('scoop')).toEqual([{ id: 'git', source: 'scoop', name: 'git' }])
+    expect(groups.get('winget')).toEqual([{ id: 'vscode', source: 'winget', name: 'vscode' }])
   })
 
   it('routes a winget-owned non-manager source (msstore) through winget but preserves the original source', () => {
@@ -732,12 +732,25 @@ describe('groupWindowsUpdateItems', () => {
     // routed under winget for the actual upgrade pipeline...
     expect(groups.has('winget')).toBe(true)
     // ...but the original source is kept so failures match the renderer's key
-    expect(groups.get('winget')).toEqual([{ id: 'SomeStoreApp', source: 'msstore' }])
+    expect(groups.get('winget')).toEqual([
+      { id: 'SomeStoreApp', source: 'msstore', name: 'SomeStoreApp' }
+    ])
   })
 
   it('defaults an untagged/empty source to winget for both routing and reporting', () => {
     const groups = groupWindowsUpdateItems([{ id: 'legacy', source: '' }])
-    expect(groups.get('winget')).toEqual([{ id: 'legacy', source: 'winget' }])
+    expect(groups.get('winget')).toEqual([{ id: 'legacy', source: 'winget', name: 'legacy' }])
+  })
+
+  it('carries the display name, falling back to the id when it is blank', () => {
+    const groups = groupWindowsUpdateItems([
+      { id: 'XP89DCGQ3K6VLD', source: 'msstore', name: 'Microsoft PowerToys' },
+      { id: 'Git.Git', source: 'winget', name: '  ' }
+    ])
+    expect(groups.get('winget')).toEqual([
+      { id: 'XP89DCGQ3K6VLD', source: 'msstore', name: 'Microsoft PowerToys' },
+      { id: 'Git.Git', source: 'winget', name: 'Git.Git' }
+    ])
   })
 })
 

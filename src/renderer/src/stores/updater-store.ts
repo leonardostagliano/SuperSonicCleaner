@@ -3,9 +3,9 @@ import type {
   PackageManagerStatus,
   UpdatableApp,
   UpToDateApp,
-  UpdateProgress,
-  UpdateResult
+  UpdateProgress
 } from '../../../shared/types'
+import type { UpdateSummary } from '../lib/update-summary'
 
 type SortField = 'name' | 'severity' | 'source'
 type SeverityFilter = 'all' | 'major' | 'minor' | 'patch'
@@ -35,7 +35,8 @@ interface SoftwareUpdaterState {
   loading: boolean
   updating: boolean
   progress: UpdateProgress | null
-  updateResult: UpdateResult | null
+  /** Outcome of the last update run; shown until dismissed or a new scan starts */
+  updateSummary: UpdateSummary | null
   error: string | null
   hasChecked: boolean
   packageManagerAvailable: boolean
@@ -51,7 +52,7 @@ interface SoftwareUpdaterState {
   setLoading: (loading: boolean) => void
   setUpdating: (updating: boolean) => void
   setProgress: (progress: UpdateProgress | null) => void
-  setUpdateResult: (result: UpdateResult | null) => void
+  setUpdateSummary: (summary: UpdateSummary | null) => void
   setError: (error: string | null) => void
   setHasChecked: (checked: boolean) => void
   setPackageManagerAvailable: (available: boolean) => void
@@ -90,7 +91,7 @@ export const useUpdaterStore = create<SoftwareUpdaterState>((set, get) => ({
   loading: false,
   updating: false,
   progress: null,
-  updateResult: null,
+  updateSummary: null,
   error: null,
   hasChecked: false,
   packageManagerAvailable: true,
@@ -112,7 +113,7 @@ export const useUpdaterStore = create<SoftwareUpdaterState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
   setUpdating: (updating) => set({ updating }),
   setProgress: (progress) => set({ progress }),
-  setUpdateResult: (updateResult) => set({ updateResult }),
+  setUpdateSummary: (updateSummary) => set({ updateSummary }),
   setError: (error) => set({ error }),
   setHasChecked: (hasChecked) => set({ hasChecked }),
   setPackageManagerAvailable: (packageManagerAvailable) => set({ packageManagerAvailable }),
@@ -189,7 +190,7 @@ export const useUpdaterStore = create<SoftwareUpdaterState>((set, get) => ({
       loading: false,
       updating: false,
       progress: null,
-      updateResult: null,
+      updateSummary: null,
       error: null,
       hasChecked: false,
       packageManagerAvailable: true,

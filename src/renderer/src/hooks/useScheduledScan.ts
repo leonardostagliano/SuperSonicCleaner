@@ -3,9 +3,12 @@ import { toast } from 'sonner'
 import { useScanStore } from '@/stores/scan-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore, refreshSettings } from '@/stores/settings-store'
+import { useUpdaterStore } from '@/stores/updater-store'
 import { ScanStatus } from '@shared/enums'
 import type { ScanResult, ScheduleEntry } from '@shared/types'
 import { formatBytes, formatNumber } from '@/lib/utils'
+import { buildUpdateSummary } from '@/lib/update-summary'
+import { showUpdateSummaryToast } from '@/components/updates/UpdateSummaryToast'
 
 class ScheduleConditionChanged extends Error {}
 interface ScheduleRunPayload {
@@ -268,11 +271,19 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
           const found = result.apps.length
           totalItems += found
           if (payload.autoApply && found > 0) {
-            const items = result.apps.map((a) => ({ id: a.id, source: a.source }))
+            const items = result.apps.map((a) => ({ id: a.id, source: a.source, name: a.name }))
             try {
               await assertAllowed()
               const updateResult = await window.kudu.softwareUpdateRun(items)
-              if (updateResult.failed > 0) status = 'partial'
+              // Same summary as a manual run: the toast names the apps, and the
+              // updates page keeps the full list until it is dismissed
+              const summary = buildUpdateSummary(updateResult, result.apps)
+              const updater = useUpdaterStore.getState()
+              updater.setUpdateSummary(summary)
+              if (summary.updated.length) updater.removeApps(summary.updated.map((e) => e.key))
+              showUpdateSummaryToast(summary)
+              // Installs still running in the background have no outcome yet
+              if (updateResult.failed > 0 || updateResult.pending.length > 0) status = 'partial'
               totalCleaned += updateResult.succeeded
               categoryResults['Software'] = { found, cleaned: updateResult.succeeded, size: 0 }
             } catch (error) {

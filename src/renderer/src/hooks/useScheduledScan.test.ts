@@ -163,3 +163,69 @@ it('files history under the task that actually ran when a workflow stops early',
   expect(mocks.history).toHaveBeenCalledWith(expect.objectContaining({ type: 'registry' }))
   expect(api.scheduleRunComplete).toHaveBeenCalledWith('one', 'partial', 'run-token')
 })
+it('names the apps a scheduled update touched, in a toast that stays and on the updates page', async () => {
+  const { toast } = await import('sonner')
+  const { useUpdaterStore } = await import('@/stores/updater-store')
+  const i18next = (await import('i18next')).default
+  const enUpdates = (await import('@/locales/en/updates.json')).default
+  await i18next.init({
+    lng: 'en',
+    resources: { en: { updates: enUpdates } },
+    ns: ['updates'],
+    defaultNS: 'updates',
+    interpolation: { escapeValue: false }
+  })
+  const app = (id: string, source: string, name: string) => ({
+    id,
+    source,
+    name,
+    currentVersion: '1.0',
+    availableVersion: '2.0',
+    severity: 'major',
+    selected: true
+  })
+  const scan = [
+    app('AnyDesk.AnyDesk', 'winget', 'AnyDesk'),
+    app('XP89DCGQ3K6VLD', 'msstore', 'Microsoft PowerToys')
+  ]
+  const kudu = {
+    ...api,
+    softwareUpdateCheck: vi.fn().mockResolvedValue({ apps: scan }),
+    softwareUpdateRun: vi.fn().mockResolvedValue({
+      succeeded: 1,
+      failed: 0,
+      updated: [{ appId: 'AnyDesk.AnyDesk', name: 'AnyDesk', source: 'winget' }],
+      pending: [{ appId: 'XP89DCGQ3K6VLD', name: 'Microsoft PowerToys', source: 'msstore' }],
+      errors: []
+    })
+  }
+  vi.stubGlobal('window', { kudu })
+  useUpdaterStore.getState().setApps(scan as never)
+
+  await runSchedule({ ...payload, tasks: ['software-update'] })
+
+  // Names go to main, so progress and results can use them
+  expect(kudu.softwareUpdateRun).toHaveBeenCalledWith([
+    { id: 'AnyDesk.AnyDesk', source: 'winget', name: 'AnyDesk' },
+    { id: 'XP89DCGQ3K6VLD', source: 'msstore', name: 'Microsoft PowerToys' }
+  ])
+  // Still installing: a warning that stays until dismissed
+  expect(toast.warning).toHaveBeenCalledWith(
+    '1 of 2 apps updated',
+    expect.objectContaining({ duration: Infinity, closeButton: true })
+  )
+  const options = vi.mocked(toast.warning).mock.calls[0][1] as {
+    description: { props: { children: { props: { children: string } }[] } }
+  }
+  expect(options.description.props.children.map((line) => line.props.children)).toEqual([
+    'Updated: AnyDesk',
+    'Still installing: Microsoft PowerToys'
+  ])
+  const { updateSummary, apps } = useUpdaterStore.getState()
+  expect(updateSummary?.updated.map((e) => e.name)).toEqual(['AnyDesk'])
+  expect(updateSummary?.pending.map((e) => e.name)).toEqual(['Microsoft PowerToys'])
+  // The updated app leaves the list; the one still installing stays
+  expect(apps.map((a) => a.id)).toEqual(['XP89DCGQ3K6VLD'])
+  // An install with no outcome yet is not a clean success
+  expect(kudu.scheduleRunComplete).toHaveBeenCalledWith('one', 'partial', 'run-token')
+})

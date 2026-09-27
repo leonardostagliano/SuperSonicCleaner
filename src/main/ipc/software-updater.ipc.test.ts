@@ -99,6 +99,35 @@ describe('software-updater IPC', () => {
 
   describe('SOFTWARE_UPDATE_RUN', () => {
     const item = (id: string, source = 'winget') => ({ id, source })
+    const EMPTY = { succeeded: 0, failed: 0, updated: [], pending: [], errors: [] }
+
+    it('passes a display name through, stripped of control characters and trimmed', async () => {
+      mockRunUpdates.mockResolvedValue(EMPTY)
+      registerSoftwareUpdaterIpc(() => makeWindow())
+
+      await invoke('software-update:run', [
+        { id: 'XP89DCGQ3K6VLD', source: 'msstore', name: '  Microsoft\u0007PowerToys\n ' },
+        { id: 'long', source: 'winget', name: 'n'.repeat(500) }
+      ])
+      const passed = mockRunUpdates.mock.calls[0][0]
+      expect(passed[0]).toEqual({
+        id: 'XP89DCGQ3K6VLD',
+        source: 'msstore',
+        name: 'Microsoft PowerToys'
+      })
+      expect(passed[1].name).toHaveLength(200)
+    })
+
+    it('drops a display name that is not a non-blank string', async () => {
+      mockRunUpdates.mockResolvedValue(EMPTY)
+      registerSoftwareUpdaterIpc(() => makeWindow())
+
+      await invoke('software-update:run', [
+        { id: 'a', source: 'winget', name: 42 },
+        { id: 'b', source: 'winget', name: '  \t ' }
+      ])
+      expect(mockRunUpdates.mock.calls[0][0]).toEqual([item('a'), item('b')])
+    })
 
     it('passes safe items and sendProgress callback to runUpdates', async () => {
       const expected = { succeeded: 2, failed: 0, errors: [] }
@@ -125,21 +154,21 @@ describe('software-updater IPC', () => {
     it('returns empty result when items is not an array', async () => {
       registerSoftwareUpdaterIpc(() => makeWindow())
       const result = await invoke('software-update:run', 'not-an-array')
-      expect(result).toEqual({ succeeded: 0, failed: 0, errors: [] })
+      expect(result).toEqual(EMPTY)
       expect(mockRunUpdates).not.toHaveBeenCalled()
     })
 
     it('returns empty result when items is an empty array', async () => {
       registerSoftwareUpdaterIpc(() => makeWindow())
       const result = await invoke('software-update:run', [])
-      expect(result).toEqual({ succeeded: 0, failed: 0, errors: [] })
+      expect(result).toEqual(EMPTY)
       expect(mockRunUpdates).not.toHaveBeenCalled()
     })
 
     it('returns empty result when items is null', async () => {
       registerSoftwareUpdaterIpc(() => makeWindow())
       const result = await invoke('software-update:run', null)
-      expect(result).toEqual({ succeeded: 0, failed: 0, errors: [] })
+      expect(result).toEqual(EMPTY)
       expect(mockRunUpdates).not.toHaveBeenCalled()
     })
 

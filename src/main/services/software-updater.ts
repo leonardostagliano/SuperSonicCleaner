@@ -11,14 +11,222 @@ import type {
   UpdateProgress,
   UpdateRequestItem,
   UpdateResult,
+  UpdateResultItem,
   UpdateSeverity,
   WindowsPackageManager
 } from '../../shared/types'
 import { isAdmin } from './elevation'
 import { psUtf8 } from './exec-utf8'
+import { readProgress, runInstallCommand, type InstallRun } from './install-runner'
 import { getSettings } from './settings-store'
 
 const execFileAsync = promisify(execFile)
+
+/**
+ * How long an upgrade is waited on. Large installers can legitimately take
+ * well over ten minutes — an MSI costing thousands of files on a disk shared
+ * with antivirus scanning, say. Once the limit passes the upgrade is reported
+ * as still running and left alone: it is never killed or retried on top of
+ * itself (see install-runner).
+ */
+const UPGRADE_WAIT_LIMIT = 30 * 60 * 1000
+
+/**
+ * How long a UAC prompt may wait for an answer. Until it is accepted nothing
+ * is installing, so running out here is a failure, not "still installing".
+ */
+const ELEVATION_CONSENT_LIMIT = 5 * 60 * 1000
+
+/** Printed by the elevation wrapper once Windows has started the elevated process. */
+const ELEVATED_STARTED = 'SSC-ELEVATED-PROCESS-STARTED'
+
+/** Outcome of upgrading one package. */
+interface UpgradeOutcome {
+  success: boolean
+  error?: string
+  /** Still running when the wait ran out; `exited` settles when it finally ends. */
+  pending?: boolean
+  exited?: Promise<void>
+}
+
+const stillRunning = (exited?: Promise<void>): UpgradeOutcome => ({
+  success: false,
+  pending: true,
+  exited
+})
+
+const APPROVAL_NOT_GIVEN = 'Administrator approval was not given'
+
+/** Receives a package manager's output as it streams in. */
+type OutputSink = (text: string) => void
+
+/** A step update read from a package manager's output. */
+interface StepUpdate {
+  detail?: string
+  stepPercent?: number
+  /** The attempt runs as administrator; Windows may be asking the user to approve it. */
+  elevated?: boolean
+}
+
+/** Where an upgrade pipeline reports what it is doing. */
+interface UpgradeReporter {
+  /** Output of the attempt in progress, as it streams in. */
+  output: OutputSink
+  /** A new attempt starts: the previous attempt's status line no longer applies. */
+  newAttempt: (elevated?: boolean) => void
+}
+
+/** Recent output kept for finding the latest status line behind the progress bars. */
+const OUTPUT_TAIL = 8 * 1024
+
+/**
+ * Turn a package manager's streamed output into step updates: the latest
+ * status line and progress-bar percentage, reported whenever either changes.
+ * The percentage is a whole number, so a step sends at most ~100 updates.
+ */
+function followOutput(report: (step: StepUpdate) => void): UpgradeReporter {
+  let tail = ''
+  let lastDetail: string | undefined
+  let lastPercent: number | undefined
+  return {
+    output: (text) => {
+      tail += text
+      if (tail.length > OUTPUT_TAIL) {
+        // Drop the partial line the cut leaves at the front
+        const cut = tail.slice(-OUTPUT_TAIL)
+        const lineEnd = cut.search(/[\r\n]/)
+        tail = lineEnd >= 0 ? cut.slice(lineEnd + 1) : cut
+      }
+      const read = readProgress(tail)
+      // A tail holding only progress bars still belongs to the last status line
+      const detail = read.detail ?? lastDetail
+      const percent = read.percent
+      if (detail === lastDetail && percent === lastPercent) return
+      lastDetail = detail
+      lastPercent = percent
+      report({ detail, stepPercent: percent })
+    },
+    newAttempt: (elevated = false) => {
+      tail = ''
+      lastDetail = undefined
+      lastPercent = undefined
+      report(elevated ? { elevated: true } : {})
+    }
+  }
+}
+
+/**
+ * Upgrades left running when the wait ran out, by manager, until their
+ * process exits. While one runs, its manager is not started again: the same
+ * package would install twice, and winget (like choco) runs one install at a
+ * time, so any other package would only queue behind it — for the whole wait
+ * — and then be reported as still running too.
+ */
+const stillInstalling = new Map<WindowsPackageManager, Map<string, string>>()
+
+function rememberStillInstalling(
+  manager: WindowsPackageManager,
+  appId: string,
+  name: string,
+  exited: Promise<void>
+): void {
+  let apps = stillInstalling.get(manager)
+  if (!apps) stillInstalling.set(manager, (apps = new Map()))
+  apps.set(appId, name)
+  void exited.then(() => {
+    apps.delete(appId)
+    if (apps.size === 0 && stillInstalling.get(manager) === apps) stillInstalling.delete(manager)
+  })
+}
+
+/** Exported for tests: forget upgrades left running by earlier runs. */
+export function resetStillInstalling(): void {
+  stillInstalling.clear()
+}
+
+/**
+ * Run `exe args` elevated through a UAC prompt and wait for it. The wrapper
+ * prints a marker once Windows has started the elevated process, which tells
+ * "waiting for the user to approve" apart from "installing": an unanswered
+ * prompt is given up on after ELEVATION_CONSENT_LIMIT (`approved: false`),
+ * an approved process gets the full UPGRADE_WAIT_LIMIT. The process's exit
+ * code is passed through.
+ */
+async function runElevated(
+  exe: string,
+  args: string
+): Promise<{ run: InstallRun; approved: boolean }> {
+  // Escape single quotes for PowerShell single-quoted strings ('' is the escape for ')
+  const safeExe = exe.replace(/'/g, "''")
+  const safeArgs = args.replace(/'/g, "''")
+  const consent = new AbortController()
+  let approved = false
+  let seen = ''
+  const consentTimer = setTimeout(() => {
+    if (!approved) consent.abort()
+  }, ELEVATION_CONSENT_LIMIT)
+  const run = await runInstallCommand(
+    'powershell.exe',
+    [
+      '-NoProfile',
+      '-Command',
+      psUtf8(
+        `$p = Start-Process '${safeExe}' -ArgumentList '${safeArgs}' -Verb RunAs -PassThru -WindowStyle Hidden; ` +
+          `if (-not $p) { exit 1 }; $null = $p.Handle; [Console]::Out.WriteLine('${ELEVATED_STARTED}'); ` +
+          `$p.WaitForExit(); exit $p.ExitCode`
+      )
+    ],
+    {
+      waitLimitMs: UPGRADE_WAIT_LIMIT,
+      signal: consent.signal,
+      onOutput: (text) => {
+        if (approved) return
+        seen += text
+        approved = seen.includes(ELEVATED_STARTED)
+        // Keep just enough to catch a marker split across chunks
+        seen = seen.slice(-ELEVATED_STARTED.length)
+      }
+    }
+  )
+  clearTimeout(consentTimer)
+  approved ||= run.stdout.includes(ELEVATED_STARTED)
+  return { run: { ...run, stdout: run.stdout.replace(ELEVATED_STARTED, '') }, approved }
+}
+
+/** Display name for a requested package: the scan's name, else its id. */
+function displayName(item: UpdateRequestItem): string {
+  return item.name?.trim() || item.id
+}
+
+/**
+ * Progress reporter for one package of a batch. Every event carries the
+ * package's name and start time; `in-progress` events count the packages
+ * finished before this one, the others count this one as finished too.
+ */
+function itemProgress(
+  onProgress: (progress: UpdateProgress) => void,
+  item: { appId: string; name: string },
+  position: number,
+  total: number
+): (status: UpdateProgress['status'], step?: StepUpdate) => void {
+  const startedAt = Date.now()
+  return (status, step = {}) => {
+    const finished = status === 'in-progress' ? position - 1 : position
+    onProgress({
+      phase: 'updating',
+      current: position,
+      total,
+      currentApp: item.appId,
+      currentAppName: item.name,
+      percent: Math.round((finished / total) * 100),
+      status,
+      startedAt,
+      ...(step.detail !== undefined ? { detail: step.detail } : {}),
+      ...(step.stepPercent !== undefined ? { stepPercent: step.stepPercent } : {}),
+      ...(step.elevated ? { elevated: true } : {})
+    })
+  }
+}
 
 export function cleanOutput(str: string): string {
   // Strip ANSI escape sequences
@@ -100,6 +308,12 @@ function describeExecError(err: any, fallback: string): string {
   if (err?.killed || err?.signal) return 'timed out'
   if (err?.code === 'ENOENT') return 'command not found'
   return lastOutputLine(err?.stderr || err?.stdout || err?.message || '', fallback)
+}
+
+/** Describe an install run that produced no verdict: missing binary, or last output line. */
+function describeRunFailure(run: InstallRun, fallback: string): string {
+  if (run.error?.code === 'ENOENT') return 'command not found'
+  return lastOutputLine(run.stderr || run.stdout || run.error?.message || '', fallback)
 }
 
 /** Build a single-manager check result with derived counts + status. */
@@ -601,36 +815,40 @@ interface WingetAttempt {
   output: string
   /** winget's exit code as an unsigned HRESULT; undefined if it never exited. */
   code?: number
+  /** Still running when the wait ran out; winget and its installer were left alone. */
+  timedOut?: boolean
+  /** Settles when the process left running exits. */
+  exited?: Promise<void>
 }
 
 /** Attempt a single winget upgrade, judged by exit code first. */
 async function attemptWingetUpgrade(
   appId: string,
-  extraArgs: string[] = []
+  extraArgs: string[] = [],
+  onOutput?: OutputSink
 ): Promise<WingetAttempt> {
   // Validate appId format to prevent argument injection (e.g. --source flags)
   if (!/^[\w][\w.\-]{0,200}$/.test(appId)) {
     return { success: false, output: 'Invalid app ID format' }
   }
   const winget = (await resolveWinget()) ?? 'winget'
-  let upgradeStdout = ''
-  let code: number
-  try {
-    const result = await execFileAsync(
-      winget,
-      ['upgrade', appId, ...WINGET_UPGRADE_ARGS, ...extraArgs],
-      { timeout: 10 * 60 * 1000, maxBuffer: 10 * 1024 * 1024, windowsHide: true }
-    )
-    upgradeStdout = result.stdout
-    code = 0
-  } catch (err: any) {
-    if (typeof err?.code !== 'number') {
-      // Timed out, or never started: there is no verdict to read
-      return { success: false, output: err?.stdout || describeExecError(err, 'Unknown error') }
-    }
-    upgradeStdout = err.stdout ?? ''
-    code = err.code >>> 0
+  const run = await runInstallCommand(
+    winget,
+    ['upgrade', appId, ...WINGET_UPGRADE_ARGS, ...extraArgs],
+    // Detached so an install left running outlives the app: with --silent,
+    // winget installs MSI packages in its own process, and killing it would
+    // cancel the install. winget is fine without a console of its own.
+    { waitLimitMs: UPGRADE_WAIT_LIMIT, onOutput, detached: process.platform === 'win32' }
+  )
+  if (run.timedOut) {
+    return { success: false, output: run.stdout, timedOut: true, exited: run.exited }
   }
+  if (run.code === null) {
+    // Never started: there is no verdict to read
+    return { success: false, output: run.stdout || describeRunFailure(run, 'Unknown error') }
+  }
+  const upgradeStdout = run.stdout
+  const code = run.code >>> 0
 
   if (isWingetUpgradeOk(code)) {
     return { success: true, output: upgradeStdout, code }
@@ -672,10 +890,17 @@ function describeWingetFailure(result: WingetAttempt): string {
   return line.toLowerCase().includes(hex) ? line : `${line} (${hex})`
 }
 
+/** An elevated attempt; `approvalMissing` when the UAC prompt went unanswered. */
+interface ElevatedAttempt {
+  success: boolean
+  output: string
+  timedOut?: boolean
+  exited?: Promise<void>
+  approvalMissing?: boolean
+}
+
 /** Retry a failed upgrade with elevation using PowerShell Start-Process -Verb RunAs */
-async function attemptElevatedUpgrade(
-  appId: string
-): Promise<{ success: boolean; output: string }> {
+async function attemptElevatedUpgrade(appId: string): Promise<ElevatedAttempt> {
   // Validate appId format to prevent injection — winget IDs are alphanumeric with dots, dashes, underscores
   if (!/^[\w][\w.\-]{0,200}$/.test(appId)) {
     return { success: false, output: 'Invalid app ID format' }
@@ -684,30 +909,21 @@ async function attemptElevatedUpgrade(
   try {
     const winget = (await resolveWinget()) ?? 'winget'
     const args = ['upgrade', appId, ...WINGET_UPGRADE_ARGS, '--force'].join(' ')
-    // Escape single quotes for PowerShell single-quoted strings ('' is the escape for ')
-    const safeArgs = args.replace(/'/g, "''")
-    const safeExe = winget.replace(/'/g, "''")
-    // Run winget elevated via Start-Process; -Wait blocks until done, -PassThru gives exit code
-    let stdout = ''
-    try {
-      const result = await execFileAsync(
-        'powershell.exe',
-        [
-          '-NoProfile',
-          '-Command',
-          psUtf8(
-            `$p = Start-Process '${safeExe}' -ArgumentList '${safeArgs}' -Verb RunAs -Wait -PassThru -WindowStyle Hidden; exit $p.ExitCode`
-          )
-        ],
-        { timeout: 5 * 60 * 1000, maxBuffer: 10 * 1024 * 1024, windowsHide: true }
-      )
-      stdout = result.stdout
-    } catch (err: any) {
-      // winget's exit code is passed through, so a reboot-pending success
-      // lands here too — let the rescan below judge it
-      if (typeof err?.code !== 'number' || !isWingetUpgradeOk(err.code)) throw err
-      stdout = err.stdout ?? ''
+    const { run, approved } = await runElevated(winget, args)
+    if (run.timedOut) {
+      // Approved: the elevated winget outlived the wait and is still
+      // installing, leave it be. Not approved: nothing was installed.
+      return approved
+        ? { success: false, output: '', timedOut: true, exited: run.exited }
+        : { success: false, output: APPROVAL_NOT_GIVEN, approvalMissing: true }
     }
+    // winget's exit code is passed through, so a reboot-pending success
+    // lands here too — let the rescan below judge it. Anything else (a
+    // denied UAC prompt included) is a failed attempt.
+    if (run.code === null || !isWingetUpgradeOk(run.code)) {
+      return { success: false, output: describeRunFailure(run, 'Elevated upgrade failed') }
+    }
+    const stdout = run.stdout
     // We can't reliably capture stdout from the elevated process, so verify
     // by checking if winget still lists this app as upgradeable
     let checkStdout: string
@@ -729,19 +945,26 @@ async function attemptElevatedUpgrade(
       output: stillNeedsUpgrade ? 'App still needs upgrade after elevated attempt' : stdout
     }
   } catch (err: any) {
-    // UAC was likely denied by user
+    // The verifying rescan failed
     return { success: false, output: err?.message || 'Elevated upgrade failed' }
   }
 }
 
-/** Run a single app through the winget upgrade pipeline: normal → elevated → force */
+/**
+ * Run a single app through the winget upgrade pipeline: normal → elevated →
+ * force. An attempt still running when the wait runs out ends the pipeline:
+ * a retry would start a second install on top of the one in progress. So
+ * does an unanswered UAC prompt, which could still be accepted later.
+ */
 async function upgradeAppWinget(
   appId: string,
-  alreadyAdmin: boolean
-): Promise<{ success: boolean; error?: string }> {
+  alreadyAdmin: boolean,
+  reporter?: UpgradeReporter
+): Promise<UpgradeOutcome> {
   // First attempt: normal upgrade
-  const result = await attemptWingetUpgrade(appId)
+  const result = await attemptWingetUpgrade(appId, [], reporter?.output)
   if (result.success) return { success: true }
+  if (result.timedOut) return stillRunning(result.exited)
 
   // Installer technology changed, app in use, no network…: retrying can't help
   if (isFinalWingetFailure(result)) {
@@ -750,13 +973,18 @@ async function upgradeAppWinget(
 
   // If not already admin, retry with elevation
   if (!alreadyAdmin && mightNeedElevation(result)) {
+    reporter?.newAttempt(true)
     const elevated = await attemptElevatedUpgrade(appId)
     if (elevated.success) return { success: true }
+    if (elevated.timedOut) return stillRunning(elevated.exited)
+    if (elevated.approvalMissing) return { success: false, error: APPROVAL_NOT_GIVEN }
   }
 
   // If still failed, retry once with --force (handles version mismatch issues)
-  const retryResult = await attemptWingetUpgrade(appId, ['--force'])
+  reporter?.newAttempt()
+  const retryResult = await attemptWingetUpgrade(appId, ['--force'], reporter?.output)
   if (retryResult.success) return { success: true }
+  if (retryResult.timedOut) return stillRunning(retryResult.exited)
 
   // Report the first attempt: the retries' output is less specific
   return { success: false, error: describeWingetFailure(result) }
@@ -896,30 +1124,37 @@ const CHOCO_ELEVATION_HINTS = [
   'elevated permissions'
 ]
 
+interface ChocoAttempt {
+  success: boolean
+  output: string
+  /** Still running when the wait ran out; choco was left alone. */
+  timedOut?: boolean
+  /** Settles when the process left running exits. */
+  exited?: Promise<void>
+  /** The UAC prompt of an elevated attempt went unanswered. */
+  approvalMissing?: boolean
+}
+
 /** Attempt a single choco upgrade and return {success, output} */
 async function attemptChocoUpgrade(
   appId: string,
-  extraArgs: string[] = []
-): Promise<{ success: boolean; output: string }> {
+  extraArgs: string[] = [],
+  onOutput?: OutputSink
+): Promise<ChocoAttempt> {
   if (!CHOCO_ID_PATTERN.test(appId)) {
     return { success: false, output: 'Invalid package ID format' }
   }
-  let upgradeStdout = ''
-  try {
-    // Note: no --limit-output here — verbose output is needed for success/failure pattern detection
-    const result = await execFileAsync('choco', ['upgrade', appId, '-y', ...extraArgs], {
-      timeout: 10 * 60 * 1000,
-      maxBuffer: 10 * 1024 * 1024,
-      windowsHide: true
-    })
-    upgradeStdout = result.stdout
-  } catch (err: any) {
-    if (err?.stdout) {
-      upgradeStdout = err.stdout
-    } else {
-      return { success: false, output: err?.message || 'Unknown error' }
-    }
+  // Note: no --limit-output here — verbose output is needed for success/failure pattern detection.
+  // Not detached: choco prints nothing at all without a console of its own.
+  const run = await runInstallCommand('choco', ['upgrade', appId, '-y', ...extraArgs], {
+    waitLimitMs: UPGRADE_WAIT_LIMIT,
+    onOutput
+  })
+  if (run.timedOut) {
+    return { success: false, output: run.stdout, timedOut: true, exited: run.exited }
   }
+  const upgradeStdout = run.stdout
+  if (!upgradeStdout) return { success: false, output: describeRunFailure(run, 'Unknown error') }
 
   const output = cleanOutput(upgradeStdout).toLowerCase()
   const wasSuccessful = CHOCO_SUCCESS_PATTERNS.some((p) => output.includes(p))
@@ -932,27 +1167,24 @@ async function attemptChocoUpgrade(
 }
 
 /** Retry a failed choco upgrade with elevation using PowerShell Start-Process -Verb RunAs */
-async function attemptElevatedChocoUpgrade(
-  appId: string
-): Promise<{ success: boolean; output: string }> {
+async function attemptElevatedChocoUpgrade(appId: string): Promise<ChocoAttempt> {
   if (!CHOCO_ID_PATTERN.test(appId)) {
     return { success: false, output: 'Invalid package ID format' }
   }
 
   try {
     const args = ['upgrade', appId, '-y', '--force'].join(' ')
-    const safeArgs = args.replace(/'/g, "''")
-    await execFileAsync(
-      'powershell.exe',
-      [
-        '-NoProfile',
-        '-Command',
-        psUtf8(
-          `$p = Start-Process choco -ArgumentList '${safeArgs}' -Verb RunAs -Wait -PassThru -WindowStyle Hidden; exit $p.ExitCode`
-        )
-      ],
-      { timeout: 5 * 60 * 1000, maxBuffer: 10 * 1024 * 1024, windowsHide: true }
-    )
+    const { run, approved } = await runElevated('choco', args)
+    if (run.timedOut) {
+      // Approved: the elevated choco outlived the wait and is still
+      // upgrading, leave it be. Not approved: nothing was installed.
+      return approved
+        ? { success: false, output: '', timedOut: true, exited: run.exited }
+        : { success: false, output: APPROVAL_NOT_GIVEN, approvalMissing: true }
+    }
+    if (run.code !== 0) {
+      return { success: false, output: describeRunFailure(run, 'Elevated upgrade failed') }
+    }
     // Verify by checking if choco still lists this app as outdated
     const checkResult = await execFileAsync('choco', ['outdated', '--limit-output'], {
       timeout: 60_000,
@@ -973,13 +1205,19 @@ async function attemptElevatedChocoUpgrade(
   }
 }
 
-/** Run a single app through the choco upgrade pipeline: normal → elevated → force */
+/**
+ * Run a single app through the choco upgrade pipeline: normal → elevated →
+ * force. As with winget, an attempt still running when the wait runs out is
+ * left alone rather than retried, and so is an unanswered UAC prompt.
+ */
 async function upgradeAppChoco(
   appId: string,
-  alreadyAdmin: boolean
-): Promise<{ success: boolean; error?: string }> {
+  alreadyAdmin: boolean,
+  reporter?: UpgradeReporter
+): Promise<UpgradeOutcome> {
   // First attempt: normal upgrade
-  let result = await attemptChocoUpgrade(appId)
+  let result = await attemptChocoUpgrade(appId, [], reporter?.output)
+  if (result.timedOut) return stillRunning(result.exited)
 
   // If failed and not already admin, check for elevation hints before prompting
   if (!result.success && !alreadyAdmin) {
@@ -989,13 +1227,18 @@ async function upgradeAppChoco(
       CHOCO_FAILURE_PATTERNS.some((p) => lowerOutput.includes(p))
 
     if (looksLikeElevationIssue) {
+      reporter?.newAttempt(true)
       result = await attemptElevatedChocoUpgrade(appId)
+      if (result.timedOut) return stillRunning(result.exited)
+      if (result.approvalMissing) return { success: false, error: APPROVAL_NOT_GIVEN }
     }
   }
 
   // If still failed, retry once with --force (handles version mismatch issues)
   if (!result.success) {
-    const retryResult = await attemptChocoUpgrade(appId, ['--force'])
+    reporter?.newAttempt()
+    const retryResult = await attemptChocoUpgrade(appId, ['--force'], reporter?.output)
+    if (retryResult.timedOut) return stillRunning(retryResult.exited)
     if (retryResult.success) result = retryResult
   }
 
@@ -1422,17 +1665,21 @@ async function checkForUpdatesWindows(): Promise<UpdateCheckResult> {
   }
 }
 
-/** Upgrade a single package with the pipeline appropriate to its manager. */
+/**
+ * Upgrade a single package with the pipeline appropriate to its manager.
+ * winget and choco report their progress to `reporter`; the shim tools do not.
+ */
 function upgradeWindowsApp(
   source: WindowsPackageManager,
   appId: string,
-  alreadyAdmin: boolean
-): Promise<{ success: boolean; error?: string }> {
+  alreadyAdmin: boolean,
+  reporter?: UpgradeReporter
+): Promise<UpgradeOutcome> {
   switch (source) {
     case 'winget':
-      return upgradeAppWinget(appId, alreadyAdmin)
+      return upgradeAppWinget(appId, alreadyAdmin, reporter)
     case 'choco':
-      return upgradeAppChoco(appId, alreadyAdmin)
+      return upgradeAppChoco(appId, alreadyAdmin, reporter)
     case 'scoop':
       return upgradeAppScoop(appId)
     case 'npm':
@@ -1440,11 +1687,6 @@ function upgradeWindowsApp(
   }
 }
 
-/**
- * Update packages spanning multiple managers. Items are grouped by their
- * `source`, then each manager's packages are upgraded in turn while a single
- * progress stream is reported across the whole batch.
- */
 /**
  * Group Windows update items by their routing manager, preserving a stable
  * manager order. Each entry keeps its *original* source so failures can be
@@ -1455,28 +1697,36 @@ function upgradeWindowsApp(
  */
 export function groupWindowsUpdateItems(
   items: UpdateRequestItem[]
-): Map<WindowsPackageManager, Array<{ id: string; source: string }>> {
-  const groups = new Map<WindowsPackageManager, Array<{ id: string; source: string }>>()
+): Map<WindowsPackageManager, Array<{ id: string; source: string; name: string }>> {
+  const groups = new Map<
+    WindowsPackageManager,
+    Array<{ id: string; source: string; name: string }>
+  >()
   for (const item of items) {
     const manager = WINDOWS_MANAGERS.includes(item.source as WindowsPackageManager)
       ? (item.source as WindowsPackageManager)
       : 'winget' // default routing for un-tagged / winget-owned sources (msstore, etc.)
     const list = groups.get(manager) ?? []
-    list.push({ id: item.id, source: item.source || manager })
+    list.push({ id: item.id, source: item.source || manager, name: displayName(item) })
     groups.set(manager, list)
   }
   return groups
 }
 
+/**
+ * Update packages spanning multiple managers. Items are grouped by their
+ * `source`, then each manager's packages are upgraded in turn while a single
+ * progress stream is reported across the whole batch.
+ */
 async function runUpdatesWindows(
   items: UpdateRequestItem[],
   onProgress: (progress: UpdateProgress) => void
 ): Promise<UpdateResult> {
   const alreadyAdmin = isAdmin()
   const total = items.length
-  let completed = 0
-  let succeeded = 0
-  let failed = 0
+  let position = 0
+  const updated: UpdateResultItem[] = []
+  const pending: UpdateResultItem[] = []
   const errors: UpdateResult['errors'] = []
 
   const groups = groupWindowsUpdateItems(items)
@@ -1485,50 +1735,53 @@ async function runUpdatesWindows(
     const entries = groups.get(manager)
     if (!entries?.length) continue
 
-    for (const { id: appId, source: origSource } of entries) {
-      completed++
-      onProgress({
-        phase: 'updating',
-        current: completed,
-        total,
-        currentApp: appId,
-        percent: Math.round(((completed - 1) / total) * 100),
-        status: 'in-progress'
-      })
+    for (const { id: appId, source, name } of entries) {
+      position++
+      const item: UpdateResultItem = { appId, name, source }
+      const report = itemProgress(onProgress, item, position, total)
 
-      const result = await upgradeWindowsApp(manager, appId, alreadyAdmin)
+      // An upgrade of this manager left running (by this run or an earlier
+      // one) is still going: never start the same package twice, and don't
+      // queue others behind it
+      const running = stillInstalling.get(manager)
+      if (running?.has(appId)) {
+        pending.push(item)
+        report('pending')
+        continue
+      }
+      if (running?.size) {
+        const blocker = running.values().next().value
+        errors.push({
+          ...item,
+          reason: `Not started: ${blocker} is still installing — update again once it finishes`
+        })
+        report('failed')
+        continue
+      }
+
+      report('in-progress')
+      const result = await upgradeWindowsApp(
+        manager,
+        appId,
+        alreadyAdmin,
+        followOutput((step) => report('in-progress', step))
+      )
 
       if (result.success) {
-        succeeded++
-        onProgress({
-          phase: 'updating',
-          current: completed,
-          total,
-          currentApp: appId,
-          percent: Math.round((completed / total) * 100),
-          status: 'done'
-        })
+        updated.push(item)
+        report('done')
+      } else if (result.pending) {
+        pending.push(item)
+        if (result.exited) rememberStillInstalling(manager, appId, name, result.exited)
+        report('pending')
       } else {
-        failed++
-        errors.push({
-          appId,
-          name: appId,
-          reason: result.error || 'Upgrade failed',
-          source: origSource
-        })
-        onProgress({
-          phase: 'updating',
-          current: completed,
-          total,
-          currentApp: appId,
-          percent: Math.round((completed / total) * 100),
-          status: 'failed'
-        })
+        errors.push({ ...item, reason: result.error || 'Upgrade failed' })
+        report('failed')
       }
     }
   }
 
-  return { succeeded, failed, errors }
+  return { succeeded: updated.length, failed: errors.length, updated, pending, errors }
 }
 
 // ─── Homebrew (macOS) ───────────────────────────────────────
@@ -1749,53 +2002,31 @@ async function attemptBrewUpgrade(name: string): Promise<{ success: boolean; err
 }
 
 async function runUpdatesBrew(
-  appIds: string[],
+  items: UpdateResultItem[],
   onProgress: (progress: UpdateProgress) => void
 ): Promise<UpdateResult> {
-  let succeeded = 0
-  let failed = 0
+  const updated: UpdateResultItem[] = []
   const errors: UpdateResult['errors'] = []
-  const total = appIds.length
+  const total = items.length
 
   // brew doesn't handle parallel upgrades well — run sequentially
   for (let i = 0; i < total; i++) {
-    const appId = appIds[i]
-    onProgress({
-      phase: 'updating',
-      current: i + 1,
-      total,
-      currentApp: appId,
-      percent: Math.round((i / total) * 100),
-      status: 'in-progress'
-    })
+    const item = items[i]
+    const report = itemProgress(onProgress, item, i + 1, total)
+    report('in-progress')
 
-    const result = await attemptBrewUpgrade(appId)
+    const result = await attemptBrewUpgrade(item.appId)
 
     if (result.success) {
-      succeeded++
-      onProgress({
-        phase: 'updating',
-        current: i + 1,
-        total,
-        currentApp: appId,
-        percent: Math.round(((i + 1) / total) * 100),
-        status: 'done'
-      })
+      updated.push(item)
+      report('done')
     } else {
-      failed++
-      errors.push({ appId, name: appId, reason: result.error || 'Upgrade failed' })
-      onProgress({
-        phase: 'updating',
-        current: i + 1,
-        total,
-        currentApp: appId,
-        percent: Math.round(((i + 1) / total) * 100),
-        status: 'failed'
-      })
+      errors.push({ ...item, reason: result.error || 'Upgrade failed' })
+      report('failed')
     }
   }
 
-  return { succeeded, failed, errors }
+  return { succeeded: updated.length, failed: errors.length, updated, pending: [], errors }
 }
 
 // ─── Linux (apt / dnf / pacman) ─────────────────────────────
@@ -2119,56 +2350,34 @@ async function attemptLinuxUpgrade(
 }
 
 async function runUpdatesLinux(
-  appIds: string[],
+  items: UpdateResultItem[],
   onProgress: (progress: UpdateProgress) => void
 ): Promise<UpdateResult> {
   const pm = await detectLinuxPackageManager()
-  if (!pm) return { succeeded: 0, failed: 0, errors: [] }
+  if (!pm) return emptyUpdateResult()
 
-  let succeeded = 0
-  let failed = 0
+  const updated: UpdateResultItem[] = []
   const errors: UpdateResult['errors'] = []
-  const total = appIds.length
+  const total = items.length
 
   // Run sequentially — apt/dnf/pacman don't handle parallel installs
   for (let i = 0; i < total; i++) {
-    const appId = appIds[i]
-    onProgress({
-      phase: 'updating',
-      current: i + 1,
-      total,
-      currentApp: appId,
-      percent: Math.round((i / total) * 100),
-      status: 'in-progress'
-    })
+    const item = items[i]
+    const report = itemProgress(onProgress, item, i + 1, total)
+    report('in-progress')
 
-    const result = await attemptLinuxUpgrade(pm, appId)
+    const result = await attemptLinuxUpgrade(pm, item.appId)
 
     if (result.success) {
-      succeeded++
-      onProgress({
-        phase: 'updating',
-        current: i + 1,
-        total,
-        currentApp: appId,
-        percent: Math.round(((i + 1) / total) * 100),
-        status: 'done'
-      })
+      updated.push(item)
+      report('done')
     } else {
-      failed++
-      errors.push({ appId, name: appId, reason: result.error || 'Upgrade failed' })
-      onProgress({
-        phase: 'updating',
-        current: i + 1,
-        total,
-        currentApp: appId,
-        percent: Math.round(((i + 1) / total) * 100),
-        status: 'failed'
-      })
+      errors.push({ ...item, reason: result.error || 'Upgrade failed' })
+      report('failed')
     }
   }
 
-  return { succeeded, failed, errors }
+  return { succeeded: updated.length, failed: errors.length, updated, pending: [], errors }
 }
 
 // ─── Platform-dispatched exports ────────────────────────────
@@ -2180,6 +2389,11 @@ export async function checkForUpdates(): Promise<UpdateCheckResult> {
   return emptyResult(false, null)
 }
 
+/** A result for a run that upgraded nothing. */
+export function emptyUpdateResult(): UpdateResult {
+  return { succeeded: 0, failed: 0, updated: [], pending: [], errors: [] }
+}
+
 export async function runUpdates(
   items: UpdateRequestItem[],
   onProgress: (progress: UpdateProgress) => void
@@ -2187,10 +2401,10 @@ export async function runUpdates(
   if (process.platform === 'win32') return runUpdatesWindows(items, onProgress)
   // Single-manager platforms ignore per-item source — every id belongs to the
   // one active manager.
-  const appIds = items.map((i) => i.id)
-  if (process.platform === 'darwin') return runUpdatesBrew(appIds, onProgress)
-  if (process.platform === 'linux') return runUpdatesLinux(appIds, onProgress)
-  return { succeeded: 0, failed: 0, errors: [] }
+  const named = items.map((i) => ({ appId: i.id, name: displayName(i) }))
+  if (process.platform === 'darwin') return runUpdatesBrew(named, onProgress)
+  if (process.platform === 'linux') return runUpdatesLinux(named, onProgress)
+  return emptyUpdateResult()
 }
 
 /** Winget package id: alphanumeric plus dot/dash/underscore */

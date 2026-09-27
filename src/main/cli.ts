@@ -1347,9 +1347,9 @@ async function handleUpdates(args: string[], ctx: CliContext): Promise<number | 
     // --all: take apps (with their source) directly so aggregation duplicates
     // like choco/git + scoop/git each keep their own manager. Explicit ids:
     // resolve each id's source from the scan (fall back to the primary manager).
-    let items: { id: string; source: string }[]
+    let items: { id: string; source: string; name?: string }[]
     if (allFlag) {
-      items = check.apps.map((a) => ({ id: a.id, source: a.source }))
+      items = check.apps.map((a) => ({ id: a.id, source: a.source, name: a.name }))
     } else {
       const idArg = args.find((a) => a !== 'run' && !a.startsWith('--'))
       const ids = idArg
@@ -1358,10 +1358,11 @@ async function handleUpdates(args: string[], ctx: CliContext): Promise<number | 
             .map((s) => s.trim())
             .filter(Boolean)
         : []
-      const sourceById = new Map(check.apps.map((a) => [a.id, a.source]))
+      const appById = new Map(check.apps.map((a) => [a.id, a]))
       items = ids.map((id) => ({
         id,
-        source: sourceById.get(id) ?? check.packageManagerName ?? 'winget'
+        source: appById.get(id)?.source ?? check.packageManagerName ?? 'winget',
+        name: appById.get(id)?.name
       }))
     }
     if (items.length === 0) {
@@ -1370,11 +1371,24 @@ async function handleUpdates(args: string[], ctx: CliContext): Promise<number | 
     }
     cliLog(ctx, `Updating ${items.length} apps...`)
     const result = await runUpdates(items, (progress) => {
-      cliLog(
-        ctx,
-        `  [${progress.current}/${progress.total}] ${progress.currentApp}: ${progress.status}`
-      )
+      // Streamed step updates (installer output) would flood the log
+      if (progress.detail !== undefined || progress.stepPercent !== undefined) return
+      const label =
+        progress.currentAppName === progress.currentApp
+          ? progress.currentApp
+          : `${progress.currentAppName} (${progress.currentApp})`
+      const status = progress.elevated ? `${progress.status} (as administrator)` : progress.status
+      cliLog(ctx, `  [${progress.current}/${progress.total}] ${label}: ${status}`)
     })
+    // Exiting would cancel an upgrade left running that is tied to this
+    // process (winget runs detached and survives; choco does not)
+    const { attachedInstallCount, waitForAttachedInstalls } =
+      await import('./services/install-runner')
+    const atRisk = attachedInstallCount()
+    if (atRisk > 0) {
+      cliLog(ctx, `Waiting for ${atRisk} upgrade(s) still running to finish...`)
+      await waitForAttachedInstalls()
+    }
     cliOut(ctx, result)
   } else {
     cliUsage(ctx, 'SuperSonicCleaner --cli updates <check|run> [ids|--all]')

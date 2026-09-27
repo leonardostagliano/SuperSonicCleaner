@@ -1085,6 +1085,8 @@ export interface PackageManagerStatus {
 export interface UpdateRequestItem {
   id: string
   source: string
+  /** Display name from the scan, echoed in progress and results (ids like Store ones are opaque). */
+  name?: string
 }
 
 export interface UpdatableApp {
@@ -1135,20 +1137,47 @@ export interface UpdateProgress {
   phase: 'checking' | 'updating'
   current: number
   total: number
+  /** Id of the package being processed. */
   currentApp: string
+  /** Display name of `currentApp`; its id when the request carried no name. */
+  currentAppName: string
   percent: number
-  status: 'in-progress' | 'done' | 'failed'
+  /** `pending`: the install outlasted the wait and is still running in the background. */
+  status: 'in-progress' | 'done' | 'failed' | 'pending'
+  /** When work on the current package started (epoch ms), for an elapsed-time readout. */
+  startedAt?: number
+  /** Latest status line the package manager printed, in the language it speaks. */
+  detail?: string
+  /** Progress (0–100) of the package manager's current step, when it draws one. */
+  stepPercent?: number
+  /** The current attempt runs as administrator; Windows may be asking the user to approve it. */
+  elevated?: boolean
+}
+
+/**
+ * A package named in an update result. `source` is set on Windows aggregation
+ * so the entry can be matched to the exact package when the same id exists
+ * under two managers (e.g. choco + scoop "git"); it is omitted on
+ * single-manager platforms.
+ */
+export interface UpdateResultItem {
+  appId: string
+  name: string
+  source?: string
 }
 
 export interface UpdateResult {
   succeeded: number
   failed: number
+  /** Packages that were upgraded, in the order they ran. */
+  updated: UpdateResultItem[]
   /**
-   * Failed packages. `source` is set on Windows aggregation so a failure can be
-   * matched to the exact package when the same id exists under two managers
-   * (e.g. choco + scoop "git"); it is omitted on single-manager platforms.
+   * Upgrades still running in the background when the wait ran out. Counted
+   * in neither `succeeded` nor `failed`: their outcome is not known yet.
    */
-  errors: { appId: string; name: string; reason: string; source?: string }[]
+  pending: UpdateResultItem[]
+  /** Failed packages. */
+  errors: (UpdateResultItem & { reason: string })[]
 }
 
 // ─── Disk Repair ───────────────────────────────────────────

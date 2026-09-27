@@ -13,7 +13,6 @@ import {
   Package,
   ArrowRight,
   Sparkles,
-  XCircle,
   Filter,
   EyeOff,
   Eye
@@ -24,6 +23,13 @@ import { StatCard } from '@/components/shared/StatCard'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { AppIcon } from '@/components/shared/AppIcon'
+import { UpdateProgressPanel } from '@/components/updates/UpdateProgressPanel'
+import { UpdateSummaryBanner } from '@/components/updates/UpdateSummaryBanner'
+import {
+  showUpdateSummaryToast,
+  UPDATE_SUMMARY_TOAST_ID
+} from '@/components/updates/UpdateSummaryToast'
+import { buildUpdateSummary } from '@/lib/update-summary'
 import { useUpdaterStore, severityOrder, appKey } from '@/stores/updater-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore } from '@/stores/settings-store'
@@ -85,7 +91,7 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
   const loading = useUpdaterStore((s) => s.loading)
   const updating = useUpdaterStore((s) => s.updating)
   const progress = useUpdaterStore((s) => s.progress)
-  const updateResult = useUpdaterStore((s) => s.updateResult)
+  const updateSummary = useUpdaterStore((s) => s.updateSummary)
   const error = useUpdaterStore((s) => s.error)
   const hasChecked = useUpdaterStore((s) => s.hasChecked)
   const packageManagerAvailable = useUpdaterStore((s) => s.packageManagerAvailable)
@@ -153,7 +159,7 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
     const store = useUpdaterStore.getState()
     store.setLoading(true)
     store.setError(null)
-    store.setUpdateResult(null)
+    store.setUpdateSummary(null)
 
     try {
       const result = await window.kudu.softwareUpdateCheck()
@@ -194,55 +200,34 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
     if (appsToUpdate.length === 0) return
     const store = useUpdaterStore.getState()
     store.setUpdating(true)
-    store.setUpdateResult(null)
+    store.setUpdateSummary(null)
     store.setError(null)
     store.setProgress(null)
 
     const startTime = Date.now()
-    const items = appsToUpdate.map((a) => ({ id: a.id, source: a.source }))
+    const items = appsToUpdate.map((a) => ({ id: a.id, source: a.source, name: a.name }))
 
     try {
       const result = await window.kudu.softwareUpdateRun(items)
+      const summary = buildUpdateSummary(result, appsToUpdate)
       const s = useUpdaterStore.getState()
-      s.setUpdateResult(result)
+      s.setUpdateSummary(summary)
       s.setProgress(null)
 
-      if (result.succeeded > 0) {
-        // Remove successfully updated apps from the list (by composite key).
-        // Match failures by source+id when the manager reported a source, so
-        // a failed choco/git doesn't also strip a succeeded scoop/git.
-        const failedKeys = new Set(
-          result.errors.map((e) => (e.source ? appKey({ id: e.appId, source: e.source }) : e.appId))
-        )
-        const succeededKeys = appsToUpdate
-          .filter((a) => !failedKeys.has(appKey(a)) && !failedKeys.has(a.id))
-          .map(appKey)
-        s.removeApps(succeededKeys)
-        toast.success(
-          result.succeeded !== 1
-            ? t('softwareUpdater.toastUpdateSuccessPlural', { count: result.succeeded })
-            : t('softwareUpdater.toastUpdateSuccess', { count: result.succeeded })
-        )
-      }
-      if (result.failed > 0) {
-        toast.error(
-          result.failed !== 1
-            ? t('softwareUpdater.toastUpdateFailedPlural', { count: result.failed })
-            : t('softwareUpdater.toastUpdateFailed', { count: result.failed })
-        )
-      }
+      // Updated apps leave the list (by composite key, so a failed choco/git
+      // doesn't also strip an updated scoop/git). Failed ones stay, and so do
+      // those still installing: nothing has confirmed them yet.
+      const updatedKeys = new Set(summary.updated.map((e) => e.key))
+      if (updatedKeys.size > 0) s.removeApps([...updatedKeys])
+      showUpdateSummaryToast(summary)
 
       // Log to history
       const bySeverity: Record<string, { found: number; updated: number }> = {}
-      const failedKeysForHistory = new Set(
-        result.errors.map((e) => (e.source ? appKey({ id: e.appId, source: e.source }) : e.appId))
-      )
       for (const app of appsToUpdate) {
         const sev = app.severity
         if (!bySeverity[sev]) bySeverity[sev] = { found: 0, updated: 0 }
         bySeverity[sev].found++
-        if (!failedKeysForHistory.has(appKey(app)) && !failedKeysForHistory.has(app.id))
-          bySeverity[sev].updated++
+        if (updatedKeys.has(appKey(app))) bySeverity[sev].updated++
       }
       await useHistoryStore.getState().addEntry({
         id: Date.now().toString(),
@@ -668,110 +653,18 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
       )}
 
       {/* Update progress */}
-      {updating && progress && (
-        <div
-          className="mb-5 rounded-2xl p-4"
-          style={{
-            background: 'rgba(245,158,11,0.04)',
-            border: '1px solid var(--accent-muted-bg)'
-          }}
-        >
-          <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-2.5">
-              <Loader2 className="h-4 w-4 animate-spin text-amber-400" strokeWidth={2} />
-              <span className="text-[13px] font-medium text-zinc-200">
-                {t('softwareUpdater.updatingProgress', {
-                  app: progress.currentApp,
-                  current: progress.current,
-                  total: progress.total
-                })}
-              </span>
-            </div>
-            <span className="text-[12px] font-mono" style={{ color: 'var(--text-muted)' }}>
-              {progress.percent}%
-            </span>
-          </div>
-          <div
-            className="h-1.5 w-full rounded-full overflow-hidden"
-            style={{ background: 'var(--bg-hover-2)' }}
-          >
-            <div
-              className="h-full rounded-full transition-all duration-300"
-              style={{
-                width: `${progress.percent}%`,
-                background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)'
-              }}
-            />
-          </div>
-          {progress.status === 'failed' && (
-            <p className="mt-2 text-[11px] text-red-400">
-              {t('softwareUpdater.failedToUpdate', { app: progress.currentApp })}
-            </p>
-          )}
-        </div>
-      )}
+      {updating && progress && <UpdateProgressPanel progress={progress} />}
 
-      {/* Update result banner */}
-      {updateResult && (
-        <div
-          className="mb-5 flex items-center gap-3 rounded-2xl p-4"
-          style={{
-            background: updateResult.failed === 0 ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)',
-            border: `1px solid ${updateResult.failed === 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)'}`
+      {/* Update summary: stays until dismissed */}
+      {updateSummary && (
+        <UpdateSummaryBanner
+          summary={updateSummary}
+          packageManagerName={packageManagerName}
+          onDismiss={() => {
+            useUpdaterStore.getState().setUpdateSummary(null)
+            toast.dismiss(UPDATE_SUMMARY_TOAST_ID)
           }}
-        >
-          {updateResult.failed === 0 ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" strokeWidth={1.8} />
-          ) : (
-            <XCircle className="h-5 w-5 text-red-500 shrink-0" strokeWidth={1.8} />
-          )}
-          <div className="text-[13px] text-zinc-200">
-            {updateResult.succeeded > 0 && (
-              <span className="text-green-400">
-                {updateResult.succeeded !== 1
-                  ? t('softwareUpdater.updateResultAppsUpdatedPlural', {
-                      count: updateResult.succeeded
-                    })
-                  : t('softwareUpdater.updateResultAppsUpdated', { count: updateResult.succeeded })}
-              </span>
-            )}
-            {updateResult.succeeded > 0 && updateResult.failed > 0 && <span> — </span>}
-            {updateResult.failed > 0 && (
-              <span className="text-red-400">
-                {t('softwareUpdater.updateResultFailed', { count: updateResult.failed })}
-              </span>
-            )}
-            {updateResult.errors.length > 0 && (
-              <div className="mt-2">
-                {updateResult.errors.map((e) => {
-                  const isInstallerChange = e.reason
-                    .toLowerCase()
-                    .includes('installer type changed')
-                  return (
-                    <div key={e.appId} className="mt-1.5">
-                      <span style={{ color: 'var(--text-muted)' }} className="text-[12px]">
-                        {e.name}: {e.reason}
-                      </span>
-                      {isInstallerChange && packageManagerName && (
-                        <div
-                          className="mt-1.5 rounded-lg px-3 py-2 font-mono text-[11px] text-zinc-300 select-all cursor-text"
-                          style={{
-                            background: 'rgba(0,0,0,0.3)',
-                            border: '1px solid var(--border-medium)'
-                          }}
-                        >
-                          {packageManagerName} uninstall {e.appId}
-                          <br />
-                          {packageManagerName} install {e.appId}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        </div>
+        />
       )}
 
       {/* Selection controls + Update button */}
