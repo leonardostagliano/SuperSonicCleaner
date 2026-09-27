@@ -18,14 +18,14 @@ export function PerformanceMonitorPage() {
   const systemInfo = usePerfStore((s) => s.systemInfo)
   const snapshot = usePerfStore((s) => s.currentSnapshot)
   const history = usePerfStore((s) => s.history)
-  const isMonitoring = usePerfStore((s) => s.isMonitoring)
   const timeRange = usePerfStore((s) => s.timeRange)
   const setSystemInfo = usePerfStore((s) => s.setSystemInfo)
   const diskHealth = usePerfStore((s) => s.diskHealth)
   const setDiskHealth = usePerfStore((s) => s.setDiskHealth)
   const setTimeRange = usePerfStore((s) => s.setTimeRange)
+  // From the lifecycle, so a failed start or a hidden window can't leave the button wrong
+  const paused = usePerfStore((s) => s.monitoringPaused)
 
-  const [paused, setPaused] = useState(false)
   const [diskHealthLoading, setDiskHealthLoading] = useState(true)
 
   // Live data first; disk health (SMART, several seconds) loads beside it
@@ -43,11 +43,7 @@ export function PerformanceMonitorPage() {
     return release
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Through the lifecycle, so hiding the window or a quick return keeps the button honest
-  const togglePause = useCallback(() => {
-    setPerfMonitoringPaused(!paused)
-    setPaused(!paused)
-  }, [paused])
+  const togglePause = useCallback(() => setPerfMonitoringPaused(!paused), [paused])
 
   const timeRangeOptions: Array<{ value: '60s' | '5m' | '15m'; label: string }> = [
     { value: '60s', label: '1m' },

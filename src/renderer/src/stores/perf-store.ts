@@ -20,6 +20,8 @@ interface PerfState {
   processList: PerfProcess[]
   processCount: number
   isMonitoring: boolean
+  /** The live feed is off by the Pause button or a failed start: the page offers Resume. */
+  monitoringPaused: boolean
   timeRange: '60s' | '5m' | '15m'
   processFilter: string
   processSortColumn: 'cpuPercent' | 'memBytes' | 'name' | 'pid'
@@ -60,6 +62,7 @@ export const usePerfStore = create<PerfState>((set, get) => ({
   processList: [],
   processCount: 0,
   isMonitoring: false,
+  monitoringPaused: false,
   timeRange: '60s',
   processFilter: '',
   processSortColumn: 'cpuPercent',
@@ -127,6 +130,7 @@ export const usePerfStore = create<PerfState>((set, get) => ({
       processList: [],
       processCount: 0,
       isMonitoring: false,
+      monitoringPaused: false,
       processFilter: '',
       diskHealth: []
     })
@@ -140,19 +144,27 @@ let perfConsumers = 0
 let stopTimer: ReturnType<typeof setTimeout> | undefined
 let unsubscribe: (() => void) | null = null
 let started = false
-let userPaused = false
+/** Bumped by every start and stop, so a superseded start's late outcome is ignored. */
+let startGeneration = 0
 let onStartError: (() => void) | undefined
 
 const perfHidden = () => document.visibilityState === 'hidden'
+const setPaused = (monitoringPaused: boolean) => usePerfStore.setState({ monitoringPaused })
 
 function startMonitoring() {
-  if (started || userPaused) return
+  if (started || usePerfStore.getState().monitoringPaused) return
   started = true
+  const generation = ++startGeneration
   window.kudu
     .perfStartMonitoring()
-    .then(() => usePerfStore.getState().setMonitoring(true))
+    .then(() => {
+      if (generation === startGeneration) usePerfStore.getState().setMonitoring(true)
+    })
     .catch(() => {
+      if (generation !== startGeneration) return
       started = false
+      // Show it as paused: the page offers Resume and nothing retries on its own
+      setPaused(true)
       onStartError?.()
     })
 }
@@ -160,6 +172,7 @@ function startMonitoring() {
 function stopMonitoring() {
   if (!started) return
   started = false
+  startGeneration++
   window.kudu.perfStopMonitoring().catch(() => {})
   usePerfStore.getState().setMonitoring(false)
 }
@@ -173,19 +186,18 @@ function teardown() {
   document.removeEventListener('visibilitychange', onPerfVisibility)
 }
 
+// Hidden only pauses main's sampling: the subscription, the samples and the tail
+// deadline stay, so a return inside the tail is still warm. Showing again restarts
+// only for a view that is still there; the tail timer alone tears down.
 function onPerfVisibility() {
-  if (perfHidden()) {
-    if (perfConsumers === 0) teardown()
-    else stopMonitoring()
-  } else if (perfConsumers > 0) {
-    startMonitoring()
-  }
+  if (perfHidden()) stopMonitoring()
+  else if (perfConsumers > 0) startMonitoring()
 }
 
 /** Keep the monitor running for one view; call the returned function when it goes away. */
 export function acquirePerfMonitoring(onError?: () => void): () => void {
   perfConsumers++
-  userPaused = false // a view opens with its Pause button off
+  setPaused(false) // a view opens with its Pause button off
   onStartError = onError
   clearTimeout(stopTimer)
   stopTimer = undefined
@@ -208,19 +220,21 @@ export function acquirePerfMonitoring(onError?: () => void): () => void {
     if (released) return
     released = true
     perfConsumers--
-    if (perfConsumers === 0) stopTimer = setTimeout(teardown, MONITOR_TAIL_MS)
+    if (perfConsumers > 0) return
+    setPaused(false) // the pause leaves with its view; nothing restarts until one returns
+    stopTimer = setTimeout(teardown, MONITOR_TAIL_MS)
   }
 }
 
 /** The page's Pause button: stop the feed, and keep it stopped across hide and show. */
 export function setPerfMonitoringPaused(paused: boolean): void {
-  userPaused = paused
+  setPaused(paused)
   if (paused) stopMonitoring()
   else if (perfConsumers > 0 && !perfHidden()) startMonitoring()
 }
 
 export function resetPerfMonitoringForTests(): void {
   perfConsumers = 0
-  userPaused = false
   teardown()
+  usePerfStore.setState({ isMonitoring: false, monitoringPaused: false })
 }
