@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Sparkles, X } from 'lucide-react'
+import { Sparkles, X } from 'lucide-react'
 import type { AiAnalysisSource } from '@shared/ai-analysis'
 import { type LocalAiCandidate, MAX_AI_ITEMS } from './ai-metadata'
 import { useAiAnalysisStore } from '@/stores/ai-analysis-store'
+import { Button, Switch, Tag } from '@/components/ui'
 import './ai-analysis.css'
 
 interface Props {
@@ -38,23 +39,12 @@ export function AiAnalysisPanel({ source, candidates, sourceRevision }: Props) {
   return (
     <section className="ai-analysis-panel" aria-label={t('title')}>
       <div className="ai-analysis-heading">
-        <span className="ai-analysis-icon" aria-hidden="true">
-          <Sparkles size={20} />
-        </span>
+        <Sparkles className="ai-analysis-icon" size={20} strokeWidth={1.75} aria-hidden="true" />
         <div className="ai-analysis-heading-copy">
           <h2>{t('title')}</h2>
           <p>{t('description')}</p>
         </div>
-        <button
-          className="ai-analysis-switch"
-          type="button"
-          role="switch"
-          aria-checked={enabled}
-          aria-label={t('enable')}
-          onClick={() => void toggle()}
-        >
-          <span />
-        </button>
+        <Switch checked={enabled} onChange={() => void toggle()} label={t('enable')} />
       </div>
 
       {enabled && (
@@ -80,30 +70,24 @@ export function AiAnalysisPanel({ source, candidates, sourceRevision }: Props) {
                         ? t('signIn')
                         : t('unavailable')}
               </p>
-              <button
-                type="button"
-                className="ai-analysis-cancel"
-                onClick={() => void checkConnection()}
-              >
+              <Button variant="ghost" onClick={() => void checkConnection()}>
                 {t('retryConnection')}
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="ai-analysis-actions">
-              <button
-                className="ai-analysis-primary"
-                type="button"
+              <Button
+                icon={Sparkles}
+                busy={running}
                 disabled={activeSource !== null || candidates.length === 0}
                 onClick={() => void analyze()}
               >
                 {running && cancelling ? t('cancelling') : running ? t('analyzing') : t('analyze')}
-                {!running && <ArrowRight size={16} aria-hidden="true" />}
-              </button>
+              </Button>
               {running && !cancelling && (
-                <button className="ai-analysis-cancel" type="button" onClick={cancel}>
-                  <X size={15} aria-hidden="true" />
+                <Button variant="ghost" icon={X} onClick={cancel}>
                   {t('cancel')}
-                </button>
+                </Button>
               )}
               <span>{t('limit', { count: Math.min(candidates.length, MAX_AI_ITEMS) })}</span>
             </div>
@@ -134,12 +118,12 @@ export function AiAnalysisPanel({ source, candidates, sourceRevision }: Props) {
                 <ul className="ai-analysis-recommendations">
                   {recommendations.map((item) => (
                     <li key={item.fileId}>
-                      <span className="ai-analysis-priority" data-priority={item.priority}>
-                        {t(`priority.${item.priority}`)}
-                      </span>
-                      <strong title={localPaths.get(item.fileId)}>
-                        {localPaths.get(item.fileId)}
-                      </strong>
+                      <div className="ai-analysis-recommendation-head">
+                        <strong title={localPaths.get(item.fileId)}>
+                          {localPaths.get(item.fileId)}
+                        </strong>
+                        <Tag tone="neutral">{t(`priority.${item.priority}`)}</Tag>
+                      </div>
                       <p>{item.reason}</p>
                     </li>
                   ))}

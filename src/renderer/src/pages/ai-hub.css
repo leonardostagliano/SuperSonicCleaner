@@ -1,0 +1,89 @@
+/* AI analysis hub (/ai): connection, one table row per tool (data sent, last run, state).
+   Tokens only. */
+.ai-hub-stack {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.ai-hub-status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.ai-hub-status svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--text-muted);
+}
+.ai-hub-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.ai-hub-note {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+.ai-hub-muted {
+  color: var(--text-muted);
+}
+.ai-hub-running {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+.ai-hub-running .ai-hub-text {
+  flex: 1 1 280px;
+}
+.ai-hub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.ai-hub-table {
+  min-width: 0;
+  overflow-x: auto;
+}
+.ai-hub-table td {
+  vertical-align: top;
+}
+.ai-hub-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-primary);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ai-hub-tool svg {
+  flex: none;
+  color: var(--text-muted);
+}
+.ai-hub-tool svg:dir(rtl) {
+  transform: scaleX(-1);
+}
+.ai-hub-tool:hover span {
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+.ai-hub-tool:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.ai-hub-after-table {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}

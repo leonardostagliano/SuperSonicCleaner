@@ -1,235 +1,160 @@
+/* AI analysis panel inside the scan tools: one flat card, tokens only. */
 .ai-analysis-panel {
   min-width: 0;
-  margin-block: 22px;
-  padding: 22px;
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-card, 18px);
+  border-radius: var(--radius-container);
   background: var(--card-bg);
-  box-shadow: var(--card-shadow, none);
   color: var(--text-primary);
 }
 
 .ai-analysis-heading {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--space-3);
 }
 
 .ai-analysis-icon {
-  display: grid;
-  width: 42px;
-  height: 42px;
   flex: none;
-  place-items: center;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-tile, 14px);
-  background: var(--bg-subtle-2);
-  color: var(--text-primary);
+  color: var(--text-muted);
 }
 
 .ai-analysis-heading-copy {
-  min-width: 0;
   flex: 1;
+  min-width: 0;
 }
 
 .ai-analysis-heading h2 {
-  font-family: var(--font-display, 'Segoe UI Variable Display', 'Segoe UI', sans-serif);
-  font-size: 17px;
-  font-weight: 650;
-  letter-spacing: -0.025em;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
 }
 
 .ai-analysis-heading p {
-  margin-top: 3px;
+  margin: 2px 0 0;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--text-12);
   line-height: 1.5;
 }
 
-.ai-analysis-switch {
-  width: 42px;
-  height: 24px;
-  flex: none;
-  padding: 3px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill, 999px);
-  background: var(--bg-elevated);
-  transition: background var(--duration-fast, 150ms) var(--ease-out, ease);
-}
-
-.ai-analysis-switch span {
-  display: block;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--text-secondary);
-  transition: transform var(--duration-fast, 150ms) var(--ease-out, ease);
-}
-
-.ai-analysis-switch[aria-checked='true'] {
-  background: var(--brand-solid);
-}
-
-.ai-analysis-switch[aria-checked='true'] span {
-  transform: translateX(18px);
-  background: var(--brand-ink);
-}
-
 .ai-analysis-body {
-  margin-top: 18px;
-  padding-top: 18px;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border-default);
 }
 
 .ai-analysis-privacy,
 .ai-analysis-caveat,
 .ai-analysis-message {
+  margin: 0;
   color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: var(--text-12);
+  line-height: 1.5;
 }
 
 .ai-analysis-caveat {
-  margin-top: 5px;
+  margin-top: var(--space-1);
   color: var(--text-muted);
 }
 
 .ai-analysis-message {
-  margin-top: 14px;
+  margin-top: var(--space-3);
 }
 
 .ai-analysis-connection {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
 }
 
-.ai-analysis-connection .ai-analysis-cancel {
-  margin-top: 12px;
+.ai-analysis-connection .ui-button {
+  margin-top: var(--space-3);
 }
 
 .ai-analysis-actions {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 17px;
-}
-
-.ai-analysis-primary,
-.ai-analysis-cancel {
-  display: inline-flex;
-  min-height: 35px;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: var(--radius-pill, 999px);
-  font-size: 12px;
-  font-weight: 650;
-}
-
-.ai-analysis-primary {
-  background: var(--brand-solid);
-  color: var(--brand-ink);
-}
-
-.ai-analysis-primary:disabled {
-  cursor: wait;
-  opacity: 0.55;
-}
-
-.ai-analysis-cancel {
-  border: 1px solid var(--border-medium);
-  color: var(--text-secondary);
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .ai-analysis-actions > span,
 .ai-analysis-note {
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--text-12);
   line-height: 1.5;
 }
 
 .ai-analysis-error {
-  margin-top: 14px;
-  color: var(--danger-text, var(--danger));
-  font-size: 12px;
+  margin: var(--space-3) 0 0;
+  color: var(--signal-danger-text);
+  font-size: var(--text-12);
 }
 
 .ai-analysis-result {
-  margin-top: 18px;
-  padding-top: 18px;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border-default);
 }
 
 .ai-analysis-summary {
+  margin: 0;
   color: var(--text-primary);
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: var(--text-13);
+  line-height: 1.6;
   white-space: pre-wrap;
 }
 
 .ai-analysis-note {
-  margin-top: 10px;
+  margin: var(--space-2) 0 0;
 }
 
 .ai-analysis-recommendations {
-  display: grid;
-  gap: 8px;
-  margin-top: 16px;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
 }
 
 .ai-analysis-recommendations li {
   min-width: 0;
-  padding: 14px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-tile, 14px);
-  background: var(--bg-subtle);
+  padding-block: var(--space-2);
 }
 
-.ai-analysis-priority {
-  display: inline-block;
-  margin-bottom: 7px;
-  color: var(--text-secondary);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.ai-analysis-recommendations li + li {
+  border-top: 1px solid var(--border-default);
 }
 
-.ai-analysis-priority[data-priority='high'] {
-  color: var(--warning-text, var(--warning));
+.ai-analysis-recommendation-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
 }
 
 .ai-analysis-recommendations strong {
-  display: block;
+  min-width: 0;
   overflow-wrap: anywhere;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: 500;
 }
 
 .ai-analysis-recommendations p {
-  margin-top: 6px;
+  margin: var(--space-1) 0 0;
   color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.ai-analysis-panel button:focus-visible {
-  outline: 2px solid var(--focus, var(--info));
-  outline-offset: 3px;
+  font-size: var(--text-12);
+  line-height: 1.5;
 }
 
 @media (max-width: 550px) {
   .ai-analysis-panel {
-    padding: 18px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ai-analysis-panel * {
-    transition: none;
+    padding: var(--space-4);
   }
 }

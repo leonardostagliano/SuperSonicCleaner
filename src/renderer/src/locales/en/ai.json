@@ -1,7 +1,7 @@
 {
   "title": "AI analysis",
   "description": "Get a second opinion on these scan results.",
-  "hubDescription": "A second opinion on scans and performance recordings, using your Codex sign-in.",
+  "hubDescription": "Sends Codex, under your sign-in, only scan metadata or recording measurements, and only when you start an analysis from a tool.",
   "hubPrivacy": "Scans share only anonymous file metadata. Recordings share numeric CPU, memory and disk measurements with temporary process IDs. Names, paths, notes and file contents stay on this device.",
   "connectionTitle": "Codex connection",
   "connectionIntro": "Use Codex on this computer. Check the connection, then choose a tool below.",
@@ -10,14 +10,28 @@
   "anotherRunning": "Another AI analysis is already running. You can find it in Preferences → AI analysis.",
   "continuesInBackground": "Analysis continues while you use other views. Return here to see the result.",
   "returnToAnalysis": "Return to analysis",
-  "openTool": "Open tool",
   "hubInstructions": "Complete a scan or save a performance recording, enable its AI analysis, then start it with the dedicated button. Nothing is sent automatically.",
   "tools": {
-    "cleaner": { "title": "System cleanup", "description": "Review scanned cleanup candidates using anonymous file metadata. Privacy traces are excluded." },
-    "largeFiles": { "title": "Large files", "description": "Review which large files deserve a closer look, using size, category and approximate age." },
-    "duplicates": { "title": "Duplicate files", "description": "Get suggestions about duplicate groups to review. You choose which files to keep." },
-    "disk": { "title": "Disk analysis", "description": "Review the largest folders using aggregated size information." },
-    "performance": { "title": "Performance recordings", "description": "Connect CPU, memory and disk activity to investigate a slowdown, with supporting measurements and suggested checks." }
+    "cleaner": {
+      "title": "System cleanup",
+      "dataSent": "Temporary IDs, file type, size and approximate age. Privacy traces excluded."
+    },
+    "largeFiles": {
+      "title": "Large files",
+      "dataSent": "Temporary IDs, file type, size and approximate age."
+    },
+    "duplicates": {
+      "title": "Duplicate files",
+      "dataSent": "Temporary IDs, file type, size, approximate age and duplicate group."
+    },
+    "disk": {
+      "title": "Disk analysis",
+      "dataSent": "Temporary IDs, total folder size and approximate age."
+    },
+    "performance": {
+      "title": "Performance recordings",
+      "dataSent": "Numeric CPU, memory and disk measurements, with temporary process IDs."
+    }
   },
   "enable": "Enable AI analysis for this view",
   "privacy": "Only temporary IDs, generic file types, sizes, and approximate file ages are sent. Names, paths, hashes, and file contents stay on this device.",
@@ -42,5 +56,23 @@
     "low": "Low priority",
     "medium": "Medium priority",
     "high": "High priority"
+  },
+  "toolsTitle": "Tools",
+  "columns": {
+    "tool": "Tool",
+    "dataSent": "Data sent",
+    "lastRun": "Last run",
+    "state": "State"
+  },
+  "lastRun": {
+    "running": "Running",
+    "done": "Completed in this session",
+    "failed": "Failed",
+    "none": "None in this session",
+    "perRecording": "Saved with each analysed recording"
+  },
+  "state": {
+    "on": "On",
+    "off": "Off"
   }
 }

@@ -1,114 +1,192 @@
+import './ai-hub.css'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Activity, ArrowUpRight, Copy, FileSearch, HardDrive, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
+import type { AiAnalysisSource } from '@shared/ai-analysis'
 import { PageHeader } from '@/components/layout/PageHeader'
+import {
+  Button,
+  Card,
+  Section,
+  Table,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Tag
+} from '@/components/ui'
+import { icons } from '@/lib/icons'
 import { useAiAnalysisStore } from '@/stores/ai-analysis-store'
 import { useDiagnosticsStore } from '@/stores/diagnostics-store'
 
 const tools = [
-  { source: 'cleaner', path: '/cleaner', key: 'cleaner', icon: Sparkles },
-  { source: 'large-files', path: '/large-files', key: 'largeFiles', icon: FileSearch },
-  { source: 'duplicates', path: '/duplicates', key: 'duplicates', icon: Copy },
-  { source: 'disk', path: '/disk', key: 'disk', icon: HardDrive }
-] as const
-
-const analysisTools = [
-  ...tools,
-  { path: '/performance-diagnostics', key: 'performance', icon: Activity }
-] as const
+  { source: 'cleaner', path: '/cleaner', key: 'cleaner' },
+  { source: 'large-files', path: '/large-files', key: 'largeFiles' },
+  { source: 'duplicates', path: '/duplicates', key: 'duplicates' },
+  { source: 'disk', path: '/disk', key: 'disk' }
+] as const satisfies readonly { source: AiAnalysisSource; path: string; key: string }[]
 
 export function AiAnalysisPage() {
   const { t } = useTranslation('ai')
-  const { connection, checking, checkConnection, activeSource, cancelling, cancel } =
+  const { connection, checking, checkConnection, activeSource, cancelling, cancel, sessions } =
     useAiAnalysisStore()
+  const performanceEnabled = useDiagnosticsStore((state) => state.aiEnabled)
   const performanceRunning = useDiagnosticsStore((state) => state.busy === 'analyzeAi')
   const performanceCancelling = useDiagnosticsStore((state) => state.aiCancelling)
   const cancelPerformance = useDiagnosticsStore((state) => state.cancelAi)
   const active = tools.find((tool) => tool.source === activeSource)
+
+  const status = !connection
+    ? t('connectionIntro')
+    : connection.available && connection.connected
+      ? t('connected')
+      : connection.errorCode === 'codex-not-found'
+        ? t('codexMissing')
+        : connection.errorCode === 'codex-version-unsupported'
+          ? t('unsupportedVersion')
+          : connection.errorCode === 'unsafe-configuration'
+            ? t('unsafeConfiguration')
+            : connection.errorCode === 'not-connected' ||
+                (connection.available && !connection.connected && !connection.errorCode)
+              ? t('signIn')
+              : t('unavailable')
+
   return (
-    <div className="feature-page animate-fade-in">
+    <div className="ai-hub">
       <PageHeader title={t('title')} description={t('hubDescription')} />
-      <section className="pulse-card mb-5 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 className="flex items-center gap-3 text-base font-semibold">
-            <Sparkles size={20} />
-            {t('connectionTitle')}
-          </h2>
-          <button
-            className="pulse-button"
-            disabled={checking}
-            onClick={() => void checkConnection()}
-          >
-            {checking ? t('checking') : t('retryConnection')}
-          </button>
-        </div>
-        <p className="text-sm text-[var(--text-secondary)]" role="status">
-          {!connection
-            ? t('connectionIntro')
-            : connection.available && connection.connected
-              ? t('connected')
-              : connection.errorCode === 'codex-not-found'
-                ? t('codexMissing')
-                : connection.errorCode === 'codex-version-unsupported'
-                  ? t('unsupportedVersion')
-                  : connection.errorCode === 'unsafe-configuration'
-                    ? t('unsafeConfiguration')
-                    : connection.errorCode === 'not-connected' ||
-                        (connection.available && !connection.connected && !connection.errorCode)
-                      ? t('signIn')
-                      : t('unavailable')}
-        </p>
-        <p className="text-sm text-[var(--text-secondary)]">{t('hubPrivacy')}</p>
-        <p className="text-xs text-[var(--text-muted)]">{t('advisory')}</p>
-      </section>
-      {active && (
-        <section className="pulse-card mb-5 flex flex-wrap items-center gap-4" aria-live="polite">
-          <p className="flex-1 text-sm">{t('continuesInBackground')}</p>
-          <Link className="pulse-button" to={active.path}>
-            {t('returnToAnalysis')}
-          </Link>
-          <button
-            className="pulse-button"
-            disabled={cancelling}
-            onClick={() => cancel(active.source)}
-          >
-            {cancelling ? t('cancelling') : t('cancel')}
-          </button>
-        </section>
-      )}
-      {performanceRunning && (
-        <section className="pulse-card mb-5 flex flex-wrap items-center gap-4" aria-live="polite">
-          <p className="flex-1 text-sm">
-            {t('tools.performance.title')} · {t('continuesInBackground')}
+      <div className="ai-hub-stack">
+        <Section
+          title={t('connectionTitle')}
+          actions={
+            <Button busy={checking} onClick={() => void checkConnection()}>
+              {checking ? t('checking') : t('retryConnection')}
+            </Button>
+          }
+        >
+          <p className="ai-hub-status" role="status">
+            <Sparkles size={16} strokeWidth={1.75} aria-hidden="true" />
+            <span>{status}</span>
           </p>
-          <Link className="pulse-button" to="/performance-diagnostics">
-            {t('returnToAnalysis')}
-          </Link>
-          <button
-            className="pulse-button"
-            disabled={performanceCancelling}
-            onClick={() => void cancelPerformance()}
-          >
-            {performanceCancelling ? t('cancelling') : t('cancel')}
-          </button>
-        </section>
-      )}
-      <div className="grid gap-4 xl:grid-cols-2">
-        {analysisTools.map(({ path, key, icon: Icon }) => (
-          <section className="pulse-card flex flex-col items-start gap-4" key={path}>
-            <Icon size={22} className="text-[var(--text-secondary)]" aria-hidden="true" />
-            <h2 className="text-base font-semibold">{t(`tools.${key}.title`)}</h2>
-            <p className="flex-1 text-sm text-[var(--text-secondary)]">
-              {t(`tools.${key}.description`)}
-            </p>
-            <Link className="pulse-button" to={path}>
-              {t('openTool')}
-              <ArrowUpRight size={15} />
-            </Link>
-          </section>
-        ))}
+          <p className="ai-hub-text">{t('hubPrivacy')}</p>
+          <p className="ai-hub-note">{t('advisory')}</p>
+        </Section>
+
+        {active && (
+          <RunningCard
+            label={t(`tools.${active.key}.title`)}
+            path={active.path}
+            cancelling={cancelling}
+            onCancel={() => cancel(active.source)}
+          />
+        )}
+        {performanceRunning && (
+          <RunningCard
+            label={t('tools.performance.title')}
+            path="/performance-diagnostics"
+            cancelling={performanceCancelling}
+            onCancel={() => void cancelPerformance()}
+          />
+        )}
+
+        <Section title={t('toolsTitle')}>
+          <div className="ai-hub-table">
+            <Table>
+              <TableHead>
+                <TableHeaderCell>{t('columns.tool')}</TableHeaderCell>
+                <TableHeaderCell>{t('columns.dataSent')}</TableHeaderCell>
+                <TableHeaderCell>{t('columns.lastRun')}</TableHeaderCell>
+                <TableHeaderCell>{t('columns.state')}</TableHeaderCell>
+              </TableHead>
+              <tbody>
+                {tools.map(({ source, path, key }) => {
+                  const session = sessions[source]
+                  return (
+                    <TableRow key={source}>
+                      <TableCell>
+                        <ToolLink path={path} label={t(`tools.${key}.title`)} />
+                      </TableCell>
+                      <TableCell muted>{t(`tools.${key}.dataSent`)}</TableCell>
+                      <TableCell>
+                        {activeSource === source ? (
+                          t('lastRun.running')
+                        ) : session.error ? (
+                          <Tag tone="danger">{t('lastRun.failed')}</Tag>
+                        ) : session.result ? (
+                          t('lastRun.done')
+                        ) : (
+                          <span className="ai-hub-muted">{t('lastRun.none')}</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Tag tone="neutral">{session.enabled ? t('state.on') : t('state.off')}</Tag>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+                <TableRow>
+                  <TableCell>
+                    <ToolLink
+                      path="/performance-diagnostics"
+                      label={t('tools.performance.title')}
+                    />
+                  </TableCell>
+                  <TableCell muted>{t('tools.performance.dataSent')}</TableCell>
+                  <TableCell>
+                    {performanceRunning ? (
+                      t('lastRun.running')
+                    ) : (
+                      <span className="ai-hub-muted">{t('lastRun.perRecording')}</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Tag tone="neutral">{performanceEnabled ? t('state.on') : t('state.off')}</Tag>
+                  </TableCell>
+                </TableRow>
+              </tbody>
+            </Table>
+          </div>
+          <p className="ai-hub-note ai-hub-after-table">{t('hubInstructions')}</p>
+        </Section>
       </div>
-      <p className="mt-5 text-sm text-[var(--text-muted)]">{t('hubInstructions')}</p>
     </div>
+  )
+}
+
+function ToolLink({ path, label }: { path: string; label: string }) {
+  const Next = icons.next
+  return (
+    <Link className="ai-hub-tool" to={path}>
+      <span>{label}</span>
+      <Next size={16} strokeWidth={1.75} aria-hidden="true" />
+    </Link>
+  )
+}
+
+function RunningCard({
+  label,
+  path,
+  cancelling,
+  onCancel
+}: {
+  label: string
+  path: string
+  cancelling: boolean
+  onCancel: () => void
+}) {
+  const { t } = useTranslation('ai')
+  return (
+    <Card className="ai-hub-running" aria-live="polite">
+      <p className="ai-hub-text">
+        {label} · {t('continuesInBackground')}
+      </p>
+      <div className="ai-hub-actions">
+        <Link className="ui-button" data-variant="secondary" data-size="md" to={path}>
+          {t('returnToAnalysis')}
+        </Link>
+        <Button variant="ghost" busy={cancelling} onClick={onCancel}>
+          {cancelling ? t('cancelling') : t('cancel')}
+        </Button>
+      </div>
+    </Card>
   )
 }

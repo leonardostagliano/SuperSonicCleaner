@@ -1,6 +1,6 @@
 {
   "title": "Analisi AI",
-  "hubDescription": "Un secondo parere su scansioni e registrazioni delle prestazioni, con il tuo accesso Codex.",
+  "hubDescription": "Invia a Codex, con il tuo accesso, solo i metadati delle scansioni o le misurazioni delle registrazioni, e solo quando avvii l'analisi da uno strumento.",
   "hubPrivacy": "Le scansioni condividono solo metadati anonimi. Le registrazioni condividono misurazioni numeriche di CPU, memoria e disco con ID temporanei dei processi. Nomi, percorsi, note e contenuti dei file restano su questo dispositivo.",
   "connectionTitle": "Collegamento a Codex",
   "connectionIntro": "Usa Codex su questo computer. Verifica il collegamento, poi scegli uno degli strumenti qui sotto.",
@@ -9,14 +9,28 @@
   "anotherRunning": "Un’altra analisi AI è già in corso. Puoi ritrovarla in Preferenze → Analisi AI.",
   "continuesInBackground": "L’analisi continua mentre usi altre viste. Torna qui per vedere il risultato.",
   "returnToAnalysis": "Torna all’analisi",
-  "openTool": "Apri strumento",
   "hubInstructions": "Completa una scansione o salva una registrazione delle prestazioni, attiva la relativa analisi AI e avviala con il pulsante dedicato. Nessun dato viene inviato automaticamente.",
   "tools": {
-    "cleaner": { "title": "Pulizia del sistema", "description": "Rivedi i candidati alla pulizia usando metadati anonimi. Le tracce di privacy sono escluse." },
-    "largeFiles": { "title": "File grandi", "description": "Individua i file grandi da esaminare usando dimensione, categoria ed età approssimativa." },
-    "duplicates": { "title": "File duplicati", "description": "Ricevi suggerimenti sui gruppi di duplicati da rivedere. Scegli tu quali file conservare." },
-    "disk": { "title": "Analisi disco", "description": "Esamina le cartelle più grandi sulla base delle loro dimensioni aggregate." },
-    "performance": { "title": "Registrazioni delle prestazioni", "description": "Metti in relazione CPU, memoria e disco per indagare un rallentamento, con misurazioni di supporto e controlli consigliati." }
+    "cleaner": {
+      "title": "Pulizia del sistema",
+      "dataSent": "ID temporanei, tipo di file, dimensione ed età approssimativa. Tracce di privacy escluse."
+    },
+    "largeFiles": {
+      "title": "File grandi",
+      "dataSent": "ID temporanei, tipo di file, dimensione ed età approssimativa."
+    },
+    "duplicates": {
+      "title": "File duplicati",
+      "dataSent": "ID temporanei, tipo di file, dimensione, età approssimativa e gruppo di duplicati."
+    },
+    "disk": {
+      "title": "Analisi disco",
+      "dataSent": "ID temporanei, dimensione totale delle cartelle ed età approssimativa."
+    },
+    "performance": {
+      "title": "Registrazioni delle prestazioni",
+      "dataSent": "Misurazioni numeriche di CPU, memoria e disco, con ID temporanei dei processi."
+    }
   },
   "description": "Ottieni un secondo parere sui risultati della scansione.",
   "enable": "Attiva l'analisi AI per questa vista",
@@ -42,5 +56,23 @@
     "low": "Priorità bassa",
     "medium": "Priorità media",
     "high": "Priorità alta"
+  },
+  "toolsTitle": "Strumenti",
+  "columns": {
+    "tool": "Strumento",
+    "dataSent": "Dati inviati",
+    "lastRun": "Ultima esecuzione",
+    "state": "Stato"
+  },
+  "lastRun": {
+    "running": "In corso",
+    "done": "Completata in questa sessione",
+    "failed": "Non riuscita",
+    "none": "Nessuna in questa sessione",
+    "perRecording": "Salvata con ogni registrazione analizzata"
+  },
+  "state": {
+    "on": "Attiva",
+    "off": "Non attiva"
   }
 }
