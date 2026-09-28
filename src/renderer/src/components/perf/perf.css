@@ -258,15 +258,14 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-/* The :not() pair outranks the legacy rule it overrides (globals.css, 0-2-1). */
+/* The field is the whole .perf-search box: the input itself draws nothing. */
 .perf-search input:not([type='checkbox']):not([type='radio']) {
   flex: 1 1 auto;
   min-width: 0;
   height: 100%;
   padding: 0;
   border: 0;
-  /* legacy: globals.css and pulse.css paint every text input with !important. */
-  background: transparent !important;
+  background: transparent;
   box-shadow: none;
   color: var(--text-primary);
   font-size: var(--text-13);
@@ -549,10 +548,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-control);
-  /* legacy: globals.css (input) and pulse.css (textarea) force two different fills and
-     border colours with !important; both fields get the same ones here. */
-  border-color: var(--border-medium) !important;
-  background: var(--surface) !important;
+  background: var(--surface);
   box-shadow: none;
   color: var(--text-primary);
   font: inherit;

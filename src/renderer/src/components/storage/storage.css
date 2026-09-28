@@ -1,6 +1,5 @@
 /* Storage tools (Archiviazione): disk analyzer, duplicates, large files, empty folders.
-   Tokens only. Selectors that must beat a legacy rule in pulse.css or globals.css say so
-   with "legacy:"; Task C1 deletes those rules. */
+   Tokens only. */
 
 /* ── Page stack ─────────────────────────────────────────────────────────── */
 .storage-stack {
@@ -87,15 +86,13 @@
   gap: var(--space-2);
 }
 
-/* legacy: pulse.css paints every field with --border-default !important and sets a
-   36 px minimum height on selects; controls need the stronger 3:1 edge. */
+/* Controls need the stronger 3:1 edge; the native-control default height is 36px. */
 input.storage-input,
 select.storage-input {
   height: 32px;
   min-height: 32px;
   padding: 0 var(--space-3);
   border: 1px solid var(--border-strong);
-  border-color: var(--border-strong) !important;
   border-radius: var(--radius-control);
   background: var(--surface);
   color: var(--text-primary);
@@ -128,7 +125,7 @@ button.storage-icon-action {
   place-items: center;
   width: 24px;
   height: 24px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 24px;
   padding: 0;
   border: 0;
@@ -278,10 +275,6 @@ button.storage-icon-action:focus-visible {
 }
 
 /* ── Result tables ──────────────────────────────────────────────────────── */
-.storage-table-scroll {
-  min-width: 0;
-  overflow-x: auto;
-}
 .ui-table th.storage-col-check,
 .ui-table td.storage-col-check {
   width: 28px;
@@ -357,27 +350,13 @@ button.storage-icon-action:focus-visible {
 }
 
 /* ── Disk analyzer ──────────────────────────────────────────────────────── */
-.storage-location {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) var(--space-3);
-  min-width: 0;
-}
-.storage-location-path {
-  min-width: 0;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
-  overflow-wrap: anywhere;
-}
 /* A folder name that opens the folder: text, not a button box. */
 button.storage-drill {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   max-width: 100%;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 0;
   padding: 0;
   border: 0;

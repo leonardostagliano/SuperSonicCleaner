@@ -2,11 +2,11 @@
 select:not([multiple]):not([size]) {
   min-height: 36px;
   max-width: 100%;
-  padding: 8px 12px !important;
-  border: 1px solid var(--border-strong) !important;
-  border-radius: var(--radius-control) !important;
-  background: var(--surface) !important;
-  color: var(--text-primary) !important;
+  padding: 8px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-primary);
   font: 500 13px/1.4 var(--font-sans);
   cursor: pointer;
   transition:
@@ -14,7 +14,7 @@ select:not([multiple]):not([size]) {
     box-shadow 140ms ease;
 }
 select:not([multiple]):not([size]):hover:not(:disabled) {
-  border-color: var(--border-stronger) !important;
+  border-color: var(--border-stronger);
 }
 select:not([multiple]):not([size]):focus-visible {
   outline: 2px solid var(--focus);
@@ -44,8 +44,8 @@ select optgroup {
   select:open::picker-icon {
     rotate: 180deg;
   }
-  select:open {
-    border-color: var(--focus) !important;
+  select:not([multiple]):not([size]):open {
+    border-color: var(--focus);
   }
   select::picker(select) {
     margin-block: 6px;

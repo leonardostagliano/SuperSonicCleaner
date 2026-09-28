@@ -1,9 +1,7 @@
 /* Report primitives (components/ui) and the shared empty state, dialog and receipt.
    Tokens only: colours, radii, type sizes, spacing and durations come from design-tokens.css.
-   Imported last in main.tsx so equal-specificity rules in globals.css, pulse.css and
-   controls.css never win. A declaration marked "legacy:" beats an older rule that forces
-   its value (with !important or a stronger selector); Task C1 deletes those rules, then
-   the !important can go. */
+   Imported after globals.css and controls.css in main.tsx and unlayered, so the defaults for
+   native controls (Tailwind's base layer, in globals.css) never win. */
 
 /* ── Button ─────────────────────────────────────────────────────────────── */
 .ui-button {
@@ -18,14 +16,13 @@
   justify-content: center;
   gap: var(--space-2);
   height: 32px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 32px;
   padding: 0 var(--space-3);
   border: 1px solid var(--ui-button-border);
   border-radius: var(--radius-control);
   background: var(--ui-button-bg);
-  /* legacy: .feature-layout button:not(.feature-button) sets the colour at (0,2,1). */
-  color: var(--ui-button-fg) !important;
+  color: var(--ui-button-fg);
   font-family: inherit;
   font-size: var(--text-13);
   font-weight: 600;
@@ -89,23 +86,15 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-/* legacy: .app-content :where(button, input, select, textarea):disabled repaints every
-   disabled control grey with !important. Keep the variant and fade it instead. */
+/* Disabled keeps its variant and fades. */
 .ui-button:disabled {
-  opacity: 0.5 !important;
-  border-color: var(--ui-button-border) !important;
-  background: var(--ui-button-bg) !important;
-  color: var(--ui-button-fg) !important;
-  cursor: not-allowed !important;
-}
-/* legacy: the same rule dims icons inside disabled controls to 0.72. */
-.ui-button:disabled svg {
-  opacity: 1;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 /* Busy is working, not unavailable: full strength, busy glyph in place of the icon. */
 .ui-button[aria-busy='true'] {
-  opacity: 1 !important;
-  cursor: progress !important;
+  opacity: 1;
+  cursor: progress;
 }
 .ui-button-icon {
   flex: none;
@@ -205,11 +194,6 @@
   font-size: var(--text-13);
   font-variant-numeric: tabular-nums;
 }
-/* legacy: a bare `thead` rule gives the header a tinted background. */
-.ui-table thead {
-  background: none;
-}
-/* (0,1,2) beats .feature-layout th and .app-content :where(th). */
 .ui-table thead th {
   padding: 0 var(--space-3) var(--space-2);
   border-bottom: 1px solid var(--border-medium);
@@ -220,7 +204,6 @@
   text-align: start;
   white-space: nowrap;
 }
-/* (0,1,2) beats .feature-layout td and .app-content :where(td). */
 .ui-table tbody td {
   padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid var(--border-default);
@@ -234,6 +217,14 @@
   text-align: end;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+  /* A size reads "2,31 GB" in every language: in RTL the Latin unit would otherwise be
+     reordered before the number. */
+  unicode-bidi: plaintext;
+}
+/* plaintext resolves "end" from each cell's own text: keep RTL numeric columns on the
+   side "end" means for the page. */
+.ui-table :is(th, td)[data-numeric]:dir(rtl) {
+  text-align: left;
 }
 .ui-table td[data-muted] {
   color: var(--text-muted);
@@ -324,7 +315,7 @@
   flex: none;
   width: 36px;
   height: 20px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 20px;
   padding: 0;
   border: 1px solid var(--ui-switch-border);
@@ -362,12 +353,9 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-/* legacy: .app-content :where(button, …):disabled, see Button. */
 .ui-switch:disabled {
-  opacity: 0.5 !important;
-  border-color: var(--ui-switch-border) !important;
-  background: var(--ui-switch-bg) !important;
-  cursor: not-allowed !important;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ── Segmented ──────────────────────────────────────────────────────────── */
@@ -385,14 +373,13 @@
 .ui-segmented-option {
   --ui-segmented-fg: var(--text-secondary);
   height: 28px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 28px;
   padding: 0 var(--space-3);
   border: 0;
   border-radius: 4px;
   background: transparent;
-  /* legacy: .feature-layout button:not(.feature-button) sets the colour at (0,2,1). */
-  color: var(--ui-segmented-fg) !important;
+  color: var(--ui-segmented-fg);
   font-family: inherit;
   font-size: var(--text-13);
   font-weight: 500;
@@ -465,12 +452,9 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-/* legacy: .app-content :where(button, input, …):disabled, see Button. */
 .ui-checkbox:disabled {
-  opacity: 0.5 !important;
-  border-color: var(--ui-checkbox-border) !important;
-  background: var(--ui-checkbox-bg) !important;
-  cursor: not-allowed !important;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ── EmptyState ─────────────────────────────────────────────────────────── */

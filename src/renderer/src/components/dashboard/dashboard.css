@@ -1,6 +1,5 @@
 /* Home: the view switch and the advanced report (spec 5.2). Tokens only.
-   This sheet loads before globals.css and pulse.css (it comes with the Home module), so
-   selectors start at .dashboard-view to outrank their equal-specificity rules. */
+   Selectors start at .dashboard-view to outrank shared rules of equal specificity. */
 
 .dashboard-view {
   min-width: 0;

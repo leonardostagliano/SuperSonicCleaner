@@ -7,7 +7,7 @@
   margin: calc(-1 * var(--space-2)) 0 var(--space-4);
 }
 .prefs-nav button {
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 0;
   padding: 2px 0;
   border: 0;
@@ -152,8 +152,7 @@
   flex-wrap: wrap;
   gap: var(--space-2);
 }
-/* legacy: globals.css and pulse.css colour every text input with !important;
-   this sets only the size and shape. */
+/* Size and shape; the colours are the native-control defaults in globals.css. */
 .prefs-input {
   flex: 1 1 240px;
   min-width: 0;

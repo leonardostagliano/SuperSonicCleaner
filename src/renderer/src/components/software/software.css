@@ -1,6 +1,5 @@
 /* Software pages (/updates, /drivers, /uninstaller, /debloater, /context-menu): the pieces
-   they share on top of components/ui. Tokens only. A declaration marked "legacy:" beats an
-   older global rule that forces its value; Task C1 deletes those rules, then it can go. */
+   they share on top of components/ui. Tokens only. */
 
 /* ── Page body: one flat card per block, a fixed rhythm between them ───────── */
 .sw-page {
@@ -183,10 +182,6 @@
 .ui-list-row[data-muted] .sw-row-name {
   color: var(--text-secondary);
 }
-.sw-row-main {
-  flex: 1 1 auto;
-  min-width: 0;
-}
 .sw-row-title {
   display: flex;
   align-items: baseline;
@@ -212,12 +207,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-}
-.sw-row-aside {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: var(--space-3);
 }
 .sw-row-meta {
   color: var(--text-secondary);
@@ -468,9 +457,7 @@
   height: 32px;
   padding-block: 0;
   padding-inline: 32px var(--space-3);
-  border: 1px solid;
-  /* legacy: .app-content :where(input:not([type=checkbox])…) forces the border colour. */
-  border-color: var(--border-strong) !important;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-control);
   color: var(--text-primary);
   font-family: inherit;
@@ -488,13 +475,11 @@
 /* ── Native select ─────────────────────────────────────────────────────── */
 .sw-toolbar .sw-select {
   height: 32px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 32px;
   max-width: 100%;
   padding: 0 var(--space-3);
-  border: 1px solid;
-  /* legacy: .app-content :where(…select…) forces the border colour. */
-  border-color: var(--border-strong) !important;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-control);
   color: var(--text-primary);
   font-family: inherit;
@@ -525,7 +510,7 @@
   gap: var(--space-2);
   width: 100%;
   height: 32px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 32px;
   padding: 0 var(--space-3);
   border: 0;
@@ -567,7 +552,7 @@
   gap: var(--space-2);
   justify-self: start;
   height: 32px;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 32px;
   padding: 0 var(--space-2);
   border: 0;
@@ -605,7 +590,7 @@
 /* ── Inline text button (links inside receipts and notes) ──────────────────── */
 .sw-page .sw-text-button {
   height: auto;
-  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  /* The native-control default in globals.css is 36px. */
   min-height: 0;
   padding: 0;
   border: 0;
