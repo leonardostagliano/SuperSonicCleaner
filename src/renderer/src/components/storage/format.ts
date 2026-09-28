@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { formatBytes } from '@/lib/format'
 
 /**
  * Counts, shares, durations and dates for the storage tools, in the UI language with
@@ -27,6 +28,24 @@ export function formatCount(value: number, locale: string = uiLocale()): string 
   return numberFormat(locale, 'count', {}).format(value)
 }
 
+const NBSP = ' '
+const UNITS = ['B', 'KB', 'MB', 'GB', 'TB']
+
+/**
+ * A size the user picks as a threshold ("1 MB", "100 KB"): whole units when the value is
+ * an exact multiple, otherwise the usual three significant digits of formatBytes.
+ */
+export function formatThreshold(bytes: number, locale: string = uiLocale()): string {
+  let value = bytes
+  let unit = 0
+  while (value >= 1024 && value % 1024 === 0 && unit < UNITS.length - 1) {
+    value /= 1024
+    unit++
+  }
+  if (unit === 0 && bytes >= 1024) return formatBytes(bytes, locale)
+  return `${formatCount(value, locale)}${NBSP}${UNITS[unit]}`
+}
+
 /** A share of a total: 46 %, 4,0 %, and "< 0,1 %" so a real share never reads as zero. */
 export function formatShare(fraction: number, locale: string = uiLocale()): string {
   if (fraction > 0 && fraction < 0.001) {
@@ -40,17 +59,21 @@ export function formatShare(fraction: number, locale: string = uiLocale()): stri
   }).format(fraction)
 }
 
-/** How long a scan took: 4,2 s under a minute, then 2 min 5 s. */
+/** How long a scan took: 4,2 s under a minute, then 2 min 5 s; U+00A0 before each unit. */
 export function formatElapsed(ms: number, locale: string = uiLocale()): string {
+  // Intl separates number and unit with a plain space; the UI keeps them together.
+  const keep = (text: string) => text.replace(/ /g, NBSP)
   const seconds = Math.max(ms, 0) / 1000
   if (seconds < 60) {
-    return numberFormat(locale, 'seconds1', {
-      style: 'unit',
-      unit: 'second',
-      unitDisplay: 'short',
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1
-    }).format(Math.max(seconds, 0.1))
+    return keep(
+      numberFormat(locale, 'seconds1', {
+        style: 'unit',
+        unit: 'second',
+        unitDisplay: 'short',
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      }).format(Math.max(seconds, 0.1))
+    )
   }
   const minutes = Math.floor(seconds / 60)
   const rest = Math.round(seconds % 60)
@@ -65,7 +88,7 @@ export function formatElapsed(ms: number, locale: string = uiLocale()): string {
     unitDisplay: 'short',
     maximumFractionDigits: 0
   })
-  return `${min.format(minutes)} ${sec.format(rest)}`
+  return `${keep(min.format(minutes))} ${keep(sec.format(rest))}`
 }
 
 function dateFormat(locale: string, key: string, options: Intl.DateTimeFormatOptions) {

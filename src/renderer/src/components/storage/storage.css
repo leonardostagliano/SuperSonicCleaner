@@ -293,6 +293,16 @@ button.storage-icon-action:focus-visible {
   padding-inline: var(--space-1);
   text-align: end;
 }
+/* Fixed widths keep the columns of consecutive tables (duplicate groups) aligned. */
+.ui-table th.storage-col-status,
+.ui-table td.storage-col-status {
+  width: 160px;
+  white-space: nowrap;
+}
+.ui-table th.storage-col-date,
+.ui-table td.storage-col-date {
+  width: 120px;
+}
 /* The path column takes the free width and ends with an ellipsis; the title has it all. */
 .ui-table td.storage-col-path {
   width: 100%;

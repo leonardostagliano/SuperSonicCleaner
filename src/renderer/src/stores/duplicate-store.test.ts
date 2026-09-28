@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useDuplicateStore } from './duplicate-store'
+import { isRecommendedCopy, useDuplicateStore } from './duplicate-store'
 import type { DuplicateScanResult } from '@shared/types'
 
 function makeResult(
@@ -353,5 +353,46 @@ describe('duplicate-store', () => {
 
     store.setStatus('deleting')
     expect(useDuplicateStore.getState().status).toBe('deleting')
+  })
+  it('recommends every copy but the kept one, and never a hard-linked copy', () => {
+    const result = makeResult([
+      {
+        hash: 'ffff6666ffff6666ffff6666ffff6666ffff6666ffff6666ffff6666ffff6666',
+        fileSize: 1000,
+        paths: ['/keep.bin', '/copy-1.bin', '/copy-2.bin', '/linked.bin']
+      }
+    ])
+    const [group] = result.groups
+    group.files[3].hardLinked = true
+    expect(group.files.map((_, index) => isRecommendedCopy(group, index))).toEqual([
+      false,
+      true,
+      true,
+      false
+    ])
+    // The pre-selection is exactly the recommended copies.
+    useDuplicateStore.getState().setResult(result)
+    useDuplicateStore.getState().selectAllDuplicates()
+    expect([...useDuplicateStore.getState().selectedPaths]).toEqual(['/copy-1.bin', '/copy-2.bin'])
+  })
+
+  it('records when a deletion finished and where the files went, and reset forgets it', () => {
+    const store = useDuplicateStore.getState()
+    const before = Date.now()
+    store.setDeleteResult({ deleted: 2, failed: 0, spaceRecovered: 2000, errors: [] }, 'permanent')
+    let state = useDuplicateStore.getState()
+    expect(state.deletedMode).toBe('permanent')
+    expect(state.deletedAt).toBeGreaterThanOrEqual(before)
+
+    // Without an explicit mode the current one is recorded.
+    store.setDeleteMode('recycle')
+    store.setDeleteResult({ deleted: 1, failed: 0, spaceRecovered: 1000, errors: [] })
+    expect(useDuplicateStore.getState().deletedMode).toBe('recycle')
+
+    store.reset()
+    state = useDuplicateStore.getState()
+    expect(state.deleteResult).toBeNull()
+    expect(state.deletedAt).toBeNull()
+    expect(state.deletedMode).toBeNull()
   })
 })

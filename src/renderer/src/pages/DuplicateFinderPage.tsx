@@ -1,32 +1,45 @@
-import { ToolIllustration } from '@/components/shared/ToolIllustration'
-import { useMemo, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import {
-  FolderOpen,
-  Search,
-  X,
-  Trash2,
-  RotateCcw,
-  ChevronDown,
-  ChevronRight,
-  ExternalLink,
-  Settings2,
-  Plus,
-  Shield
-} from 'lucide-react'
-import { cn, formatBytes } from '@/lib/utils'
-import { useDuplicateStore } from '@/stores/duplicate-store'
+import { ChevronRight, FolderOpen, ListChecks, RotateCcw, X } from 'lucide-react'
+import { formatBytes } from '@/lib/utils'
+import { icons } from '@/lib/icons'
+import { isRecommendedCopy, useDuplicateStore } from '@/stores/duplicate-store'
+import { useDrivesStore } from '@/stores/drives-store'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { Receipt } from '@/components/shared/Receipt'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
+import { Button } from '@/components/ui/Button'
+import { Card, Section } from '@/components/ui/Card'
+import { Checkbox } from '@/components/ui/Checkbox'
+import { Segmented } from '@/components/ui/Segmented'
+import { Table, TableCell, TableHead, TableHeaderCell, TableRow } from '@/components/ui/Table'
+import { Tag } from '@/components/ui/Tag'
+import {
+  DepthInput,
+  ExcludeEditor,
+  FilterField,
+  FolderScope
+} from '@/components/storage/FolderScope'
+import { InlineNote, RowAction, SummaryCard } from '@/components/storage/parts'
+import { ScanProgressCard } from '@/components/storage/ScanProgressCard'
+import { stagesFor } from '@/components/storage/stages'
+import {
+  formatCount,
+  formatDateTime,
+  formatDay,
+  formatElapsed,
+  formatThreshold,
+  listPreview
+} from '@/components/storage/format'
+import type { DuplicateDeleteMode, DuplicateGroup } from '@shared/types'
 
-const SIZE_PRESETS = [
-  { label: '100 KB', value: 102_400 },
-  { label: '1 MB', value: 1_048_576 },
-  { label: '10 MB', value: 10_485_760 },
-  { label: '100 MB', value: 104_857_600 }
-]
+const NS = 'duplicates'
+
+const MIN_SIZES = [102_400, 1_048_576, 10_485_760, 104_857_600]
+const MAX_SIZES = [104_857_600, 1_073_741_824, 5_368_709_120]
 
 const EXT_PRESETS: Record<string, string[]> = {
   images: ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.ico', '.tiff'],
@@ -34,73 +47,100 @@ const EXT_PRESETS: Record<string, string[]> = {
   audio: ['.mp3', '.flac', '.wav', '.aac', '.ogg', '.wma', '.m4a'],
   documents: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv']
 }
-
-function formatDuration(ms: number): string {
-  if (ms < 1000) return `${ms}ms`
-  const s = ms / 1000
-  if (s < 60) return `${s.toFixed(1)}s`
-  const m = Math.floor(s / 60)
-  const rem = Math.round(s % 60)
-  return `${m}m ${rem}s`
+type ExtPreset = 'all' | 'images' | 'videos' | 'audio' | 'documents'
+const EXT_PRESET_KEYS: ExtPreset[] = ['all', 'images', 'videos', 'audio', 'documents']
+/** The filter summary names the preset in running text ("solo immagini"). */
+const EXT_SUMMARY_KEYS: Record<ExtPreset, string> = {
+  all: 'typesAll',
+  images: 'typesImages',
+  videos: 'typesVideos',
+  audio: 'typesAudio',
+  documents: 'typesDocuments'
 }
 
-const PHASE_LABELS: Record<string, string> = {
+/** The real stages of a duplicate scan, in the order the main process runs them. */
+const STAGES = ['walking', 'grouping', 'partial-hash', 'full-hash'] as const
+const STAGE_LABELS: Record<string, string> = {
   walking: 'phaseWalking',
   grouping: 'phaseGrouping',
   'partial-hash': 'phasePartialHash',
-  'full-hash': 'phaseFullHash',
-  complete: 'phaseComplete'
+  'full-hash': 'phaseFullHash'
 }
 
 export function DuplicateFinderPage() {
-  const { t } = useTranslation('duplicates')
+  const { t } = useTranslation(NS)
   const store = useDuplicateStore()
-  const [showSettings, setShowSettings] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
-  const [excludeInput, setExcludeInput] = useState('')
+  const depthId = useId()
+  const excludeId = useId()
 
+  const { result, status, progress } = store
   const selectedCount = store.selectedPaths.size
   const selectedSize = useMemo(() => {
-    if (!store.result) return 0
+    if (!result) return 0
     let size = 0
-    for (const group of store.result.groups) {
-      for (const file of group.files) {
-        if (store.selectedPaths.has(file.path)) size += file.size
-      }
+    for (const group of result.groups) {
+      for (const file of group.files) if (store.selectedPaths.has(file.path)) size += file.size
     }
     return size
-  }, [store.result, store.selectedPaths])
+  }, [result, store.selectedPaths])
+  const recommendedCount = useMemo(
+    () =>
+      result
+        ? result.groups.reduce(
+            (n, g) => n + g.files.filter((_, i) => isRecommendedCopy(g, i)).length,
+            0
+          )
+        : 0,
+    [result]
+  )
+
+  const activeExtPreset = useMemo<ExtPreset | null>(() => {
+    if (store.extensionFilter.length === 0) return 'all'
+    for (const [name, exts] of Object.entries(EXT_PRESETS)) {
+      if (
+        exts.length === store.extensionFilter.length &&
+        exts.every((e) => store.extensionFilter.includes(e))
+      ) {
+        return name as ExtPreset
+      }
+    }
+    return null
+  }, [store.extensionFilter])
 
   // ── Handlers ──
 
-  const handleSelectDir = async () => {
+  const chooseFolder = async (): Promise<string | null> => {
     const dir = await window.kudu?.duplicatesSelectDir?.()
-    if (dir) store.setDirectory(dir)
+    if (dir) useDuplicateStore.getState().setDirectory(dir)
+    return dir ?? null
   }
 
   const handleScan = async () => {
-    if (!store.directory) return
-    store.reset()
-    store.setStatus('scanning')
+    // Without a folder, "Find duplicates" asks for one first.
+    const directory = useDuplicateStore.getState().directory ?? (await chooseFolder())
+    if (!directory) return
+    const s = useDuplicateStore.getState()
+    s.reset()
+    s.setStatus('scanning')
+    setExpandedGroups(new Set())
     try {
-      const result = await window.kudu?.duplicatesScan?.({
-        directory: store.directory,
-        minFileSize: store.minFileSize,
-        maxFileSize: store.maxFileSize,
-        excludePatterns: store.excludePatterns,
-        extensionFilter: store.extensionFilter,
-        maxDepth: store.maxDepth
+      const scan = await window.kudu?.duplicatesScan?.({
+        directory,
+        minFileSize: s.minFileSize,
+        maxFileSize: s.maxFileSize,
+        excludePatterns: s.excludePatterns,
+        extensionFilter: s.extensionFilter,
+        maxDepth: s.maxDepth
       })
-      if (result) {
-        store.setResult(result)
-        store.setStatus('complete')
-        if (result.groups.length > 0) {
-          store.selectAllDuplicates()
-        }
+      if (scan) {
+        s.setResult(scan)
+        s.setStatus('complete')
+        if (scan.groups.length > 0) s.selectAllDuplicates()
       }
     } catch {
-      store.setStatus('idle')
+      s.setStatus('idle')
     }
   }
 
@@ -110,32 +150,40 @@ export function DuplicateFinderPage() {
 
   const handleDelete = async () => {
     setShowConfirm(false)
-    const deletingPaths = new Set(store.selectedPaths)
-    store.setStatus('deleting')
+    const s = useDuplicateStore.getState()
+    const deletingPaths = new Set(s.selectedPaths)
+    const mode: DuplicateDeleteMode = s.deleteMode
+    s.setStatus('deleting')
     try {
-      const paths = Array.from(deletingPaths)
-      const result = await window.kudu?.duplicatesDelete?.(paths, store.deleteMode)
-      if (result) {
-        store.setDeleteResult(result)
+      const outcome = await window.kudu?.duplicatesDelete?.(Array.from(deletingPaths), mode)
+      if (outcome) {
+        s.setDeleteResult(outcome, mode)
         // Build the set of successfully deleted paths (remove failures)
-        const failedPaths = new Set(result.errors.map((e) => e.path))
+        const failedPaths = new Set(outcome.errors.map((e) => e.path))
         const successPaths = new Set<string>()
-        for (const p of deletingPaths) {
-          if (!failedPaths.has(p)) successPaths.add(p)
-        }
-        store.removeDeletedFiles(successPaths, failedPaths)
-        if (result.deleted > 0) {
+        for (const p of deletingPaths) if (!failedPaths.has(p)) successPaths.add(p)
+        s.removeDeletedFiles(successPaths, failedPaths)
+        if (outcome.deleted > 0) {
           toast.success(
-            t('deleteSuccess', { count: result.deleted, size: formatBytes(result.spaceRecovered) })
+            t(mode === 'permanent' ? 'deletePermanentToast' : 'deleteRecycleToast', {
+              count: outcome.deleted,
+              copies: formatCount(outcome.deleted),
+              size: formatBytes(outcome.spaceRecovered)
+            })
+          )
+          // Only a permanent deletion frees space on the drive.
+          if (mode === 'permanent') void useDrivesStore.getState().refresh({ fresh: true })
+        }
+        if (outcome.failed > 0) {
+          toast.error(
+            t('deleteFailed', { count: outcome.failed, failed: formatCount(outcome.failed) })
           )
         }
-        if (result.failed > 0) {
-          toast.error(t('deleteFailed', { failed: result.failed }))
-        }
-        store.setStatus('complete')
       }
     } catch {
-      store.setStatus('complete')
+      // The main process refuses overlapping deletions; the list stays as it was.
+    } finally {
+      useDuplicateStore.getState().setStatus('complete')
     }
   }
 
@@ -148,667 +196,476 @@ export function DuplicateFinderPage() {
     })
   }
 
-  const handleAddExclude = () => {
-    const val = excludeInput.trim()
-    if (val && !store.excludePatterns.includes(val)) {
-      store.setExcludePatterns([...store.excludePatterns, val])
-    }
-    setExcludeInput('')
-  }
+  // ── Copy ──
 
-  const handleRemoveExclude = (pattern: string) => {
-    store.setExcludePatterns(store.excludePatterns.filter((p) => p !== pattern))
-  }
+  const more = (count: number) => t('moreItems', { count })
+  const filtersSummary = [
+    store.maxFileSize === null
+      ? t('sizeFrom', { min: formatThreshold(store.minFileSize) })
+      : t('sizeRange', {
+          min: formatThreshold(store.minFileSize),
+          max: formatThreshold(store.maxFileSize)
+        }),
+    activeExtPreset === null
+      ? t('typesCustom', { count: store.extensionFilter.length })
+      : t(EXT_SUMMARY_KEYS[activeExtPreset]),
+    t('depthSummary', { count: store.maxDepth }),
+    store.excludePatterns.length > 0
+      ? t('excludedSummary', { list: listPreview(store.excludePatterns, more) })
+      : t('noneExcluded')
+  ].join(' · ')
 
-  const activeExtPreset = useMemo(() => {
-    if (store.extensionFilter.length === 0) return 'all'
-    for (const [name, exts] of Object.entries(EXT_PRESETS)) {
-      if (
-        exts.length === store.extensionFilter.length &&
-        exts.every((e) => store.extensionFilter.includes(e))
-      ) {
-        return name
-      }
-    }
-    return null
-  }, [store.extensionFilter])
+  const permanent = store.deleteMode === 'permanent'
+  const selection = {
+    count: selectedCount,
+    copies: formatCount(selectedCount),
+    size: formatBytes(selectedSize)
+  }
+  const actionLabel =
+    selectedCount === 0
+      ? t(permanent ? 'deleteActionNone' : 'moveActionNone')
+      : t(permanent ? 'deleteAction' : 'moveAction', selection)
+
+  const receipt = (() => {
+    const done = store.deleteResult
+    if (status !== 'complete' || !done || store.deletedAt === null) return null
+    const wasPermanent = store.deletedMode === 'permanent'
+    return (
+      <Receipt
+        title={
+          done.deleted === 0
+            ? t('receiptNoneTitle')
+            : t(wasPermanent ? 'receiptPermanentTitle' : 'receiptRecycleTitle')
+        }
+        value={
+          done.deleted > 0
+            ? t(wasPermanent ? 'receiptPermanentValue' : 'receiptRecycleValue', {
+                size: formatBytes(done.spaceRecovered)
+              })
+            : undefined
+        }
+        facts={[
+          t('receiptCount', { count: done.deleted, copies: formatCount(done.deleted) }),
+          formatDateTime(store.deletedAt),
+          t(wasPermanent ? 'receiptPermanentNote' : 'receiptRecycleNote')
+        ]}
+        skipped={
+          done.failed > 0
+            ? t('receiptSkipped', { count: done.failed, skipped: formatCount(done.failed) })
+            : undefined
+        }
+      />
+    )
+  })()
 
   // ── Render ──
 
-  return (
-    <div className="utility-page animate-fade-in flex h-full flex-col overflow-y-auto">
-      <PageHeader title={t('pageTitle')} description={t('pageDescription')} />
+  const scanning = status === 'scanning'
+  const showResults = status === 'complete' && result
 
-      {/* Directory selector + scan button */}
-      <div className="utility-toolbar mb-4 flex items-center gap-3">
-        <button
-          onClick={handleSelectDir}
-          disabled={store.status === 'scanning'}
-          className="pulse-button utility-picker flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-[13px] font-medium transition-colors"
-          style={{
-            background: 'var(--bg-hover)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-medium)'
-          }}
-        >
-          <FolderOpen className="h-4 w-4" style={{ color: 'var(--accent)' }} strokeWidth={1.8} />
-          {store.directory ? store.directory : t('selectDirectory')}
-        </button>
-
-        {store.directory && store.status !== 'scanning' && (
-          <button
-            onClick={handleScan}
-            className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-colors"
-            style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
-          >
-            <Search className="h-4 w-4" strokeWidth={2} />
-            {t('scanButton')}
-          </button>
-        )}
-
-        {store.status === 'scanning' && (
-          <button
-            onClick={handleCancel}
-            className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium transition-colors"
-            style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}
-          >
-            <X className="h-4 w-4" strokeWidth={2} />
-            {t('cancelScan')}
-          </button>
-        )}
-
-        <button
-          onClick={() => setShowSettings((s) => !s)}
-          className={cn(
-            'ml-auto flex items-center gap-2 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors',
-            showSettings ? 'text-amber-400' : 'text-zinc-500 hover:text-zinc-300'
-          )}
-        >
-          <Settings2 className="h-4 w-4" strokeWidth={1.8} />
-          {t('settings')}
-        </button>
-      </div>
-
-      {/* Settings panel */}
-      {showSettings && (
-        <div
-          className="mb-5 rounded-2xl p-5"
-          style={{ background: 'var(--card-bg)', border: '1px solid var(--border-subtle)' }}
-        >
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-            {/* Min file size */}
-            <div>
-              <label
-                className="mb-2 block text-[11px] font-semibold tracking-wide"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('minFileSize')}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {SIZE_PRESETS.map((p) => (
-                  <button
-                    key={p.value}
-                    onClick={() => store.setMinFileSize(p.value)}
-                    className={cn(
-                      'rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors',
-                      store.minFileSize === p.value
-                        ? 'text-amber-400'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    )}
-                    style={{
-                      background:
-                        store.minFileSize === p.value
-                          ? 'rgba(245,158,11,0.1)'
-                          : 'var(--bg-subtle-2)'
-                    }}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Max file size */}
-            <div>
-              <label
-                className="mb-2 block text-[11px] font-semibold tracking-wide"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('maxFileSize')}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                <button
-                  onClick={() => store.setMaxFileSize(null)}
-                  className={cn(
-                    'rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors',
-                    store.maxFileSize === null
-                      ? 'text-amber-400'
-                      : 'text-zinc-500 hover:text-zinc-300'
-                  )}
-                  style={{
-                    background:
-                      store.maxFileSize === null ? 'rgba(245,158,11,0.1)' : 'var(--bg-subtle-2)'
-                  }}
-                >
-                  {t('noLimit')}
-                </button>
-                {[104_857_600, 1_073_741_824, 5_368_709_120].map((v) => (
-                  <button
-                    key={v}
-                    onClick={() => store.setMaxFileSize(v)}
-                    className={cn(
-                      'rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors',
-                      store.maxFileSize === v
-                        ? 'text-amber-400'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    )}
-                    style={{
-                      background:
-                        store.maxFileSize === v ? 'rgba(245,158,11,0.1)' : 'var(--bg-subtle-2)'
-                    }}
-                  >
-                    {formatBytes(v)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Extension filter */}
-            <div>
-              <label
-                className="mb-2 block text-[11px] font-semibold tracking-wide"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('extensionFilter')}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {(['all', 'images', 'videos', 'audio', 'documents'] as const).map((preset) => (
-                  <button
-                    key={preset}
-                    onClick={() =>
-                      store.setExtensionFilter(preset === 'all' ? [] : EXT_PRESETS[preset])
-                    }
-                    className={cn(
-                      'rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors',
-                      activeExtPreset === preset
-                        ? 'text-amber-400'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    )}
-                    style={{
-                      background:
-                        activeExtPreset === preset ? 'rgba(245,158,11,0.1)' : 'var(--bg-subtle-2)'
-                    }}
-                  >
-                    {t(preset === 'all' ? 'allFiles' : preset)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Max depth */}
-            <div>
-              <label
-                className="mb-2 block text-[11px] font-semibold tracking-wide"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('maxDepth')}
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={50}
-                value={store.maxDepth}
-                onChange={(e) =>
-                  store.setMaxDepth(Math.max(1, Math.min(50, parseInt(e.target.value) || 20)))
-                }
-                className="w-20 rounded-lg px-3 py-1.5 text-[13px] text-white"
-                style={{
-                  background: 'var(--bg-subtle-2)',
-                  border: '1px solid var(--border-medium)'
-                }}
-              />
-            </div>
-
-            {/* Exclude patterns */}
-            <div className="col-span-2">
-              <label
-                className="mb-2 block text-[11px] font-semibold tracking-wide"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('excludePatterns')}
-              </label>
-              <div className="flex flex-wrap items-center gap-1.5">
-                {store.excludePatterns.map((p) => (
-                  <span
-                    key={p}
-                    className="flex items-center gap-1 rounded-lg px-2.5 py-1 text-[12px] font-medium"
-                    style={{ background: 'var(--bg-subtle-2)', color: 'var(--text-secondary)' }}
-                  >
-                    {p}
-                    <button
-                      onClick={() => handleRemoveExclude(p)}
-                      className="text-zinc-600 hover:text-zinc-400"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                ))}
-                <div className="flex items-center gap-1">
-                  <input
-                    type="text"
-                    value={excludeInput}
-                    onChange={(e) => setExcludeInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddExclude()}
-                    placeholder={t('excludePlaceholder')}
-                    className="w-48 rounded-lg px-2.5 py-1 text-[12px] text-white placeholder-zinc-600"
-                    style={{
-                      background: 'var(--bg-subtle-2)',
-                      border: '1px solid var(--border-medium)'
-                    }}
-                  />
-                  <button onClick={handleAddExclude} className="text-zinc-500 hover:text-zinc-300">
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Scanning progress */}
-      {store.status === 'scanning' && store.progress && (
-        <div
-          className="mb-5 rounded-2xl p-5"
-          style={{ background: 'var(--card-bg)', border: '1px solid var(--border-subtle)' }}
-        >
-          <div className="mb-3 flex items-center gap-3">
-            <div
-              className="h-2 flex-1 overflow-hidden rounded-full"
-              style={{ background: 'var(--bg-hover-2)' }}
-            >
-              <div
-                className="h-full rounded-full transition-[width] duration-300"
-                style={{ background: 'var(--accent)', width: `${store.progress.progress}%` }}
-              />
-            </div>
-            <span className="text-[12px] font-medium" style={{ color: 'var(--accent)' }}>
-              {store.progress.progress}%
-            </span>
-          </div>
-          <p className="text-[13px] font-medium text-white">
-            {t(PHASE_LABELS[store.progress.phase] || 'phaseWalking')}
-          </p>
-          {store.progress.currentPath && (
-            <p
-              className="mt-1 truncate text-[12px]"
-              style={{ color: 'var(--text-secondary)' }}
-              title={store.progress.currentPath}
-            >
-              {store.progress.currentPath}
-            </p>
-          )}
-          <div className="mt-3 flex gap-6">
-            <StatMini
-              label={t('filesScanned')}
-              value={store.progress.filesScanned.toLocaleString()}
-            />
-            {store.progress.duplicatesFound > 0 && (
-              <StatMini
-                label={t('duplicatesFound')}
-                value={store.progress.duplicatesFound.toLocaleString()}
-              />
-            )}
-            {store.progress.filesHashed != null && store.progress.filesToHash != null && (
-              <StatMini
-                label="Hashed"
-                value={`${store.progress.filesHashed} / ${store.progress.filesToHash}`}
-              />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Results */}
-      {store.status === 'complete' && store.result && (
-        <>
-          <AiAnalysisPanel
-            source="duplicates"
-            sourceRevision={store.result}
-            candidates={store.result.groups.flatMap((group) =>
-              group.files.map((file) => ({
-                path: file.path,
-                size: file.size,
-                lastModified: file.lastModified,
-                lastAccessed: file.lastAccessed,
-                duplicateGroupKey: group.fullHash
-              }))
-            )}
-          />
-          {/* Cancelled banner */}
-          {store.result.cancelled && (
-            <div
-              className="mb-4 rounded-xl px-4 py-2.5 text-[13px] font-medium"
-              style={{ background: 'var(--accent-muted-bg)', color: 'var(--accent)' }}
-            >
-              {t('scanCancelled')}
-            </div>
-          )}
-
-          {/* Summary stats */}
-          <div className="mb-5 grid grid-cols-4 gap-3">
-            <StatCard
-              label={t('duplicatesFound')}
-              value={store.result.totalDuplicates.toLocaleString()}
-            />
-            <StatCard
-              label={t('reclaimableSpace')}
-              value={formatBytes(store.result.totalReclaimable)}
-              accent
-            />
-            <StatCard
-              label={t('filesScanned')}
-              value={store.result.totalFilesScanned.toLocaleString()}
-            />
-            <StatCard label={t('duration')} value={formatDuration(store.result.duration)} />
-          </div>
-
-          {store.result.groups.length > 0 ? (
-            <>
-              {/* Action bar */}
-              <div className="mb-4 flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    if (selectedCount > 0) store.deselectAll()
-                    else store.selectAllDuplicates()
-                  }}
-                  className="rounded-xl px-4 py-2 text-[12px] font-medium text-zinc-400 transition-colors hover:text-zinc-200"
-                  style={{ background: 'var(--bg-subtle-2)' }}
-                >
-                  {selectedCount > 0 ? t('deselectAll') : t('selectAllDuplicates')}
-                </button>
-
-                {/* Delete mode toggle */}
-                <div
-                  className="flex overflow-hidden rounded-lg"
-                  style={{ background: 'var(--bg-subtle-2)' }}
-                >
-                  <button
-                    onClick={() => store.setDeleteMode('recycle')}
-                    className={cn(
-                      'px-3 py-1.5 text-[12px] font-medium transition-colors',
-                      store.deleteMode === 'recycle' ? 'text-amber-400' : 'text-zinc-500'
-                    )}
-                    style={
-                      store.deleteMode === 'recycle'
-                        ? { background: 'rgba(245,158,11,0.1)' }
-                        : undefined
-                    }
-                  >
-                    {t('recycleBin')}
-                  </button>
-                  <button
-                    onClick={() => store.setDeleteMode('permanent')}
-                    className={cn(
-                      'px-3 py-1.5 text-[12px] font-medium transition-colors',
-                      store.deleteMode === 'permanent' ? 'text-red-400' : 'text-zinc-500'
-                    )}
-                    style={
-                      store.deleteMode === 'permanent'
-                        ? { background: 'rgba(239,68,68,0.1)' }
-                        : undefined
-                    }
-                  >
-                    {t('permanentDelete')}
-                  </button>
-                </div>
-
-                <div className="flex-1" />
-
-                <button
-                  onClick={() => store.reset()}
-                  className="flex items-center gap-2 rounded-xl px-4 py-2 text-[12px] font-medium text-zinc-400 transition-colors hover:text-zinc-200"
-                  style={{ background: 'var(--bg-subtle-2)' }}
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  {t('scanAgain')}
-                </button>
-
-                {selectedCount > 0 && (
-                  <button
-                    onClick={() => setShowConfirm(true)}
-                    className="flex items-center gap-2 rounded-xl px-5 py-2 text-[13px] font-semibold transition-colors"
-                    style={{
-                      background:
-                        store.deleteMode === 'permanent'
-                          ? 'rgba(239,68,68,0.12)'
-                          : 'rgba(245,158,11,0.12)',
-                      color: store.deleteMode === 'permanent' ? '#ef4444' : '#f59e0b'
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    {t('deleteSelected', { count: selectedCount, size: formatBytes(selectedSize) })}
-                  </button>
-                )}
-              </div>
-
-              {/* Duplicate groups */}
-              <div className="space-y-2">
-                {store.result.groups.map((group) => {
-                  const isExpanded = expandedGroups.has(group.fullHash)
-                  // The main process lists the copy to keep first; show that order as-is.
-                  const sorted = group.files
-                  const groupSelected = group.files.filter((f) =>
-                    store.selectedPaths.has(f.path)
-                  ).length
-
-                  return (
-                    <div
-                      key={group.fullHash}
-                      className="overflow-hidden rounded-xl"
-                      style={{
-                        background: 'var(--card-bg)',
-                        border: '1px solid var(--border-subtle)'
-                      }}
-                    >
-                      {/* Group header */}
-                      <button
-                        onClick={() => toggleGroup(group.fullHash)}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.02]"
-                      >
-                        {isExpanded ? (
-                          <ChevronDown className="h-4 w-4 shrink-0 text-zinc-500" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4 shrink-0 text-zinc-500" />
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <span className="text-[13px] font-medium text-white">
-                            {t('groupHeader', {
-                              size: formatBytes(group.fileSize),
-                              count: group.files.length
-                            })}
-                          </span>
-                        </div>
-                        {groupSelected > 0 && (
-                          <span
-                            className="text-[11px] font-medium"
-                            style={{ color: 'var(--accent)' }}
-                          >
-                            {groupSelected} selected
-                          </span>
-                        )}
-                        <span className="text-[12px] font-medium" style={{ color: '#22c55e' }}>
-                          {formatBytes(group.reclaimableSpace)}
-                        </span>
-                        <span
-                          className="rounded px-1.5 py-0.5 font-mono text-[10px]"
-                          style={{
-                            background: 'var(--bg-subtle-2)',
-                            color: 'var(--text-secondary)'
-                          }}
-                        >
-                          {group.hash}
-                        </span>
-                      </button>
-
-                      {/* Expanded file list */}
-                      {isExpanded && (
-                        <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                          {sorted.map((file, idx) => {
-                            const isSelected = store.selectedPaths.has(file.path)
-                            const isKept = idx === 0 && !isSelected
-                            // Selecting this would leave no copy of the file behind
-                            const isLastCopy =
-                              !isSelected && groupSelected === group.files.length - 1
-                            return (
-                              <div
-                                key={file.path}
-                                className="flex items-center gap-3 px-4 py-2 transition-colors hover:bg-white/[0.02]"
-                                style={
-                                  idx > 0 ? { borderTop: '1px solid var(--bg-subtle)' } : undefined
-                                }
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isSelected}
-                                  disabled={isLastCopy || file.hardLinked}
-                                  title={
-                                    file.hardLinked
-                                      ? t('hardLinkedCopy')
-                                      : isLastCopy
-                                        ? t('keepOneCopy')
-                                        : undefined
-                                  }
-                                  onChange={() => store.togglePath(file.path)}
-                                  className="h-3.5 w-3.5 shrink-0 cursor-pointer rounded accent-amber-500 disabled:cursor-not-allowed disabled:opacity-40"
-                                />
-                                <span
-                                  className="min-w-0 flex-1 truncate text-[12px]"
-                                  style={{ color: 'var(--text-secondary)' }}
-                                  title={file.path}
-                                >
-                                  {file.path}
-                                </span>
-                                {isKept && (
-                                  <span
-                                    className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold"
-                                    style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e' }}
-                                  >
-                                    <Shield className="h-3 w-3" />
-                                    {t('original')}
-                                  </span>
-                                )}
-                                <span
-                                  className="shrink-0 text-[11px]"
-                                  style={{ color: 'var(--text-secondary)' }}
-                                >
-                                  {new Date(file.lastModified).toLocaleDateString()}
-                                </span>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    window.kudu?.duplicatesOpenLocation?.(file.path)
-                                  }}
-                                  className="shrink-0 text-zinc-600 hover:text-zinc-400"
-                                  title={t('openLocation')}
-                                >
-                                  <ExternalLink className="h-3.5 w-3.5" />
-                                </button>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            </>
-          ) : (
-            <EmptyState title={t('emptyTitle')} description={t('emptyDescription')} />
-          )}
-        </>
-      )}
-
-      {/* Idle state */}
-      {store.status === 'idle' && !store.result && (
-        <EmptyState title={t('idleTitle')} description={t('idleDescription')} />
-      )}
-
-      {/* Deleting overlay */}
-      {store.status === 'deleting' && (
-        <div
-          className="mb-5 flex items-center gap-3 rounded-2xl p-5"
-          style={{ background: 'var(--card-bg)', border: '1px solid var(--border-subtle)' }}
-        >
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
-          <span className="text-[13px] font-medium text-white">{t('deleting')}</span>
-        </div>
-      )}
-
-      {/* Confirm dialog */}
-      <ConfirmDialog
-        open={showConfirm}
-        onConfirm={handleDelete}
-        onCancel={() => setShowConfirm(false)}
-        title={t('confirmDeleteTitle')}
-        description={
-          store.deleteMode === 'permanent'
-            ? t('confirmPermanentDesc', { count: selectedCount, size: formatBytes(selectedSize) })
-            : t('confirmRecycleDesc', { count: selectedCount, size: formatBytes(selectedSize) })
-        }
-        variant={store.deleteMode === 'permanent' ? 'danger' : 'warning'}
-        confirmLabel={store.deleteMode === 'permanent' ? t('permanentDelete') : t('recycleBin')}
-      />
-    </div>
-  )
-}
-
-// ── Small components ──
-
-function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div
-      className="rounded-xl px-4 py-3"
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-subtle)' }}
-    >
-      <div className="text-[11px] font-medium" style={{ color: 'var(--text-secondary)' }}>
-        {label}
-      </div>
-      <div
-        className="mt-1 text-[18px] font-bold"
-        style={{ color: accent ? 'var(--accent)' : 'var(--text-primary)' }}
-      >
-        {value}
-      </div>
-    </div>
-  )
-}
-
-function StatMini({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-        {label}:{' '}
-      </span>
-      <span className="text-[12px] font-medium text-white">{value}</span>
+      <PageHeader
+        title={t('pageTitle')}
+        description={t('pageDescription')}
+        action={
+          status === 'idle' || scanning ? (
+            <Button
+              variant="primary"
+              size="lg"
+              icon={icons.duplicates}
+              busy={scanning}
+              onClick={handleScan}
+            >
+              {t('scanButton')}
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              icon={RotateCcw}
+              onClick={() => store.reset()}
+              disabled={status === 'deleting'}
+            >
+              {t('newSearch')}
+            </Button>
+          )
+        }
+      />
+
+      <div className="storage-stack">
+        {status === 'idle' && (
+          <>
+            <FolderScope
+              ns={NS}
+              folder={store.directory}
+              onChooseFolder={() => void chooseFolder()}
+              filtersSummary={filtersSummary}
+            >
+              <FilterField label={t('minFileSize')}>
+                <Segmented
+                  label={t('minFileSize')}
+                  value={String(store.minFileSize)}
+                  onChange={(v) => store.setMinFileSize(Number(v))}
+                  options={MIN_SIZES.map((v) => ({ value: String(v), label: formatThreshold(v) }))}
+                />
+              </FilterField>
+              <FilterField label={t('maxFileSize')}>
+                <Segmented
+                  label={t('maxFileSize')}
+                  value={String(store.maxFileSize ?? 'none')}
+                  onChange={(v) => store.setMaxFileSize(v === 'none' ? null : Number(v))}
+                  options={[
+                    { value: 'none', label: t('noLimit') },
+                    ...MAX_SIZES.map((v) => ({ value: String(v), label: formatThreshold(v) }))
+                  ]}
+                />
+              </FilterField>
+              <FilterField label={t('maxDepth')} htmlFor={depthId}>
+                <DepthInput id={depthId} value={store.maxDepth} onChange={store.setMaxDepth} />
+              </FilterField>
+              <FilterField label={t('extensionFilter')} wide>
+                <Segmented
+                  label={t('extensionFilter')}
+                  value={activeExtPreset ?? ''}
+                  onChange={(v) => store.setExtensionFilter(v === 'all' ? [] : EXT_PRESETS[v])}
+                  options={EXT_PRESET_KEYS.map((key) => ({
+                    value: key,
+                    label: t(key === 'all' ? 'allFiles' : key)
+                  }))}
+                />
+              </FilterField>
+              <FilterField label={t('excludePatterns')} htmlFor={excludeId} wide>
+                <ExcludeEditor
+                  ns={NS}
+                  id={excludeId}
+                  patterns={store.excludePatterns}
+                  onChange={store.setExcludePatterns}
+                />
+              </FilterField>
+            </FolderScope>
+
+            <EmptyState
+              title={t('idleTitle')}
+              description={t('idleDescription')}
+              checks={[
+                { title: t('checkMatchTitle'), detail: t('checkMatchDetail') },
+                { title: t('checkKeepTitle'), detail: t('checkKeepDetail') },
+                { title: t('checkSkipTitle'), detail: t('checkSkipDetail') }
+              ]}
+            />
+          </>
+        )}
+
+        {scanning && (
+          <ScanProgressCard
+            title={t('scanningTitle')}
+            progressLabel={t('progressLabel')}
+            value={
+              progress && progress.progress > 0 ? Math.min(1, progress.progress / 100) : undefined
+            }
+            stages={stagesFor(STAGES, progress?.phase, (key) => t(STAGE_LABELS[key]))}
+            stagesLabel={t('stagesLabel')}
+            path={progress?.currentPath || store.directory || undefined}
+            facts={
+              progress
+                ? [
+                    progress.filesScanned > 0 &&
+                      t('filesRead', {
+                        count: progress.filesScanned,
+                        files: formatCount(progress.filesScanned)
+                      }),
+                    progress.filesHashed != null &&
+                      progress.filesToHash != null &&
+                      t('filesCompared', {
+                        done: formatCount(progress.filesHashed),
+                        total: formatCount(progress.filesToHash)
+                      }),
+                    progress.duplicatesFound > 0 &&
+                      t('groupsSoFar', {
+                        count: progress.duplicatesFound,
+                        groups: formatCount(progress.duplicatesFound)
+                      })
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')
+                : undefined
+            }
+            action={
+              <Button icon={X} onClick={handleCancel}>
+                {t('cancelScan')}
+              </Button>
+            }
+          />
+        )}
+
+        {status === 'deleting' && (
+          <ScanProgressCard
+            title={t(permanent ? 'deletingPermanent' : 'deletingRecycle', selection)}
+            progressLabel={t('progressLabel')}
+            facts={t('deletingFacts')}
+          />
+        )}
+
+        {showResults && (
+          <>
+            {receipt}
+            {result.cancelled && <InlineNote tone="warning">{t('scanCancelled')}</InlineNote>}
+
+            {result.groups.length > 0 ? (
+              <>
+                <SummaryCard
+                  value={
+                    selectedCount > 0
+                      ? t('summarySelected', { size: formatBytes(selectedSize) })
+                      : t('summaryNoneSelected')
+                  }
+                  facts={[
+                    t('factCopies', {
+                      count: result.totalDuplicates,
+                      copies: formatCount(result.totalDuplicates),
+                      size: formatBytes(result.totalReclaimable)
+                    }),
+                    t('factGroups', {
+                      count: result.groups.length,
+                      groups: formatCount(result.groups.length)
+                    }),
+                    t('factScanned', {
+                      count: result.totalFilesScanned,
+                      files: formatCount(result.totalFilesScanned),
+                      duration: formatElapsed(result.duration)
+                    }),
+                    store.directory
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                  actions={
+                    <>
+                      <Segmented
+                        label={t('deleteModeLabel')}
+                        value={store.deleteMode}
+                        onChange={store.setDeleteMode}
+                        options={[
+                          { value: 'recycle', label: t('recycleBin') },
+                          { value: 'permanent', label: t('permanentDelete') }
+                        ]}
+                      />
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        disabled={selectedCount === 0}
+                        onClick={() => setShowConfirm(true)}
+                      >
+                        {actionLabel}
+                      </Button>
+                    </>
+                  }
+                />
+
+                <AiAnalysisPanel
+                  source="duplicates"
+                  sourceRevision={result}
+                  candidates={result.groups.flatMap((group) =>
+                    group.files.map((file) => ({
+                      path: file.path,
+                      size: file.size,
+                      lastModified: file.lastModified,
+                      lastAccessed: file.lastAccessed,
+                      duplicateGroupKey: group.fullHash
+                    }))
+                  )}
+                />
+
+                <Section
+                  title={t('groupsTitle')}
+                  meta={
+                    recommendedCount > 0
+                      ? t('groupsMeta', {
+                          count: recommendedCount,
+                          copies: formatCount(recommendedCount)
+                        })
+                      : undefined
+                  }
+                  metaTone="recommended"
+                  actions={
+                    selectedCount > 0 ? (
+                      <Button variant="ghost" onClick={() => store.deselectAll()}>
+                        {t('deselectAll')}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        icon={ListChecks}
+                        onClick={() => store.selectAllDuplicates()}
+                      >
+                        {t('selectRecommended')}
+                      </Button>
+                    )
+                  }
+                >
+                  <ul className="storage-groups">
+                    {result.groups.map((group) => (
+                      <DuplicateGroupRow
+                        key={group.fullHash}
+                        group={group}
+                        expanded={expandedGroups.has(group.fullHash)}
+                        onToggle={() => toggleGroup(group.fullHash)}
+                        selectedPaths={store.selectedPaths}
+                        onTogglePath={store.togglePath}
+                      />
+                    ))}
+                  </ul>
+                </Section>
+              </>
+            ) : (
+              <Card>
+                <p className="storage-summary-value">{t('emptyTitle')}</p>
+                <p className="storage-summary-facts">
+                  {[
+                    t('emptyDescription'),
+                    t('factScanned', {
+                      count: result.totalFilesScanned,
+                      files: formatCount(result.totalFilesScanned),
+                      duration: formatElapsed(result.duration)
+                    }),
+                    store.directory
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </p>
+              </Card>
+            )}
+          </>
+        )}
+      </div>
+
+      <ConfirmDialog
+        open={showConfirm && status === 'complete'}
+        onConfirm={handleDelete}
+        onCancel={() => setShowConfirm(false)}
+        title={t(permanent ? 'confirmPermanentTitle' : 'confirmRecycleTitle', selection)}
+        description={t(permanent ? 'confirmPermanentDesc' : 'confirmRecycleDesc')}
+        variant={permanent ? 'danger' : 'default'}
+        confirmLabel={actionLabel}
+      />
     </div>
   )
 }
 
-function EmptyState({ title, description }: { title: string; description: string }) {
+/** One group of identical files: a disclosure row, then its copies. */
+function DuplicateGroupRow({
+  group,
+  expanded,
+  onToggle,
+  selectedPaths,
+  onTogglePath
+}: {
+  group: DuplicateGroup
+  expanded: boolean
+  onToggle: () => void
+  selectedPaths: Set<string>
+  onTogglePath: (path: string) => void
+}) {
+  const { t } = useTranslation(NS)
+  const bodyId = useId()
+  const groupSelected = group.files.filter((f) => selectedPaths.has(f.path)).length
   return (
-    <div className="utility-empty-stage flex flex-1 flex-col items-center justify-center py-20 text-center">
-      <ToolIllustration />
-      <FolderOpen
-        className="mb-4 h-12 w-12"
-        style={{ color: 'var(--text-faint)' }}
-        strokeWidth={1.2}
-      />
-      <h3 className="text-[15px] font-semibold text-white">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-[13px]" style={{ color: 'var(--text-secondary)' }}>
-        {description}
-      </p>
-    </div>
+    <li className="storage-group">
+      <button
+        type="button"
+        className="storage-group-head"
+        aria-expanded={expanded}
+        aria-controls={bodyId}
+        onClick={onToggle}
+      >
+        <ChevronRight size={16} strokeWidth={1.75} aria-hidden="true" />
+        <span className="storage-group-title">
+          {t('groupHeader', {
+            count: group.files.length,
+            copies: formatCount(group.files.length),
+            size: formatBytes(group.fileSize)
+          })}
+        </span>
+        <span className="storage-group-meta">
+          {t('groupSelected', {
+            selected: formatCount(groupSelected),
+            total: formatCount(group.files.length)
+          })}
+        </span>
+        <span className="storage-group-size">
+          {t('groupFreeable', { size: formatBytes(group.reclaimableSpace) })}
+        </span>
+      </button>
+      {expanded && (
+        <div id={bodyId} className="storage-group-body">
+          <Table>
+            <TableHead>
+              <TableHeaderCell className="storage-col-check">
+                <span className="sr-only">{t('colSelect')}</span>
+              </TableHeaderCell>
+              <TableHeaderCell>{t('colPath')}</TableHeaderCell>
+              <TableHeaderCell className="storage-col-status">{t('colStatus')}</TableHeaderCell>
+              <TableHeaderCell numeric className="storage-col-date">
+                {t('colModified')}
+              </TableHeaderCell>
+              <TableHeaderCell className="storage-col-action">
+                <span className="sr-only">{t('openLocation')}</span>
+              </TableHeaderCell>
+            </TableHead>
+            <tbody>
+              {group.files.map((file, index) => {
+                const isSelected = selectedPaths.has(file.path)
+                const recommended = isRecommendedCopy(group, index)
+                // Selecting this would leave no copy of the file behind
+                const isLastCopy = !isSelected && groupSelected === group.files.length - 1
+                return (
+                  <TableRow key={file.path} recommended={recommended} selected={isSelected}>
+                    <TableCell className="storage-col-check">
+                      <span
+                        title={
+                          file.hardLinked
+                            ? t('hardLinkedCopy')
+                            : isLastCopy
+                              ? t('keepOneCopy')
+                              : undefined
+                        }
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          disabled={isLastCopy || file.hardLinked}
+                          onChange={() => onTogglePath(file.path)}
+                          label={t('selectCopy', { path: file.path })}
+                        />
+                      </span>
+                    </TableCell>
+                    <TableCell className="storage-col-path" title={file.path}>
+                      <span className="storage-path-text">{file.path}</span>
+                    </TableCell>
+                    <TableCell className="storage-col-status">
+                      {index === 0 ? (
+                        <Tag tone="neutral">{t('keepTag')}</Tag>
+                      ) : recommended ? (
+                        <Tag tone="recommended">{t('recommendedTag')}</Tag>
+                      ) : file.hardLinked ? (
+                        <Tag tone="neutral">{t('hardLinkedTag')}</Tag>
+                      ) : null}
+                    </TableCell>
+                    <TableCell numeric muted className="storage-col-date">
+                      {formatDay(file.lastModified)}
+                    </TableCell>
+                    <TableCell className="storage-col-action">
+                      <RowAction
+                        icon={FolderOpen}
+                        label={t('openLocation')}
+                        onClick={() => window.kudu?.duplicatesOpenLocation?.(file.path)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </tbody>
+          </Table>
+        </div>
+      )}
+    </li>
   )
 }

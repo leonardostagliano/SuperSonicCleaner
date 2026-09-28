@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { formatCount, formatDateTime, formatElapsed, formatShare, listPreview } from './format'
+import {
+  formatCount,
+  formatDateTime,
+  formatElapsed,
+  formatShare,
+  formatThreshold,
+  listPreview
+} from './format'
 
-const NBSP = ' '
+const NBSP = ' '
 
 describe('formatCount', () => {
   it('groups thousands as the UI language does, with Latin digits', () => {
@@ -52,5 +59,18 @@ describe('listPreview', () => {
 
   it('names the first three and counts the rest', () => {
     expect(listPreview(['a', 'b', 'c', 'd', 'e'], more)).toBe('a, b, c +2')
+  })
+})
+
+describe('formatThreshold', () => {
+  it('writes preset sizes in whole units', () => {
+    expect(formatThreshold(102_400, 'it')).toBe(`100${NBSP}KB`)
+    expect(formatThreshold(1_048_576, 'it')).toBe(`1${NBSP}MB`)
+    expect(formatThreshold(524_288_000, 'it')).toBe(`500${NBSP}MB`)
+    expect(formatThreshold(5_368_709_120, 'en')).toBe(`5${NBSP}GB`)
+  })
+
+  it('falls back to three significant digits for other values', () => {
+    expect(formatThreshold(1_500_000, 'en')).toBe(`1.43${NBSP}MB`)
   })
 })

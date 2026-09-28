@@ -1,10 +1,20 @@
 import { create } from 'zustand'
 import type {
+  DuplicateGroup,
   DuplicateScanResult,
   DuplicateScanProgress,
   DuplicateDeleteMode,
   DuplicateDeleteResult
 } from '@shared/types'
+
+/**
+ * The copies the app recommends deleting: every copy but the first-listed one (the one
+ * the main process keeps: a hard-linked file, else the shortest path), except hard-linked
+ * copies, which free nothing. `selectAllDuplicates` pre-selects exactly these.
+ */
+export function isRecommendedCopy(group: DuplicateGroup, index: number): boolean {
+  return index > 0 && !group.files[index]?.hardLinked
+}
 
 interface DuplicateState {
   // Config
@@ -24,6 +34,9 @@ interface DuplicateState {
   selectedPaths: Set<string>
   deleteMode: DuplicateDeleteMode
   deleteResult: DuplicateDeleteResult | null
+  /** When the last deletion finished and where the files went, for its receipt. */
+  deletedAt: number | null
+  deletedMode: DuplicateDeleteMode | null
 
   // Setters
   setDirectory: (dir: string | null) => void
@@ -36,7 +49,8 @@ interface DuplicateState {
   setProgress: (progress: DuplicateScanProgress | null) => void
   setResult: (result: DuplicateScanResult | null) => void
   setDeleteMode: (mode: DuplicateDeleteMode) => void
-  setDeleteResult: (result: DuplicateDeleteResult | null) => void
+  /** Records the result with the mode it ran with (default: the current mode) and the time. */
+  setDeleteResult: (result: DuplicateDeleteResult | null, mode?: DuplicateDeleteMode) => void
   togglePath: (path: string) => void
   selectAllDuplicates: () => void
   deselectAll: () => void
@@ -59,6 +73,8 @@ export const useDuplicateStore = create<DuplicateState>((set, get) => ({
   selectedPaths: new Set(),
   deleteMode: 'recycle',
   deleteResult: null,
+  deletedAt: null,
+  deletedMode: null,
 
   setDirectory: (directory) => set({ directory }),
   setMinFileSize: (minFileSize) => set({ minFileSize }),
@@ -70,7 +86,12 @@ export const useDuplicateStore = create<DuplicateState>((set, get) => ({
   setProgress: (progress) => set({ progress }),
   setResult: (result) => set({ result }),
   setDeleteMode: (deleteMode) => set({ deleteMode }),
-  setDeleteResult: (deleteResult) => set({ deleteResult }),
+  setDeleteResult: (deleteResult, mode) =>
+    set((s) => ({
+      deleteResult,
+      deletedAt: deleteResult ? Date.now() : null,
+      deletedMode: deleteResult ? (mode ?? s.deleteMode) : null
+    })),
   togglePath: (path) =>
     set((s) => {
       const next = new Set(s.selectedPaths)
@@ -90,9 +111,9 @@ export const useDuplicateStore = create<DuplicateState>((set, get) => ({
     if (!result) return
     const selected = new Set<string>()
     for (const group of result.groups) {
-      // Keep the first-listed file — the one the main process also keeps (a
-      // hard-linked file before the shortest path) — and select the rest.
-      for (const file of group.files.slice(1)) if (!file.hardLinked) selected.add(file.path)
+      group.files.forEach((file, index) => {
+        if (isRecommendedCopy(group, index)) selected.add(file.path)
+      })
     }
     set({ selectedPaths: selected })
   },
@@ -137,6 +158,8 @@ export const useDuplicateStore = create<DuplicateState>((set, get) => ({
       progress: null,
       result: null,
       selectedPaths: new Set(),
-      deleteResult: null
+      deleteResult: null,
+      deletedAt: null,
+      deletedMode: null
     })
 }))
