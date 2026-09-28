@@ -1944,29 +1944,6 @@ thead {
   color: var(--brand-solid) !important;
 }
 
-.cleaner-workspace {
-  flex: 1 1 auto;
-  min-height: 560px;
-  gap: 14px !important;
-}
-.cleaner-categories {
-  width: 250px !important;
-  padding: 10px;
-  border: 1px solid var(--border-default);
-  border-radius: 18px;
-  background: var(--sidebar-bg);
-  box-shadow: 0 5px 20px rgba(20, 46, 38, 0.035);
-}
-.cleaner-categories > button {
-  min-height: 58px;
-}
-.cleaner-results {
-  min-height: 560px;
-}
-.cleaner-results > .empty-state {
-  height: 100%;
-  min-height: 560px;
-}
 .cleaner-page,
 .malware-page {
   display: flex;
@@ -2066,14 +2043,6 @@ thead {
   }
   .settings-section:first-child > div {
     grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 720px) {
-  .cleaner-workspace {
-    flex-direction: column;
-  }
-  .cleaner-categories {
-    width: 100% !important;
   }
 }
 

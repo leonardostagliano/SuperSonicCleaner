@@ -135,4 +135,45 @@ describe('cleaner scan lifecycle', () => {
     expect(useScanStore.getState().results).toHaveLength(2)
     expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
   })
+
+  it('passes a scanner step label through and records when the scan finished', async () => {
+    const system = deferred<ScanResult[]>()
+    systemScan.mockReturnValue(system.promise)
+    const running = startCleanerScan(categories)
+    await Promise.resolve()
+    expect(useScanStore.getState().scannedAt).toBeNull()
+
+    for (const listener of listeners) {
+      listener({
+        phase: 'scanning',
+        category: CleanerType.System,
+        currentPath: '',
+        label: { key: 'cleaner:progress.pathEntries' },
+        progress: 0,
+        itemsFound: 0,
+        sizeFound: 0
+      })
+    }
+    const progress = useScanStore.getState().progress
+    expect(progress?.label).toEqual({ key: 'cleaner:progress.pathEntries' })
+    // Without a path the category label stays the fallback text.
+    expect(progress?.currentPath).toBe('System')
+
+    system.resolve(result(CleanerType.System, 'system'))
+    await running
+    expect(useScanStore.getState().scannedAt).toEqual(expect.any(Number))
+  })
+
+  it('records a scan time for a partial list stopped after a category', async () => {
+    const system = deferred<ScanResult[]>()
+    systemScan.mockReturnValueOnce(system.promise)
+    const running = startCleanerScan(categories)
+    await Promise.resolve()
+    cancelCleanerScan()
+    system.resolve(result(CleanerType.System, 'only'))
+    await running
+    expect(browserScan).not.toHaveBeenCalled()
+    expect(useScanStore.getState().scannedAt).toEqual(expect.any(Number))
+    expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
+  })
 })

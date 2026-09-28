@@ -176,6 +176,8 @@ export interface ProgressData {
   phase: 'scanning' | 'cleaning'
   category: string
   currentPath: string
+  /** A translated step ("Reading PATH entries") when there is no path to show. */
+  label?: ProgressLabel
   progress: number
   itemsFound: number
   sizeFound: number

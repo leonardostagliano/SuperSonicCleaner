@@ -9,7 +9,14 @@ import { CleanerType } from '../../shared/enums'
 import { cacheItems, clearCachedCategory } from '../services/scan-cache'
 import { validateStringArray } from '../services/ipc-validation'
 import { psUtf8, execNativeUtf8 } from '../services/exec-utf8'
-import type { ScanItem, ScanResult, CleanResult, CleanError } from '../../shared/types'
+import type {
+  ScanItem,
+  ScanResult,
+  CleanResult,
+  CleanError,
+  ProgressData,
+  ProgressLabel
+} from '../../shared/types'
 import type { WindowGetter } from './index'
 
 const execFileAsync = promisify(execFile)
@@ -310,22 +317,26 @@ export function registerEnvironmentCleanerIpc(getWindow: WindowGetter): void {
     const category = CleanerType.Environment
     const isWin = process.platform === 'win32'
 
-    const sendProgress = (current: number, total: number, currentPath: string) => {
+    // The renderer translates the step (cleaner namespace); no English text crosses IPC.
+    const sendProgress = (current: number, total: number, key: string) => {
       const win = getWindow()
       if (win && !win.isDestroyed()) {
-        win.webContents.send(IPC.SCAN_PROGRESS, {
+        const label: ProgressLabel = { key: `cleaner:progress.${key}` }
+        const data: ProgressData = {
           phase: 'scanning',
           category,
-          currentPath,
+          currentPath: '',
+          label,
           progress: (current / total) * 100,
           itemsFound: results.reduce((s, r) => s + r.itemCount, 0),
           sizeFound: 0
-        })
+        }
+        win.webContents.send(IPC.SCAN_PROGRESS, data)
       }
     }
 
     // --- Scan orphaned PATH entries ---
-    sendProgress(0, 2, 'Scanning PATH entries...')
+    sendProgress(0, 2, 'pathEntries')
     let pathEntries: EnvEntry[]
     if (isWin) {
       pathEntries = await scanWindowsPathEntries()
@@ -368,7 +379,7 @@ export function registerEnvironmentCleanerIpc(getWindow: WindowGetter): void {
     }
 
     // --- Scan orphaned environment variables ---
-    sendProgress(1, 2, 'Scanning environment variables...')
+    sendProgress(1, 2, 'environmentVariables')
     let envVarEntries: EnvEntry[]
     if (isWin) {
       envVarEntries = await scanWindowsEnvVars()
@@ -409,7 +420,7 @@ export function registerEnvironmentCleanerIpc(getWindow: WindowGetter): void {
       }
     }
 
-    sendProgress(2, 2, 'Environment scan complete')
+    sendProgress(2, 2, 'environmentDone')
     return results
   })
 

@@ -1,35 +1,57 @@
-import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactElement
+} from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
-import {
-  Monitor,
-  Globe,
-  AppWindow,
-  Gamepad2,
-  Trash2,
-  Link2Off,
-  Database,
-  Variable,
-  Fingerprint,
-  Search,
-  Sparkles,
-  ChevronRight,
-  ChevronDown,
-  ArrowUpDown,
-  Folder,
-  FolderOpen,
-  AlertTriangle,
-  ShieldAlert,
-  Loader2
-} from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronRight, FolderOpen } from 'lucide-react'
+import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { ScanProgress } from '@/components/shared/ScanProgress'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { CleanSummary } from '@/components/cleaner/CleanSummary'
-import { cn, formatBytes, formatNumber } from '@/lib/utils'
+import { ReportNotice } from '@/components/cleaner/ReportNotice'
+import '@/components/cleaner/pulizia.css'
+import {
+  Button,
+  Card,
+  Checkbox,
+  ProgressBar,
+  Section,
+  Table,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Tag
+} from '@/components/ui'
+import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
+import { icons } from '@/lib/icons'
+import { formatBytes, formatNumber } from '@/lib/utils'
+import { progressText } from '@/lib/progress-label'
+import {
+  entryTotal,
+  formatDateTime,
+  formatList,
+  formatPercent,
+  formatTime,
+  isRecommendedGroup,
+  isSafeDefault,
+  latestEntry,
+  nextSizeSort,
+  selectionState,
+  selectionTotals,
+  sortBySize,
+  type SizeSort
+} from '@/lib/cleaner-report'
 import { cleanInBatches } from '@/lib/cleaner-batches'
 import { cancelCleanerScan, startCleanerScan } from '@/lib/cleaner-scan'
 import { useScanStore } from '@/stores/scan-store'
@@ -38,84 +60,70 @@ import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import { ScanStatus, CleanerType } from '@shared/enums'
-import type { CleanerBlocker, ScanResult } from '@shared/types'
-import type { LucideIcon } from 'lucide-react'
-import { toast } from 'sonner'
-import { AiAnalysisPanel } from '@/components/ai/AiAnalysisPanel'
+import type { CleanerBlocker, ScanItem, ScanResult } from '@shared/types'
 
 /** Check whether a path looks like an absolute filesystem path (not a label like "Recycle Bin" or "PATH → …"). */
 const isAbsolutePath = (p: string) => /^[A-Za-z]:[\\/]/.test(p) || p.startsWith('/')
-
-interface CategoryDef {
-  type: CategoryType
-  labelKey: string
-  icon: LucideIcon
-  descriptionKey: string
-}
 
 const AI_TOOLS_VIEW = 'aiTools' as const
 const AI_TOOLS_GROUP = 'AI Tools'
 type CategoryType = CleanerType | typeof AI_TOOLS_VIEW
 
+interface CategoryDef {
+  type: CategoryType
+  labelKey: string
+  descriptionKey: string
+}
+
 const categories: CategoryDef[] = [
   {
     type: CleanerType.System,
     labelKey: 'categorySystem',
-    icon: Monitor,
     descriptionKey: 'categorySystemDescription'
   },
   {
     type: CleanerType.Browser,
     labelKey: 'categoryBrowsers',
-    icon: Globe,
     descriptionKey: 'categoryBrowsersDescription'
   },
   {
     type: CleanerType.App,
     labelKey: 'categoryApplications',
-    icon: AppWindow,
     descriptionKey: 'categoryApplicationsDescription'
   },
   {
     type: AI_TOOLS_VIEW,
     labelKey: 'categoryAiTools',
-    icon: Sparkles,
     descriptionKey: 'categoryAiToolsDescription'
   },
   {
     type: CleanerType.Gaming,
     labelKey: 'categoryGaming',
-    icon: Gamepad2,
     descriptionKey: 'categoryGamingDescription'
   },
   {
     type: CleanerType.RecycleBin,
     labelKey: 'categoryRecycleBin',
-    icon: Trash2,
     descriptionKey: 'categoryRecycleBinDescription'
   },
   {
     type: CleanerType.Shortcut,
     labelKey: 'categoryShortcuts',
-    icon: Link2Off,
     descriptionKey: 'categoryShortcutsDescription'
   },
   {
     type: CleanerType.Environment,
     labelKey: 'categoryEnvironment',
-    icon: Variable,
     descriptionKey: 'categoryEnvironmentDescription'
   },
   {
     type: CleanerType.Database,
     labelKey: 'categoryDatabases',
-    icon: Database,
     descriptionKey: 'categoryDatabasesDescription'
   },
   {
     type: CleanerType.PrivacyTraces,
     labelKey: 'categoryPrivacyTraces',
-    icon: Fingerprint,
     descriptionKey: 'categoryPrivacyTracesDescription'
   }
 ]
@@ -124,19 +132,17 @@ const scannerCategories = categories.filter(
   (category): category is CategoryDef & { type: CleanerType } => category.type !== AI_TOOLS_VIEW
 )
 
-type SortMode = 'default' | 'size-desc' | 'size-asc'
-
-const SORT_LABEL_KEYS: Record<SortMode, string> = {
-  default: 'sortDefault',
-  'size-desc': 'sortSizeDesc',
-  'size-asc': 'sortSizeAsc'
+/** Group labels the scanners send in English; unknown ones are shown as they come. */
+const GROUP_LABEL_KEYS: Record<string, string> = {
+  'Optional cache resets — next launch may be slower': 'groupOptionalCacheResets',
+  'Optional maintenance': 'groupOptionalMaintenance',
+  'Launcher Caches': 'groupLauncherCaches',
+  'GPU Shader Caches': 'groupGpuShaderCaches',
+  Redistributables: 'groupRedistributables'
 }
 
-function blockerNames(blockers: CleanerBlocker[], moreLabel: (count: number) => string): string {
-  const visible = blockers.slice(0, 4).map((blocker) => blocker.name)
-  if (blockers.length > visible.length) visible.push(moreLabel(blockers.length - visible.length))
-  return visible.join(', ')
-}
+/** Items shown under an opened row; the rest are counted. */
+const ITEMS_SHOWN = 50
 
 const MENU_VIEWPORT_MARGIN = 8
 
@@ -202,61 +208,113 @@ function CleanerContextMenu({
   return createPortal(
     <div
       ref={menuRef}
-      className="fixed z-[9999] min-w-[200px] max-w-[320px] rounded-xl py-1 shadow-xl"
+      role="menu"
+      className="pulizia-menu"
       style={{
         left: position.left,
         top: position.top,
-        visibility: position.visible ? 'visible' : 'hidden',
-        background: '#1e1e22',
-        border: '1px solid var(--border-strong)'
+        visibility: position.visible ? 'visible' : 'hidden'
       }}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <button
-        type="button"
-        onClick={onClean}
-        className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[12px] transition-colors hover:bg-white/5"
-        style={{ color: 'var(--accent-hover)' }}
-      >
-        <Sparkles className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-        <span className="min-w-0 truncate">{cleanLabel}</span>
-        <span
-          className="ml-auto shrink-0 font-mono text-[11px]"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          {formatBytes(size)}
-        </span>
+      <button type="button" role="menuitem" onClick={onClean} className="pulizia-menu-item">
+        <icons.clean size={16} strokeWidth={1.75} aria-hidden="true" />
+        <span>{cleanLabel}</span>
+        <span className="pulizia-menu-size">{formatBytes(size)}</span>
       </button>
     </div>,
     document.body
   )
 }
 
-function CleanerScanProgress() {
+/** The live stage of a scan or cleanup: category, bar, what has been found or freed. */
+function CleanerProgress({ scanCategories }: { scanCategories: CategoryDef[] }) {
+  const { t, i18n } = useTranslation('cleaner')
   const progress = useScanStore((state) => state.progress)
   const status = useScanStore((state) => state.status)
-  if (!progress || (status !== ScanStatus.Scanning && status !== ScanStatus.Cleaning)) return null
+  const cancelRequested = useScanStore((state) => state.scanCancelRequested)
+  const scanning = status === ScanStatus.Scanning
+  if (!scanning && status !== ScanStatus.Cleaning) return null
+
+  const category = scanCategories.find((c) => c.type === progress?.category)
+  const categoryLabel = category ? t(category.labelKey) : ''
+  const index = category ? scanCategories.indexOf(category) + 1 : 0
+  const step = category
+    ? scanning
+      ? t('progress.step', { category: categoryLabel, index, total: scanCategories.length })
+      : categoryLabel
+    : ''
+  const detail = progress?.label
+    ? progressText(t, progress.label)
+    : progress?.currentPath && progress.currentPath !== categoryLabel
+      ? progress.currentPath
+      : ''
+  const value = progress ? progress.progress / 100 : undefined
+
   return (
-    <ScanProgress
-      status={status === ScanStatus.Scanning ? 'scanning' : 'cleaning'}
-      progress={progress.progress}
-      currentPath={progress.currentPath}
-      itemsFound={progress.itemsFound}
-      sizeFound={progress.sizeFound}
-      className="mb-5"
-    />
+    <Section
+      title={scanning ? t('progress.scanning') : t('progress.cleaning')}
+      meta={progress ? formatPercent(progress.progress, i18n.language) : undefined}
+      actions={
+        scanning ? (
+          <Button
+            variant="ghost"
+            onClick={cancelCleanerScan}
+            disabled={cancelRequested}
+            title={t('cancelAfterCategory')}
+          >
+            {t('common:cancel')}
+          </Button>
+        ) : undefined
+      }
+    >
+      <div className="pulizia-progress" aria-live="polite">
+        <ProgressBar
+          value={value}
+          label={scanning ? t('progress.scanning') : t('progress.cleaning')}
+        />
+        {step && <p className="pulizia-progress-step">{step}</p>}
+        {detail && (
+          <p className="pulizia-progress-path" title={detail}>
+            {detail}
+          </p>
+        )}
+        {progress && (
+          <p className="pulizia-progress-counts">
+            {scanning
+              ? t('progress.found', {
+                  count: progress.itemsFound,
+                  n: formatNumber(progress.itemsFound),
+                  size: formatBytes(progress.sizeFound)
+                })
+              : t('progress.freed', { size: formatBytes(progress.sizeFound) })}
+          </p>
+        )}
+        {cancelRequested && <p className="pulizia-progress-counts">{t('scanCancelPending')}</p>}
+      </div>
+    </Section>
   )
 }
 
+interface CategoryGroup {
+  def: CategoryDef
+  results: ScanResult[]
+  itemCount: number
+  totalSize: number
+  entries: number | null
+  recommended: boolean
+}
+
 export function CleanerPage() {
-  const { t } = useTranslation(['cleaner', 'settings'])
+  const { t, i18n } = useTranslation(['cleaner', 'settings'])
   const navigate = useNavigate()
   const { platform } = usePlatform()
   // Progress arrives frequently; only the progress card needs to render for
   // those events, not every result row and selection aggregate on the page.
   const store = useScanStore(useShallow(({ progress: _progress, ...state }) => state))
   const recomputeStats = useStatsStore((s) => s.recompute)
-  const historyStore = useHistoryStore()
+  const addHistoryEntry = useHistoryStore((s) => s.addEntry)
+  const historyEntries = useHistoryStore((s) => s.entries)
   const createRestorePointEnabled = useSettingsStore((s) => s.settings.cleaner.createRestorePoint)
   const closeBrowsersBeforeClean = useSettingsStore(
     (s) => s.settings.cleaner.closeBrowsersBeforeClean
@@ -265,38 +323,24 @@ export function CleanerPage() {
   const scannableCategories = protectRecycleBin
     ? scannerCategories.filter((c) => c.type !== CleanerType.RecycleBin)
     : scannerCategories
-  const [activeCategory, setActiveCategory] = useState<CategoryType>(CleanerType.System)
   const [showConfirm, setShowConfirm] = useState(false)
   const [blockers, setBlockers] = useState<CleanerBlocker[]>([])
   const [confirmBlockers, setConfirmBlockers] = useState<CleanerBlocker[]>([])
   const [checkingBlockers, setCheckingBlockers] = useState(false)
   const [preparingClean, setPreparingClean] = useState(false)
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
+  const [openCategories, setOpenCategories] = useState<Set<CategoryType>>(new Set())
+  const [openResults, setOpenResults] = useState<Set<string>>(new Set())
   const cleanStartRef = useRef<number>(0)
   const blockerRequestRef = useRef(0)
   const scopedBlockerRequestRef = useRef(0)
-  const [sortMode, setSortMode] = useState<SortMode>('default')
-  const [showSortMenu, setShowSortMenu] = useState(false)
-  const sortMenuRef = useRef<HTMLDivElement>(null)
+  const [sortMode, setSortMode] = useState<SizeSort>('default')
   const [contextMenu, setContextMenu] = useState<CleanerContextMenuState | null>(null)
   const [scopedClean, setScopedClean] = useState<{ ids: string[]; label: string } | null>(null)
 
   const cleanIndexRef = useRef(0)
   const cleanTotalRef = useRef(1)
 
-  // Close the sort menu when clicking anywhere outside it.
-  useEffect(() => {
-    if (!showSortMenu) return
-    const handler = (e: globalThis.MouseEvent) => {
-      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node)) {
-        setShowSortMenu(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [showSortMenu])
-
-  const { scanningCategory, failedCategories, elevationSkipped } = store
+  const { failedCategories, elevationSkipped } = store
 
   // Check the default selection after each scan. Selection changes are
   // revalidated when Clean is clicked, avoiding an OS query on every checkbox.
@@ -338,7 +382,8 @@ export function CleanerPage() {
   }, [])
 
   const handleScan = () => {
-    setExpandedGroups(new Set())
+    setOpenCategories(new Set())
+    setOpenResults(new Set())
     void startCleanerScan(
       scannableCategories.map((cat) => ({ type: cat.type, label: t(cat.labelKey) }))
     )
@@ -352,7 +397,7 @@ export function CleanerPage() {
       setScopedClean(scope ?? null)
       setPreparingClean(true)
       // Scoped requests track their own counter so they neither cancel the
-      // page-wide blocker check nor overwrite its banner, which always describes
+      // page-wide blocker check nor overwrite its notice, which always describes
       // the globally selected items.
       const requestRef = scope ? scopedBlockerRequestRef : blockerRequestRef
       const requestId = ++requestRef.current
@@ -447,6 +492,7 @@ export function CleanerPage() {
         found: number
         cleaned: number
         space: number
+        skipped: number
       }> = []
 
       // Build the category plan once with O(1) selection lookups. Large scans
@@ -517,7 +563,8 @@ export function CleanerPage() {
             type: cat.type,
             found: catResults.reduce((sum, scan) => sum + scan.itemCount, 0),
             cleaned: result.filesDeleted,
-            space: result.totalCleaned
+            space: result.totalCleaned,
+            skipped: result.filesSkipped
           })
         } catch (error) {
           const reason = error instanceof Error ? error.message : String(error)
@@ -527,7 +574,8 @@ export function CleanerPage() {
             type: cat.type,
             found: catResults.reduce((sum, scan) => sum + scan.itemCount, 0),
             cleaned: 0,
-            space: 0
+            space: 0,
+            skipped: catItemIds.length
           })
         }
         activeIndex++
@@ -540,14 +588,15 @@ export function CleanerPage() {
             type: cat.type,
             found: catResults.reduce((sum, scan) => sum + scan.itemCount, 0),
             cleaned: 0,
-            space: 0
+            space: 0,
+            skipped: 0
           })
         }
       }
 
       const totalFound = store.results.reduce((s, r) => s + r.itemCount, 0)
       const duration = Date.now() - cleanStartRef.current
-      await historyStore.addEntry({
+      await addHistoryEntry({
         id: Date.now().toString(),
         type: 'cleaner',
         timestamp: new Date().toISOString(),
@@ -578,7 +627,8 @@ export function CleanerPage() {
         needsElevation: anyNeedsElevation,
         categories: categoryBreakdown,
         duration,
-        totalSizeBefore: store.getTotalSize()
+        totalSizeBefore: store.getTotalSize(),
+        completedAt: Date.now()
       })
       store.setStatus(ScanStatus.Complete)
     } catch {
@@ -596,67 +646,124 @@ export function CleanerPage() {
     scopedClean
   ])
 
-  const categoryResults = (type: CategoryType) => {
-    if (type === AI_TOOLS_VIEW) {
-      return store.results.filter(
-        (r) => r.category === CleanerType.App && r.group === AI_TOOLS_GROUP
-      )
-    }
-    if (type === CleanerType.App) {
-      return store.results.filter(
-        (r) => r.category === CleanerType.App && r.group !== AI_TOOLS_GROUP
-      )
-    }
-    return store.results.filter((r) => r.category === type)
-  }
+  const categoryResults = useCallback(
+    (type: CategoryType) => {
+      if (type === AI_TOOLS_VIEW) {
+        return store.results.filter(
+          (r) => r.category === CleanerType.App && r.group === AI_TOOLS_GROUP
+        )
+      }
+      if (type === CleanerType.App) {
+        return store.results.filter(
+          (r) => r.category === CleanerType.App && r.group !== AI_TOOLS_GROUP
+        )
+      }
+      return store.results.filter((r) => r.category === type)
+    },
+    [store.results]
+  )
+
+  const groups: CategoryGroup[] = useMemo(
+    () =>
+      categories
+        .filter((c) => !(protectRecycleBin && c.type === CleanerType.RecycleBin))
+        .map((def) => {
+          const results = categoryResults(def.type)
+          return {
+            def,
+            results,
+            itemCount: results.reduce((sum, r) => sum + r.itemCount, 0),
+            totalSize: results.reduce((sum, r) => sum + r.totalSize, 0),
+            entries: entryTotal(results),
+            recommended: isRecommendedGroup(results)
+          }
+        }),
+    [categoryResults, protectRecycleBin]
+  )
+  const foundGroups = groups.filter((group) => group.results.length > 0)
+  const emptyGroups = groups.filter((group) => group.results.length === 0)
+
+  const totals = useMemo(
+    () => selectionTotals(store.results, store.selectedItems),
+    [store.results, store.selectedItems]
+  )
+  const selectedGroupCount = foundGroups.filter(
+    (group) => selectionState(group.results, store.selectedItems) !== 'none'
+  ).length
+
   // Privacy traces such as registry lists are counted in entries, not bytes.
   const entryCountLabel = (count: number) =>
     t(count === 1 ? 'traceEntryCount' : 'traceEntryCountPlural', { count: formatNumber(count) })
 
-  const categoryItemCount = (type: CategoryType) =>
-    categoryResults(type).reduce((sum, r) => sum + r.itemCount, 0)
+  // Native maintenance has no measurable size; a row made only of it says so, a row
+  // that mixes it with files shows the measured bytes (the note explains the rest).
+  const sizeLabel = (results: ScanResult[], totalSize: number) => {
+    const maintenance = (r: ScanResult) => r.items.some((item) => item.cleanupAction)
+    if (results.length > 0 && results.every(maintenance)) return t('maintenanceSizeUnknown')
+    const entries = entryTotal(results)
+    return entries !== null ? entryCountLabel(entries) : formatBytes(totalSize)
+  }
 
-  const toggleActiveCategory = () => {
-    const results = categoryResults(activeCategory)
-    const items = results.flatMap((result) => result.items)
-    const allSelected = items.length > 0 && items.every((item) => store.selectedItems.has(item.id))
+  /** The first names and a count of the rest: "A, B, C, D e altre 38". */
+  const shortList = (names: string[]) => {
+    const shown = names.slice(0, 4)
+    if (names.length > shown.length)
+      shown.push(t('moreApps', { count: names.length - shown.length }))
+    return formatList(shown, i18n.language)
+  }
 
+  const groupLabel = (group: string) =>
+    GROUP_LABEL_KEYS[group] ? t(GROUP_LABEL_KEYS[group]) : group
+
+  const resultNote = (result: ScanResult) => {
+    const action = result.items[0]?.cleanupAction
+    if (action)
+      return action === 'windows-components'
+        ? t('maintenanceComponentsNote')
+        : t('maintenanceNativeNote')
+    if (result.descriptionKey) return t(result.descriptionKey)
+    if (!result.items.every(isSafeDefault)) return t('optionalNote')
+    return ''
+  }
+
+  const toggleGroupSelection = (results: ScanResult[]) => {
+    const isAll = (result: ScanResult) =>
+      result.items.every((item) => store.selectedItems.has(item.id))
+    const allSelected = results.every(isAll)
     for (const result of results) {
-      const resultSelected = result.items.every((item) => store.selectedItems.has(item.id))
-      if ((allSelected && resultSelected) || (!allSelected && !resultSelected)) {
-        store.toggleSubcategory(result)
-      }
+      if (allSelected === isAll(result)) store.toggleSubcategory(result)
     }
   }
 
-  const toggleGroup = (key: string) => {
-    setExpandedGroups((prev) => {
-      const next = new Set(prev)
+  const toggleOpenCategory = (type: CategoryType) =>
+    setOpenCategories((previous) => {
+      const next = new Set(previous)
+      if (next.has(type)) next.delete(type)
+      else next.add(type)
+      return next
+    })
+
+  const toggleOpenResult = (key: string) =>
+    setOpenResults((previous) => {
+      const next = new Set(previous)
       if (next.has(key)) next.delete(key)
       else next.add(key)
       return next
     })
-  }
-
-  const toggleSubcategorySelection = (result: ScanResult) => {
-    store.toggleSubcategory(result)
-  }
-
-  // Sort results by aggregate size, keeping the scanner's order when 'default'.
-  const sortResults = (list: ScanResult[]): ScanResult[] => {
-    if (sortMode === 'default') return list
-    const dir = sortMode === 'size-desc' ? -1 : 1
-    return [...list].sort((a, b) => dir * (a.totalSize - b.totalSize))
-  }
 
   const isScanning = store.status === ScanStatus.Scanning
   const isCleaning = store.status === ScanStatus.Cleaning
   const hasResults = store.results.length > 0
-  const isRecycleBinProtected = protectRecycleBin && activeCategory === CleanerType.RecycleBin
+  const showReceipt = !!store.cleanSummary && store.status === ScanStatus.Complete
+  const showResults = hasResults && !showReceipt && !isCleaning
+  const settled = !isScanning && !isCleaning
   const confirmCleanIds = scopedClean?.ids ?? store.getSelectedIds()
-  const confirmCleanSize = scopedClean
-    ? sizeForIds(store.results, scopedClean.ids)
-    : store.getSelectedSize()
+  const confirmCleanSize = scopedClean ? sizeForIds(store.results, scopedClean.ids) : totals.size
+  const confirmNames = scopedClean
+    ? [scopedClean.label]
+    : foundGroups
+        .filter((group) => selectionState(group.results, store.selectedItems) !== 'none')
+        .map((group) => t(group.def.labelKey))
 
   const openContextMenu = useCallback(
     (event: React.MouseEvent, label: string, ids: string[]) => {
@@ -677,733 +784,484 @@ export function CleanerPage() {
     void handleCleanRequest({ ids, label })
   }, [contextMenu, closeContextMenu, handleCleanRequest])
 
-  return (
-    <div className="feature-page cleaner-page animate-fade-in">
-      <PageHeader
-        title={t('pageTitle')}
-        description={t('pageDescription')}
-        action={
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={handleScan}
-              disabled={isScanning || isCleaning || preparingClean}
-              className={cn(
-                'pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40',
-                !hasResults && 'pulse-primary-action'
-              )}
-              style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
-            >
-              <Search className="h-4 w-4" strokeWidth={1.8} />
-              {t('scanButton')}
-            </button>
-            {isScanning && (
-              <button
-                type="button"
-                onClick={cancelCleanerScan}
-                disabled={store.scanCancelRequested}
-                title={t('cancelAfterCategory')}
-                className="rounded-xl px-4 py-2.5 text-[13px] font-medium disabled:opacity-50"
-                style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
-              >
-                {t('common:cancel')}
-              </button>
-            )}
-            <button
-              onClick={() => void handleCleanRequest()}
-              disabled={
-                !hasResults ||
-                isScanning ||
-                isCleaning ||
-                checkingBlockers ||
-                preparingClean ||
-                store.getSelectedIds().length === 0
-              }
-              className="pulse-primary-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)',
-                boxShadow: hasResults ? '0 4px 20px rgba(245,158,11,0.2)' : 'none'
-              }}
-            >
-              {preparingClean ? (
-                <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-              ) : (
-                <Sparkles className="h-4 w-4" strokeWidth={2} />
-              )}
-              {preparingClean ? t('checkingRunningApps') : t('cleanButton')}
-            </button>
-          </div>
-        }
-      />
+  const lastClean = useMemo(() => latestEntry(historyEntries, 'cleaner'), [historyEntries])
+  const scannedAtText = store.scannedAt ? formatTime(store.scannedAt, i18n.language) : ''
 
-      <div className="cleaner-workspace flex gap-5">
-        {/* Category sidebar */}
-        <div className="cleaner-categories w-56 shrink-0 space-y-1.5">
-          {categories.map((cat) => {
-            const count = categoryItemCount(cat.type)
-            const isActive = activeCategory === cat.type
-            const isProtected = protectRecycleBin && cat.type === CleanerType.RecycleBin
-            return (
-              <button
-                key={cat.type}
-                onClick={() => setActiveCategory(cat.type)}
-                onContextMenu={(e) => {
-                  // Privacy traces are opt-in per item: no clean-everything shortcut.
-                  if (isProtected || cat.type === CleanerType.PrivacyTraces) return
-                  const ids = categoryResults(cat.type).flatMap((r) =>
-                    r.items.map((item) => item.id)
-                  )
-                  openContextMenu(e, t(cat.labelKey), ids)
-                }}
-                className="relative flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition"
-                style={{
-                  background: isActive ? 'var(--accent-muted-bg)' : 'transparent',
-                  color: isActive ? 'var(--text-primary)' : 'var(--text-muted)'
-                }}
-              >
-                {scanningCategory === cat.type ||
-                (cat.type === AI_TOOLS_VIEW && scanningCategory === CleanerType.App) ? (
-                  <Loader2
-                    className="h-[17px] w-[17px] shrink-0 animate-spin text-amber-400"
-                    strokeWidth={1.8}
-                  />
-                ) : (
-                  <cat.icon className="h-[17px] w-[17px] shrink-0" strokeWidth={1.8} />
-                )}
-                <div className="flex-1 min-w-0">
-                  <span className="text-[13px] font-medium">{t(cat.labelKey)}</span>
-                  <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                    {isProtected ? t('settings:protectRecycleBinLabel') : t(cat.descriptionKey)}
-                  </p>
-                </div>
-                {count > 0 && (
-                  <span
-                    className="rounded-md px-1.5 py-0.5 font-mono text-[11px]"
-                    style={{ background: 'var(--bg-hover-2)', color: 'var(--text-muted)' }}
-                  >
-                    {count}
-                  </span>
-                )}
-              </button>
-            )
+  const cleanLabel =
+    totals.size > 0
+      ? t('cleanSize', { size: formatBytes(totals.size) })
+      : totals.count > 0
+        ? t('cleanItems', { count: totals.count, n: formatNumber(totals.count) })
+        : t('cleanButton')
+
+  const headerAction =
+    showResults && settled ? (
+      <Button variant="ghost" onClick={handleScan} disabled={preparingClean}>
+        {t('rescanButton')}
+      </Button>
+    ) : (
+      <Button
+        variant="primary"
+        size="lg"
+        onClick={handleScan}
+        busy={isScanning}
+        disabled={isCleaning || preparingClean}
+      >
+        {t('scanButton')}
+      </Button>
+    )
+
+  // Warnings about the scan just finished. They stay neutral (icon and text): a category
+  // that did not run is not a threat, and red is kept for failed deletions.
+  const notices: ReactElement[] = []
+  if (settled && !store.cleanSummary) {
+    if (!checkingBlockers && blockers.length > 0)
+      notices.push(
+        <ReportNotice
+          key="blockers"
+          title={t('closeAppsBeforeCleaning', {
+            apps: shortList(blockers.map((blocker) => blocker.name))
           })}
-        </div>
+          detail={
+            closeBrowsersBeforeClean && blockers.every((blocker) => blocker.isBrowser)
+              ? t('blockersAutoCloseDescription')
+              : t('blockersDescription')
+          }
+        />
+      )
+    if (elevationSkipped.length > 0)
+      notices.push(
+        <ReportNotice
+          key="elevation"
+          title={t('categoriesNotScanned', { count: elevationSkipped.length })}
+          detail={shortList(elevationSkipped)}
+          action={
+            platform !== 'darwin' ? (
+              <Button onClick={handleRelaunch}>{t('relaunchAsAdmin')}</Button>
+            ) : undefined
+          }
+        />
+      )
+    if (failedCategories.length > 0 && store.status === ScanStatus.Complete)
+      notices.push(
+        <ReportNotice
+          key="failed"
+          title={t('scannersFailed', { list: shortList(failedCategories) })}
+        />
+      )
+  }
 
-        {/* Item panel */}
-        <div className="cleaner-results flex-1 min-w-0">
-          {hasResults && (
-            <section className="pulse-cleaner-summary" aria-label={t('totalRecoverable')}>
-              <div>
-                <span>{t('totalRecoverable')}</span>
-                <strong>{formatBytes(store.getTotalSize())}</strong>
-              </div>
-              <div>
-                <span>
-                  {t('itemsCount', {
-                    count: formatNumber(
-                      store.results.reduce((sum, result) => sum + result.itemCount, 0)
-                    )
-                  })}
-                </span>
-                <strong>
-                  {t('selectedLabel')}: {formatBytes(store.getSelectedSize())}
-                </strong>
-              </div>
-            </section>
-          )}
-          {hasResults && store.status === ScanStatus.Complete && (
-            <AiAnalysisPanel
-              source="cleaner"
-              sourceRevision={store.results}
-              candidates={store.results
-                .filter((result) => result.category !== CleanerType.PrivacyTraces)
-                .flatMap((result) => result.items)
-                .filter((item) => !item.cleanupAction && !item.dockerTarget)
-                .map((item) => ({
-                  path: item.path,
-                  size: item.size,
-                  lastModified: item.lastModified,
-                  lastAccessed: item.lastAccessed
-                }))}
-            />
-          )}
-          {(isScanning || isCleaning) && (
-            <>
-              <CleanerScanProgress />
-              {store.scanCancelRequested && (
-                <p className="mb-5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-                  {t('scanCancelPending')}
-                </p>
-              )}
-            </>
-          )}
+  const SortIcon =
+    sortMode === 'size-desc' ? ArrowDown : sortMode === 'size-asc' ? ArrowUp : ArrowUpDown
+  const sortLabel =
+    sortMode === 'size-desc'
+      ? t('sortSizeDesc')
+      : sortMode === 'size-asc'
+        ? t('sortSizeAsc')
+        : t('sortDefault')
 
-          {failedCategories.length > 0 && store.status === ScanStatus.Complete && (
-            <div
-              className="mb-5 flex items-center gap-3 rounded-2xl px-4 py-3"
-              style={{
-                background: 'var(--accent-muted-bg)',
-                border: '1px solid rgba(245,158,11,0.12)'
-              }}
-            >
-              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" strokeWidth={1.8} />
-              <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-                {t('scannersFailed')}{' '}
-                <span className="text-amber-400 font-medium">{failedCategories.join(', ')}</span>
-              </p>
-            </div>
-          )}
+  const blockSize = (results: ScanResult[]) => {
+    const size = results.reduce((sum, r) => sum + r.totalSize, 0)
+    return size > 0 ? ` · ${formatBytes(size)}` : ''
+  }
 
-          {elevationSkipped.length > 0 &&
-            store.status === ScanStatus.Complete &&
-            !store.cleanSummary && (
-              <div
-                className="mb-5 flex items-center gap-3 rounded-2xl px-4 py-3"
-                style={{
-                  background: 'var(--accent-muted-bg)',
-                  border: '1px solid var(--accent-muted-border)'
+  const renderResultRows = (group: CategoryGroup) => {
+    // Ungrouped results first, then one block per scanner group; each block is sorted on
+    // its own so a sort never interleaves groups. AI tools are one group already.
+    const flat = group.def.type === AI_TOOLS_VIEW
+    const ungrouped = sortBySize(
+      flat ? group.results : group.results.filter((r) => !r.group),
+      sortMode,
+      (r) => r.totalSize
+    )
+    const blocks: { label?: string; results: ScanResult[] }[] = []
+    if (ungrouped.length > 0) blocks.push({ results: ungrouped })
+    if (!flat) {
+      const grouped = new Map<string, ScanResult[]>()
+      for (const result of group.results) {
+        if (!result.group) continue
+        grouped.set(result.group, [...(grouped.get(result.group) ?? []), result])
+      }
+      for (const [label, results] of grouped)
+        blocks.push({ label, results: sortBySize(results, sortMode, (r) => r.totalSize) })
+    }
+    const privacy = group.def.type === CleanerType.PrivacyTraces
+
+    return blocks.map((block) => (
+      <Fragment key={block.label ?? '_ungrouped'}>
+        {block.label && (
+          <tr className="pulizia-group-row">
+            <td />
+            <td colSpan={4}>
+              {groupLabel(block.label)}
+              {blockSize(block.results)}
+            </td>
+          </tr>
+        )}
+        {block.results.map((result) => {
+          const key = `${result.category}:${result.group ?? ''}:${result.subcategory}`
+          const open = openResults.has(key)
+          const state = selectionState([result], store.selectedItems)
+          const firstPath = result.items[0]?.path
+          const note = resultNote(result)
+          return (
+            <Fragment key={key}>
+              <TableRow
+                data-level="sub"
+                selected={state === 'all'}
+                onContextMenu={(e) => {
+                  // The quick-clean menu would clear traces without selecting them.
+                  if (privacy) return
+                  openContextMenu(
+                    e,
+                    result.subcategory,
+                    result.items.map((item) => item.id)
+                  )
                 }}
               >
-                <ShieldAlert className="h-4 w-4 shrink-0 text-amber-400" strokeWidth={1.8} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[12px] text-zinc-300">
-                    <span className="font-medium">
-                      {t('categoriesSkipped', { count: elevationSkipped.length })}
-                    </span>
-                    <span style={{ color: 'var(--text-muted)' }}>
-                      {' '}
-                      {t('categoriesSkippedSuffix')}
-                    </span>
-                  </p>
-                  <p className="text-[11px] mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                    {elevationSkipped.slice(0, 4).join(', ')}
-                    {elevationSkipped.length > 4
-                      ? ` ${t('categoriesSkippedMore', { count: elevationSkipped.length - 4 })}`
-                      : ''}
-                  </p>
-                </div>
-                {platform !== 'darwin' && (
+                <TableCell className="pulizia-check">
+                  <Checkbox
+                    checked={state === 'all'}
+                    indeterminate={state === 'some'}
+                    onChange={() => store.toggleSubcategory(result)}
+                    label={t('selectRow', { name: result.subcategory })}
+                  />
+                </TableCell>
+                <TableCell className="pulizia-name pulizia-sub">
+                  <span className="pulizia-name-line">
+                    <button
+                      type="button"
+                      className="pulizia-disclosure"
+                      aria-expanded={open}
+                      onClick={() => toggleOpenResult(key)}
+                    >
+                      <ChevronRight
+                        className="pulizia-chevron"
+                        size={14}
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                      <span>{result.subcategory}</span>
+                    </button>
+                    {firstPath && isAbsolutePath(firstPath) && (
+                      <button
+                        type="button"
+                        className="pulizia-icon-button"
+                        title={t('openLocation')}
+                        aria-label={t('openLocation')}
+                        onClick={() => window.kudu?.cleanerOpenLocation?.(firstPath)}
+                      >
+                        <FolderOpen size={14} strokeWidth={1.75} aria-hidden="true" />
+                      </button>
+                    )}
+                  </span>
+                </TableCell>
+                <TableCell numeric>{formatNumber(result.itemCount)}</TableCell>
+                <TableCell numeric>{sizeLabel([result], result.totalSize)}</TableCell>
+                <TableCell muted className="pulizia-note">
+                  {note}
+                </TableCell>
+              </TableRow>
+              {open && renderItemRows(result)}
+            </Fragment>
+          )
+        })}
+      </Fragment>
+    ))
+  }
+
+  const renderItemRows = (result: ScanResult) => (
+    <>
+      {result.items.slice(0, ITEMS_SHOWN).map((item: ScanItem) => {
+        const checked = store.selectedItems.has(item.id)
+        const pathLabel = item.path.split(/[/\\]/).slice(-2).join('/') || item.path
+        const label = item.cleanupAction ? t('maintenanceOptional') : pathLabel
+        return (
+          <TableRow key={item.id} data-level="item" selected={checked}>
+            <TableCell className="pulizia-check">
+              <Checkbox
+                checked={checked}
+                onChange={() => store.toggleItem(item.id)}
+                label={t('selectRow', { name: label })}
+              />
+            </TableCell>
+            <TableCell className="pulizia-name pulizia-item">
+              <span className="pulizia-name-line">
+                <span className="pulizia-path" title={item.path}>
+                  {label}
+                </span>
+                {isAbsolutePath(item.path) && (
                   <button
-                    onClick={handleRelaunch}
-                    className="shrink-0 rounded-lg px-3 py-1.5 text-[12px] font-medium text-amber-400 transition-colors hover:bg-amber-500/15"
-                    style={{ border: '1px solid rgba(245,158,11,0.2)' }}
+                    type="button"
+                    className="pulizia-icon-button"
+                    title={t('openLocation')}
+                    aria-label={t('openLocation')}
+                    onClick={() => window.kudu?.cleanerOpenLocation?.(item.path)}
                   >
-                    {t('relaunchAsAdmin')}
+                    <FolderOpen size={14} strokeWidth={1.75} aria-hidden="true" />
                   </button>
                 )}
-              </div>
+              </span>
+            </TableCell>
+            <TableCell numeric />
+            <TableCell numeric>
+              {item.cleanupAction
+                ? t('maintenanceSizeUnknown')
+                : item.entryCount !== undefined
+                  ? entryCountLabel(item.entryCount)
+                  : formatBytes(item.size)}
+            </TableCell>
+            <TableCell muted className="pulizia-note" />
+          </TableRow>
+        )
+      })}
+      {result.items.length > ITEMS_SHOWN && (
+        <tr className="pulizia-group-row">
+          <td />
+          <td colSpan={4} className="pulizia-item">
+            {t('moreItems', { count: formatNumber(result.items.length - ITEMS_SHOWN) })}
+          </td>
+        </tr>
+      )}
+    </>
+  )
+
+  return (
+    <div className="pulizia-page">
+      <PageHeader title={t('pageTitle')} description={t('pageDescription')} action={headerAction} />
+
+      <CleanerProgress scanCategories={scannableCategories} />
+
+      {showReceipt && store.cleanSummary && (
+        <CleanSummary
+          summary={store.cleanSummary}
+          onRelaunchAsAdmin={handleRelaunch}
+          platform={platform}
+        />
+      )}
+
+      {!hasResults && !isScanning && !isCleaning && store.status !== ScanStatus.Complete && (
+        <EmptyState
+          title={t('emptyTitle')}
+          description={
+            lastClean
+              ? t('emptyLastClean', {
+                  date: formatDateTime(lastClean.timestamp, i18n.language),
+                  size: formatBytes(lastClean.totalSpaceSaved)
+                })
+              : t('emptyNoClean')
+          }
+          action={
+            lastClean ? (
+              <Button onClick={() => navigate('/history?view=receipts')}>{t('viewReceipt')}</Button>
+            ) : undefined
+          }
+          checks={categories.map((c) => ({
+            title: t(c.labelKey),
+            detail:
+              c.type === CleanerType.RecycleBin && protectRecycleBin
+                ? t('recycleBinProtected')
+                : t(c.descriptionKey)
+          }))}
+        />
+      )}
+
+      {!hasResults && store.status === ScanStatus.Complete && !showReceipt && (
+        <Card className="pulizia-summary">
+          <div className="pulizia-summary-text">
+            <p className="pulizia-summary-value">{t('nothingFoundTitle')}</p>
+            {scannedAtText && (
+              <p className="pulizia-summary-meta">
+                {t('nothingFoundDescription', { time: scannedAtText })}
+              </p>
             )}
+          </div>
+          {notices.length > 0 && <ul className="pulizia-notices">{notices}</ul>}
+        </Card>
+      )}
 
-          {(checkingBlockers || blockers.length > 0) &&
-            store.status === ScanStatus.Complete &&
-            !store.cleanSummary && (
-              <div
-                className="mb-5 flex items-start gap-3 rounded-2xl px-4 py-3"
-                style={{
-                  background: 'var(--accent-muted-bg)',
-                  border: '1px solid var(--accent-muted-border)'
-                }}
-              >
-                {checkingBlockers ? (
-                  <Loader2
-                    className="mt-0.5 h-4 w-4 shrink-0 animate-spin text-amber-400"
-                    strokeWidth={1.8}
-                  />
-                ) : (
-                  <AlertTriangle
-                    className="mt-0.5 h-4 w-4 shrink-0 text-amber-400"
-                    strokeWidth={1.8}
-                  />
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="text-[12px] font-medium text-zinc-200">
-                    {checkingBlockers
-                      ? t('checkingRunningApps')
-                      : t('closeAppsBeforeCleaning', {
-                          apps: blockerNames(blockers, (count) => t('moreApps', { count }))
-                        })}
-                  </p>
-                  {!checkingBlockers && (
-                    <p className="mt-0.5 text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                      {closeBrowsersBeforeClean && blockers.every((blocker) => blocker.isBrowser)
-                        ? t('blockersAutoCloseDescription')
-                        : t('blockersDescription')}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
-          {store.cleanSummary && store.status === ScanStatus.Complete && (
-            <CleanSummary
-              summary={store.cleanSummary}
-              onRelaunchAsAdmin={handleRelaunch}
-              platform={platform}
-            />
-          )}
-
-          {isRecycleBinProtected && !isScanning && !isCleaning && (
-            <EmptyState
-              icon={ShieldAlert}
-              title={t('settings:protectRecycleBinLabel')}
-              description={t('settings:protectRecycleBinDesc')}
-              action={
-                <button
-                  onClick={() => navigate('/settings')}
-                  className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition"
-                  style={{
-                    background: 'var(--bg-hover)',
-                    border: '1px solid var(--border-medium)',
-                    color: 'var(--text-secondary)'
-                  }}
-                >
-                  {t('settings:sectionCleaningPreferences')}
-                </button>
-              }
-            />
-          )}
-
-          {!hasResults && !isScanning && !isRecycleBinProtected && (
-            <EmptyState
-              icon={Search}
-              title={t('noScanResultsTitle')}
-              description={t('noScanResultsDescription')}
-              action={
-                <button
-                  onClick={handleScan}
-                  disabled={isCleaning || preparingClean}
-                  className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-                  style={{
-                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                    color: 'var(--text-on-accent)'
-                  }}
-                >
-                  <Search className="h-4 w-4" strokeWidth={1.8} />
-                  {t('startScan')}
-                </button>
-              }
-            />
-          )}
-
-          {hasResults && !isRecycleBinProtected && (
-            <div key={activeCategory} className="space-y-2">
-              <div className="mb-3 flex items-center justify-between px-1">
-                <span
-                  className="text-[11px] font-medium uppercase tracking-wider"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  {t('categoryItemsHeading', {
-                    category: t(categories.find((c) => c.type === activeCategory)?.labelKey ?? '')
+      {showResults && settled && (
+        <Card as="section" className="pulizia-summary" aria-label={t('pageTitle')}>
+          <div className="pulizia-summary-main">
+            <div className="pulizia-summary-text">
+              <p className="pulizia-summary-value">
+                {totals.size > 0
+                  ? t('summarySelected', { size: formatBytes(totals.size) })
+                  : totals.count > 0
+                    ? t('summarySelectedItems', {
+                        count: totals.count,
+                        n: formatNumber(totals.count)
+                      })
+                    : t('summaryNothingSelected')}
+              </p>
+              {totals.count > 0 && (
+                <p className="pulizia-summary-meta">
+                  {t('summaryMeta', {
+                    items: t('summaryItems', {
+                      count: totals.count,
+                      n: formatNumber(totals.count)
+                    }),
+                    categories: t('summaryCategories', { count: selectedGroupCount }),
+                    time: scannedAtText
                   })}
-                </span>
-                <div className="flex items-center gap-3">
-                  <div className="relative" ref={sortMenuRef}>
-                    <button
-                      onClick={() => setShowSortMenu((v) => !v)}
-                      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium transition-colors"
-                      style={{
-                        color: 'var(--text-muted)',
-                        border: '1px solid var(--border-medium)'
+                </p>
+              )}
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => void handleCleanRequest()}
+              busy={preparingClean || checkingBlockers}
+              disabled={totals.count === 0}
+            >
+              {cleanLabel}
+            </Button>
+          </div>
+          {notices.length > 0 && <ul className="pulizia-notices">{notices}</ul>}
+        </Card>
+      )}
+
+      {showResults && (
+        <Card className="pulizia-table-card">
+          <Table className="pulizia-table">
+            <TableHead>
+              <TableHeaderCell className="pulizia-check">
+                <span className="sr-only">{t('columnSelect')}</span>
+              </TableHeaderCell>
+              <TableHeaderCell>{t('columnCategory')}</TableHeaderCell>
+              <TableHeaderCell numeric>{t('columnItems')}</TableHeaderCell>
+              <TableHeaderCell
+                numeric
+                aria-sort={
+                  sortMode === 'size-desc'
+                    ? 'descending'
+                    : sortMode === 'size-asc'
+                      ? 'ascending'
+                      : 'none'
+                }
+              >
+                <button
+                  type="button"
+                  className="pulizia-sort"
+                  title={sortLabel}
+                  onClick={() => setSortMode(nextSizeSort(sortMode))}
+                >
+                  {t('columnSize')}
+                  <SortIcon size={12} strokeWidth={1.75} aria-hidden="true" />
+                </button>
+              </TableHeaderCell>
+              <TableHeaderCell>{t('columnNote')}</TableHeaderCell>
+            </TableHead>
+            <tbody>
+              {sortBySize(foundGroups, sortMode, (group) => group.totalSize).map((group) => {
+                const state = selectionState(group.results, store.selectedItems)
+                const open = openCategories.has(group.def.type)
+                const label = t(group.def.labelKey)
+                // Privacy traces are opted into group by group: no select-everything.
+                const privacy = group.def.type === CleanerType.PrivacyTraces
+                return (
+                  <Fragment key={group.def.type}>
+                    <TableRow
+                      recommended={group.recommended}
+                      selected={state === 'all'}
+                      onContextMenu={(e) => {
+                        if (privacy) return
+                        openContextMenu(
+                          e,
+                          label,
+                          group.results.flatMap((r) => r.items.map((item) => item.id))
+                        )
                       }}
                     >
-                      <ArrowUpDown className="h-3 w-3" strokeWidth={1.8} />
-                      {t(SORT_LABEL_KEYS[sortMode])}
-                      <ChevronDown
-                        className={cn('h-3 w-3 transition-transform', showSortMenu && 'rotate-180')}
-                        strokeWidth={2}
-                      />
-                    </button>
-                    {showSortMenu && (
-                      <div
-                        className="absolute right-0 top-full z-50 mt-1 rounded-xl py-1 shadow-xl"
-                        style={{
-                          background: '#1e1e22',
-                          border: '1px solid var(--border-strong)',
-                          minWidth: 140
-                        }}
-                      >
-                        {(Object.keys(SORT_LABEL_KEYS) as SortMode[]).map((mode) => (
+                      <TableCell className="pulizia-check">
+                        {!privacy && (
+                          <Checkbox
+                            checked={state === 'all'}
+                            indeterminate={state === 'some'}
+                            onChange={() => toggleGroupSelection(group.results)}
+                            label={t('selectRow', { name: label })}
+                          />
+                        )}
+                      </TableCell>
+                      <TableCell className="pulizia-name">
+                        <span className="pulizia-name-line">
                           <button
-                            key={mode}
-                            onClick={() => {
-                              setSortMode(mode)
-                              setShowSortMenu(false)
-                            }}
-                            className="flex w-full items-center gap-2 px-4 py-2 text-[12px] transition-colors hover:bg-white/5"
-                            style={{
-                              color:
-                                sortMode === mode ? 'var(--accent-hover)' : 'var(--text-secondary)'
-                            }}
+                            type="button"
+                            className="pulizia-disclosure"
+                            aria-expanded={open}
+                            onClick={() => toggleOpenCategory(group.def.type)}
                           >
-                            {t(SORT_LABEL_KEYS[mode])}
+                            <ChevronRight
+                              className="pulizia-chevron"
+                              size={14}
+                              strokeWidth={1.75}
+                              aria-hidden="true"
+                            />
+                            <span>{label}</span>
                           </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  {/* Privacy traces are opted into group by group: no select-everything. */}
-                  {activeCategory !== CleanerType.PrivacyTraces && (
-                    <button
-                      onClick={toggleActiveCategory}
-                      className="text-[12px] font-medium text-amber-500 hover:text-amber-400"
-                    >
-                      {t('toggleAll')}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {categoryResults(activeCategory).length === 0 && (
-                <div
-                  className="py-12 text-center text-[13px]"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  {t('noItemsInCategory')}
-                </div>
+                          {group.recommended && (
+                            <Tag tone="recommended">
+                              <span aria-hidden="true">· </span>
+                              {t('recommended')}
+                            </Tag>
+                          )}
+                        </span>
+                      </TableCell>
+                      <TableCell numeric>{formatNumber(group.itemCount)}</TableCell>
+                      <TableCell numeric>{sizeLabel(group.results, group.totalSize)}</TableCell>
+                      <TableCell muted className="pulizia-note">
+                        {t(group.def.descriptionKey)}
+                      </TableCell>
+                    </TableRow>
+                    {open && renderResultRows(group)}
+                  </Fragment>
+                )
+              })}
+            </tbody>
+          </Table>
+          {settled && (emptyGroups.length > 0 || protectRecycleBin) && (
+            <p className="pulizia-footnote">
+              {emptyGroups.length > 0 &&
+                t('emptyCategories', {
+                  list: formatList(
+                    emptyGroups.map((group) => t(group.def.labelKey)),
+                    i18n.language
+                  )
+                })}
+              {emptyGroups.length > 0 && protectRecycleBin && ' '}
+              {protectRecycleBin && (
+                <>
+                  {t('recycleBinProtectedNote')}{' '}
+                  <button
+                    type="button"
+                    className="pulizia-link"
+                    onClick={() => navigate('/settings')}
+                  >
+                    {t('settings:sectionCleaningPreferences')}
+                  </button>
+                </>
               )}
-
-              {(() => {
-                const results = categoryResults(activeCategory)
-                // Group results by group label (ungrouped first, then grouped
-                // sections); each section is sorted independently so sort
-                // order never interleaves group sections.
-                const ungrouped =
-                  activeCategory === AI_TOOLS_VIEW
-                    ? sortResults(results)
-                    : sortResults(results.filter((r) => !r.group))
-                const grouped = new Map<string, ScanResult[]>()
-                if (activeCategory !== AI_TOOLS_VIEW) {
-                  for (const r of results) {
-                    if (!r.group) continue
-                    if (!grouped.has(r.group)) grouped.set(r.group, [])
-                    grouped.get(r.group)!.push(r)
-                  }
-                }
-                for (const [label, items] of grouped) grouped.set(label, sortResults(items))
-
-                const sections: { label?: string; items: ScanResult[] }[] = []
-                if (ungrouped.length > 0) sections.push({ items: ungrouped })
-                for (const [label, items] of grouped) sections.push({ label, items })
-
-                return sections.map((section) => (
-                  <div key={section.label || '_ungrouped'}>
-                    {section.label && (
-                      <div className="mt-4 mb-2 flex items-center gap-2 px-1">
-                        <span
-                          className="text-[11px] font-semibold uppercase tracking-wider"
-                          style={{ color: 'var(--text-secondary)' }}
-                        >
-                          {section.label}
-                        </span>
-                        <div className="flex-1 h-px" style={{ background: 'var(--bg-hover-2)' }} />
-                        <span
-                          className="text-[11px] font-mono"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
-                          {formatBytes(section.items.reduce((s, r) => s + r.totalSize, 0))}
-                        </span>
-                      </div>
-                    )}
-                    <div className="space-y-1.5">
-                      {section.items.map((result) => {
-                        const groupKey = `${result.category}:${result.subcategory}`
-                        const isExpanded = expandedGroups.has(groupKey)
-                        const selectedInGroup = result.items.filter((item) =>
-                          store.selectedItems.has(item.id)
-                        ).length
-                        const allSelected = selectedInGroup === result.items.length
-                        const someSelected = selectedInGroup > 0 && !allSelected
-
-                        return (
-                          <div
-                            key={result.subcategory}
-                            className="rounded-xl overflow-hidden"
-                            style={{
-                              background: 'var(--card-bg)',
-                              border: '1px solid var(--border-default)'
-                            }}
-                          >
-                            {/* Group header */}
-                            <div
-                              className="flex items-center gap-3 px-4 py-3.5 cursor-pointer"
-                              onClick={() => toggleGroup(groupKey)}
-                              onContextMenu={(e) => {
-                                // The quick-clean menu would clear traces without selecting them.
-                                if (result.category === CleanerType.PrivacyTraces) return
-                                const ids = result.items.map((item) => item.id)
-                                openContextMenu(e, result.subcategory, ids)
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'var(--bg-subtle)'
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'transparent'
-                              }}
-                            >
-                              {/* Checkbox */}
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  toggleSubcategorySelection(result)
-                                }}
-                                className="flex items-center"
-                              >
-                                <div
-                                  className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] cursor-pointer"
-                                  style={{
-                                    background:
-                                      allSelected || someSelected
-                                        ? 'var(--accent)'
-                                        : 'var(--bg-hover-2)',
-                                    border:
-                                      allSelected || someSelected
-                                        ? 'none'
-                                        : '1.5px solid var(--border-stronger)'
-                                  }}
-                                >
-                                  {allSelected && (
-                                    <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
-                                      <path
-                                        d="M2.5 6l2.5 2.5 4.5-5"
-                                        stroke="var(--text-on-accent)"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                      />
-                                    </svg>
-                                  )}
-                                  {someSelected && (
-                                    <div
-                                      className="h-[2px] w-2 rounded-full"
-                                      style={{ background: 'var(--text-on-accent)' }}
-                                    />
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Expand arrow */}
-                              <ChevronRight
-                                className={cn(
-                                  'h-3.5 w-3.5 shrink-0 transition-transform',
-                                  isExpanded && 'rotate-90'
-                                )}
-                                style={{ color: 'var(--text-muted)' }}
-                                strokeWidth={2}
-                              />
-
-                              {/* Folder icon */}
-                              <Folder
-                                className="h-4 w-4 shrink-0"
-                                style={{
-                                  color: allSelected ? 'var(--accent)' : 'var(--text-muted)'
-                                }}
-                                strokeWidth={1.8}
-                              />
-
-                              {/* Label */}
-                              <div className="flex-1 min-w-0">
-                                <span className="text-[13px] font-medium text-zinc-300">
-                                  {result.subcategory}
-                                </span>
-                                {result.descriptionKey && (
-                                  <p
-                                    className="mt-1 text-[11px]"
-                                    style={{ color: 'var(--text-muted)' }}
-                                  >
-                                    {t(result.descriptionKey)}
-                                  </p>
-                                )}
-                                {result.items[0]?.cleanupAction && (
-                                  <p
-                                    className="mt-1 text-[11px]"
-                                    style={{ color: 'var(--text-muted)' }}
-                                  >
-                                    {result.items[0].cleanupAction === 'windows-components'
-                                      ? t('maintenanceComponentsNote', {
-                                          defaultValue:
-                                            'Removes older Windows component versions immediately. May take a while; savings are not included in totals.'
-                                        })
-                                      : t('maintenanceNativeNote', {
-                                          defaultValue:
-                                            'Uses the built-in cleanup tool. Savings are not included in totals.'
-                                        })}
-                                  </p>
-                                )}
-                              </div>
-
-                              {/* Stats */}
-                              <span
-                                className="rounded-md px-2 py-0.5 font-mono text-[11px] shrink-0"
-                                style={{
-                                  background: 'var(--bg-subtle-2)',
-                                  color: 'var(--text-secondary)'
-                                }}
-                              >
-                                {t(result.itemCount === 1 ? 'itemCount' : 'itemCountPlural', {
-                                  count: formatNumber(result.itemCount)
-                                })}
-                              </span>
-                              <span
-                                className="font-mono text-[12px] font-medium shrink-0"
-                                style={{ color: 'var(--text-muted)' }}
-                              >
-                                {result.items.some((item) => item.cleanupAction)
-                                  ? t('maintenanceSizeUnknown', { defaultValue: 'Savings vary' })
-                                  : result.items.length > 0 &&
-                                      result.items.every((item) => item.entryCount !== undefined)
-                                    ? entryCountLabel(
-                                        result.items.reduce(
-                                          (sum, item) => sum + (item.entryCount ?? 0),
-                                          0
-                                        )
-                                      )
-                                    : formatBytes(result.totalSize)}
-                              </span>
-
-                              {/* Open location */}
-                              {result.items.length > 0 && isAbsolutePath(result.items[0].path) && (
-                                <button
-                                  type="button"
-                                  title={t('openLocation')}
-                                  className="shrink-0 p-1 rounded transition-colors hover:bg-[var(--bg-hover-2)]"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    window.kudu?.cleanerOpenLocation?.(result.items[0].path)
-                                  }}
-                                >
-                                  <FolderOpen
-                                    className="h-3.5 w-3.5"
-                                    style={{ color: 'var(--text-muted)' }}
-                                  />
-                                </button>
-                              )}
-                            </div>
-
-                            {/* Expanded item list */}
-                            {isExpanded && (
-                              <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                                {result.items.slice(0, 50).map((item) => {
-                                  const checked = store.selectedItems.has(item.id)
-                                  const pathLabel =
-                                    item.path.split(/[/\\]/).slice(-2).join('/') || item.path
-                                  return (
-                                    <label
-                                      key={item.id}
-                                      className="flex items-center gap-3 px-4 py-2 pl-14 cursor-pointer transition-colors"
-                                      style={{
-                                        background: checked
-                                          ? 'rgba(245,158,11,0.03)'
-                                          : 'transparent'
-                                      }}
-                                      onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = checked
-                                          ? 'rgba(245,158,11,0.05)'
-                                          : 'var(--bg-subtle)'
-                                      }}
-                                      onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = checked
-                                          ? 'rgba(245,158,11,0.03)'
-                                          : 'transparent'
-                                      }}
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        checked={checked}
-                                        onChange={() => store.toggleItem(item.id)}
-                                        className="sr-only peer"
-                                      />
-                                      <div
-                                        className="flex h-[16px] w-[16px] items-center justify-center rounded-[4px] shrink-0"
-                                        style={{
-                                          background: checked
-                                            ? 'var(--accent)'
-                                            : 'var(--bg-hover-2)',
-                                          border: checked
-                                            ? 'none'
-                                            : '1.5px solid var(--border-stronger)'
-                                        }}
-                                      >
-                                        {checked && (
-                                          <svg
-                                            className="h-2.5 w-2.5"
-                                            viewBox="0 0 12 12"
-                                            fill="none"
-                                          >
-                                            <path
-                                              d="M2.5 6l2.5 2.5 4.5-5"
-                                              stroke="var(--text-on-accent)"
-                                              strokeWidth="2"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                            />
-                                          </svg>
-                                        )}
-                                      </div>
-                                      <span
-                                        className="flex-1 min-w-0 truncate text-[12px] font-mono"
-                                        style={{ color: 'var(--text-secondary)' }}
-                                      >
-                                        {item.cleanupAction
-                                          ? t('maintenanceOptional', {
-                                              defaultValue: 'Optional maintenance'
-                                            })
-                                          : pathLabel}
-                                      </span>
-                                      <span
-                                        className="font-mono text-[11px] shrink-0"
-                                        style={{ color: 'var(--text-muted)' }}
-                                      >
-                                        {item.cleanupAction
-                                          ? t('maintenanceSizeUnknown', {
-                                              defaultValue: 'Savings vary'
-                                            })
-                                          : item.entryCount !== undefined
-                                            ? entryCountLabel(item.entryCount)
-                                            : formatBytes(item.size)}
-                                      </span>
-                                      {isAbsolutePath(item.path) && (
-                                        <button
-                                          type="button"
-                                          title={t('openLocation')}
-                                          className="shrink-0 p-0.5 rounded transition-colors hover:bg-[var(--bg-hover-2)]"
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            e.stopPropagation()
-                                            window.kudu?.cleanerOpenLocation?.(item.path)
-                                          }}
-                                        >
-                                          <FolderOpen
-                                            className="h-3.5 w-3.5"
-                                            style={{ color: 'var(--text-muted)' }}
-                                          />
-                                        </button>
-                                      )}
-                                    </label>
-                                  )
-                                })}
-                                {result.items.length > 50 && (
-                                  <div
-                                    className="px-4 py-2.5 pl-14 text-[11px]"
-                                    style={{ color: 'var(--text-muted)' }}
-                                  >
-                                    {t('moreItems', {
-                                      count: formatNumber(result.items.length - 50)
-                                    })}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                ))
-              })()}
-            </div>
+            </p>
           )}
-        </div>
-      </div>
+        </Card>
+      )}
+
+      {showResults && settled && (
+        <AiAnalysisPanel
+          source="cleaner"
+          sourceRevision={store.results}
+          candidates={store.results
+            .filter((result) => result.category !== CleanerType.PrivacyTraces)
+            .flatMap((result) => result.items)
+            .filter((item) => !item.cleanupAction && !item.dockerTarget)
+            .map((item) => ({
+              path: item.path,
+              size: item.size,
+              lastModified: item.lastModified,
+              lastAccessed: item.lastAccessed
+            }))}
+        />
+      )}
 
       <ConfirmDialog
         open={showConfirm}
@@ -1415,12 +1273,36 @@ export function CleanerPage() {
         }}
         title={
           scopedClean
-            ? t('confirmCleanCategoryTitle', { name: scopedClean.label })
-            : t('confirmCleanTitle')
+            ? t('confirmScopedTitle', {
+                name: scopedClean.label,
+                size: formatBytes(confirmCleanSize)
+              })
+            : t('confirmTitle', {
+                count: confirmCleanIds.length,
+                n: formatNumber(confirmCleanIds.length),
+                size: formatBytes(confirmCleanSize)
+              })
         }
-        description={`${t('confirmCleanDescription', { count: formatNumber(confirmCleanIds.length), size: formatBytes(confirmCleanSize) })}${confirmBlockers.length > 0 ? ` ${t('confirmCloseApps', { apps: blockerNames(confirmBlockers, (count) => t('moreApps', { count })) })}` : ''}`}
-        confirmLabel={t('confirmCleanLabel')}
-        variant="warning"
+        description={[
+          t('confirmScope', { list: formatList(confirmNames, i18n.language) }),
+          t('confirmLimits'),
+          confirmBlockers.length > 0
+            ? t('confirmCloseApps', {
+                apps: shortList(confirmBlockers.map((blocker) => blocker.name))
+              })
+            : ''
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        confirmLabel={
+          confirmCleanSize > 0
+            ? t('confirmDelete', { size: formatBytes(confirmCleanSize) })
+            : t('confirmDeleteItems', {
+                count: confirmCleanIds.length,
+                n: formatNumber(confirmCleanIds.length)
+              })
+        }
+        variant="danger"
       />
 
       {contextMenu && (

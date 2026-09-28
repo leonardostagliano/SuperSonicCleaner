@@ -1,0 +1,689 @@
+/* The Pulizia pages (cleaner, registry, startup, network, schedules) on the report layout.
+   Tokens only; the shared primitives live in components/ui/ui.css. */
+
+.pulizia-page {
+  display: grid;
+  /* The page wrapper is at least one viewport tall: keep the rows at their height. */
+  align-content: start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-bottom: var(--space-6);
+}
+.pulizia-page > .page-header {
+  margin-bottom: var(--space-2);
+}
+
+/* ── Summary: the number that matters and the one action ──────────────── */
+.pulizia-summary {
+  display: grid;
+  gap: var(--space-3);
+}
+.pulizia-summary-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+}
+.pulizia-summary-text {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.pulizia-summary-value {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-20);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.pulizia-summary-meta {
+  margin: var(--space-1) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Notices: neutral warnings (icon + text), red only for errors ─────── */
+.pulizia-notices {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pulizia-summary .pulizia-notices {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}
+.pulizia-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.pulizia-notice + .pulizia-notice {
+  margin-top: var(--space-2);
+}
+.pulizia-notice-icon {
+  flex: none;
+  margin-top: 2px;
+  color: var(--text-muted);
+}
+.pulizia-notice[data-tone='danger'] .pulizia-notice-icon,
+.pulizia-notice[data-tone='danger'] .pulizia-notice-title {
+  color: var(--signal-danger-text);
+}
+.pulizia-notice-body {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.pulizia-notice-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.pulizia-notice-detail {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  overflow-wrap: anywhere;
+}
+.pulizia-notice-action {
+  flex: none;
+}
+.pulizia-notice-card {
+  padding-block: var(--space-3);
+}
+
+/* ── Progress: the live stage of a scan or cleanup ─────────────────────── */
+.pulizia-progress {
+  display: grid;
+  gap: var(--space-2);
+}
+.pulizia-progress-step {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.pulizia-progress-path {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pulizia-progress-counts {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────────── */
+.pulizia-table-card {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-2);
+  overflow-x: auto;
+}
+.pulizia-table-card > .ui-section-head {
+  margin-bottom: var(--space-2);
+}
+.pulizia-table .pulizia-check {
+  width: 28px;
+  padding-inline-end: 0;
+}
+.pulizia-table .pulizia-note {
+  width: 34%;
+  min-width: 160px;
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+.pulizia-table .pulizia-name {
+  min-width: 180px;
+}
+.pulizia-name-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px var(--space-2);
+  min-width: 0;
+}
+.pulizia-table .pulizia-sub {
+  padding-inline-start: calc(var(--space-3) + 22px);
+}
+.pulizia-table .pulizia-item {
+  padding-inline-start: calc(var(--space-3) + 44px);
+}
+.pulizia-table tr[data-level='sub'] > td,
+.pulizia-table tr[data-level='item'] > td {
+  font-size: var(--text-12);
+}
+/* (0,2,3) beats .ui-table tbody td. */
+.ui-table tbody tr.pulizia-group-row > td {
+  padding-top: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+}
+.pulizia-entry {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.pulizia-path {
+  min-width: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  overflow-wrap: anywhere;
+}
+.pulizia-footnote {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+
+/* A list of apps: icon, name, publisher and source, command. */
+.pulizia-table-scroll {
+  overflow-x: auto;
+}
+.pulizia-app {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.pulizia-app-name {
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 500;
+}
+.pulizia-table tr[data-disabled] .pulizia-app-name {
+  color: var(--text-secondary);
+}
+.pulizia-app-meta {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+.pulizia-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  white-space: nowrap;
+}
+.pulizia-table .pulizia-row-actions {
+  width: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* A measured value as a flat bar: runtime scaleX, no chart library. */
+.pulizia-table .pulizia-bar-cell {
+  width: 30%;
+  min-width: 120px;
+}
+.pulizia-bar {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--track);
+}
+.pulizia-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--chart-1);
+  transform-origin: left center;
+}
+.pulizia-bar-fill:dir(rtl) {
+  transform-origin: right center;
+}
+
+/* A row title that opens its detail: text-like, with a chevron. */
+.pulizia-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: 0;
+  padding: 2px 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+.pulizia-disclosure:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+.pulizia-disclosure:focus-visible,
+.pulizia-icon-button:focus-visible,
+.pulizia-sort:focus-visible,
+.pulizia-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.pulizia-chevron {
+  flex: none;
+  color: var(--text-muted);
+  transition: transform var(--duration-feedback) var(--ease-out);
+}
+.pulizia-chevron:dir(rtl) {
+  transform: scaleX(-1);
+}
+.pulizia-disclosure[aria-expanded='true'] .pulizia-chevron {
+  transform: rotate(90deg);
+}
+
+/* A small icon-only action inside a row (open the location). */
+.pulizia-icon-button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--duration-feedback) var(--ease-out);
+}
+.pulizia-icon-button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* The size column header sorts the rows. */
+.pulizia-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.pulizia-sort:hover {
+  color: var(--text-primary);
+}
+
+/* An inline text link to another page or a detail. */
+.pulizia-link {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.pulizia-link:hover {
+  color: var(--text-primary);
+  text-decoration-color: currentColor;
+}
+
+/* ── Context menu (right click on a row) ────────────────────────────────── */
+.pulizia-menu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 200px;
+  max-width: 320px;
+  padding: var(--space-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-container);
+  background: var(--flyout-bg);
+  box-shadow: var(--shadow-flyout);
+}
+.pulizia-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  text-align: start;
+  cursor: pointer;
+}
+.pulizia-menu-item:hover,
+.pulizia-menu-item:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.pulizia-menu-item > span:first-of-type {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.pulizia-menu-size {
+  flex: none;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Receipt breakdown ─────────────────────────────────────────────────── */
+.pulizia-errors {
+  display: grid;
+  gap: 2px;
+  max-height: 12em;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.pulizia-errors li {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.pulizia-errors .pulizia-path {
+  color: var(--text-secondary);
+}
+
+/* ── Schedules ─────────────────────────────────────────────────────────── */
+.pulizia-when {
+  flex: none;
+  min-width: 11em;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  font-variant-numeric: tabular-nums;
+}
+.pulizia-schedules {
+  display: grid;
+}
+.pulizia-schedule {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding-block: var(--space-3);
+}
+.pulizia-schedule + .pulizia-schedule {
+  border-top: 1px solid var(--border-default);
+}
+.pulizia-schedule:first-child {
+  padding-top: 0;
+}
+.pulizia-schedule:last-child {
+  padding-bottom: 0;
+}
+.pulizia-schedule-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+.pulizia-schedule-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+.pulizia-schedule-title h3 {
+  margin: 0;
+  font-size: var(--text-13);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.pulizia-schedule .pulizia-summary-meta,
+.pulizia-schedule .pulizia-app-meta {
+  margin: 0;
+}
+.pulizia-schedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Dialogs built on the shared .ui-dialog shell. */
+.ui-dialog.pulizia-dialog-wide {
+  width: min(560px, 100%);
+}
+.pulizia-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.pulizia-dialog-head .ui-dialog-title {
+  margin: 6px 0 0;
+}
+.pulizia-choices {
+  display: grid;
+  gap: var(--space-2);
+}
+.pulizia-choice {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-height: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    border-color var(--duration-feedback) var(--ease-out);
+}
+.pulizia-choice:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+.pulizia-choice:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Forms: a label above each field. */
+.pulizia-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.pulizia-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+.pulizia-form-field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.pulizia-label {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+}
+/* 36 px, like the shared select (controls.css), so fields in a row line up. */
+.pulizia-field {
+  width: 100%;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--text-13);
+  font-variant-numeric: tabular-nums;
+}
+.pulizia-field::placeholder {
+  color: var(--text-muted);
+}
+.pulizia-field:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.pulizia-time {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-muted);
+}
+.pulizia-fieldset {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.pulizia-fieldset-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.pulizia-fieldset-head legend {
+  float: left;
+  padding: 0;
+}
+.pulizia-fieldset-actions {
+  display: inline-flex;
+  gap: var(--space-3);
+  font-size: var(--text-12);
+}
+.pulizia-fieldset > .pulizia-app-meta {
+  margin: var(--space-1) 0 0;
+}
+.pulizia-task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--space-2) var(--space-3);
+}
+.pulizia-task {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  line-height: 1.4;
+  cursor: pointer;
+}
+.pulizia-task > .ui-checkbox {
+  margin-top: 1px;
+}
+.pulizia-task-icon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--text-muted);
+}
+.pulizia-details {
+  min-width: 0;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+}
+.pulizia-details > summary {
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  font-weight: 600;
+  cursor: pointer;
+}
+.pulizia-details > summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.pulizia-details-body {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+  border: 0;
+}
+.pulizia-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.pulizia-options-wide {
+  grid-column: 1 / -1;
+}
+.pulizia-details-body > .pulizia-app-meta {
+  margin: 0;
+}
+.pulizia-order {
+  display: grid;
+  gap: var(--space-2);
+}
+.pulizia-order-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.pulizia-order-name {
+  flex: 1 1 160px;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+}
+.pulizia-scope {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+}
+.pulizia-scope > .pulizia-app-meta {
+  margin: 0;
+}
+.pulizia-toggle-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+@media (max-width: 600px) {
+  .pulizia-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

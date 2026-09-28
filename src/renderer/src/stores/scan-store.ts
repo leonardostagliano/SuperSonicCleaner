@@ -8,9 +8,19 @@ export interface CleanSummaryData {
   filesSkipped: number
   errors: CleanError[]
   needsElevation: boolean
-  categories: Array<{ name: string; type: string; found: number; cleaned: number; space: number }>
+  categories: Array<{
+    name: string
+    type: string
+    found: number
+    cleaned: number
+    space: number
+    /** Items the cleaner left in place (in use, protected); absent on older summaries. */
+    skipped?: number
+  }>
   duration: number
   totalSizeBefore: number
+  /** When the cleanup finished (ms since epoch), for the receipt. */
+  completedAt?: number
 }
 
 const EXCLUDED_KEY = 'kudu:excluded-subcategories'
@@ -45,6 +55,8 @@ interface ScanState {
   failedCategories: string[]
   elevationSkipped: string[]
   scanCancelRequested: boolean
+  /** When the last scan finished (ms since epoch); null before a scan or while one runs. */
+  scannedAt: number | null
 
   setStatus: (status: ScanStatus) => void
   setResults: (results: ScanResult[]) => void
@@ -56,6 +68,7 @@ interface ScanState {
   setFailedCategories: (categories: string[]) => void
   setElevationSkipped: (categories: string[]) => void
   setScanCancelRequested: (requested: boolean) => void
+  setScannedAt: (time: number | null) => void
   toggleItem: (id: string) => void
   toggleSubcategory: (result: ScanResult) => void
   selectAll: (category: string) => void
@@ -79,6 +92,7 @@ export const useScanStore = create<ScanState>((set, get) => ({
   failedCategories: [],
   elevationSkipped: [],
   scanCancelRequested: false,
+  scannedAt: null,
 
   setStatus: (status) => set({ status }),
   setResults: (results) => {
@@ -109,6 +123,7 @@ export const useScanStore = create<ScanState>((set, get) => ({
   setFailedCategories: (failedCategories) => set({ failedCategories }),
   setElevationSkipped: (elevationSkipped) => set({ elevationSkipped }),
   setScanCancelRequested: (scanCancelRequested) => set({ scanCancelRequested }),
+  setScannedAt: (scannedAt) => set({ scannedAt }),
   toggleItem: (id) =>
     set((s) => {
       const next = new Set(s.selectedItems)
@@ -202,6 +217,7 @@ export const useScanStore = create<ScanState>((set, get) => ({
       scanningCategory: null,
       failedCategories: [],
       elevationSkipped: [],
-      scanCancelRequested: false
+      scanCancelRequested: false,
+      scannedAt: null
     })
 }))

@@ -42,6 +42,7 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
   state.setFailedCategories([])
   state.setElevationSkipped([])
   state.setScanCancelRequested(false)
+  state.setScannedAt(null)
 
   const run = async (): Promise<void> => {
     const failed: string[] = []
@@ -72,6 +73,8 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
         phase: 'scanning',
         category: current.type,
         currentPath: data.currentPath || current.label,
+        // A scanner step without a path arrives as a translatable label.
+        ...(data.label ? { label: data.label } : {}),
         progress:
           previous?.phase === 'scanning' && previous.category === current.type
             ? Math.max(previous.progress, measured)
@@ -120,6 +123,7 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
       const currentState = useScanStore.getState()
       currentState.setFailedCategories(failed)
       currentState.setElevationSkipped(skippedForElevation)
+      if (completed > 0) currentState.setScannedAt(Date.now())
       currentState.setStatus(
         completed === 0 && cancelRequested ? ScanStatus.Idle : ScanStatus.Complete
       )
