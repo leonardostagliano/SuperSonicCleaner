@@ -1,249 +1,27 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Gamepad2,
-  Power,
-  Loader2,
-  Server,
-  Cpu,
-  MemoryStick,
-  Monitor,
-  Wifi,
-  ChevronDown,
-  Plus,
-  X,
-  CheckCircle2,
-  AlertTriangle,
-  Shield,
-  Zap,
-  Timer,
-  Activity,
-  Radar
-} from 'lucide-react'
+import { X } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { Receipt } from '@/components/shared/Receipt'
+import { Button, Card, ListRow, ProgressBar, Section, Switch, Tag } from '@/components/ui'
+import {
+  CATEGORIES,
+  OPTIMIZATIONS,
+  formatElapsed,
+  isValidProcessName,
+  stepLabel
+} from '@/components/game-mode/game-mode-view'
+import { icons } from '@/lib/icons'
+import { formatCount } from '@/lib/protection-format'
 import { useGameModeStore } from '@/stores/game-mode-store'
-import type { GameModeOptimizationId, GameModeCategory } from '@shared/types'
-import type { LucideIcon } from 'lucide-react'
 
-// ── Optimization definitions ─────────────────────────────────
-
-interface OptimizationDef {
-  id: GameModeOptimizationId
-  category: GameModeCategory
-  labelKey: string
-  descKey: string
-  requiresAdmin: boolean
-}
-
-const OPTIMIZATIONS: OptimizationDef[] = [
-  // Services
-  {
-    id: 'svc-wsearch',
-    category: 'services',
-    labelKey: 'optSvcWsearch',
-    descKey: 'optSvcWsearchDesc',
-    requiresAdmin: true
-  },
-  {
-    id: 'svc-sysmain',
-    category: 'services',
-    labelKey: 'optSvcSysmain',
-    descKey: 'optSvcSysmainDesc',
-    requiresAdmin: true
-  },
-  {
-    id: 'svc-wuauserv',
-    category: 'services',
-    labelKey: 'optSvcWuauserv',
-    descKey: 'optSvcWuauservDesc',
-    requiresAdmin: true
-  },
-  {
-    id: 'svc-spooler',
-    category: 'services',
-    labelKey: 'optSvcSpooler',
-    descKey: 'optSvcSpoolerDesc',
-    requiresAdmin: true
-  },
-  {
-    id: 'svc-diagtrack',
-    category: 'services',
-    labelKey: 'optSvcDiagtrack',
-    descKey: 'optSvcDiagtrackDesc',
-    requiresAdmin: true
-  },
-  // Processes
-  {
-    id: 'proc-kill-browsers',
-    category: 'processes',
-    labelKey: 'optProcBrowsers',
-    descKey: 'optProcBrowsersDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'proc-kill-chat',
-    category: 'processes',
-    labelKey: 'optProcChat',
-    descKey: 'optProcChatDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'proc-kill-updaters',
-    category: 'processes',
-    labelKey: 'optProcUpdaters',
-    descKey: 'optProcUpdatersDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'proc-kill-custom',
-    category: 'processes',
-    labelKey: 'optProcCustom',
-    descKey: 'optProcCustomDesc',
-    requiresAdmin: false
-  },
-  // Memory
-  {
-    id: 'mem-clear-standby',
-    category: 'memory',
-    labelKey: 'optMemStandby',
-    descKey: 'optMemStandbyDesc',
-    requiresAdmin: false
-  },
-  // System
-  {
-    id: 'sys-focus-assist',
-    category: 'system',
-    labelKey: 'optSysFocusAssist',
-    descKey: 'optSysFocusAssistDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'sys-power-plan',
-    category: 'system',
-    labelKey: 'optSysPowerPlan',
-    descKey: 'optSysPowerPlanDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'sys-prevent-sleep',
-    category: 'system',
-    labelKey: 'optSysPreventSleep',
-    descKey: 'optSysPreventSleepDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'sys-disable-game-bar',
-    category: 'system',
-    labelKey: 'optSysGameBar',
-    descKey: 'optSysGameBarDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'sys-disable-fse-opt',
-    category: 'system',
-    labelKey: 'optSysFseOpt',
-    descKey: 'optSysFseOptDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'sys-disable-transparency',
-    category: 'system',
-    labelKey: 'optSysTransparency',
-    descKey: 'optSysTransparencyDesc',
-    requiresAdmin: false
-  },
-  // Network
-  {
-    id: 'net-flush-dns',
-    category: 'network',
-    labelKey: 'optNetFlushDns',
-    descKey: 'optNetFlushDnsDesc',
-    requiresAdmin: false
-  },
-  {
-    id: 'net-disable-nagle',
-    category: 'network',
-    labelKey: 'optNetNagle',
-    descKey: 'optNetNagleDesc',
-    requiresAdmin: true
-  }
-]
-
-interface CategoryDef {
-  id: GameModeCategory
-  labelKey: string
-  descKey: string
-  icon: LucideIcon
-  color: string
-  glow: string
-}
-
-const CATEGORIES: CategoryDef[] = [
-  {
-    id: 'services',
-    labelKey: 'categoryServices',
-    descKey: 'categoryServicesDesc',
-    icon: Server,
-    color: '#9cb8d6',
-    glow: 'rgba(166,210,184,0.12)'
-  },
-  {
-    id: 'processes',
-    labelKey: 'categoryProcesses',
-    descKey: 'categoryProcessesDesc',
-    icon: Cpu,
-    color: '#b6aecf',
-    glow: 'rgba(139,92,246,0.12)'
-  },
-  {
-    id: 'memory',
-    labelKey: 'categoryMemory',
-    descKey: 'categoryMemoryDesc',
-    icon: MemoryStick,
-    color: '#a6d2b8',
-    glow: 'rgba(34,197,94,0.12)'
-  },
-  {
-    id: 'system',
-    labelKey: 'categorySystem',
-    descKey: 'categorySystemDesc',
-    icon: Monitor,
-    color: '#f0b65b',
-    glow: 'rgba(245,158,11,0.12)'
-  },
-  {
-    id: 'network',
-    labelKey: 'categoryNetwork',
-    descKey: 'categoryNetworkDesc',
-    icon: Wifi,
-    color: '#d4a5bb',
-    glow: 'rgba(236,72,153,0.12)'
-  }
-]
-
-// ── Colors ───────────────────────────────────────────────────
-
-const CYAN = '#a6d2b8'
-const PURPLE = '#f0b65b'
-const CYAN_BORDER = 'rgba(166,210,184,0.15)'
-
-// ── Timer helper ─────────────────────────────────────────────
-
-function formatElapsed(ms: number): string {
-  const totalSec = Math.floor(ms / 1000)
-  const h = Math.floor(totalSec / 3600)
-  const m = Math.floor((totalSec % 3600) / 60)
-  const s = totalSec % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-}
-
-// ── Animated Ring ────────────────────────────────────────────
+const store = useGameModeStore.getState
 
 export function GameModePage() {
-  const { t } = useTranslation('gameMode')
-  const store = useGameModeStore
+  const { t, i18n } = useTranslation('gameMode')
+  const lang = i18n.language
   const active = useGameModeStore((s) => s.active)
   const activatedAt = useGameModeStore((s) => s.activatedAt)
   const pendingRestore = useGameModeStore((s) => s.pendingRestore)
@@ -260,6 +38,8 @@ export function GameModePage() {
   const [gameInput, setGameInput] = useState('')
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const progressCleanupRef = useRef<(() => void) | null>(null)
+  const gameInputId = useId()
+  const customInputId = useId()
 
   // Cleanup progress listener on unmount
   useEffect(() => {
@@ -289,738 +69,502 @@ export function GameModePage() {
   // Auto-dismiss result
   useEffect(() => {
     if (!lastResult) return
-    const timer = setTimeout(() => store.getState().setLastResult(null), 8000)
+    const timer = setTimeout(() => store().setLastResult(null), 8000)
     return () => clearTimeout(timer)
   }, [lastResult])
 
   const isBusy = status !== 'idle'
+
+  const listenForProgress = () => {
+    progressCleanupRef.current =
+      window.kudu?.onGameModeProgress?.((data) => {
+        store().setProgress(data)
+      }) ?? null
+  }
+  const stopListening = () => {
+    store().setStatus('idle')
+    store().setProgress(null)
+    progressCleanupRef.current?.()
+    progressCleanupRef.current = null
+  }
 
   const handleActivate = useCallback(async () => {
     if (config.enabledOptimizations.length === 0) {
       toast.error(t('noOptimizationsSelected'))
       return
     }
-    store.getState().setStatus('activating')
-    store.getState().setLastResult(null)
-
-    progressCleanupRef.current =
-      window.kudu?.onGameModeProgress?.((data) => {
-        useGameModeStore.getState().setProgress(data)
-      }) ?? null
+    store().setStatus('activating')
+    store().setLastResult(null)
+    listenForProgress()
 
     try {
       const result = await window.kudu.gameModeActivate(config)
       // Only mark as active if at least one optimization succeeded
       if (result.succeeded > 0) {
-        store.getState().setActive(true, result.snapshot?.activatedAt ?? new Date().toISOString())
+        store().setActive(true, result.snapshot?.activatedAt ?? new Date().toISOString())
       }
-      store
-        .getState()
-        .setLastResult({ type: 'activate', succeeded: result.succeeded, failed: result.failed })
+      store().setLastResult({
+        type: 'activate',
+        succeeded: result.succeeded,
+        failed: result.failed
+      })
       if (result.succeeded === 0 && result.failed > 0) {
-        toast.error(result.errors[0]?.reason ?? 'All optimizations failed')
+        toast.error(t('toastAllFailed'), { description: result.errors[0]?.reason })
       } else if (result.failed > 0) {
-        toast.warning(`${result.failed} optimization(s) failed`)
+        toast.warning(t('toastSomeFailed', { count: result.failed }))
       }
-    } catch (err: any) {
-      toast.error(err?.message ?? 'Activation failed')
+    } catch (err) {
+      toast.error(t('toastActivateFailed'), {
+        description: err instanceof Error ? err.message : undefined
+      })
     } finally {
-      store.getState().setStatus('idle')
-      store.getState().setProgress(null)
-      progressCleanupRef.current?.()
-      progressCleanupRef.current = null
+      stopListening()
     }
   }, [config, t])
 
   const handleDeactivate = useCallback(async () => {
-    store.getState().setStatus('deactivating')
-    store.getState().setLastResult(null)
-
-    progressCleanupRef.current =
-      window.kudu?.onGameModeProgress?.((data) => {
-        useGameModeStore.getState().setProgress(data)
-      }) ?? null
+    store().setStatus('deactivating')
+    store().setLastResult(null)
+    listenForProgress()
 
     try {
       const result = await window.kudu.gameModeDeactivate()
-      store.getState().setActive(false, null)
+      store().setActive(false, null)
       const reason = result.errors[0]?.reason ?? null
-      store.getState().setPendingRestore(result.failed > 0, reason)
+      store().setPendingRestore(result.failed > 0, reason)
       if (result.failed > 0) {
         toast.warning(
-          t('restoreFailedToast', {
+          t('restoreFailed', {
             count: result.failed,
             reason: reason ?? t('restoreReasonUnknown')
           })
         )
       }
-      store
-        .getState()
-        .setLastResult({ type: 'deactivate', succeeded: result.restored, failed: result.failed })
-    } catch (err: any) {
-      toast.error(err?.message ?? 'Deactivation failed')
+      store().setLastResult({
+        type: 'deactivate',
+        succeeded: result.restored,
+        failed: result.failed
+      })
+    } catch (err) {
+      toast.error(t('toastDeactivateFailed'), {
+        description: err instanceof Error ? err.message : undefined
+      })
     } finally {
-      store.getState().setStatus('idle')
-      store.getState().setProgress(null)
-      progressCleanupRef.current?.()
-      progressCleanupRef.current = null
+      stopListening()
     }
   }, [t])
 
   const handleDiscardPending = useCallback(async () => {
+    setConfirmDiscard(false)
     try {
       const result = await window.kudu.gameModeDiscardPending()
       if (!result.discarded) {
         toast.error(result.reason ?? t('discardFailed'))
         return
       }
-      store.getState().setPendingRestore(false, null)
+      store().setPendingRestore(false, null)
       toast.success(t('discardDone'))
-    } catch (err: any) {
-      toast.error(err?.message ?? t('discardFailed'))
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t('discardFailed'))
     }
   }, [t])
 
-  const handleAddCustomProcess = useCallback(() => {
-    const name = customInput.trim()
-    if (!name || name.length > 100 || config.customProcessKillList.includes(name)) return
-    if (!/^[A-Za-z0-9._\- ]+$/.test(name)) {
-      toast.error(
-        'Process name can only contain letters, numbers, dots, hyphens, underscores, and spaces'
-      )
+  const addProcess = (
+    value: string,
+    list: string[],
+    save: (next: string[]) => void,
+    clear: () => void
+  ) => {
+    const name = value.trim()
+    if (!name || name.length > 100 || list.includes(name)) return
+    if (!isValidProcessName(name)) {
+      toast.error(t('invalidProcessName'))
       return
     }
-    store.getState().setCustomProcessKillList([...config.customProcessKillList, name])
-    setCustomInput('')
-  }, [customInput, config.customProcessKillList])
-
-  const handleRemoveCustomProcess = useCallback(
-    (name: string) => {
-      store
-        .getState()
-        .setCustomProcessKillList(config.customProcessKillList.filter((n) => n !== name))
-    },
-    [config.customProcessKillList]
-  )
-
-  const handleAddGameProcess = useCallback(() => {
-    const name = gameInput.trim()
-    if (!name || name.length > 100 || (config.customGameProcesses ?? []).includes(name)) return
-    if (!/^[A-Za-z0-9._\- ]+$/.test(name)) {
-      toast.error(
-        'Process name can only contain letters, numbers, dots, hyphens, underscores, and spaces'
-      )
-      return
-    }
-    store.getState().setCustomGameProcesses([...(config.customGameProcesses ?? []), name])
-    setGameInput('')
-  }, [gameInput, config.customGameProcesses])
-
-  const handleRemoveGameProcess = useCallback(
-    (name: string) => {
-      store
-        .getState()
-        .setCustomGameProcesses((config.customGameProcesses ?? []).filter((n) => n !== name))
-    },
-    [config.customGameProcesses]
-  )
+    save([...list, name])
+    clear()
+  }
 
   const enabledSet = new Set(config.enabledOptimizations)
   const enabledCount = config.enabledOptimizations.length
   const serviceCount = OPTIMIZATIONS.filter(
     (o) => o.category === 'services' && enabledSet.has(o.id)
   ).length
+  const gameProcesses = config.customGameProcesses ?? []
+  const elapsedText = formatElapsed(elapsed)
+  const step = progress ? stepLabel(progress) : null
+  const WarningIcon = icons.warning
+  const NoteIcon = icons.note
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto">
-      <PageHeader title={t('pageTitle')} description={t('pageDescription')} />
+    <div>
+      <PageHeader
+        title={t('pageTitle')}
+        description={t('pageDescription')}
+        action={
+          <Button
+            variant="primary"
+            size="lg"
+            busy={isBusy}
+            onClick={() => void (active ? handleDeactivate() : handleActivate())}
+          >
+            {status === 'activating'
+              ? t('activatingButton')
+              : status === 'deactivating'
+                ? t('deactivatingButton')
+                : active
+                  ? t('deactivateButton')
+                  : t('activateButton')}
+          </Button>
+        }
+      />
 
-      <div className="flex-1 space-y-5 pb-8">
-        <section className="pulse-game-hero" aria-busy={isBusy}>
-          <div className="pulse-game-symbol">
-            <Gamepad2 size={42} strokeWidth={1.4} />
-          </div>
-          <div className="pulse-game-copy">
-            <span className="pulse-kicker">{active ? t('activeLabel') : t('inactiveLabel')}</span>
-            <h2>{t('pageTitle')}</h2>
-            <p>{t('pageDescription')}</p>
-            <span className="pulse-game-count">{t('enabledCount', { count: enabledCount })}</span>
-          </div>
-          <div className="pulse-game-activation">
-            {active && activatedAt && <strong>{formatElapsed(elapsed)}</strong>}
-            <button
-              onClick={active ? handleDeactivate : handleActivate}
-              disabled={isBusy}
-              className="pulse-button pulse-primary"
-            >
-              {isBusy ? <Loader2 size={17} className="animate-spin" /> : <Power size={17} />}
-              {active ? t('deactivateButton') : t('activateButton')}
-            </button>
-          </div>
-        </section>
-
-        {/* ── Live Stats Bar ─────────────────────────── */}
-        <AnimatePresence>
+      <div className="flex flex-col gap-3">
+        <Card as="section" aria-busy={isBusy}>
+          <h2 className="m-0 font-[family-name:var(--font-display)] text-[length:var(--text-15)] leading-[1.3] font-semibold tabular-nums">
+            {active && activatedAt
+              ? t('activeSince', { elapsed: elapsedText, time: elapsedText })
+              : t('inactiveLabel')}
+          </h2>
+          <p className="mt-1 text-[length:var(--text-13)] text-[var(--text-secondary)] tabular-nums">
+            {[
+              t('selectedCount', { count: enabledCount }),
+              active && serviceCount > 0 ? t('servicesPaused', { count: serviceCount }) : null
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          </p>
           {active && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: -10, height: 0 }}
-              className="grid grid-cols-3 gap-3"
-            >
-              {[
-                {
-                  icon: Zap,
-                  label: t('statOptimizationsActive'),
-                  value: String(enabledCount),
-                  color: CYAN
-                },
-                {
-                  icon: Activity,
-                  label: t('statServicesDisabled'),
-                  value: String(serviceCount),
-                  color: PURPLE
-                },
-                {
-                  icon: Timer,
-                  label: t('statSessionTimer'),
-                  value: formatElapsed(elapsed),
-                  color: '#a6d2b8'
-                }
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex items-center gap-3 rounded-xl px-4 py-3"
-                  style={{
-                    background: 'var(--bg-subtle)',
-                    border: `1px solid var(--border-default)`
-                  }}
-                >
-                  <stat.icon
-                    className="h-4 w-4 shrink-0"
-                    style={{ color: stat.color }}
-                    strokeWidth={2}
-                  />
-                  <div className="min-w-0">
-                    <div className="truncate text-[10px] text-zinc-500">{stat.label}</div>
-                    <div
-                      className="font-mono text-sm font-semibold tabular-nums"
-                      style={{ color: stat.color }}
-                    >
-                      {stat.value}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
+            <p className="mt-1 text-[length:var(--text-12)] text-[var(--text-muted)]">
+              {t('configLockedWhileActive')}
+            </p>
           )}
-        </AnimatePresence>
-
-        {/* ── Progress ────────────────────────────────── */}
-        <AnimatePresence>
-          {isBusy && progress && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden rounded-xl"
-              style={{ background: 'var(--bg-subtle)', border: `1px solid ${CYAN_BORDER}` }}
-            >
-              <div className="px-5 py-4">
-                <div className="mb-3 flex items-center gap-3">
-                  <div
-                    className="h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"
-                    style={{ borderColor: `${CYAN} transparent ${CYAN} ${CYAN}` }}
-                  />
-                  <span className="text-[13px] text-zinc-300">
-                    {progress.phase === 'activating'
-                      ? t('activatingProgress')
-                      : t('deactivatingProgress')}
-                  </span>
-                </div>
-                <div
-                  className="relative h-2 overflow-hidden rounded-full"
-                  style={{ background: 'var(--bg-subtle-2)' }}
-                >
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{
-                      background: `linear-gradient(90deg, ${CYAN}, ${PURPLE}, ${CYAN})`,
-                      backgroundSize: '200% 100%',
-                      animation: 'shimmer 2s linear infinite'
-                    }}
-                    animate={{ width: `${(progress.current / progress.total) * 100}%` }}
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
-                  />
-                </div>
-                <div className="mt-2 text-[11px] text-zinc-500">
-                  {progress.currentLabel} ({progress.current}/{progress.total})
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ── Result Banner ───────────────────────────── */}
-        <AnimatePresence>
-          {lastResult && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex items-center gap-3 rounded-xl px-5 py-3.5"
-              style={{
-                background:
-                  lastResult.failed > 0 ? 'var(--accent-muted-bg)' : 'rgba(34,197,94,0.08)',
-                border: `1px solid ${lastResult.failed > 0 ? 'var(--accent-muted-border)' : 'rgba(34,197,94,0.15)'}`
-              }}
-            >
-              {lastResult.failed > 0 ? (
-                <AlertTriangle className="h-4 w-4 shrink-0" style={{ color: 'var(--accent)' }} />
-              ) : (
-                <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: '#a6d2b8' }} />
-              )}
-              <span
-                className="text-[13px]"
-                style={{ color: lastResult.failed > 0 ? 'var(--accent-hover)' : '#86efac' }}
-              >
-                {lastResult.type === 'activate'
-                  ? t('resultActivated', { count: lastResult.succeeded })
-                  : t('resultDeactivated', { count: lastResult.succeeded })}
-                {lastResult.failed > 0 &&
-                  ` \u2022 ${t('resultErrors', { count: lastResult.failed })}`}
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ── Config locked notice ────────────────────── */}
-        {active && (
-          <div
-            className="flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-[12px]"
-            style={{
-              background: 'rgba(166,210,184,0.06)',
-              border: `1px solid ${CYAN_BORDER}`,
-              color: CYAN
-            }}
-          >
-            <Shield className="h-3.5 w-3.5 shrink-0" />
-            {t('configLockedWhileActive')}
-          </div>
-        )}
-
-        {/* ── Pending restore banner ──────────────────── */}
-        {!active && pendingRestore && (
-          <div
-            className="flex items-start gap-3 rounded-lg px-4 py-3 text-[12px]"
-            style={{
-              background: 'rgba(245,158,11,0.08)',
-              border: '1px solid rgba(245,158,11,0.2)',
-              color: '#f0b65b'
-            }}
-          >
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-            <div className="flex-1">
-              <span>{t('pendingRestoreBanner')}</span>
-              {pendingReason && (
-                <div className="mt-1 wrap-break-word opacity-70">{pendingReason}</div>
-              )}
-              <div className="mt-1 opacity-70">{t('pendingRestoreDiscardHint')}</div>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
-              <button
-                onClick={handleDeactivate}
-                disabled={isBusy}
-                className="rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors disabled:opacity-40"
-                style={{
-                  background: 'rgba(245,158,11,0.15)',
-                  color: '#f0b65b',
-                  border: '1px solid rgba(245,158,11,0.3)'
-                }}
-              >
-                {isBusy ? t('retryingCleanup') : t('retryCleanup')}
-              </button>
-              <button
-                onClick={() => {
-                  if (!confirmDiscard) {
-                    setConfirmDiscard(true)
-                    return
-                  }
-                  setConfirmDiscard(false)
-                  void handleDiscardPending()
-                }}
-                disabled={isBusy}
-                className="rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors disabled:opacity-40"
-                style={{
-                  background: 'transparent',
-                  color: '#f0b65b',
-                  border: '1px solid rgba(245,158,11,0.3)'
-                }}
-              >
-                {confirmDiscard ? t('discardConfirm') : t('discardPending')}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Auto-detected banner ────────────────────── */}
-        <AnimatePresence>
           {detectedGame && active && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-[12px]"
-              style={{
-                background: 'rgba(34,197,94,0.08)',
-                border: '1px solid rgba(34,197,94,0.15)',
-                color: '#a6d2b8'
-              }}
-            >
-              <Radar className="h-3.5 w-3.5 shrink-0" />
+            <p className="mt-1 text-[length:var(--text-12)] text-[var(--text-muted)]">
               {t('autoDetectedBanner', { name: detectedGame })}
-            </motion.div>
+            </p>
           )}
-        </AnimatePresence>
+        </Card>
 
-        {/* ── Auto-Detect Settings ───────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.02, duration: 0.3 }}
-          className="overflow-hidden rounded-xl"
-          style={{
-            border: `1px solid ${config.autoDetect ? 'rgba(34,197,94,0.15)' : 'var(--border-default)'}`,
-            background: config.autoDetect
-              ? 'linear-gradient(135deg, rgba(34,197,94,0.06), transparent)'
-              : 'var(--bg-subtle)'
-          }}
-        >
-          {/* Header row with main toggle */}
-          <div className="flex items-center gap-4 px-5 py-4">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-              style={{ background: 'rgba(34,197,94,0.12)' }}
-            >
-              <Radar className="h-[18px] w-[18px]" style={{ color: '#a6d2b8' }} strokeWidth={1.8} />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[14px] font-semibold text-zinc-200">
-                  {t('autoDetectTitle')}
-                </span>
-              </div>
-              <p className="mt-0.5 text-[11px] text-zinc-500">{t('autoDetectDesc')}</p>
-            </div>
-            <button
-              onClick={() => store.getState().setAutoDetect(!config.autoDetect)}
-              className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors"
-              data-checked={config.autoDetect}
-              style={{ background: config.autoDetect ? '#a6d2b8' : 'var(--toggle-off-bg)' }}
-            >
-              <motion.div
-                className="absolute top-0.5 h-5 w-5 rounded-full"
-                animate={{
-                  left: config.autoDetect ? 22 : 2,
-                  background: config.autoDetect ? '#fff' : 'var(--text-muted)'
-                }}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              />
-            </button>
-          </div>
-
-          {/* Expanded options when auto-detect is on */}
-          <AnimatePresence>
-            {config.autoDetect && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-                style={{ borderTop: '1px solid var(--border-subtle)' }}
-              >
-                {/* Auto-deactivate toggle */}
-                <div
-                  className="flex items-center gap-4 px-5 py-3.5"
-                  style={{ borderBottom: '1px solid var(--bg-subtle)' }}
-                >
-                  <div className="flex-1">
-                    <span className="text-[13px] font-medium text-zinc-300">
-                      {t('autoDeactivateLabel')}
-                    </span>
-                    <p className="mt-0.5 text-[11px] text-zinc-500">{t('autoDeactivateDesc')}</p>
-                  </div>
-                  <button
-                    onClick={() => store.getState().setAutoDeactivate(!config.autoDeactivate)}
-                    className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors"
-                    data-checked={config.autoDeactivate}
-                    style={{
-                      background: config.autoDeactivate ? '#a6d2b8' : 'var(--toggle-off-bg)'
-                    }}
-                  >
-                    <motion.div
-                      className="absolute top-0.5 h-5 w-5 rounded-full"
-                      animate={{
-                        left: config.autoDeactivate ? 22 : 2,
-                        background: config.autoDeactivate ? '#fff' : 'var(--text-muted)'
-                      }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                    />
-                  </button>
-                </div>
-
-                {/* Custom game processes */}
-                <div className="px-5 py-3.5">
-                  <div className="mb-2">
-                    <span className="text-[13px] font-medium text-zinc-300">
-                      {t('customGameProcessesLabel')}
-                    </span>
-                    <p className="mt-0.5 text-[11px] text-zinc-500">
-                      {t('customGameProcessesDesc')}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={gameInput}
-                      onChange={(e) => setGameInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleAddGameProcess()}
-                      placeholder={t('customGamePlaceholder')}
-                      className="flex-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-[12px] text-zinc-300 outline-none placeholder:text-zinc-600 focus:border-emerald-500/30"
-                    />
-                    <button
-                      onClick={handleAddGameProcess}
-                      disabled={!gameInput.trim()}
-                      className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition-colors disabled:opacity-40"
-                      style={{ background: 'rgba(34,197,94,0.12)', color: '#a6d2b8' }}
-                    >
-                      <Plus className="h-3 w-3" />
-                      {t('customGameAdd')}
-                    </button>
-                  </div>
-                  {(config.customGameProcesses?.length ?? 0) > 0 ? (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {(config.customGameProcesses ?? []).map((name) => (
-                        <span
-                          key={name}
-                          className="flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
-                          style={{
-                            background: 'var(--bg-subtle-2)',
-                            color: 'var(--text-secondary)'
-                          }}
-                        >
-                          {name}
-                          <button
-                            onClick={() => handleRemoveGameProcess(name)}
-                            className="hover:text-red-400"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="mt-2 text-[11px] text-zinc-600">{t('customGameEmpty')}</p>
-                  )}
-                </div>
-              </motion.div>
+        {isBusy && progress && (
+          <Section
+            title={
+              progress.phase === 'activating' ? t('activatingProgress') : t('deactivatingProgress')
+            }
+            meta={t('progressCount', {
+              current: formatCount(progress.current, lang),
+              total: formatCount(progress.total, lang)
+            })}
+          >
+            {step && (
+              <p className="mb-2 text-[length:var(--text-13)] text-[var(--text-secondary)]">
+                {t(step.key, {
+                  ...step.params,
+                  ...(step.labelKey ? { label: t(step.labelKey) } : {})
+                })}
+              </p>
             )}
-          </AnimatePresence>
-        </motion.div>
+            <ProgressBar
+              value={progress.current / Math.max(progress.total, 1)}
+              label={t('progressLabel')}
+            />
+          </Section>
+        )}
 
-        {/* ── Category Cards ───────��──────────────────── */}
-        {CATEGORIES.map((cat, catIndex) => {
-          const catOpts = OPTIMIZATIONS.filter((o) => o.category === cat.id)
-          if (catOpts.length === 0) return null
+        {lastResult && !isBusy && (
+          <Receipt
+            title={
+              lastResult.type === 'activate'
+                ? t('receiptActivatedTitle')
+                : t('receiptDeactivatedTitle')
+            }
+            value={
+              lastResult.type === 'activate'
+                ? t('receiptApplied', { count: lastResult.succeeded })
+                : t('receiptRestored', { count: lastResult.succeeded })
+            }
+            facts={[
+              lastResult.failed > 0 ? t('receiptFailed', { count: lastResult.failed }) : '',
+              lastResult.type === 'activate' ? t('receiptActivatedNote') : ''
+            ]}
+          />
+        )}
 
-          const enabledInCat = catOpts.filter((o) => enabledSet.has(o.id)).length
-          const isExpanded = expandedCategories.has(cat.id)
-          const CatIcon = cat.icon
+        {!active && pendingRestore && (
+          <Card className="flex flex-wrap items-start gap-3">
+            <WarningIcon
+              size={16}
+              strokeWidth={1.75}
+              className="mt-0.5 shrink-0 text-[var(--text-secondary)]"
+              aria-hidden="true"
+            />
+            <div className="min-w-0 flex-[1_1_320px] text-[length:var(--text-13)] text-[var(--text-secondary)]">
+              <p className="m-0">{t('pendingRestoreBanner')}</p>
+              {pendingReason && (
+                <p className="m-0 mt-1 text-[length:var(--text-12)] break-words text-[var(--text-muted)]">
+                  {pendingReason}
+                </p>
+              )}
+              <p className="m-0 mt-1 text-[length:var(--text-12)] text-[var(--text-muted)]">
+                {t('pendingRestoreDiscardHint')}
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <Button busy={isBusy} onClick={() => void handleDeactivate()}>
+                {isBusy ? t('retryingCleanup') : t('retryCleanup')}
+              </Button>
+              <Button variant="ghost" disabled={isBusy} onClick={() => setConfirmDiscard(true)}>
+                {t('discardPending')}
+              </Button>
+            </div>
+          </Card>
+        )}
 
+        <Section
+          title={t('autoDetectTitle')}
+          actions={
+            <Switch
+              checked={config.autoDetect}
+              label={t('autoDetectLabel')}
+              onChange={(value) => store().setAutoDetect(value)}
+            />
+          }
+        >
+          <p className="m-0 text-[length:var(--text-13)] text-[var(--text-secondary)]">
+            {t('autoDetectDesc')}
+          </p>
+          {config.autoDetect && (
+            <div className="mt-3 border-t border-[var(--border-default)]">
+              <ListRow className="items-start">
+                <div className="min-w-0 flex-1">
+                  <span className="text-[length:var(--text-13)] font-medium">
+                    {t('autoDeactivateLabel')}
+                  </span>
+                  <p className="m-0 text-[length:var(--text-12)] text-[var(--text-muted)]">
+                    {t('autoDeactivateDesc')}
+                  </p>
+                </div>
+                <Switch
+                  checked={config.autoDeactivate}
+                  label={t('autoDeactivateLabel')}
+                  onChange={(value) => store().setAutoDeactivate(value)}
+                />
+              </ListRow>
+              <ListRow className="flex-col items-stretch">
+                <div>
+                  <label htmlFor={gameInputId} className="text-[length:var(--text-13)] font-medium">
+                    {t('customGameProcessesLabel')}
+                  </label>
+                  <p className="m-0 text-[length:var(--text-12)] text-[var(--text-muted)]">
+                    {t('customGameProcessesDesc')}
+                  </p>
+                </div>
+                <ProcessEditor
+                  inputId={gameInputId}
+                  value={gameInput}
+                  onValueChange={setGameInput}
+                  placeholder={t('customGamePlaceholder')}
+                  addLabel={t('customGameAdd')}
+                  addAriaLabel={t('customGameAddLabel')}
+                  emptyText={t('customGameEmpty')}
+                  names={gameProcesses}
+                  onAdd={() =>
+                    addProcess(
+                      gameInput,
+                      gameProcesses,
+                      (next) => store().setCustomGameProcesses(next),
+                      () => setGameInput('')
+                    )
+                  }
+                  onRemove={(name) =>
+                    store().setCustomGameProcesses(gameProcesses.filter((n) => n !== name))
+                  }
+                />
+              </ListRow>
+            </div>
+          )}
+        </Section>
+
+        {CATEGORIES.map((category) => {
+          const options = OPTIMIZATIONS.filter((o) => o.category === category.id)
+          if (options.length === 0) return null
+          const enabledInCategory = options.filter((o) => enabledSet.has(o.id)).length
+          const expanded = expandedCategories.has(category.id)
+          const label = t(category.labelKey)
           return (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: catIndex * 0.05, duration: 0.3 }}
-              className="group overflow-hidden rounded-xl transition-[border-color,background-color] duration-300"
-              style={{
-                border: `1px solid ${isExpanded ? `${cat.color}22` : 'var(--border-default)'}`,
-                background: isExpanded
-                  ? `linear-gradient(135deg, ${cat.glow}, transparent)`
-                  : 'var(--bg-subtle)'
-              }}
+            <Section
+              key={category.id}
+              title={label}
+              meta={t('categoryMeta', {
+                enabled: formatCount(enabledInCategory, lang),
+                total: formatCount(options.length, lang)
+              })}
+              actions={
+                <Button
+                  variant="ghost"
+                  aria-expanded={expanded}
+                  aria-label={`${expanded ? t('categoryHide') : t('categoryShow')}: ${label}`}
+                  onClick={() => store().toggleCategory(category.id)}
+                >
+                  {expanded ? t('categoryHide') : t('categoryShow')}
+                </Button>
+              }
             >
-              {/* Category header */}
-              <button
-                onClick={() => store.getState().toggleCategory(cat.id)}
-                className="flex w-full items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.02]"
-              >
-                <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition duration-300"
-                  style={{
-                    background: `${cat.color}14`,
-                    boxShadow: isExpanded ? `0 0 12px ${cat.color}20` : 'none'
-                  }}
-                >
-                  <CatIcon
-                    className="h-[18px] w-[18px]"
-                    style={{ color: cat.color }}
-                    strokeWidth={1.8}
-                  />
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[14px] font-semibold text-zinc-200">
-                      {t(cat.labelKey)}
-                    </span>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                      style={{ background: `${cat.color}14`, color: cat.color }}
-                    >
-                      {t('enabledCount', { count: enabledInCat })}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-[11px] text-zinc-500">{t(cat.descKey)}</p>
-                </div>
-                <motion.div
-                  animate={{ rotate: isExpanded ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChevronDown className="h-4 w-4 shrink-0 text-zinc-600" />
-                </motion.div>
-              </button>
+              <p className="m-0 text-[length:var(--text-13)] text-[var(--text-secondary)]">
+                {t(category.descKey)}
+              </p>
+              {expanded && (
+                <div className="mt-3 border-t border-[var(--border-default)]">
+                  {options.map((option) => (
+                    <ListRow key={option.id} className="items-start">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-baseline gap-x-2">
+                          <span className="text-[length:var(--text-13)] font-medium">
+                            {t(option.labelKey)}
+                          </span>
+                          {option.requiresAdmin && <Tag tone="neutral">{t('adminTag')}</Tag>}
+                        </div>
+                        <p className="m-0 text-[length:var(--text-12)] text-[var(--text-muted)]">
+                          {t(option.descKey)}
+                        </p>
+                      </div>
+                      <Switch
+                        checked={enabledSet.has(option.id)}
+                        disabled={active || isBusy}
+                        label={t(option.labelKey)}
+                        onChange={() => store().toggleOptimization(option.id)}
+                      />
+                    </ListRow>
+                  ))}
 
-              {/* Expanded options */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                    style={{ borderTop: '1px solid var(--border-subtle)' }}
-                  >
-                    {catOpts.map((opt) => {
-                      const isEnabled = enabledSet.has(opt.id)
-                      return (
-                        <div
-                          key={opt.id}
-                          className="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.01]"
-                          style={{ borderBottom: '1px solid var(--bg-subtle)' }}
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[13px] font-medium text-zinc-300">
-                                {t(opt.labelKey)}
-                              </span>
-                              {opt.requiresAdmin && (
-                                <span
-                                  className="rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wide"
-                                  style={{
-                                    background: 'var(--accent-muted-bg)',
-                                    color: 'var(--accent)'
-                                  }}
-                                >
-                                  {t('adminBadge')}
-                                </span>
-                              )}
-                            </div>
-                            <p className="mt-0.5 text-[11px] text-zinc-500">{t(opt.descKey)}</p>
-                          </div>
-
-                          {/* Toggle switch */}
-                          <button
-                            onClick={() => !active && store.getState().toggleOptimization(opt.id)}
-                            disabled={active}
-                            className="toggle-switch relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-40"
-                            data-checked={isEnabled}
-                            style={{ background: isEnabled ? cat.color : 'var(--toggle-off-bg)' }}
-                          >
-                            <motion.div
-                              className="absolute top-0.5 h-5 w-5 rounded-full"
-                              animate={{
-                                left: isEnabled ? 22 : 2,
-                                background: isEnabled ? '#fff' : 'var(--text-muted)'
-                              }}
-                              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  {category.id === 'processes' && (
+                    <ListRow className="flex-col items-stretch">
+                      <label htmlFor={customInputId} className="sr-only">
+                        {t('customProcessAddLabel')}
+                      </label>
+                      <ProcessEditor
+                        inputId={customInputId}
+                        value={customInput}
+                        onValueChange={setCustomInput}
+                        placeholder={t('customProcessPlaceholder')}
+                        addLabel={t('customProcessAdd')}
+                        addAriaLabel={t('customProcessAddLabel')}
+                        emptyText={t('customProcessEmpty')}
+                        names={config.customProcessKillList}
+                        disabled={active}
+                        onAdd={() =>
+                          addProcess(
+                            customInput,
+                            config.customProcessKillList,
+                            (next) => store().setCustomProcessKillList(next),
+                            () => setCustomInput('')
+                          )
+                        }
+                        onRemove={(name) =>
+                          store().setCustomProcessKillList(
+                            config.customProcessKillList.filter((n) => n !== name)
+                          )
+                        }
+                      />
+                      {enabledSet.has('proc-kill-custom') &&
+                        config.customProcessKillList.length > 0 && (
+                          <p className="m-0 flex items-start gap-2 text-[length:var(--text-12)] text-[var(--text-secondary)]">
+                            <NoteIcon
+                              size={14}
+                              strokeWidth={1.75}
+                              className="mt-0.5 shrink-0"
+                              aria-hidden="true"
                             />
-                          </button>
-                        </div>
-                      )
-                    })}
-
-                    {/* Custom process list (only in processes category) */}
-                    {cat.id === 'processes' && (
-                      <div
-                        className="px-5 py-3.5"
-                        style={{ borderBottom: '1px solid var(--bg-subtle)' }}
-                      >
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            value={customInput}
-                            onChange={(e) => setCustomInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAddCustomProcess()}
-                            placeholder={t('customProcessPlaceholder')}
-                            disabled={active}
-                            className="flex-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-[12px] text-zinc-300 outline-none placeholder:text-zinc-600 focus:border-cyan-500/30 disabled:opacity-40"
-                          />
-                          <button
-                            onClick={handleAddCustomProcess}
-                            disabled={active || !customInput.trim()}
-                            className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition-colors disabled:opacity-40"
-                            style={{ background: `${cat.color}14`, color: cat.color }}
-                          >
-                            <Plus className="h-3 w-3" />
-                            {t('customProcessAdd')}
-                          </button>
-                        </div>
-                        {config.customProcessKillList.length > 0 ? (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {config.customProcessKillList.map((name) => (
-                              <span
-                                key={name}
-                                className="flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
-                                style={{
-                                  background: 'var(--bg-subtle-2)',
-                                  color: 'var(--text-secondary)'
-                                }}
-                              >
-                                {name}
-                                {!active && (
-                                  <button
-                                    onClick={() => handleRemoveCustomProcess(name)}
-                                    className="hover:text-red-400"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </button>
-                                )}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="mt-2 text-[11px] text-zinc-600">
-                            {t('customProcessEmpty')}
+                            {t('warningProcesses')}
                           </p>
                         )}
-                        {enabledSet.has('proc-kill-custom') &&
-                          config.customProcessKillList.length > 0 && (
-                            <p className="mt-2 text-[10px] text-amber-500/70">
-                              {t('warningProcesses')}
-                            </p>
-                          )}
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                    </ListRow>
+                  )}
+                </div>
+              )}
+            </Section>
           )
         })}
       </div>
+
+      <ConfirmDialog
+        open={confirmDiscard}
+        onConfirm={() => void handleDiscardPending()}
+        onCancel={() => setConfirmDiscard(false)}
+        title={t('discardConfirmTitle')}
+        description={t('discardConfirmDescription')}
+        confirmLabel={t('discardConfirmLabel')}
+        variant="danger"
+      />
+    </div>
+  )
+}
+
+function ProcessEditor({
+  inputId,
+  value,
+  onValueChange,
+  placeholder,
+  addLabel,
+  addAriaLabel,
+  emptyText,
+  names,
+  disabled,
+  onAdd,
+  onRemove
+}: {
+  inputId: string
+  value: string
+  onValueChange: (value: string) => void
+  placeholder: string
+  addLabel: string
+  addAriaLabel: string
+  emptyText: string
+  names: string[]
+  disabled?: boolean
+  onAdd: () => void
+  onRemove: (name: string) => void
+}) {
+  const { t } = useTranslation('gameMode')
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <input
+          id={inputId}
+          type="text"
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onValueChange(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && onAdd()}
+          placeholder={placeholder}
+          className="h-8 min-w-0 flex-1 rounded-[var(--radius-control)] border border-[var(--border-medium)] px-3 font-mono text-[length:var(--text-12)] text-[var(--text-primary)] outline-none"
+        />
+        <Button disabled={disabled || !value.trim()} aria-label={addAriaLabel} onClick={onAdd}>
+          {addLabel}
+        </Button>
+      </div>
+      {names.length > 0 ? (
+        <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+          {names.map((name) => (
+            <li
+              key={name}
+              className="flex items-center gap-1 rounded-[var(--radius-control)] border border-[var(--border-default)] ps-2 font-mono text-[length:var(--text-12)] text-[var(--text-secondary)]"
+            >
+              {name}
+              {!disabled && (
+                <Button
+                  variant="ghost"
+                  icon={X}
+                  aria-label={t('removeProcess', { name })}
+                  onClick={() => onRemove(name)}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="m-0 text-[length:var(--text-12)] text-[var(--text-muted)]">{emptyText}</p>
+      )}
     </div>
   )
 }
