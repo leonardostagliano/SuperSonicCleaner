@@ -2,9 +2,9 @@
   "trayTooltip": "SuperSonicCleaner",
   "openKudu": "Avaa SuperSonicCleaner",
   "quit": "Lopeta",
-  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Ajastettu tehtävä",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner – ajoitettu tehtävä",
   "scheduledTaskNotificationBody": "Suoritetaan \"{{name}}\"...",
-  "scanCompleteNotificationTitle": "SuperSonicCleaner - Tarkistus valmis",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner – tarkistus valmis",
   "scanCompleteNotificationBody": "Löytyi {{itemCount}} kohdetta ({{sizeMB}} MB), jotka voidaan puhdistaa.",
   "scheduledScanName": "Ajastettu tarkistus"
 }
