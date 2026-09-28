@@ -1,10 +1,10 @@
 {
   "trayTooltip": "SuperSonicCleaner",
-  "openKudu": "Deschide SuperSonicCleaner",
+  "openKudu": "Deschideți SuperSonicCleaner",
   "quit": "Ieșire",
-  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Activitate programată",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner – activitate programată",
   "scheduledTaskNotificationBody": "Se rulează „{{name}}”...",
-  "scanCompleteNotificationTitle": "SuperSonicCleaner - Scanare finalizată",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner – scanare finalizată",
   "scanCompleteNotificationBody": "Au fost găsite {{itemCount}} elemente ({{sizeMB}} MB) care pot fi curățate.",
   "scheduledScanName": "Scanare programată"
 }

@@ -12,7 +12,7 @@
     "gameModeDescription": "Game Mode are un instantaneu de recuperare activ sau în așteptare.",
     "openGameMode": "Deschide recuperarea Game Mode",
     "before": "Starea inițială",
-    "after": "Starea după SuperSonicCleaner",
+    "after": "Stare după SuperSonicCleaner",
     "absent": "Valoarea nu exista",
     "restore": "Restaurează starea inițială",
     "previous": "Anterior",
@@ -21,7 +21,7 @@
     "backupDescription": "Aceste fișiere de rezervă nu conțin informații verificate despre starea ulterioară. Verificați-le în folderul de backup înainte de restaurarea manuală; importarea lor poate suprascrie setări mai noi. Un fișier de rezervă nu este un punct de restaurare al sistemului de operare.",
     "openBackups": "Deschide folderul de backup",
     "confirmTitle": "Restaurați această modificare?",
-    "confirmDescription": "SuperSonicCleaner va verifica starea curentă înainte de a restaura valoarea inițială înregistrată. Modificările conflictuale mai noi vor fi păstrate. Pot fi necesare privilegii de administrator.",
+    "confirmDescription": "SuperSonicCleaner va verifica starea curentă înainte de a restaura valoarea originală înregistrată. Modificările mai noi și aflate în conflict vor fi păstrate. Pot fi necesare privilegii de administrator.",
     "status": {
       "pending": "Întrerupt / în așteptare",
       "ready": "Disponibil",
@@ -30,7 +30,7 @@
       "conflict": "A fost detectată o modificare mai nouă"
     },
     "remove": "Elimină înregistrarea",
-    "removeDescription": "Eliminați această înregistrare de recuperare din istoricul local? Aceasta nu vă modifică setările și nu șterge copiile de rezervă din registry. SuperSonicCleaner nu va mai putea restaura această modificare pentru dvs.",
+    "removeDescription": "Eliminați această înregistrare de recuperare din istoricul local? Acest lucru nu modifică setările dvs. și nu șterge copiile de rezervă ale registry-ului. SuperSonicCleaner nu va mai putea restaura această modificare pentru dvs.",
     "unreadable": "Această înregistrare de recuperare nu a putut fi citită. Este posibil să fi fost scrisă de un alt cont de utilizator sau să fie deteriorată pe disc.",
     "loading": "Se încarcă istoricul de recuperare?",
     "emptyTitle": "Istoricul dvs. de recuperare începe aici",
@@ -41,14 +41,14 @@
     },
     "registryBackups": {
       "title": "Copii de siguranță ale registry",
-      "description": "SuperSonicCleaner salvează cheile de registry pe care urmează să le modifice. Copiile de siguranță țintite pot fi restaurate aici. Exporturile complete ale ramurilor pot fi doar inspectate în folderul de backup, deoarece importarea lor ar anula modificări fără legătură efectuate între timp.",
+      "description": "SuperSonicCleaner salvează cheile de registry pe care urmează să le modifice. Copiile de rezervă direcționate pot fi restaurate aici. Exporturile de ramuri întregi pot fi doar inspectate în folderul de copii de rezervă, deoarece importarea lor ar anula modificările nelegate efectuate de atunci.",
       "empty": "Nu există încă copii de siguranță ale registry.",
       "restore": "Restaurare",
       "showInFolder": "Afișează în folder",
       "moreKeys": "+încă {{count}}",
       "requiresAdmin": "Necesită administrator",
       "confirmTitle": "Restaurați această copie de siguranță a registry?",
-      "confirmDescription": "SuperSonicCleaner va importa cheile de mai jos. Valorile din copia de rezervă le înlocuiesc pe cele curente, iar cheile și valorile lipsă sunt adăugate înapoi. Nimic altceva nu este șters, cu excepția faptului că restaurarea unei copii de rezervă de dinaintea restaurării elimină și cheile și valorile pe care le-a adăugat restaurarea pe care o anulează. Înainte de import, SuperSonicCleaner salvează starea curentă a acestor chei ca o copie de rezervă de dinaintea restaurării. Unele modificări intră în vigoare numai după deconectare sau repornire.",
+      "confirmDescription": "SuperSonicCleaner va importa cheile de mai jos. Valorile din copia de rezervă le înlocuiesc pe cele curente, iar cheile și valorile lipsă sunt adăugate din nou. Nimic altceva nu este șters, cu excepția faptului că restaurarea unei copii de rezervă dinaintea unei restaurări elimină și cheile și valorile pe care restaurarea anulată acum le adăugase. Înainte de import, SuperSonicCleaner salvează starea curentă a acestor chei ca o copie de rezervă dinaintea restaurării. Unele modificări intră în vigoare doar după deconectare sau repornire.",
       "restored": "Restaurat. Starea anterioară a fost salvată în {{file}}.",
       "restoredNoBackup": "Restaurat. Niciuna dintre aceste chei nu exista înainte, deci nu a existat nimic de salvat mai întâi.",
       "failed": "Restaurarea a eșuat: {{error}}",
@@ -61,13 +61,13 @@
       "blocked": {
         "full-export": "Export complet al ramurii. Restaurarea lui ar anula modificări fără legătură, deci poate fi doar inspectat.",
         "too-large": "Prea mare pentru a fi o copie de siguranță țintită.",
-        "format": "Nu este în formatul de export registry scris de SuperSonicCleaner.",
-        "deletion": "Conține intrări de ștergere, pe care copiile de siguranță SuperSonicCleaner nu le includ niciodată.",
-        "forbidden-key": "Conține chei din afara zonelor pe care SuperSonicCleaner le modifică.",
+        "format": "Nu este în formatul de export registry pe care îl scrie SuperSonicCleaner.",
+        "deletion": "Conține intrări de ștergere, pe care copiile de rezervă SuperSonicCleaner nu le au niciodată.",
+        "forbidden-key": "Conține chei din afara zonelor pe care le modifică SuperSonicCleaner.",
         "empty": "Nu conține chei de registry.",
         "unreadable": "Nu a putut fi citit.",
-        "classes-root": "Conține chei HKEY_CLASSES_ROOT, care îmbină clasele de la nivelul sistemului și cele per utilizator, astfel încât SuperSonicCleaner nu poate determina unde să le restaureze. Acestea pot fi doar inspectate.",
-        "unverified": "Această copie de rezervă nu poate fi verificată — este posibil să fi fost modificată de când SuperSonicCleaner a creat-o, astfel încât poate fi doar inspectată."
+        "classes-root": "Conține chei HKEY_CLASSES_ROOT, care combină clasele mașinii și cele ale utilizatorului, astfel încât SuperSonicCleaner nu poate stabili în care dintre ele să le restaureze. Pot fi doar inspectate.",
+        "unverified": "Această copie de rezervă nu poate fi verificată — este posibil să fi fost modificată după ce SuperSonicCleaner a scris-o, așa că poate fi doar inspectată."
       }
     }
   },

@@ -1,0 +1,61 @@
+{
+  "title": "Analiză AI",
+  "description": "Solicitați o a doua opinie despre aceste rezultate ale scanării.",
+  "hubDescription": "O a doua opinie despre scanări și înregistrări de performanță, folosind autentificarea dvs. Codex.",
+  "hubPrivacy": "Scanările partajează doar metadate anonime ale fișierelor. Înregistrările partajează măsurători numerice ale CPU, memoriei și discului, cu ID-uri temporare de proces. Numele, căile, notele și conținutul fișierelor rămân pe acest dispozitiv.",
+  "connectionTitle": "Conexiune Codex",
+  "connectionIntro": "Folosiți Codex pe acest computer. Verificați conexiunea, apoi alegeți un instrument mai jos.",
+  "connected": "Codex este conectat și pregătit pentru o analiză bazată doar pe metadate.",
+  "scanFirst": "Rulați mai întâi o scanare. Analiza AI devine disponibilă când rezultatele sunt gata.",
+  "anotherRunning": "O altă analiză AI rulează deja. O găsiți în Preferințe → Analiză AI.",
+  "continuesInBackground": "Analiza continuă cât timp folosiți alte ecrane. Reveniți aici pentru a vedea rezultatul.",
+  "returnToAnalysis": "Reveniți la analiză",
+  "openTool": "Deschideți instrumentul",
+  "hubInstructions": "Finalizați o scanare sau salvați o înregistrare de performanță, activați analiza AI pentru aceasta, apoi porniți-o cu butonul dedicat. Nimic nu este trimis automat.",
+  "tools": {
+    "cleaner": {
+      "title": "Curățarea sistemului",
+      "description": "Revizuiți candidații de curățare scanați folosind metadate anonime ale fișierelor. Urmele de confidențialitate sunt excluse."
+    },
+    "largeFiles": {
+      "title": "Fișiere mari",
+      "description": "Revizuiți care fișiere mari merită o privire mai atentă, în funcție de dimensiune, categorie și vechime aproximativă."
+    },
+    "duplicates": {
+      "title": "Fișiere duplicate",
+      "description": "Primiți sugestii despre ce grupuri de duplicate să revizuiți. Alegeți dvs. ce fișiere să păstrați."
+    },
+    "disk": {
+      "title": "Analiza discului",
+      "description": "Revizuiți cele mai mari foldere folosind informații agregate despre dimensiune."
+    },
+    "performance": {
+      "title": "Înregistrări de performanță",
+      "description": "Corelați activitatea CPU, memoriei și discului pentru a investiga o încetinire, cu măsurători justificative și verificări sugerate."
+    }
+  },
+  "enable": "Activați analiza AI pentru acest ecran",
+  "privacy": "Sunt trimise doar ID-uri temporare, tipuri generice de fișiere, dimensiuni și vechimea aproximativă a fișierelor. Numele, căile, hash-urile și conținutul fișierelor rămân pe acest dispozitiv.",
+  "accessCaveat": "Ultimul acces sunt metadate ale sistemului de fișiere. Pot lipsi sau pot fi modificate de o altă aplicație și nu dovedesc când ați deschis ultima dată un fișier.",
+  "diskAggregation": "Un rând de folder reprezintă dimensiunea sa totală. Nu dezvăluie care fișiere din folder merită revizuite.",
+  "checking": "Se verifică disponibilitatea AI…",
+  "codexMissing": "Instalați Codex pe acest computer pentru a folosi analiza AI.",
+  "unsupportedVersion": "Această versiune de Codex nu poate oferi limita de confidențialitate necesară, bazată doar pe metadate. Folosiți versiunea Codex 0.157.1 acceptată.",
+  "unsafeConfiguration": "Configurația Codex actuală nu poate garanta o analiză bazată doar pe metadate. Verificați configurația locală Codex înainte de a reîncerca.",
+  "signIn": "Deschideți Codex pe acest computer și autentificați-vă pentru a folosi analiza AI.",
+  "unavailable": "Analiza AI nu este disponibilă momentan. Verificați Codex pe acest computer și încercați din nou.",
+  "retryConnection": "Verificați din nou",
+  "analyze": "Analizați aceste rezultate",
+  "analyzing": "Se analizează…",
+  "cancelling": "Se anulează…",
+  "cancel": "Anulați",
+  "limit": "Până la {{count}} elemente",
+  "omitted": "{{count}} elemente suplimentare au fost omise din această analiză.",
+  "failed": "Analiza nu a putut fi finalizată. Încercați din nou.",
+  "advisory": "Evaluați dvs. aceste sugestii. Analiza AI nu selectează și nu șterge niciodată fișiere.",
+  "priority": {
+    "low": "Prioritate scăzută",
+    "medium": "Prioritate medie",
+    "high": "Prioritate ridicată"
+  }
+}

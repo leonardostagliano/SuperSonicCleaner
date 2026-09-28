@@ -14,5 +14,6 @@
   "hoursAgo": "acum {{hours}} h",
   "daysAgo": "acum {{days}} z",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Ce se verifică"
 }

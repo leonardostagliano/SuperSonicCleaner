@@ -104,7 +104,7 @@
   "briefingDescThreats": "{{count}} amenințare activă necesită atenție.",
   "briefingDescThreatsPlural": "{{count}} amenințări active necesită atenție.",
   "briefingDescThreatsLastScan": " Ultima scanare malware a fost efectuată {{date}}.",
-  "briefingDescClean": "Nu au fost găsite amenințări active la ultima scanare malware {{date}}. SuperSonicCleaner a recuperat {{size}} de-a lungul utilizării sale.",
+  "briefingDescClean": "Nu au fost găsite amenințări active la ultima scanare de malware {{date}}. SuperSonicCleaner a recuperat în total {{size}} de-a lungul utilizării sale.",
   "briefingDescBaseline": "Rulați o scanare completă pentru a stabili un nivel de referință al protecției și pentru a descoperi oportunități sigure de curățare.",
   "recommendedHeading": "Recomandat pentru dumneavoastră",
   "safeActionsOnly": "Doar acțiuni sigure",
