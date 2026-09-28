@@ -451,7 +451,7 @@ function RunResultCell({
     <span className="flex flex-col items-start gap-0.5">
       <Tag tone={tone}>{t(`trimRun.${state}`)}</Tag>
       <span className="text-[length:var(--text-12)] text-[var(--text-muted)]">{detail}</span>
-      {state === 'failed' && hasDetails && (
+      {hasDetails && (
         <Button variant="ghost" className="mt-1" onClick={onToggleLog} aria-expanded={showLog}>
           {showLog ? t('hideLog') : t('showLog')}
         </Button>
