@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createElement, createRef, type ReactElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { Trash2 } from 'lucide-react'
@@ -56,22 +56,67 @@ describe('Button', () => {
     expect(markup).toContain('aria-hidden="true"')
   })
 
-  it('busy: the spinner replaces the icon and the button is disabled', () => {
+  it('busy: the spinner replaces the icon, the label stays, the button is disabled', () => {
     const markup = html(createElement(Button, { icon: Trash2, busy: true }, 'Elimina'))
     expect(count(markup, '<svg')).toBe(1)
+    expect(markup).toContain('lucide-loader-circle')
     expect(markup).toContain('ui-spin')
+    expect(markup).toContain('width="16"')
     expect(markup).not.toContain('lucide-trash')
     expect(markup).toContain('disabled=""')
     expect(markup).toContain('aria-busy="true"')
-    // The label stays in place, so the width does not change.
+    // Same 16 px slot as the icon and the same label: the width does not change.
     expect(markup).toContain('<span class="ui-button-label">Elimina</span>')
+    expect(markup).not.toContain('data-inline-busy')
   })
 
-  it('busy without an icon: the spinner covers the hidden label, keeping the width', () => {
+  it('busy without an icon: a 12 px glyph joins the visible label inside the same width', () => {
     const markup = html(createElement(Button, { busy: true }, 'Pulisci 2,34 GB'))
-    expect(markup).toContain('ui-button-label ui-button-label-busy')
-    expect(markup).toContain('ui-button-spinner-overlay')
-    expect(markup).toContain('Pulisci 2,34 GB')
+    // The label stays visible and in the accessibility tree: never hidden, never covered.
+    expect(markup).toContain('<span class="ui-button-label">Pulisci 2,34 GB</span>')
+    expect(markup).not.toMatch(/ui-button-label-busy|spinner-overlay|visibility/)
+    expect(count(markup, '<svg')).toBe(1)
+    expect(markup.indexOf('<svg')).toBeLessThan(markup.indexOf('ui-button-label'))
+    expect(markup).toContain('width="12"')
+    // The glyph and its gap take the side padding (see ui.css), so the width is unchanged.
+    expect(markup).toContain('data-inline-busy=""')
+    expect(markup).toContain('aria-busy="true"')
+    expect(markup).toContain('disabled=""')
+  })
+
+  it('idle buttons carry no busy state', () => {
+    const markup = html(createElement(Button, { busy: false }, 'Pulisci'))
+    expect(markup).not.toMatch(/aria-busy|data-inline-busy|disabled|<svg/)
+  })
+
+  describe('under prefers-reduced-motion', () => {
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+    const reduceMotion = () =>
+      vi.stubGlobal('window', {
+        matchMedia: (query: string) => ({
+          matches: query === '(prefers-reduced-motion: reduce)',
+          addEventListener: () => {},
+          removeEventListener: () => {}
+        })
+      })
+
+    it('shows a static hourglass in place of the spinning glyph, with or without an icon', () => {
+      reduceMotion()
+      for (const props of [{ icon: Trash2, busy: true }, { busy: true }]) {
+        const markup = html(createElement(Button, props, 'Pulisci 2,34 GB'))
+        expect(markup).toContain('lucide-hourglass')
+        expect(markup).not.toMatch(/ui-spin|lucide-loader-circle/)
+        expect(markup).toContain('<span class="ui-button-label">Pulisci 2,34 GB</span>')
+        expect(markup).toContain('aria-busy="true"')
+      }
+    })
+
+    it('keeps idle buttons unchanged', () => {
+      reduceMotion()
+      expect(html(createElement(Button, { icon: Trash2 }, 'Elimina'))).toContain('lucide-trash')
+    })
   })
 
   it('marks icon-only buttons so they stay square', () => {

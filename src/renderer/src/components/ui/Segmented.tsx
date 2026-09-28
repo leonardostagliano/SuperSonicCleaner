@@ -1,4 +1,5 @@
 import { useRef, type KeyboardEvent } from 'react'
+import { nextSegmentIndex } from './segmented-keys'
 
 export interface SegmentedOption<T extends string> {
   value: T
@@ -25,18 +26,9 @@ export function Segmented<T extends string>({
   const tabStop = selected === -1 ? 0 : selected
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    const rtl = getComputedStyle(event.currentTarget).direction === 'rtl'
-    const step: Record<string, number> = {
-      ArrowRight: rtl ? -1 : 1,
-      ArrowLeft: rtl ? 1 : -1,
-      ArrowDown: 1,
-      ArrowUp: -1
-    }
-    let next: number
-    if (event.key === 'Home') next = 0
-    else if (event.key === 'End') next = options.length - 1
-    else if (event.key in step) next = (index + step[event.key] + options.length) % options.length
-    else return
+    const dir = getComputedStyle(event.currentTarget).direction === 'rtl' ? 'rtl' : 'ltr'
+    const next = nextSegmentIndex(event.key, index, options.length, dir)
+    if (next === null) return
     event.preventDefault()
     refs.current[next]?.focus()
     if (options[next].value !== value) onChange(options[next].value)

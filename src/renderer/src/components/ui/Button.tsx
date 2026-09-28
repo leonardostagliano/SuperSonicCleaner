@@ -1,5 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
-import { LoaderCircle, type LucideIcon } from 'lucide-react'
+import { Hourglass, LoaderCircle, type LucideIcon } from 'lucide-react'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
@@ -13,8 +14,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize
   /** 16 px, stroke 1.75, before the label. */
   icon?: LucideIcon
-  /** A spinner replaces the icon (or covers the label when there is none), the width
-   *  stays the same and the button is disabled. */
+  /** Disables the button and sets aria-busy. A busy glyph (spinning, or a static hourglass
+   *  under reduced motion) takes the icon's place, or joins the label at 12 px when there
+   *  is no icon. The label stays visible and the width does not change. */
   busy?: boolean
 }
 
@@ -35,15 +37,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref
 ) {
+  const reducedMotion = useReducedMotion()
   const labelled = hasContent(children)
-  const spinner = (overlay: boolean) => (
-    <LoaderCircle
-      className={cn('ui-button-icon ui-spin', overlay && 'ui-button-spinner-overlay')}
-      size={16}
+  // Without an icon slot the glyph shares the label's line: 12 px + a 4 px gap fit in the
+  // side padding it replaces (ui.css, [data-inline-busy]).
+  const inlineBusy = busy && !Icon && labelled
+  const BusyGlyph = reducedMotion ? Hourglass : LoaderCircle
+  const glyph = busy ? (
+    <BusyGlyph
+      className={cn('ui-button-icon', !reducedMotion && 'ui-spin')}
+      size={inlineBusy ? 12 : 16}
       strokeWidth={1.75}
       aria-hidden="true"
     />
-  )
+  ) : Icon ? (
+    <Icon className="ui-button-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
+  ) : null
   return (
     <button
       ref={ref}
@@ -52,22 +61,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       data-variant={variant}
       data-size={size}
       data-icon-only={labelled ? undefined : ''}
+      data-inline-busy={inlineBusy ? '' : undefined}
       disabled={disabled || busy}
       aria-busy={busy || undefined}
       {...rest}
     >
-      {Icon &&
-        (busy ? (
-          spinner(false)
-        ) : (
-          <Icon className="ui-button-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
-        ))}
-      {labelled && (
-        <span className={cn('ui-button-label', busy && !Icon && 'ui-button-label-busy')}>
-          {children}
-        </span>
-      )}
-      {busy && !Icon && spinner(labelled)}
+      {glyph}
+      {labelled && <span className="ui-button-label">{children}</span>}
     </button>
   )
 })

@@ -97,9 +97,7 @@ export function CleanupReceipts() {
         >
           {t('clearButton')}
         </Button>
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-          {t('receipts.description')}
-        </p>
+        <p className="text-sm text-[var(--text-muted)]">{t('receipts.description')}</p>
       </div>
       {error && <p role="alert">{error}</p>}
       {loading && (
@@ -157,9 +155,7 @@ export function CleanupReceipts() {
                   unselected: receipt.unselected ?? '—'
                 })}
               </p>
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                {t('receipts.units')}
-              </p>
+              <p className="text-sm text-[var(--text-muted)]">{t('receipts.units')}</p>
               {receipt.volumeChanges?.map((volume) => (
                 <p key={volume.volume}>
                   {t('receipts.volumeDelta', {

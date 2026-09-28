@@ -102,7 +102,7 @@
 .ui-button:disabled svg {
   opacity: 1;
 }
-/* Busy is working, not unavailable: full strength, spinner in place of the icon. */
+/* Busy is working, not unavailable: full strength, busy glyph in place of the icon. */
 .ui-button[aria-busy='true'] {
   opacity: 1 !important;
   cursor: progress !important;
@@ -115,13 +115,15 @@
   align-items: center;
   gap: var(--space-2);
 }
-.ui-button-label-busy {
-  visibility: hidden;
+/* Busy without an icon: the label stays readable and a 12 px glyph joins it. Glyph (12)
+   and gap (4) take 16 px of side padding, so the width is exactly the idle width:
+   md 12 + 12 = 4 + 12 + 4 + 4, lg 16 + 16 = 8 + 12 + 4 + 8. */
+.ui-button[data-inline-busy] {
+  gap: var(--space-1);
+  padding-inline: var(--space-1);
 }
-.ui-button-spinner-overlay {
-  position: absolute;
-  inset: 0;
-  margin: auto;
+.ui-button[data-inline-busy][data-size='lg'] {
+  padding-inline: var(--space-2);
 }
 .ui-spin {
   animation: ui-spin 900ms linear infinite;
