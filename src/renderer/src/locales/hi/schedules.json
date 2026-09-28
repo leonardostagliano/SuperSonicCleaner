@@ -1,11 +1,17 @@
 {
   "pageTitle": "अनुसूचियाँ",
+  "pageScope": "आपके चुने गए शर्तों के पूरा होने पर, तय समय पर सफ़ाई, रजिस्ट्री फ़िक्स और अपडेट चलाता है। ऑटो-अप्लाई के साथ, कार्रवाइयाँ बिना पुष्टि के शुरू हो जाती हैं।",
   "pageDescription": "अनुसूची के अनुसार स्कैन, सफ़ाई और अपडेट स्वचालित करें",
   "dismissNudge": "यह कार्ड छिपाएँ",
   "newScheduleButton": "नई अनुसूची",
-  "createScheduleButton": "अनुसूची बनाएँ",
   "emptyStateTitle": "अभी तक कोई अनुसूची नहीं है",
-  "emptyStateDescription": "स्कैन, सफ़ाई और अपडेट को स्वचालित रूप से चलाने के लिए एक अनुसूची बनाएँ।",
+  "emptyStateDescription": "आपके बनाए शेड्यूल यहाँ अगले रन के समय और अंतिम रन के परिणाम के साथ दिखाई देंगे।",
+  "upcomingTitle": "अगले रन",
+  "enabledCount_one": "{{count}} सक्रिय",
+  "enabledCount_other": "{{count}} सक्रिय",
+  "upcomingNote": "निर्धारित समय: रन शर्तें रन को टाल सकती हैं।",
+  "listTitle": "आपके शेड्यूल",
+  "listMeta": "{{max}} में से {{count}}",
   "maxSchedulesReached": "अधिकतम {{max}} अनुसूचियों की सीमा पूरी हो गई है।",
   "duplicatedToast": "\"{{name}}\" की प्रतिलिपि बनाई गई",
   "deletedToast": "\"{{name}}\" हटाई गई",
@@ -13,49 +19,57 @@
   "createdToast": "\"{{name}}\" बनाई गई",
   "failedEnableStartup": "स्टार्टअप सक्षम नहीं किया जा सका। रीबूट के बाद अनुसूचियाँ नहीं चल सकतीं।",
   "failedEnableStartupAction": "और जानें",
-  "deleteConfirmTitle": "अनुसूची हटाएँ",
-  "deleteConfirmDescription": "यह अनुसूची स्थायी रूप से हटा दी जाएगी। इस क्रिया को पूर्ववत नहीं किया जा सकता।",
+  "deleteConfirmTitle": "\"{{name}}\" हटाएँ?",
+  "deleteConfirmDescription": "शेड्यूल हटा दिया जाएगा और अब नहीं चलेगा। यह पूर्ववत नहीं किया जा सकता: इसे वापस पाने के लिए, इसे फिर से बनाएँ।",
   "deleteConfirmLabel": "हटाएँ",
   "card": {
     "autoApplyBadge": "स्वतः लागू",
+    "enabled": "सक्रिय",
+    "disabled": "निष्क्रिय",
+    "enabledLabel": "शेड्यूल {{name}} सक्रिय",
     "editAction": "संपादित करें",
     "duplicateAction": "प्रतिलिपि बनाएँ",
     "deleteAction": "हटाएँ",
     "noTasksSelected": "कोई कार्य चयनित नहीं है",
     "nextRun": "अगला: {{time}}",
     "lastRun": "पिछला: {{time}}",
-    "neverRun": "कभी नहीं चला"
+    "neverRun": "कभी नहीं चला",
+    "statusSuccess": "पूरा हुआ",
+    "statusPartial": "आंशिक रूप से पूरा हुआ",
+    "statusFailed": "विफल"
   },
   "presets": {
     "dialogTitle": "एक टेम्पलेट चुनें",
     "weeklyFullCleanLabel": "साप्ताहिक पूर्ण सफ़ाई",
-    "weeklyFullCleanDescription": "हर सोमवार सुबह 9 बजे सभी क्लीनर श्रेणियाँ",
+    "weeklyFullCleanDescription": "हर सोमवार 9:00 बजे, बिना पुष्टि के सभी सफ़ाई श्रेणियाँ",
     "dailyLightSweepLabel": "दैनिक हल्की सफ़ाई",
-    "dailyLightSweepDescription": "सिस्टम, ब्राउज़र और रीसायकल बिन प्रतिदिन सुबह 8 बजे",
+    "dailyLightSweepDescription": "हर दिन 8:00 बजे, बिना पुष्टि के सिस्टम, ब्राउज़र और रीसायकल बिन",
     "monthlyDeepMaintenanceLabel": "मासिक गहन रखरखाव",
-    "monthlyDeepMaintenanceDescription": "हर महीने की 1 तारीख को सुबह 10 बजे पूर्ण सफ़ाई + registry, drivers और software",
+    "monthlyDeepMaintenanceDescription": "हर महीने की 1 तारीख को 10:00 बजे, बिना पुष्टि के पूर्ण सफ़ाई, रजिस्ट्री, ड्राइवर और सॉफ़्टवेयर",
     "customLabel": "कस्टम",
-    "customDescription": "खाली अनुसूची से शुरू करें"
+    "customDescription": "भरने के लिए एक खाली शेड्यूल"
   },
   "dialog": {
     "editTitle": "अनुसूची संपादित करें",
     "newTitle": "नई अनुसूची",
+    "close": "बंद करें",
     "nameLabel": "नाम",
-    "namePlaceholder": "उदा. साप्ताहिक गहन सफ़ाई",
+    "namePlaceholder": "उदाहरण के लिए, सोमवार की सफ़ाई",
     "frequencyLabel": "आवृत्ति",
     "frequencyDaily": "दैनिक",
     "frequencyWeekly": "साप्ताहिक",
     "frequencyMonthly": "मासिक",
     "dayLabel": "दिन",
     "timeLabel": "समय",
+    "minuteLabel": "मिनट",
     "tasksLabel": "कार्य",
     "selectAll": "सभी चुनें",
     "deselectAll": "सभी का चयन हटाएँ",
     "cleanerGroup": "क्लीनर",
     "maintenanceGroup": "रखरखाव",
     "autoApplyLabel": "स्वतः लागू",
-    "autoApplyDescription": "पुष्टि के बिना फ़ाइलों की सफ़ाई करें, registry समस्याएँ ठीक करें और अपडेट इंस्टॉल करें।",
-    "autoApplyWarning": "क्रियाएँ अनुसूची के अनुसार स्वचालित रूप से चलेंगी। सुनिश्चित करें कि आपकी बहिष्करण सूची अद्यतन है।",
+    "autoApplyDescription": "बिना पुष्टि माँगे फ़ाइलें साफ़ करता है, रजिस्ट्री ठीक करता है और अपडेट इंस्टॉल करता है।",
+    "autoApplyWarning": "कार्रवाइयाँ निर्धारित समय पर अपने-आप शुरू हो जाती हैं। पहले बहिष्करण सूची जाँच लें।",
     "cancelButton": "रद्द करें",
     "saveChangesButton": "परिवर्तन सहेजें",
     "createScheduleButton": "अनुसूची बनाएँ"
@@ -83,12 +97,13 @@
   "frequency": {
     "everyDayAt": "हर दिन {{time}} पर",
     "everyWeekdayAt": "हर {{day}} को {{time}} पर",
-    "monthlyAt": "हर महीने {{ordinalDay}} को {{time}} पर"
+    "monthlyOn": "हर महीने की {{day}} तारीख को {{time}} पर"
   },
   "nextRun": {
     "todayAt": "आज {{time}} पर",
     "tomorrowAt": "कल {{time}} पर",
-    "inDaysAt": "{{count}} दिनों में {{time}} पर",
+    "inDaysAt_one": "{{count}} दिन में {{time}} पर",
+    "inDaysAt_other": "{{count}} दिनों में {{time}} पर",
     "dateAt": "{{date}} को {{time}} पर"
   },
   "lastRun": {
@@ -113,7 +128,7 @@
     "skip": "दो मिनट की प्रारंभ विंडो के बाद छोड़ दें",
     "once": "तैयार होने पर एक बार चलाएँ; छूटे हुए रन संयोजित करें",
     "runNow": "अभी चलाएँ",
-    "runConfirm": "क्या इस अनुसूची को इसके सहेजे गए कार्यों और स्वतः लागू विकल्प के साथ अभी चलाना है? इसकी पावर, निष्क्रिय समय, Game Mode, स्थान और रखरखाव-विंडो शर्तें फिर भी लागू रहेंगी: यदि वे रन को रोकती हैं, तो वह बाद की जाँच पर शुरू होगा, और प्रतीक्षा के दौरान फिर से अभी चलाएँ चुनने पर यह रद्द हो जाएगा।",
+    "runConfirm": "सहेजे गए कार्य, शेड्यूल के ऑटो-अप्लाई विकल्प के साथ चलते हैं। पावर, आइडल, गेम मोड, स्पेस और मेंटेनेंस विंडो की शर्तें अब भी लागू होती हैं: अगर वे रन को रोकती हैं, तो यह अगली जाँच पर शुरू होगा; प्रतीक्षा के दौरान फिर से \"अभी चलाएँ\" चुनने पर यह रद्द हो जाएगा।",
     "runFailed": "अनुसूची शुरू नहीं की जा सकी",
     "running": "चल रहा है",
     "nextEvaluation": "अगली जाँच लगभग {{time}} पर",
@@ -122,11 +137,10 @@
     "moveUp": "ऊपर",
     "moveDown": "नीचे",
     "restrict": "{{name}} के लिए श्रेणियाँ चुनें",
-    "findCategories": "श्रेणियों के लिए स्कैन करें",
-    "scanning": "स्कैन किया जा रहा है...",
+    "findCategories": "श्रेणियाँ खोजें",
     "scopeHint": "केवल चिह्नित श्रेणियाँ शामिल की जाएँगी। खाली चयन होने पर इस कार्य में कोई सफ़ाई नहीं चलेगी। स्कैन केवल वर्तमान में उपलब्ध श्रेणियाँ खोजता है; यह सफ़ाई नहीं करता।",
     "waitForScan": "वर्तमान स्कैन या सफ़ाई पूरी होने तक प्रतीक्षा करें।",
-    "noCategories": "कोई श्रेणी नहीं मिली। जब एप्लिकेशन में डेटा कैश हो जाए, तब नया स्कैन चलाएँ।",
+    "noCategories": "कोई श्रेणी नहीं मिली। ऐप में कैश किया गया डेटा होने पर नया स्कैन चलाएँ।",
     "scanFailed": "श्रेणियाँ लोड नहीं की जा सकीं।",
     "waiting": {
       "idle": "निष्क्रिय समय की प्रतीक्षा में",
@@ -142,6 +156,9 @@
       "interrupted": "रन अपनी विंडो खो बैठा और इसे विफल के रूप में दर्ज किया गया; यह घटना फिर से नहीं चलाई जाएगी।"
     },
     "saveFailed": "अनुसूची सहेजी नहीं जा सकी। पुनः प्रयास करें।",
-    "skipped": "शर्तें बदलने के बाद छोड़ दिया गया।"
+    "skipped": "शर्तें बदलने के बाद छोड़ दिया गया।",
+    "runTitle": "\"{{name}}\" अभी चलाएँ?",
+    "moveUpLabel": "{{name}} को ऊपर ले जाएँ",
+    "moveDownLabel": "{{name}} को नीचे ले जाएँ"
   }
 }

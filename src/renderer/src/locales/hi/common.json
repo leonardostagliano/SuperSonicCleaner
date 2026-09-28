@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}}घं पहले",
   "daysAgo": "{{days}}दि पहले",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "क्या जाँचा जाता है"
 }
