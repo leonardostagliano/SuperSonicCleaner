@@ -5,7 +5,8 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type KeyboardEvent
+  type KeyboardEvent,
+  type PointerEvent
 } from 'react'
 import {
   AppWindow,
@@ -21,6 +22,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { NOTCH_MOTION_MS, type NotchState } from '@shared/desktop-notch'
 import { BrandWordmark } from '../shared/BrandWordmark'
+import { hoverExpands, notchHoverZone } from './notch-hover'
 import './desktop-notch.css'
 
 const percent = (value: number | undefined) =>
@@ -140,17 +142,23 @@ export function DesktopNotch() {
     clearCloseTimer()
     run(api?.setExpanded(true))
   }
-  const hoverExpand = () => {
-    if (!hoverDismissed.current) expand()
-  }
   const collapse = () => {
     clearCloseTimer()
     closeTimer.current = setTimeout(() => run(api?.setExpanded(false)), 450)
   }
-  const enterSurface = (target: EventTarget) => {
-    if (!state) return
-    if (state.expanded) keepOpen()
-    else if (nativeCompact && !(target as Element).closest('.notch-drag')) hoverExpand()
+  /** Decides on the element under the pointer, so the grip never opens the panel. */
+  const hover = (event: PointerEvent<HTMLElement>) => {
+    if (
+      state &&
+      hoverExpands({
+        expanded: state.expanded,
+        nativeCompact,
+        dismissed: hoverDismissed.current,
+        pressed: event.buttons !== 0,
+        zone: notchHoverZone(event.target)
+      })
+    )
+      expand()
   }
   const move = (event: KeyboardEvent<HTMLButtonElement>) => {
     const directions: Record<string, [number, number]> = {
@@ -239,7 +247,11 @@ export function DesktopNotch() {
         } as CSSProperties
       }
       aria-label={t('title')}
-      onPointerEnter={(event) => enterSurface(event.target)}
+      onPointerEnter={() => {
+        if (state.expanded) keepOpen()
+      }}
+      onPointerOver={hover}
+      onPointerMove={hover}
       onPointerLeave={() => {
         hoverDismissed.current = false
         collapse()
@@ -383,7 +395,6 @@ export function DesktopNotch() {
         <button
           className="notch-compact-values"
           type="button"
-          onPointerEnter={hoverExpand}
           onFocus={expand}
           onClick={expand}
           aria-label={`${t('expand')}. ${items.map(({ name, value }) => `${name} ${percent(value)}`).join(', ')}`}
