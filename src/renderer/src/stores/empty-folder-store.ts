@@ -18,6 +18,9 @@ interface EmptyFolderState {
   selectedPaths: Set<string>
   deleteMode: EmptyFolderDeleteMode
   deleteResult: EmptyFolderDeleteResult | null
+  /** When the last deletion finished and where the files went, for its receipt. */
+  deletedAt: number | null
+  deletedMode: EmptyFolderDeleteMode | null
 
   setDirectory: (dir: string | null) => void
   setMaxDepth: (depth: number) => void
@@ -26,7 +29,8 @@ interface EmptyFolderState {
   setProgress: (progress: EmptyFolderScanProgress | null) => void
   setResult: (result: EmptyFolderScanResult | null) => void
   setDeleteMode: (mode: EmptyFolderDeleteMode) => void
-  setDeleteResult: (result: EmptyFolderDeleteResult | null) => void
+  /** Records the result with the mode it ran with (default: the current mode) and the time. */
+  setDeleteResult: (result: EmptyFolderDeleteResult | null, mode?: EmptyFolderDeleteMode) => void
   togglePath: (path: string) => void
   selectAll: () => void
   deselectAll: () => void
@@ -68,6 +72,8 @@ export const useEmptyFolderStore = create<EmptyFolderState>((set, get) => ({
   selectedPaths: new Set(),
   deleteMode: 'recycle',
   deleteResult: null,
+  deletedAt: null,
+  deletedMode: null,
 
   setDirectory: (directory) => set({ directory }),
   setMaxDepth: (maxDepth) => set({ maxDepth }),
@@ -76,7 +82,12 @@ export const useEmptyFolderStore = create<EmptyFolderState>((set, get) => ({
   setProgress: (progress) => set({ progress }),
   setResult: (result) => set({ result }),
   setDeleteMode: (deleteMode) => set({ deleteMode }),
-  setDeleteResult: (deleteResult) => set({ deleteResult }),
+  setDeleteResult: (deleteResult, mode) =>
+    set((s) => ({
+      deleteResult,
+      deletedAt: deleteResult ? Date.now() : null,
+      deletedMode: deleteResult ? (mode ?? s.deleteMode) : null
+    })),
   togglePath: (path) =>
     set((s) => {
       const next = new Set(s.selectedPaths)
@@ -111,6 +122,8 @@ export const useEmptyFolderStore = create<EmptyFolderState>((set, get) => ({
       progress: null,
       result: null,
       selectedPaths: new Set(),
-      deleteResult: null
+      deleteResult: null,
+      deletedAt: null,
+      deletedMode: null
     })
 }))
