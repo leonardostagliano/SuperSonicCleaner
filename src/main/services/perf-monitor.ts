@@ -517,17 +517,20 @@ export class PerfMonitorService {
       // Sort by CPU + memory and take top 100
       const sorted = data.list.sort((a, b) => b.cpu + b.memRss - (a.cpu + a.memRss)).slice(0, 100)
 
-      const processes: PerfProcess[] = sorted.map((p) =>
-        this.withStartupItem({
+      const processes: PerfProcess[] = sorted.map((p) => {
+        // systeminformation reports resident memory in KiB on every platform
+        // (diagnostics-recorder.ts converts it the same way).
+        const memBytes = p.memRss * 1024
+        return this.withStartupItem({
           pid: p.pid,
           name: p.name,
           cpuPercent: p.cpu,
-          memBytes: p.memRss,
-          memPercent: totalMem > 0 ? (p.memRss / totalMem) * 100 : 0,
+          memBytes,
+          memPercent: totalMem > 0 ? (memBytes / totalMem) * 100 : 0,
           user: p.user || '',
           started: p.started || ''
         })
-      )
+      })
 
       const result: PerfProcessList = {
         timestamp: Date.now(),

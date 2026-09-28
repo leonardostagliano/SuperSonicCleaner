@@ -18,7 +18,7 @@ vi.mock('systeminformation', () => ({
   processes: vi.fn().mockResolvedValue({ list: [], all: 0 }),
   time: () => ({ uptime: 10 })
 }))
-vi.mock('os', () => ({ cpus: vi.fn(), totalmem: () => 100, freemem: () => 60 }))
+vi.mock('os', () => ({ cpus: vi.fn(), totalmem: vi.fn(() => 100), freemem: () => 60 }))
 vi.mock('child_process', () => ({
   execFile: vi.fn((...args: unknown[]) =>
     (args.at(-1) as (error: null, result: { stdout: string }) => void)(null, { stdout: '[]' })
@@ -54,6 +54,7 @@ beforeEach(() => {
   vi.mocked(si.processes)
     .mockReset()
     .mockResolvedValue({ list: [], all: 0 } as never)
+  vi.mocked(os.totalmem).mockReset().mockReturnValue(100)
 })
 
 afterEach(() => {
@@ -350,6 +351,8 @@ describe('shared performance snapshots', () => {
 
   it('lists processes without waiting on a memory query', async () => {
     vi.useFakeTimers()
+    // 10 KiB of 100 KiB.
+    vi.mocked(os.totalmem).mockReturnValue(100 * 1024)
     vi.mocked(si.mem).mockRejectedValue(new Error('PowerShell timed out'))
     vi.mocked(si.processes).mockResolvedValueOnce({
       list: [{ pid: 7, name: 'Tray.exe', cpu: 1, memRss: 10, user: '', started: '' }],
@@ -363,6 +366,26 @@ describe('shared performance snapshots', () => {
       'perf:process-list',
       expect.objectContaining({ processes: [expect.objectContaining({ memPercent: 10 })] })
     )
+    service.stopMonitoring()
+  })
+
+  it('reports process memory in bytes: systeminformation gives resident memory in KiB', async () => {
+    vi.useFakeTimers()
+    vi.mocked(os.totalmem).mockReturnValue(8 * 1024 ** 3)
+    // 222 208 KiB = 217 MiB, as si.processes() reports a browser tab.
+    vi.mocked(si.processes).mockResolvedValueOnce({
+      list: [{ pid: 7, name: 'msedge.exe', cpu: 1, memRss: 222208, user: '', started: '' }],
+      all: 1
+    } as never)
+    const service = new PerfMonitorService()
+    const sender = { isDestroyed: () => false, send: vi.fn() }
+    await service.startMonitoring(sender as unknown as Electron.WebContents)
+    await vi.advanceTimersByTimeAsync(0)
+    const call = sender.send.mock.calls.find(([channel]) => channel === 'perf:process-list')
+    const [process] = (call?.[1] as { processes: { memBytes: number; memPercent: number }[] })
+      .processes
+    expect(process.memBytes).toBe(222208 * 1024)
+    expect(process.memPercent).toBeCloseTo(((222208 * 1024) / (8 * 1024 ** 3)) * 100, 6)
     service.stopMonitoring()
   })
 })
