@@ -167,8 +167,7 @@
 }
 .sidebar-flyout .sidebar-flyout-item {
   color: var(--text-secondary);
-  /* legacy: a global `button` rule sets 12px with !important. */
-  font-size: var(--text-13) !important;
+  font-size: var(--text-13);
   font-weight: 500;
   transition: background-color var(--duration-feedback) var(--ease-out);
 }
@@ -293,8 +292,7 @@
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--text-secondary);
-  /* legacy: a global `button` rule sets 12px with !important. */
-  font-size: var(--text-13) !important;
+  font-size: var(--text-13);
   text-align: start;
   transition: background-color var(--duration-feedback) var(--ease-out);
 }

@@ -27,8 +27,7 @@
   border-radius: var(--radius-control);
   background: var(--card-bg);
   color: var(--text-secondary);
-  /* legacy: a global `button` rule sets 12px with !important. */
-  font-size: var(--text-13) !important;
+  font-size: var(--text-13);
   font-weight: 600;
   line-height: 1.2;
   cursor: pointer;
@@ -140,8 +139,7 @@
   border: 0;
   background: none;
   color: var(--text-secondary);
-  /* legacy: a global `button` rule sets 12px with !important; keep the text size. */
-  font-size: inherit !important;
+  font-size: inherit;
   text-decoration: underline;
   text-decoration-color: var(--border-strong);
   text-underline-offset: 3px;
