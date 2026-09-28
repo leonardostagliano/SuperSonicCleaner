@@ -142,9 +142,13 @@ describe('shared performance snapshots', () => {
     const listener = vi.fn()
     service.subscribeSnapshots(listener)()
     expect(vi.getTimerCount()).toBe(0)
+    // Windows takes the priming CPU reading synchronously; Linux and macOS await si.mem()
+    // first and skip it once the subscriber has gone. Either way nothing reads again.
+    const primingReads = vi.mocked(os.cpus).mock.calls.length
+    expect(primingReads).toBeLessThanOrEqual(1)
     await vi.advanceTimersByTimeAsync(5000)
     expect(listener).not.toHaveBeenCalled()
-    expect(os.cpus).toHaveBeenCalledTimes(1)
+    expect(os.cpus).toHaveBeenCalledTimes(primingReads)
   })
 
   it('starts one timer pair when two startup lookups resolve together', async () => {
