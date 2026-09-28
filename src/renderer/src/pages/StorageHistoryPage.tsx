@@ -1,5 +1,3 @@
-// StorageTrendChart (components/perf) still draws itself as a .feature-card.
-import '@/components/shared/feature-layout.css'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'

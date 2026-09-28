@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { StorageSnapshotSummary } from '@shared/storage-history'
-import { ipcErrorDetail, latestSnapshot, trendView } from './storage-history-view'
+import { ipcErrorDetail, latestSnapshot, trendAxisLabel, trendView } from './storage-history-view'
 
 const GIB = 1024 ** 3
 let n = 0
@@ -69,5 +69,29 @@ describe('ipcErrorDetail', () => {
       )
     ).toBe('Wait for the current capture to finish')
     expect(ipcErrorDetail('Plain message')).toBe('Plain message')
+  })
+})
+
+describe('trendAxisLabel', () => {
+  const morning = Date.parse('2026-09-28T08:05:00')
+  const evening = Date.parse('2026-09-28T19:40:00')
+  const later = Date.parse('2026-10-03T09:00:00')
+
+  it('labels a series within two days by the time, so a day never repeats', () => {
+    const label = trendAxisLabel(evening - morning, 'it')
+    expect(label(morning)).toBe('08:05')
+    expect(label(evening)).toBe('19:40')
+  })
+
+  it('labels a longer series by the day', () => {
+    const label = trendAxisLabel(later - morning, 'it')
+    expect(label(morning)).toBe('28 set')
+    expect(label(later)).toBe('3 ott')
+  })
+
+  it('keeps Latin digits in every language', () => {
+    const indic = /[\u0660-\u0669\u06f0-\u06f9]/
+    expect(trendAxisLabel(later - morning, 'ar')(later)).not.toMatch(indic)
+    expect(trendAxisLabel(evening - morning, 'ar')(evening)).not.toMatch(indic)
   })
 })

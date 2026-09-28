@@ -26,6 +26,27 @@ export function trendView(snapshots: StorageSnapshotSummary[]): TrendView {
   return { kind: 'chart' }
 }
 
+const DAY = 24 * 60 * 60 * 1000
+
+/**
+ * The trend chart's x-axis label for a series spanning `spanMs`. Within two days a date
+ * label would repeat the same day on every tick, so the axis shows the time instead.
+ * Latin digits in every language, like formatBytes.
+ */
+export function trendAxisLabel(spanMs: number, locale: string): (time: number) => string {
+  const options: Intl.DateTimeFormatOptions =
+    spanMs < 2 * DAY
+      ? { hour: '2-digit', minute: '2-digit', numberingSystem: 'latn' }
+      : { day: 'numeric', month: 'short', numberingSystem: 'latn' }
+  let format: Intl.DateTimeFormat
+  try {
+    format = new Intl.DateTimeFormat(locale, options)
+  } catch {
+    format = new Intl.DateTimeFormat('en', options)
+  }
+  return (time) => format.format(new Date(time))
+}
+
 /** The most recent snapshot on the page, whatever its status. */
 export function latestSnapshot(
   snapshots: StorageSnapshotSummary[]
