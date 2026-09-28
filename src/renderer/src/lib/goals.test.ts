@@ -121,6 +121,13 @@ describe('stepStates', () => {
     expect(threats).toMatchObject({ status: 'recommended', reason: 'threats', marked: true })
   })
 
+  it('counts a completed check with no history entry as done, not never (X1)', () => {
+    // A user who reviews startup apps and changes nothing leaves no history entry;
+    // the recorded check run (check-runs-store) is the only source for `lastRun`.
+    const [startup] = stepStates('speed', [], [{ id: 'startup', lastRun: NOW - 2 * DAY }], NOW)
+    expect(startup).toMatchObject({ status: 'done', reason: null, lastRun: NOW - 2 * DAY })
+  })
+
   it('shows updates checked in this session and none pending as done', () => {
     const steps = stepStates(
       'protection',

@@ -34,6 +34,7 @@ import { formatCount, formatDateTime } from '@/lib/protection-format'
 import { usePlatform } from '@/hooks/usePlatform'
 import { usePrivacyStore } from '@/stores/privacy-store'
 import { useHistoryStore } from '@/stores/history-store'
+import { recordCheckRun } from '@/stores/check-runs-store'
 import type { PrivacySetting } from '@shared/types'
 
 const store = usePrivacyStore.getState
@@ -81,6 +82,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
         new Set(result.settings.filter((s) => !s.enabled).map((s) => s.category))
       )
       store().setStatus('done')
+      recordCheckRun('privacy')
     } catch (err) {
       console.error('Privacy scan failed:', err)
       toast.error(t('privacy.scanFailed'))

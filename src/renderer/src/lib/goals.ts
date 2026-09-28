@@ -3,6 +3,7 @@ import type { HistoryEntryType, PlatformInfo } from '@shared/types'
 import {
   checkState,
   latestRun,
+  newestRun,
   type CheckId,
   type CheckInput,
   type CheckReason,
@@ -66,9 +67,6 @@ export interface StepState {
   marked: boolean
 }
 
-const newest = (a: number | null, b: number | null) =>
-  a === null ? b : b === null ? a : Math.max(a, b)
-
 export function stepStates(
   goal: Goal,
   history: readonly HistoryStamp[],
@@ -80,7 +78,7 @@ export function stepStates(
     const type = HISTORY_TYPE[path]
     const checkId = CHECK_FOR_PATH[path]
     const input = checkId ? checks.find((check) => check.id === checkId) : undefined
-    const lastRun = newest(type ? latestRun(history, type) : null, input?.lastRun ?? null)
+    const lastRun = newestRun(type ? latestRun(history, type) : null, input?.lastRun ?? null)
     const state = checkId ? checkState({ ...input, id: checkId, lastRun }, now) : null
     const status: StepStatus = state?.recommended
       ? 'recommended'

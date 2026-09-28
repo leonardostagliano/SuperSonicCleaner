@@ -28,6 +28,7 @@ import { buildUpdateSummary } from '@/lib/update-summary'
 import { softwareUpdateCategory } from '@/lib/history-categories'
 import { useUpdaterStore, severityOrder, appKey } from '@/stores/updater-store'
 import { useHistoryStore } from '@/stores/history-store'
+import { recordCheckRun } from '@/stores/check-runs-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import type {
@@ -179,6 +180,7 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
       s.setManagers(result.managers)
       lastCheckedAt = Date.now()
       s.setHasChecked(true)
+      recordCheckRun('updates', lastCheckedAt)
 
       // Use the visible (non-ignored) count for the toast
       const visibleCount = useUpdaterStore.getState().apps.length

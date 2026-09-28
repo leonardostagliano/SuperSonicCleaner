@@ -68,3 +68,8 @@ export function latestRun(history: readonly HistoryStamp[], type: HistoryEntryTy
   const entry = latestEntry(history, type)
   return entry ? new Date(entry.timestamp).getTime() : null
 }
+
+/** The later of two epoch timestamps, treating null (never) as older than any value. */
+export function newestRun(a: number | null, b: number | null): number | null {
+  return a === null ? b : b === null ? a : Math.max(a, b)
+}

@@ -1,6 +1,7 @@
 import { CleanerType, ScanStatus } from '@shared/enums'
 import type { ProgressData, ScanResult } from '@shared/types'
 import { useScanStore } from '@/stores/scan-store'
+import { recordCheckRun } from '@/stores/check-runs-store'
 
 export interface CleanerScanCategory {
   type: CleanerType
@@ -124,9 +125,9 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
       currentState.setFailedCategories(failed)
       currentState.setElevationSkipped(skippedForElevation)
       if (completed > 0) currentState.setScannedAt(Date.now())
-      currentState.setStatus(
-        completed === 0 && cancelRequested ? ScanStatus.Idle : ScanStatus.Complete
-      )
+      const finished = completed === 0 && cancelRequested ? ScanStatus.Idle : ScanStatus.Complete
+      currentState.setStatus(finished)
+      if (finished === ScanStatus.Complete) recordCheckRun('cleanup')
     } catch {
       useScanStore.getState().setStatus(ScanStatus.Error)
     } finally {

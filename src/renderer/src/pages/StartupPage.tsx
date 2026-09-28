@@ -28,6 +28,7 @@ import { formatNumber } from '@/lib/utils'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useStartupStore } from '@/stores/startup-store'
 import { useHistoryStore } from '@/stores/history-store'
+import { recordCheckRun } from '@/stores/check-runs-store'
 import type { StartupItem, StartupBootTrace } from '@shared/types'
 
 const impactKeys: Record<StartupItem['impact'], string> = {
@@ -197,6 +198,7 @@ export function StartupPage() {
     try {
       const list = await window.kudu.startupList()
       store.getState().setItems(list)
+      recordCheckRun('startup')
     } catch (err) {
       console.error('Failed to load startup items:', err)
       store.getState().setError(t('errorFailedToLoad'))

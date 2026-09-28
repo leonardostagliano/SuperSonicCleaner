@@ -5,6 +5,7 @@ import {
   checkState,
   latestEntry,
   latestRun,
+  newestRun,
   type CheckId,
   type CheckInput,
   type CheckState
@@ -16,6 +17,7 @@ import { useUpdaterStore } from '@/stores/updater-store'
 import { useStartupStore } from '@/stores/startup-store'
 import { useMalwareStore } from '@/stores/malware-store'
 import { useSettingsStore } from '@/stores/settings-store'
+import { lastCheckRun } from '@/stores/check-runs-store'
 import { formatCount, formatWhen } from './when'
 
 // The updater store says whether this session checked, not when: note the moment it
@@ -92,34 +94,39 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
   const sessionScan = lastScan ? new Date(lastScan.completedAt).getTime() : null
   const pending = updatesChecked ? updateApps.length : 0
 
+  // A check counts as run either when it changed something (history) or when it merely
+  // completed (the recorded check run): the later of the two.
   const inputFor = (id: CheckId): CheckInput => {
     switch (id) {
       case 'updates':
         return {
           id,
-          lastRun: updatesChecked ? updatesCheckedAt : latestRun(history, 'software-update'),
+          lastRun: newestRun(
+            updatesChecked ? updatesCheckedAt : latestRun(history, 'software-update'),
+            lastCheckRun('updates')
+          ),
           pendingCount: pending
         }
       case 'malware': {
         const recorded = latestRun(history, 'malware')
-        const lastRun =
+        const historyOrSession =
           sessionScan === null
             ? recorded
             : recorded === null
               ? sessionScan
               : Math.max(sessionScan, recorded)
-        return { id, lastRun, openThreats }
+        return { id, lastRun: newestRun(historyOrSession, lastCheckRun('malware')), openThreats }
       }
       case 'cleanup':
-        return { id, lastRun: latestRun(history, 'cleaner') }
+        return { id, lastRun: newestRun(latestRun(history, 'cleaner'), lastCheckRun('cleanup')) }
       case 'startup':
-        return { id, lastRun: latestRun(history, 'startup') }
+        return { id, lastRun: newestRun(latestRun(history, 'startup'), lastCheckRun('startup')) }
       case 'registry':
-        return { id, lastRun: latestRun(history, 'registry') }
+        return { id, lastRun: newestRun(latestRun(history, 'registry'), lastCheckRun('registry')) }
       case 'drivers':
-        return { id, lastRun: latestRun(history, 'drivers') }
+        return { id, lastRun: newestRun(latestRun(history, 'drivers'), lastCheckRun('drivers')) }
       case 'privacy':
-        return { id, lastRun: latestRun(history, 'privacy') }
+        return { id, lastRun: newestRun(latestRun(history, 'privacy'), lastCheckRun('privacy')) }
     }
   }
 

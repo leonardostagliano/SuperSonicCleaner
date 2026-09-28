@@ -28,6 +28,7 @@ import { formatNumber, NO_VALUE } from '@/lib/utils'
 import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useRegistryStore } from '@/stores/registry-store'
+import { recordCheckRun } from '@/stores/check-runs-store'
 import type { RegistryEntry } from '@shared/types'
 
 type EntryType = RegistryEntry['type']
@@ -147,6 +148,7 @@ function RegistryPageContent() {
       useRegistryStore.getState().setEntries(Array.isArray(results) ? results : [])
       useRegistryStore.getState().setScanned(true)
       setScannedAt(Date.now())
+      recordCheckRun('registry')
     } catch (err) {
       console.error('Registry scan failed:', err)
       toast.error(t('toastScanFailed'), { description: t('toastScanFailedDescription') })

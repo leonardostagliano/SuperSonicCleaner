@@ -3,6 +3,7 @@ import {
   checkState,
   latestEntry,
   latestRun,
+  newestRun,
   recommendedCount,
   STALE_AFTER_DAYS,
   type CheckInput
@@ -107,6 +108,16 @@ describe('latestRun', () => {
     expect(latestRun(history, 'cleaner')).toBe(NOW - 3 * DAY)
     expect(latestRun(history, 'malware')).toBeNull()
     expect(latestRun([{ type: 'cleaner', timestamp: 'not a date' }], 'cleaner')).toBeNull()
+  })
+})
+
+describe('newestRun', () => {
+  it('returns the later of two timestamps, treating null as unknown (never)', () => {
+    expect(newestRun(null, null)).toBeNull()
+    expect(newestRun(daysAgo(1), null)).toBe(daysAgo(1))
+    expect(newestRun(null, daysAgo(1))).toBe(daysAgo(1))
+    expect(newestRun(daysAgo(5), daysAgo(1))).toBe(daysAgo(1))
+    expect(newestRun(daysAgo(1), daysAgo(5))).toBe(daysAgo(1))
   })
 })
 

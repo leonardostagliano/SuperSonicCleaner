@@ -13,6 +13,7 @@ import { formatClock, formatDateTime, joinFacts } from '@/components/software/fo
 import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useDriverStore } from '@/stores/driver-store'
+import { recordCheckRun } from '@/stores/check-runs-store'
 import { icons } from '@/lib/icons'
 import { progressText } from '@/lib/progress-label'
 import { formatBytes } from '@/lib/utils'
@@ -121,6 +122,7 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
 
     // Record scan in history so dashboard reflects completion
     if (staleResult.status === 'fulfilled' || updateResult.status === 'fulfilled') {
+      recordCheckRun('drivers', lastScanAt)
       const totalFound = staleCount + updateCount
       await historyStore.addEntry({
         id: Date.now().toString(),
