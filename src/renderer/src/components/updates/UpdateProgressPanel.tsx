@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Loader2 } from 'lucide-react'
 import type { UpdateProgress } from '@shared/types'
+import { ProgressCard } from '@/components/software/SoftwareBlocks'
 import { formatElapsed, SLOW_INSTALL_HINT_MS } from '@/lib/update-summary'
 
 /** The current time, refreshed every second while `active`. */
@@ -35,65 +35,30 @@ export function UpdateProgressPanel({ progress }: { progress: UpdateProgress }) 
     (running && progress.elevated ? t('softwareUpdater.elevatedStep') : '')
 
   return (
-    <div
-      className="mb-5 rounded-2xl p-4"
-      style={{
-        background: 'rgba(245,158,11,0.04)',
-        border: '1px solid var(--accent-muted-bg)'
-      }}
+    <ProgressCard
+      title={t('softwareUpdater.updatingProgress', {
+        app,
+        current: progress.current,
+        total: progress.total
+      })}
+      meta={`${progress.percent}%`}
+      value={progress.percent / 100}
+      detail={step || undefined}
+      tone={progress.status === 'failed' ? 'danger' : 'neutral'}
     >
-      <div className="flex items-center justify-between gap-3 mb-2.5">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-amber-400" strokeWidth={2} />
-          <span className="truncate text-[13px] font-medium text-zinc-200" title={app}>
-            {t('softwareUpdater.updatingProgress', {
-              app,
-              current: progress.current,
-              total: progress.total
-            })}
-          </span>
-        </div>
-        <span className="shrink-0 text-[12px] font-mono" style={{ color: 'var(--text-muted)' }}>
-          {progress.percent}%
-        </span>
-      </div>
-      <div
-        className="h-1.5 w-full rounded-full overflow-hidden"
-        style={{ background: 'var(--bg-hover-2)' }}
-      >
-        <div
-          className="h-full rounded-full transition-[width] duration-300"
-          style={{
-            width: `${progress.percent}%`,
-            background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)'
-          }}
-        />
-      </div>
-      {(step || elapsed !== undefined) && (
-        <div
-          className="mt-2 flex items-center justify-between gap-3 text-[11px]"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          <span className="truncate" title={step}>
-            {step}
-          </span>
-          {elapsed !== undefined && (
-            <span className="shrink-0 font-mono">
-              {t('softwareUpdater.elapsed', { time: formatElapsed(elapsed) })}
-            </span>
-          )}
-        </div>
-      )}
-      {elapsed !== undefined && elapsed >= SLOW_INSTALL_HINT_MS && (
-        <p className="mt-1.5 text-[11px]" style={{ color: 'var(--text-muted)' }}>
-          {t('softwareUpdater.slowInstallHint')}
+      {elapsed !== undefined && (
+        <p className="sw-progress-note">
+          {t('softwareUpdater.elapsed', { time: formatElapsed(elapsed) })}
         </p>
       )}
+      {elapsed !== undefined && elapsed >= SLOW_INSTALL_HINT_MS && (
+        <p className="sw-progress-note">{t('softwareUpdater.slowInstallHint')}</p>
+      )}
       {progress.status === 'failed' && (
-        <p className="mt-2 text-[11px] text-red-400">
+        <p className="sw-progress-note sw-danger-text">
           {t('softwareUpdater.failedToUpdate', { app })}
         </p>
       )}
-    </div>
+    </ProgressCard>
   )
 }

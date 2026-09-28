@@ -1,34 +1,29 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Download,
-  Search,
-  Loader2,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowUpDown,
-  ChevronDown,
-  ChevronRight,
-  RefreshCw,
-  Package,
-  ArrowRight,
-  Sparkles,
-  Filter,
-  EyeOff,
-  Eye
-} from 'lucide-react'
+import type { TFunction } from 'i18next'
+import { ArrowRight, ArrowUpDown, Check, Eye, EyeOff, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { StatCard } from '@/components/shared/StatCard'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { AppIcon } from '@/components/shared/AppIcon'
+import { Button, Card, Checkbox, ListRow, Segmented, Tag } from '@/components/ui'
+import {
+  Disclosure,
+  MenuButton,
+  Note,
+  ProgressCard,
+  SearchField,
+  SummaryCard
+} from '@/components/software/SoftwareBlocks'
+import { formatClock, formatDateTime, joinFacts } from '@/components/software/format'
 import { UpdateProgressPanel } from '@/components/updates/UpdateProgressPanel'
 import { UpdateSummaryBanner } from '@/components/updates/UpdateSummaryBanner'
 import {
   showUpdateSummaryToast,
   UPDATE_SUMMARY_TOAST_ID
 } from '@/components/updates/UpdateSummaryToast'
+import { icons } from '@/lib/icons'
 import { buildUpdateSummary } from '@/lib/update-summary'
 import { softwareUpdateCategory } from '@/lib/history-categories'
 import { useUpdaterStore, severityOrder, appKey } from '@/stores/updater-store'
@@ -51,48 +46,75 @@ const WINDOWS_MANAGER_OPTIONS: { id: WindowsPackageManager; label: string }[] = 
 ]
 const DEFAULT_WINDOWS_MANAGERS: WindowsPackageManager[] = ['winget', 'choco', 'scoop', 'npm']
 
-const SEVERITY_STYLES_BASE = {
-  major: {
-    bg: 'rgba(239,68,68,0.08)',
-    border: 'rgba(239,68,68,0.18)',
-    text: '#f87171',
-    labelKey: 'softwareUpdater.severityMajor'
-  },
-  minor: {
-    bg: 'rgba(245,158,11,0.08)',
-    border: 'rgba(245,158,11,0.18)',
-    text: '#fbbf24',
-    labelKey: 'softwareUpdater.severityMinor'
-  },
-  patch: {
-    bg: 'rgba(34,197,94,0.08)',
-    border: 'rgba(34,197,94,0.18)',
-    text: '#4ade80',
-    labelKey: 'softwareUpdater.severityPatch'
-  },
-  unknown: {
-    bg: 'rgba(113,113,122,0.08)',
-    border: 'rgba(113,113,122,0.18)',
-    text: '#a1a1aa',
-    labelKey: 'softwareUpdater.severityUpdate'
-  }
+const SEVERITY_LABEL_KEYS: Record<UpdateSeverity, string> = {
+  major: 'softwareUpdater.severityMajor',
+  minor: 'softwareUpdater.severityMinor',
+  patch: 'softwareUpdater.severityPatch',
+  unknown: 'softwareUpdater.severityUpdate'
 }
 
-const SORT_LABEL_KEYS: Record<string, string> = {
+type SortField = 'name' | 'severity' | 'source'
+type SeverityFilter = 'all' | 'major' | 'minor' | 'patch'
+
+const SORT_LABEL_KEYS: Record<SortField, string> = {
   name: 'softwareUpdater.sortName',
   severity: 'softwareUpdater.sortSeverity',
   source: 'softwareUpdater.sortSource'
 }
 
-const FILTER_LABEL_KEYS: Record<string, string> = {
+const FILTER_LABEL_KEYS: Record<SeverityFilter, string> = {
   all: 'softwareUpdater.filterAll',
   major: 'softwareUpdater.filterMajor',
   minor: 'softwareUpdater.filterMinor',
   patch: 'softwareUpdater.filterPatch'
 }
 
+/** Major updates are the ones the page recommends (amber rule and tag). */
+const isRecommended = (app: UpdatableApp): boolean => app.severity === 'major'
+
+/** When this session's last check finished: survives leaving and reopening the page. */
+let lastCheckedAt: number | null = null
+
+/** Title and explanation when no supported package manager answered. */
+function missingManagerCopy(
+  t: TFunction,
+  platform: string | undefined,
+  name: string | null
+): { title: string; description?: string } {
+  const k = (key: string) => t(`softwareUpdater.packageManagerNotFound.${key}`)
+  if (platform === 'win32')
+    return { title: k('noWindowsManager'), description: k('windowsManagerHint') }
+  switch (name) {
+    case 'brew':
+      return { title: k('brewNotFound'), description: `${k('brewRequired')} ${k('brewSite')}.` }
+    case 'winget':
+      return {
+        title: k('wingetNotFound'),
+        description: `${k('wingetRequired')} ${k('wingetStore')} ${k('wingetSearchTerm')}`
+      }
+    case 'choco':
+      return { title: k('chocoNotFound'), description: `${k('chocoRequired')} ${k('chocoSite')}.` }
+    case 'apt':
+      return { title: k('aptNotFound'), description: k('aptRequired') }
+    case 'dnf':
+      return { title: k('dnfNotFound'), description: k('dnfRequired') }
+    case 'pacman':
+      return { title: k('pacmanNotFound'), description: k('pacmanRequired') }
+    default:
+      return { title: k('noPackageManager') }
+  }
+}
+
+function listFormat(items: string[], locale: string): string {
+  try {
+    return new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' }).format(items)
+  } catch {
+    return items.join(', ')
+  }
+}
+
 export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
-  const { t } = useTranslation('updates')
+  const { t, i18n } = useTranslation('updates')
   const apps = useUpdaterStore((s) => s.apps)
   const loading = useUpdaterStore((s) => s.loading)
   const updating = useUpdaterStore((s) => s.updating)
@@ -111,6 +133,7 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
   const upToDate = useUpdaterStore((s) => s.upToDate)
 
   const ignoredApps = useUpdaterStore((s) => s.ignoredApps)
+  const history = useHistoryStore((s) => s.entries)
 
   const { platform } = usePlatform()
   const windowsPackageManagers = useSettingsStore((s) => s.settings.windowsPackageManagers)
@@ -120,12 +143,8 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
   // "everything is up to date" would be misleading without a warning (#462).
   const failedManagers = useMemo(() => managers.filter((m) => m.error), [managers])
 
-  const [showSortMenu, setShowSortMenu] = useState(false)
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [showUpToDate, setShowUpToDate] = useState(false)
   const [showIgnored, setShowIgnored] = useState(false)
-  const sortMenuRef = useRef<HTMLDivElement>(null)
-  const filterMenuRef = useRef<HTMLDivElement>(null)
 
   // Load persisted ignore list from settings, then auto-scan on first visit
   useEffect(() => {
@@ -143,23 +162,6 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
       })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Close menus on outside click
-  useEffect(() => {
-    if (!showSortMenu && !showFilterMenu) return
-    const handler = (e: globalThis.MouseEvent) => {
-      if (showSortMenu && sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node))
-        setShowSortMenu(false)
-      if (
-        showFilterMenu &&
-        filterMenuRef.current &&
-        !filterMenuRef.current.contains(e.target as Node)
-      )
-        setShowFilterMenu(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [showSortMenu, showFilterMenu])
-
   // ─── Check for updates ──────────────────────────────────────
   const handleCheck = useCallback(async () => {
     const store = useUpdaterStore.getState()
@@ -175,6 +177,7 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
       s.setPackageManagerAvailable(result.packageManagerAvailable)
       s.setPackageManagerName(result.packageManagerName)
       s.setManagers(result.managers)
+      lastCheckedAt = Date.now()
       s.setHasChecked(true)
 
       // Use the visible (non-ignored) count for the toast
@@ -312,563 +315,331 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
   const allSelected = apps.length > 0 && selectedCount === apps.length
   const isBusy = loading || updating
 
-  const majorCount = apps.filter((a) => a.severity === 'major').length
-  const minorCount = apps.filter((a) => a.severity === 'minor').length
-  const patchCount = apps.filter((a) => a.severity === 'patch').length
+  const count = (severity: UpdateSeverity) => apps.filter((a) => a.severity === severity).length
+  const checkedTime = lastCheckedAt ? formatClock(lastCheckedAt, i18n.language) : ''
+  const lastRun = history.find((entry) => entry.type === 'software-update')
+  const missingManager =
+    hasChecked && !packageManagerAvailable
+      ? missingManagerCopy(t, platform, packageManagerName)
+      : null
+  const managerLabel = (name: string) =>
+    WINDOWS_MANAGER_OPTIONS.find((o) => o.id === name)?.label ?? name
+
+  const checkButton = (
+    <Button
+      variant={hasChecked ? 'secondary' : 'primary'}
+      icon={RefreshCw}
+      busy={loading}
+      disabled={updating}
+      onClick={handleCheck}
+    >
+      {hasChecked ? t('softwareUpdater.recheckButton') : t('softwareUpdater.checkForUpdatesButton')}
+    </Button>
+  )
 
   return (
-    <div className={embedded ? '' : 'animate-fade-in'}>
+    <div>
       {!embedded && (
         <PageHeader
           title={t('softwareUpdater.pageTitle')}
           description={t('softwareUpdater.pageDescription')}
+          action={checkButton}
         />
       )}
 
-      {/* Actions */}
-      <div className="pulse-updater-toolbar mb-5 flex flex-wrap items-center gap-2.5">
-        <button
-          onClick={handleCheck}
-          disabled={isBusy}
-          className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-          style={{
-            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            color: 'var(--text-on-accent)'
-          }}
-        >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-          ) : (
-            <RefreshCw className="h-4 w-4" strokeWidth={2} />
-          )}
-          {loading
-            ? t('softwareUpdater.checkingButton')
-            : hasChecked
-              ? t('softwareUpdater.recheckButton')
-              : t('softwareUpdater.checkForUpdatesButton')}
-        </button>
-
-        {/* Package manager toggles (Windows only) — aggregate across managers */}
-        {platform === 'win32' && (
+      <div className="sw-page">
+        {/* Package managers included in the check (Windows aggregates several) */}
+        {(platform === 'win32' || embedded) && (
           <div
-            className="flex items-center gap-1.5 rounded-xl px-2 py-1.5"
-            style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-medium)' }}
-            role="group"
-            aria-label={t('softwareUpdater.packageManagerLabel')}
+            className="sw-managers"
+            role={platform === 'win32' ? 'group' : undefined}
+            aria-label={platform === 'win32' ? t('softwareUpdater.packageManagerLabel') : undefined}
           >
-            {WINDOWS_MANAGER_OPTIONS.map(({ id, label }) => {
-              const enabled = enabledManagers.includes(id)
-              const status = managers.find((m) => m.name === id)
-              const notInstalled = hasChecked && enabled && status && !status.available
-              return (
-                <button
-                  key={id}
-                  onClick={() => handleToggleManager(id)}
-                  disabled={isBusy}
-                  title={
-                    notInstalled
-                      ? t('softwareUpdater.managerNotInstalled', { manager: label })
-                      : enabled
-                        ? t('softwareUpdater.managerEnabledHint', { manager: label })
-                        : t('softwareUpdater.managerDisabledHint', { manager: label })
-                  }
-                  className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium transition disabled:opacity-40"
-                  style={{
-                    background: enabled ? 'var(--accent-muted-bg)' : 'transparent',
-                    color: enabled ? 'var(--accent)' : 'var(--text-muted)',
-                    border: `1px solid ${enabled ? 'var(--accent-muted-border, transparent)' : 'transparent'}`,
-                    opacity: notInstalled ? 0.5 : 1
-                  }}
-                >
-                  {enabled ? (
-                    <CheckCircle2 className="h-3 w-3" strokeWidth={2.5} />
-                  ) : (
-                    <Package className="h-3 w-3" strokeWidth={2} />
-                  )}
-                  {label}
-                  {notInstalled && <span className="text-[10px] text-red-400">·</span>}
-                </button>
+            {platform === 'win32' && (
+              <>
+                <span className="sw-managers-label" aria-hidden="true">
+                  {t('softwareUpdater.packageManagerLabel')}
+                </span>
+                {WINDOWS_MANAGER_OPTIONS.map(({ id, label }) => {
+                  const enabled = enabledManagers.includes(id)
+                  const status = managers.find((m) => m.name === id)
+                  const notInstalled = Boolean(hasChecked && enabled && status && !status.available)
+                  return (
+                    <Button
+                      key={id}
+                      icon={enabled ? Check : undefined}
+                      aria-pressed={enabled}
+                      data-unavailable={notInstalled || undefined}
+                      onClick={() => handleToggleManager(id)}
+                      disabled={isBusy}
+                      title={
+                        notInstalled
+                          ? t('softwareUpdater.managerNotInstalled', { manager: label })
+                          : enabled
+                            ? t('softwareUpdater.managerEnabledHint', { manager: label })
+                            : t('softwareUpdater.managerDisabledHint', { manager: label })
+                      }
+                    >
+                      {label}
+                      {notInstalled && <span>· {t('softwareUpdater.managerMissing')}</span>}
+                    </Button>
+                  )
+                })}
+              </>
+            )}
+            {embedded && <div className="sw-summary-actions">{checkButton}</div>}
+          </div>
+        )}
+
+        {/* No package manager answered: nothing can be checked */}
+        {missingManager && (
+          <EmptyState
+            icon={icons.warning}
+            title={missingManager.title}
+            description={missingManager.description}
+          />
+        )}
+
+        {/* Managers that were reachable but failed to report — partial results */}
+        {hasChecked && packageManagerAvailable && failedManagers.length > 0 && (
+          <Note
+            icon="warning"
+            title={t('softwareUpdater.managerScanFailed', {
+              manager: listFormat(
+                failedManagers.map((m) => managerLabel(m.name)),
+                i18n.language
               )
             })}
-          </div>
-        )}
-
-        {/* Search */}
-        {hasChecked && apps.length > 0 && (
-          <div
-            className="flex items-center gap-2 rounded-xl px-4 py-2.5"
-            style={{
-              background: 'var(--bg-subtle)',
-              border: '1px solid var(--border-medium)'
-            }}
           >
-            <Search className="h-4 w-4 text-zinc-500" strokeWidth={1.8} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => useUpdaterStore.getState().setSearchQuery(e.target.value)}
-              placeholder={t('softwareUpdater.searchPlaceholder')}
-              className="bg-transparent text-[13px] text-zinc-300 placeholder-zinc-600 outline-none w-48"
-            />
-          </div>
-        )}
-
-        {/* Severity filter */}
-        {hasChecked && apps.length > 0 && (
-          <div className="relative" ref={filterMenuRef}>
-            <button
-              onClick={() => setShowFilterMenu(!showFilterMenu)}
-              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-400 transition"
-              style={{
-                background: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)'
-              }}
-            >
-              <Filter className="h-3.5 w-3.5" strokeWidth={1.8} />
-              {t(FILTER_LABEL_KEYS[severityFilter])}
-              <ChevronDown className="h-3 w-3" strokeWidth={2} />
-            </button>
-            {showFilterMenu && (
-              <div
-                className="absolute top-full left-0 z-50 mt-1 rounded-xl py-1 shadow-xl"
-                style={{
-                  background: '#1e1e22',
-                  border: '1px solid var(--border-strong)',
-                  minWidth: 120
-                }}
-              >
-                {Object.entries(FILTER_LABEL_KEYS).map(([key, labelKey]) => (
-                  <button
-                    key={key}
-                    onClick={() => {
-                      useUpdaterStore.getState().setSeverityFilter(key as any)
-                      setShowFilterMenu(false)
-                    }}
-                    className="flex w-full items-center gap-2 px-4 py-2 text-[12px] text-zinc-300 hover:bg-white/5 transition-colors"
-                  >
-                    {t(labelKey)}
-                    {severityFilter === key && (
-                      <CheckCircle2 className="ml-auto h-3 w-3 text-amber-400" strokeWidth={2} />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Sort */}
-        {hasChecked && apps.length > 0 && (
-          <div className="relative" ref={sortMenuRef}>
-            <button
-              onClick={() => setShowSortMenu(!showSortMenu)}
-              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-400 transition"
-              style={{
-                background: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)'
-              }}
-            >
-              <ArrowUpDown className="h-3.5 w-3.5" strokeWidth={1.8} />
-              {t(SORT_LABEL_KEYS[sortField])}
-              <ChevronDown className="h-3 w-3" strokeWidth={2} />
-            </button>
-            {showSortMenu && (
-              <div
-                className="absolute top-full left-0 z-50 mt-1 rounded-xl py-1 shadow-xl"
-                style={{
-                  background: '#1e1e22',
-                  border: '1px solid var(--border-strong)',
-                  minWidth: 140
-                }}
-              >
-                {Object.entries(SORT_LABEL_KEYS).map(([field, labelKey]) => (
-                  <button
-                    key={field}
-                    onClick={() => {
-                      const store = useUpdaterStore.getState()
-                      if (sortField === field) {
-                        store.setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-                      } else {
-                        store.setSortField(field as any)
-                        store.setSortDirection('asc')
-                      }
-                      setShowSortMenu(false)
-                    }}
-                    className="flex w-full items-center gap-2 px-4 py-2 text-[12px] text-zinc-300 hover:bg-white/5 transition-colors"
-                  >
-                    {t(labelKey)}
-                    {sortField === field && (
-                      <span className="ml-auto text-amber-400 text-[10px]">
-                        {sortDirection === 'asc'
-                          ? t('softwareUpdater.sortAsc')
-                          : t('softwareUpdater.sortDesc')}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Package manager not available warning */}
-      {hasChecked && !packageManagerAvailable && (
-        <div
-          className="mb-5 flex items-center gap-3 rounded-2xl px-5 py-4"
-          style={{
-            background: 'rgba(239,68,68,0.04)',
-            border: '1px solid rgba(239,68,68,0.1)'
-          }}
-        >
-          <AlertTriangle className="h-5 w-5 shrink-0 text-red-400" strokeWidth={1.8} />
-          <p className="text-[12px] text-zinc-400">
-            {platform === 'win32' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.noWindowsManager')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.windowsManagerHint')}
-              </>
-            ) : packageManagerName === 'brew' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.brewNotFound')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.brewRequired')}{' '}
-                <span className="text-zinc-300">
-                  {t('softwareUpdater.packageManagerNotFound.brewSite')}
-                </span>
-                .
-              </>
-            ) : packageManagerName === 'winget' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.wingetNotFound')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.wingetRequired')}{' '}
-                <span className="text-zinc-300">
-                  {t('softwareUpdater.packageManagerNotFound.wingetStore')}
-                </span>{' '}
-                {t('softwareUpdater.packageManagerNotFound.wingetSearchTerm')}
-              </>
-            ) : packageManagerName === 'choco' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.chocoNotFound')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.chocoRequired')}{' '}
-                <span className="text-zinc-300">
-                  {t('softwareUpdater.packageManagerNotFound.chocoSite')}
-                </span>
-                .
-              </>
-            ) : packageManagerName === 'apt' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.aptNotFound')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.aptRequired')}
-              </>
-            ) : packageManagerName === 'dnf' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.dnfNotFound')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.dnfRequired')}
-              </>
-            ) : packageManagerName === 'pacman' ? (
-              <>
-                <span className="font-semibold text-red-400">
-                  {t('softwareUpdater.packageManagerNotFound.pacmanNotFound')}
-                </span>{' '}
-                — {t('softwareUpdater.packageManagerNotFound.pacmanRequired')}
-              </>
-            ) : (
-              <span className="font-semibold text-red-400">
-                {t('softwareUpdater.packageManagerNotFound.noPackageManager')}
-              </span>
-            )}
-          </p>
-        </div>
-      )}
-
-      {/* Managers that were reachable but failed to report — partial results */}
-      {hasChecked && packageManagerAvailable && failedManagers.length > 0 && (
-        <div
-          className="mb-5 flex items-start gap-3 rounded-2xl px-5 py-4"
-          style={{
-            background: 'rgba(245,158,11,0.04)',
-            border: '1px solid rgba(245,158,11,0.12)'
-          }}
-        >
-          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" strokeWidth={1.8} />
-          <div className="flex flex-col gap-1 text-[12px] text-zinc-400">
+            <p className="sw-note-text">
+              {t('softwareUpdater.managerScanFailedHint', { count: failedManagers.length })}
+            </p>
             {failedManagers.map((m) => (
-              <p key={m.name}>
-                <span className="font-semibold text-amber-400">
-                  {t('softwareUpdater.managerScanFailed', {
-                    manager: WINDOWS_MANAGER_OPTIONS.find((o) => o.id === m.name)?.label ?? m.name
-                  })}
-                </span>
-                {m.error && <span className="text-zinc-500"> — {m.error}</span>}
+              <p key={m.name} className="sw-note-text sw-muted">
+                {managerLabel(m.name)}: {m.error}
               </p>
             ))}
-            <p>{t('softwareUpdater.managerScanFailedHint')}</p>
-          </div>
-        </div>
-      )}
+          </Note>
+        )}
 
-      {/* Errors */}
-      {error && (
-        <ErrorAlert
-          message={error}
-          onDismiss={() => useUpdaterStore.getState().setError(null)}
-          className="mb-5"
-        />
-      )}
+        {error && (
+          <ErrorAlert message={error} onDismiss={() => useUpdaterStore.getState().setError(null)} />
+        )}
 
-      {/* Stat cards */}
-      {hasChecked && packageManagerAvailable && apps.length > 0 && (
-        <div className="grid grid-cols-4 gap-3 mb-5">
-          <StatCard
-            icon={Package}
-            label={t('softwareUpdater.statOutdatedApps')}
-            value={apps.length}
-            variant="accent"
-          />
-          <StatCard
-            icon={AlertTriangle}
-            label={t('softwareUpdater.statMajorUpdates')}
-            value={majorCount}
-            variant="danger"
-          />
-          <StatCard
-            icon={AlertTriangle}
-            label={t('softwareUpdater.statMinorUpdates')}
-            value={minorCount}
-            variant="default"
-          />
-          <StatCard
-            icon={CheckCircle2}
-            label={t('softwareUpdater.statPatches')}
-            value={patchCount}
-            variant="success"
-          />
-        </div>
-      )}
+        {loading && (
+          <ProgressCard title={t('softwareUpdater.checkingForUpdates')}>
+            <p className="sw-progress-note">{t('softwareUpdater.checkingSubtext')}</p>
+          </ProgressCard>
+        )}
 
-      {/* Update progress */}
-      {updating && progress && <UpdateProgressPanel progress={progress} />}
+        {updating && progress && <UpdateProgressPanel progress={progress} />}
 
-      {/* Update summary: stays until dismissed */}
-      {updateSummary && (
-        <UpdateSummaryBanner
-          summary={updateSummary}
-          packageManagerName={packageManagerName}
-          onDismiss={() => {
-            useUpdaterStore.getState().setUpdateSummary(null)
-            toast.dismiss(UPDATE_SUMMARY_TOAST_ID)
-          }}
-        />
-      )}
-
-      {/* Selection controls + Update button */}
-      {hasChecked && apps.length > 0 && !loading && (
-        <div className="mb-4 flex items-center gap-3">
-          <button
-            onClick={() => {
-              const store = useUpdaterStore.getState()
-              allSelected ? store.deselectAll() : store.selectAll()
+        {/* Update summary: stays until dismissed */}
+        {updateSummary && (
+          <UpdateSummaryBanner
+            summary={updateSummary}
+            packageManagerName={packageManagerName}
+            onDismiss={() => {
+              useUpdaterStore.getState().setUpdateSummary(null)
+              toast.dismiss(UPDATE_SUMMARY_TOAST_ID)
             }}
-            disabled={updating}
-            className="flex items-center gap-2 text-[12px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors disabled:opacity-40"
-          >
-            <div
-              className="flex h-4 w-4 items-center justify-center rounded"
-              style={{
-                background: allSelected ? 'var(--accent)' : 'var(--bg-hover-2)',
-                border: allSelected ? 'none' : '1px solid var(--border-stronger)'
-              }}
-            >
-              {allSelected && (
-                <CheckCircle2
-                  className="h-3 w-3"
-                  style={{ color: 'var(--text-on-accent)' }}
-                  strokeWidth={3}
-                />
-              )}
-            </div>
-            {allSelected ? t('softwareUpdater.deselectAll') : t('softwareUpdater.selectAll')}
-          </button>
-
-          {selectedCount > 0 && (
-            <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-              {t('softwareUpdater.selectedCount', { count: selectedCount })}
-            </span>
-          )}
-
-          <div className="flex-1" />
-
-          <button
-            onClick={handleUpdateSelected}
-            disabled={selectedCount === 0 || updating}
-            className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
-            style={{
-              background:
-                selectedCount > 0
-                  ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
-                  : 'var(--bg-hover)',
-              color: selectedCount > 0 ? '#052e16' : 'var(--text-muted)',
-              border: selectedCount > 0 ? 'none' : '1px solid var(--border-medium)'
-            }}
-          >
-            <Download className="h-4 w-4" strokeWidth={2} />
-            {t('softwareUpdater.updateSelectedButton', { count: selectedCount })}
-          </button>
-        </div>
-      )}
-
-      {/* Empty state — before first check */}
-      {!hasChecked && !loading && (
-        <EmptyState
-          icon={RefreshCw}
-          title={t('softwareUpdater.emptyStateTitle')}
-          description={t('softwareUpdater.emptyStateDescription')}
-          action={
-            <button
-              onClick={handleCheck}
-              disabled={isBusy}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <RefreshCw className="h-4 w-4" strokeWidth={2} />
-              {t('softwareUpdater.checkForUpdatesButton')}
-            </button>
-          }
-        />
-      )}
-
-      {/* Loading state */}
-      {loading && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <Loader2 className="h-10 w-10 animate-spin text-amber-400 mb-4" strokeWidth={1.5} />
-          <p className="text-[13px] text-zinc-400">{t('softwareUpdater.checkingForUpdates')}</p>
-          <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
-            {t('softwareUpdater.checkingSubtext')}
-          </p>
-        </div>
-      )}
-
-      {/* All up to date */}
-      {hasChecked &&
-        !loading &&
-        apps.length === 0 &&
-        ignoredApps.length === 0 &&
-        packageManagerAvailable && (
-          <EmptyState
-            icon={Sparkles}
-            title={t('softwareUpdater.allUpToDateTitle')}
-            description={t('softwareUpdater.allUpToDateDescription')}
           />
         )}
 
-      {/* No results from filter/search */}
-      {hasChecked && !loading && filteredApps.length === 0 && apps.length > 0 && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <Search className="h-10 w-10 text-zinc-600 mb-4" strokeWidth={1.5} />
-          <p className="text-[13px] text-zinc-400">{t('softwareUpdater.noAppsMatchFilters')}</p>
-        </div>
-      )}
+        {/* Before the first check: the real state and what the check reads */}
+        {!hasChecked && !loading && (
+          <EmptyState
+            title={t('softwareUpdater.emptyStateTitle')}
+            description={
+              lastRun
+                ? t('softwareUpdater.lastRun', {
+                    count: lastRun.totalItemsCleaned,
+                    date: formatDateTime(lastRun.timestamp, i18n.language)
+                  })
+                : t('softwareUpdater.emptyStateDescription')
+            }
+            checks={[
+              {
+                title: t('softwareUpdater.checkManagersTitle'),
+                detail:
+                  platform === 'win32'
+                    ? t('softwareUpdater.checkManagersWindows')
+                    : platform === 'darwin'
+                      ? t('softwareUpdater.checkManagersMac')
+                      : t('softwareUpdater.checkManagersLinux')
+              },
+              {
+                title: t('softwareUpdater.checkVersionsTitle'),
+                detail: t('softwareUpdater.checkVersionsDetail')
+              },
+              {
+                title: t('softwareUpdater.checkIgnoredTitle'),
+                detail: t('softwareUpdater.checkIgnoredDetail')
+              }
+            ]}
+          />
+        )}
 
-      {/* App list: a named container so off-screen rows can follow the rows' stacked layout */}
-      {hasChecked && !loading && filteredApps.length > 0 && (
-        <div className="mb-6">
-          <div className="@container/update-list grid grid-cols-1 gap-2">
-            {filteredApps.map((app) => (
-              <AppRow
-                key={appKey(app)}
-                app={app}
-                updating={updating}
-                onToggle={() => useUpdaterStore.getState().toggleAppSelected(appKey(app))}
-                onUpdate={() => handleUpdate([app])}
-                onIgnore={() => useUpdaterStore.getState().ignoreApp(app)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+        {/* Nothing to update among the apps the included managers know */}
+        {hasChecked &&
+          !loading &&
+          apps.length === 0 &&
+          ignoredApps.length === 0 &&
+          packageManagerAvailable && (
+            <EmptyState
+              icon={icons.allUpToDate}
+              title={
+                checkedTime
+                  ? t('softwareUpdater.allUpToDateTitle', { time: checkedTime })
+                  : t('softwareUpdater.allUpToDateTitleNoTime')
+              }
+              description={t('softwareUpdater.allUpToDateDescription')}
+            />
+          )}
 
-      {/* Ignored apps */}
-      {hasChecked && !loading && ignoredApps.length > 0 && (
-        <div className="mb-6">
-          <button
-            onClick={() => setShowIgnored(!showIgnored)}
-            className="mb-3 flex items-center gap-2 text-[13px] font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
-          >
-            {showIgnored ? (
-              <ChevronDown className="h-4 w-4" strokeWidth={2} />
+        {/* One summary line in place of the four stat cards */}
+        {hasChecked && !loading && packageManagerAvailable && apps.length > 0 && (
+          <SummaryCard
+            title={t('softwareUpdater.summaryTitle', { count: apps.length })}
+            detail={joinFacts([
+              count('major') > 0 && t('softwareUpdater.summaryMajor', { count: count('major') }),
+              count('minor') > 0 && t('softwareUpdater.summaryMinor', { count: count('minor') }),
+              count('patch') > 0 && t('softwareUpdater.summaryPatch', { count: count('patch') }),
+              count('unknown') > 0 &&
+                t('softwareUpdater.summaryOther', { count: count('unknown') }),
+              checkedTime && t('softwareUpdater.checkedAt', { time: checkedTime })
+            ])}
+            action={
+              <Button
+                variant="primary"
+                icon={icons.updates}
+                busy={updating}
+                disabled={selectedCount === 0}
+                onClick={handleUpdateSelected}
+              >
+                {t('softwareUpdater.updateSelected', { count: selectedCount })}
+              </Button>
+            }
+          />
+        )}
+
+        {/* App list: a named container so off-screen rows can follow the rows' stacked layout */}
+        {hasChecked && !loading && apps.length > 0 && (
+          <Card className="sw-list">
+            <div className="sw-toolbar">
+              <label className="sw-select-all">
+                <Checkbox
+                  checked={allSelected}
+                  indeterminate={selectedCount > 0 && !allSelected}
+                  onChange={(value) => {
+                    const store = useUpdaterStore.getState()
+                    if (value) store.selectAll()
+                    else store.deselectAll()
+                  }}
+                  label={t('softwareUpdater.selectAll')}
+                  disabled={updating}
+                />
+                <span>{t('softwareUpdater.selectedCount', { count: selectedCount })}</span>
+              </label>
+              <div className="sw-toolbar-end">
+                <SearchField
+                  value={searchQuery}
+                  onChange={(value) => useUpdaterStore.getState().setSearchQuery(value)}
+                  placeholder={t('softwareUpdater.searchPlaceholder')}
+                />
+                <Segmented<SeverityFilter>
+                  label={t('softwareUpdater.filterLabel')}
+                  value={severityFilter}
+                  onChange={(value) => useUpdaterStore.getState().setSeverityFilter(value)}
+                  options={(Object.keys(FILTER_LABEL_KEYS) as SeverityFilter[]).map((value) => ({
+                    value,
+                    label: t(FILTER_LABEL_KEYS[value])
+                  }))}
+                />
+                <MenuButton<SortField>
+                  icon={ArrowUpDown}
+                  label={t(SORT_LABEL_KEYS[sortField])}
+                  menuLabel={t('softwareUpdater.sortLabel')}
+                  value={sortField}
+                  checkedHint={
+                    sortDirection === 'asc'
+                      ? t('softwareUpdater.sortAsc')
+                      : t('softwareUpdater.sortDesc')
+                  }
+                  options={(Object.keys(SORT_LABEL_KEYS) as SortField[]).map((value) => ({
+                    value,
+                    label: t(SORT_LABEL_KEYS[value])
+                  }))}
+                  onSelect={(field) => {
+                    const store = useUpdaterStore.getState()
+                    if (sortField === field) {
+                      store.setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+                    } else {
+                      store.setSortField(field)
+                      store.setSortDirection('asc')
+                    }
+                  }}
+                />
+              </div>
+            </div>
+
+            {filteredApps.length === 0 ? (
+              <p className="sw-list-empty">{t('softwareUpdater.noAppsMatchFilters')}</p>
             ) : (
-              <ChevronRight className="h-4 w-4" strokeWidth={2} />
+              <div className="@container/update-list">
+                {filteredApps.map((app) => (
+                  <AppRow
+                    key={appKey(app)}
+                    app={app}
+                    updating={updating}
+                    onToggle={() => useUpdaterStore.getState().toggleAppSelected(appKey(app))}
+                    onUpdate={() => handleUpdate([app])}
+                    onIgnore={() => useUpdaterStore.getState().ignoreApp(app)}
+                  />
+                ))}
+              </div>
             )}
-            <EyeOff className="h-4 w-4 text-zinc-500" strokeWidth={1.8} />
-            {t('softwareUpdater.ignoredSection', { count: ignoredApps.length })}
-          </button>
+          </Card>
+        )}
 
-          {showIgnored && (
-            <div className="grid grid-cols-1 gap-1.5">
+        {hasChecked && !loading && ignoredApps.length > 0 && (
+          <Disclosure
+            label={t('softwareUpdater.ignoredSection', { count: ignoredApps.length })}
+            open={showIgnored}
+            onToggle={() => setShowIgnored(!showIgnored)}
+          >
+            <Card className="sw-list">
               {ignoredApps.map((app) => (
                 <IgnoredRow
-                  key={app.id}
+                  key={appKey(app)}
                   app={app}
                   onUnignore={() => useUpdaterStore.getState().unignoreApp(app)}
                 />
               ))}
-            </div>
-          )}
-        </div>
-      )}
+            </Card>
+          </Disclosure>
+        )}
 
-      {/* Up to date apps */}
-      {hasChecked && !loading && packageManagerAvailable && upToDate.length > 0 && (
-        <div className="mb-6">
-          <button
-            onClick={() => setShowUpToDate(!showUpToDate)}
-            className="mb-3 flex items-center gap-2 text-[13px] font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
+        {hasChecked && !loading && packageManagerAvailable && upToDate.length > 0 && (
+          <Disclosure
+            label={t('softwareUpdater.upToDateSection', { count: upToDate.length })}
+            open={showUpToDate}
+            onToggle={() => setShowUpToDate(!showUpToDate)}
           >
-            {showUpToDate ? (
-              <ChevronDown className="h-4 w-4" strokeWidth={2} />
-            ) : (
-              <ChevronRight className="h-4 w-4" strokeWidth={2} />
-            )}
-            <CheckCircle2 className="h-4 w-4 text-green-500" strokeWidth={1.8} />
-            {t('softwareUpdater.upToDateSection', { count: upToDate.length })}
-          </button>
-
-          {showUpToDate && (
-            <div className="grid grid-cols-1 gap-1.5">
+            <Card className="sw-list">
               {upToDate.map((app) => (
-                <UpToDateRow key={app.id} app={app} />
+                <UpToDateRow key={`${app.source}:${app.id}`} app={app} />
               ))}
-            </div>
-          )}
-        </div>
-      )}
+            </Card>
+          </Disclosure>
+        )}
+      </div>
     </div>
   )
 }
 
-function SoftwareAppIcon({
-  app,
-  small = false
-}: {
-  app: UpdatableApp | UpToDateApp
-  small?: boolean
-}) {
-  return <AppIcon iconDataUrl={app.iconDataUrl} small={small} />
+function SoftwareAppIcon({ app }: { app: UpdatableApp | UpToDateApp }) {
+  return <AppIcon iconDataUrl={app.iconDataUrl} small />
 }
 
 function AppRow({
@@ -885,87 +656,40 @@ function AppRow({
   onIgnore: () => void
 }) {
   const { t } = useTranslation('updates')
-  const base = SEVERITY_STYLES_BASE[app.severity]
-  const severity = { ...base, label: t(base.labelKey) }
+  const recommended = isRecommended(app)
+  const updateLabel = `${t('softwareUpdater.updateButton')} ${app.name}`
+  const ignoreLabel = `${t('softwareUpdater.ignoreButton')} ${app.name}`
 
   return (
-    <div
-      className="update-row @container flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors"
-      style={{
-        background: app.selected ? 'rgba(245,158,11,0.03)' : 'var(--bg-subtle)',
-        border: `1px solid ${app.selected ? 'rgba(245,158,11,0.1)' : 'var(--border-subtle)'}`
-      }}
-    >
-      {/* Checkbox */}
-      <button
-        type="button"
-        role="checkbox"
-        aria-label={app.name}
-        aria-checked={app.selected}
-        onClick={onToggle}
-        disabled={updating}
-        className="shrink-0 disabled:opacity-40"
-      >
-        <div
-          className="flex h-4.5 w-4.5 items-center justify-center rounded"
-          style={{
-            background: app.selected ? 'var(--accent)' : 'var(--bg-hover-2)',
-            border: app.selected ? 'none' : '1px solid var(--border-stronger)',
-            width: 18,
-            height: 18
-          }}
-        >
-          {app.selected && (
-            <CheckCircle2
-              className="h-3 w-3"
-              style={{ color: 'var(--text-on-accent)' }}
-              strokeWidth={3}
-            />
-          )}
-        </div>
-      </button>
+    <ListRow className="update-row @container" recommended={recommended}>
+      <Checkbox checked={app.selected} onChange={onToggle} label={app.name} disabled={updating} />
 
-      {/* App icon */}
       <SoftwareAppIcon app={app} />
 
       {/* App info: never narrower than 120px */}
       <div className="min-w-[120px] flex-1">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <span
-            data-audit="app-name"
-            className="truncate text-[13px] font-medium text-zinc-200"
-            title={app.name}
-          >
+        <div className="sw-row-title">
+          <span data-audit="app-name" className="sw-row-name" title={app.name}>
             {app.name}
           </span>
-          <span
-            className="shrink-0 rounded-md px-2 py-0.5 text-[10px] font-medium"
-            style={{
-              background: severity.bg,
-              border: `1px solid ${severity.border}`,
-              color: severity.text
-            }}
-          >
-            {severity.label}
-          </span>
+          {recommended && <Tag tone="recommended">{t('softwareUpdater.recommended')}</Tag>}
         </div>
-        <p className="mt-0.5 truncate text-[11px]" style={{ color: 'var(--text-muted)' }}>
-          {app.id}
+        <p className="sw-row-sub" title={app.id}>
+          {t(SEVERITY_LABEL_KEYS[app.severity])} · {app.id}
         </p>
         {/* Narrow rows: versions move under the id */}
-        <p className="mt-0.5 hidden min-w-0 items-center gap-1.5 text-[11px] font-mono @max-[820px]:flex">
+        <p className="sw-row-sub hidden min-w-0 items-center gap-1.5 @max-[820px]:flex">
           <span
             data-audit="version-current"
-            className="truncate text-zinc-500"
+            className="sw-mono truncate"
             title={app.currentVersion}
           >
             {app.currentVersion}
           </span>
-          <ArrowRight className="h-3 w-3 shrink-0 text-zinc-600" strokeWidth={2} />
+          <ArrowRight className="shrink-0" size={12} strokeWidth={1.75} aria-hidden="true" />
           <span
             data-audit="version-available"
-            className="truncate font-medium"
-            style={{ color: severity.text }}
+            className="sw-mono sw-version-new truncate"
             title={app.availableVersion}
           >
             {app.availableVersion}
@@ -977,124 +701,100 @@ function AppRow({
       <div className="flex max-w-[40%] min-w-0 items-center gap-2 @max-[820px]:hidden">
         <span
           data-audit="version-current"
-          className="truncate text-[12px] font-mono text-zinc-500"
+          className="sw-mono sw-muted truncate"
           title={app.currentVersion}
         >
           {app.currentVersion}
         </span>
-        <ArrowRight className="h-3 w-3 shrink-0 text-zinc-600" strokeWidth={2} />
+        <ArrowRight className="sw-muted shrink-0" size={12} strokeWidth={1.75} aria-hidden="true" />
         <span
           data-audit="version-available"
-          className="truncate text-[12px] font-mono font-medium"
-          style={{ color: severity.text }}
+          className="sw-mono sw-version-new truncate"
           title={app.availableVersion}
         >
           {app.availableVersion}
         </span>
       </div>
 
-      {/* Source badge */}
-      <span
-        className="shrink-0 rounded-md px-2 py-0.5 text-[10px] font-medium"
-        style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
-      >
-        {app.source}
-      </span>
+      <span className="sw-row-meta shrink-0">{app.source}</span>
 
-      {/* Ignore button */}
-      <button
-        onClick={onIgnore}
-        disabled={updating}
-        title={t('softwareUpdater.ignoreButton')}
-        aria-label={t('softwareUpdater.ignoreButton')}
-        className="flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300 disabled:opacity-30"
-        style={{ border: '1px solid var(--border-medium)' }}
-      >
-        <EyeOff className="h-3.5 w-3.5" strokeWidth={1.8} />
-      </button>
-
-      {/* Update button: icon only in narrow rows, aria-label keeps the name for screen readers */}
-      <button
-        onClick={onUpdate}
-        disabled={updating}
-        title={t('softwareUpdater.updateButton')}
-        aria-label={t('softwareUpdater.updateButton')}
-        className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-green-400 transition-colors hover:bg-green-500/10 disabled:opacity-30"
-        style={{ border: '1px solid rgba(34,197,94,0.15)' }}
-      >
-        <Download className="h-3.5 w-3.5" strokeWidth={1.8} />
-        <span className="@max-[820px]:hidden">{t('softwareUpdater.updateButton')}</span>
-      </button>
-    </div>
+      <div className="sw-row-actions">
+        <Button
+          variant="ghost"
+          icon={EyeOff}
+          onClick={onIgnore}
+          disabled={updating}
+          title={t('softwareUpdater.ignoreButton')}
+          aria-label={ignoreLabel}
+        />
+        {/* Icon only in narrow rows; the label keeps the app name for screen readers */}
+        <span className="@max-[820px]:hidden">
+          <Button
+            icon={icons.updates}
+            onClick={onUpdate}
+            disabled={updating}
+            aria-label={updateLabel}
+          >
+            {t('softwareUpdater.updateButton')}
+          </Button>
+        </span>
+        <span className="hidden @max-[820px]:inline-flex">
+          <Button
+            icon={icons.updates}
+            onClick={onUpdate}
+            disabled={updating}
+            title={t('softwareUpdater.updateButton')}
+            aria-label={updateLabel}
+          />
+        </span>
+      </div>
+    </ListRow>
   )
 }
 
 function IgnoredRow({ app, onUnignore }: { app: UpdatableApp; onUnignore: () => void }) {
   const { t } = useTranslation('updates')
-  const base = SEVERITY_STYLES_BASE[app.severity]
   return (
-    <div
-      className="flex items-center gap-4 rounded-xl px-5 py-3"
-      style={{
-        background: 'var(--bg-subtle)',
-        border: '1px solid var(--border-subtle)',
-        opacity: 0.7
-      }}
-    >
-      <SoftwareAppIcon app={app} small />
-      <div className="flex-1 min-w-0">
-        <span className="text-[12px] font-medium text-zinc-400 truncate block">{app.name}</span>
-        <span className="text-[10px] truncate block" style={{ color: 'var(--text-muted)' }}>
+    <ListRow data-muted="">
+      <SoftwareAppIcon app={app} />
+      <div className="min-w-0 flex-1">
+        <span className="sw-row-name block" title={app.name}>
+          {app.name}
+        </span>
+        <p className="sw-row-sub" title={app.id}>
           {app.id}
-        </span>
+        </p>
       </div>
-      <div className="shrink-0 flex items-center gap-2">
-        <span className="text-[11px] font-mono text-zinc-600">{app.currentVersion}</span>
-        <ArrowRight className="h-3 w-3 text-zinc-700" strokeWidth={2} />
-        <span className="text-[11px] font-mono" style={{ color: base.text }}>
-          {app.availableVersion}
-        </span>
-      </div>
-      <button
+      <p className="sw-row-sub flex shrink-0 items-center gap-1.5">
+        <span className="sw-mono">{app.currentVersion}</span>
+        <ArrowRight className="shrink-0" size={12} strokeWidth={1.75} aria-hidden="true" />
+        <span className="sw-mono">{app.availableVersion}</span>
+      </p>
+      <Button
+        variant="ghost"
+        icon={Eye}
         onClick={onUnignore}
-        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-zinc-400 transition hover:bg-white/5 hover:text-zinc-200 shrink-0"
-        style={{ border: '1px solid var(--border-medium)' }}
+        aria-label={`${t('softwareUpdater.unignoreButton')} ${app.name}`}
       >
-        <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
         {t('softwareUpdater.unignoreButton')}
-      </button>
-    </div>
+      </Button>
+    </ListRow>
   )
 }
 
 function UpToDateRow({ app }: { app: UpToDateApp }) {
-  const { t } = useTranslation('updates')
   return (
-    <div
-      className="flex items-center gap-4 rounded-xl px-5 py-3"
-      style={{
-        background: 'var(--bg-subtle)',
-        border: '1px solid var(--border-subtle)'
-      }}
-    >
-      <SoftwareAppIcon app={app} small />
-      <div className="flex-1 min-w-0">
-        <span className="text-[12px] font-medium text-zinc-400 truncate block">{app.name}</span>
-        <span className="text-[10px] truncate block" style={{ color: 'var(--text-muted)' }}>
-          {app.id}
+    <ListRow data-muted="">
+      <SoftwareAppIcon app={app} />
+      <div className="min-w-0 flex-1">
+        <span className="sw-row-name block" title={app.name}>
+          {app.name}
         </span>
+        <p className="sw-row-sub" title={app.id}>
+          {app.id}
+        </p>
       </div>
-      <span className="text-[11px] font-mono text-zinc-600 shrink-0">{app.version}</span>
-      <span
-        className="shrink-0 rounded-md px-2 py-0.5 text-[10px] font-medium"
-        style={{
-          background: 'rgba(34,197,94,0.06)',
-          color: '#4ade80',
-          border: '1px solid rgba(34,197,94,0.1)'
-        }}
-      >
-        {t('softwareUpdater.latestBadge')}
-      </span>
-    </div>
+      <span className="sw-row-meta sw-mono shrink-0">{app.version}</span>
+    </ListRow>
   )
 }

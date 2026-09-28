@@ -1,8 +1,12 @@
-import { AlertCircle, ArrowUpRight, Check, Download, RefreshCw, RotateCw, X } from 'lucide-react'
+import { AlertCircle, Check, Download, RefreshCw, RotateCw, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { APP_RELEASES_URL } from '@shared/app-release'
+import { Button, ProgressBar, Section } from '@/components/ui'
 import { usePlatform } from '@/hooks/usePlatform'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { icons } from '@/lib/icons'
+import { cn } from '@/lib/utils'
 import { useAppUpdateStore } from '@/stores/app-update-store'
 import './app-updates.css'
 
@@ -22,16 +26,14 @@ function UpdateAction() {
         ? t('retry')
         : t('checkForUpdates')
   return (
-    <button
-      type="button"
-      className={`pulse-button ${available || downloaded ? 'pulse-primary' : ''}`}
-      disabled={pending}
-      aria-busy={pending}
+    <Button
+      variant={available || downloaded ? 'primary' : 'secondary'}
+      icon={Icon}
+      busy={pending}
       onClick={() => void action()}
     >
-      <Icon size={15} className={pending ? 'animate-spin' : undefined} aria-hidden="true" />
       {label}
-    </button>
+    </Button>
   )
 }
 
@@ -50,7 +52,12 @@ export function AppUpdateNotice() {
 
   return (
     <aside className="app-update-notice" aria-label={t('appUpdatesTitle')}>
-      <Download size={18} aria-hidden="true" />
+      <Download
+        className="app-update-notice-icon"
+        size={16}
+        strokeWidth={1.75}
+        aria-hidden="true"
+      />
       <div className="app-update-notice-copy" role="status">
         <strong>
           {status.state === 'downloaded'
@@ -63,19 +70,17 @@ export function AppUpdateNotice() {
             : t('updateNoticeDescription')}
         </span>
       </div>
-      <button type="button" className="pulse-text-button" onClick={() => navigate('/about')}>
+      <Button variant="ghost" onClick={() => navigate('/about')}>
         {t('releaseNotes')}
-      </button>
+      </Button>
       <UpdateAction />
-      <button
-        type="button"
-        className="app-update-dismiss"
+      <Button
+        variant="ghost"
+        icon={X}
         onClick={dismiss}
         aria-label={t('updateLater')}
         title={t('updateLater')}
-      >
-        <X size={16} aria-hidden="true" />
-      </button>
+      />
     </aside>
   )
 }
@@ -83,6 +88,7 @@ export function AppUpdateNotice() {
 export function AppUpdateCard() {
   const { t, i18n } = useTranslation('settings')
   const { isPortable } = usePlatform()
+  const reducedMotion = useReducedMotion()
   const status = useAppUpdateStore((s) => s.status)
   const progress = Math.max(0, Math.min(100, Math.round(status.progress ?? 0)))
   const busy = status.state === 'checking' || status.state === 'downloading'
@@ -101,23 +107,32 @@ export function AppUpdateCard() {
               : status.state === 'error'
                 ? t('updateFailed')
                 : t('updateCheckDescription')
-  const Icon =
-    status.state === 'error' ? AlertCircle : status.state === 'not-available' ? Check : Download
+  // Green only for the verified "up to date", red only for an error.
+  const Icon = busy
+    ? RefreshCw
+    : status.state === 'error'
+      ? AlertCircle
+      : status.state === 'not-available'
+        ? Check
+        : Download
+  const iconTone =
+    status.state === 'error'
+      ? 'app-update-status-error'
+      : status.state === 'not-available' && !isPortable
+        ? 'app-update-status-ok'
+        : undefined
+  const External = icons.external
 
   return (
-    <section className="app-update-card" aria-labelledby="app-update-heading">
-      <div className="app-update-card-heading">
-        <span className="app-update-icon">
-          <Icon size={22} aria-hidden="true" />
-        </span>
-        <div>
-          <h2 id="app-update-heading">{t('appUpdatesTitle')}</h2>
-          <p>{t('updateChannelDescription')}</p>
-        </div>
-        <span className="app-release-channel">{t('stableChannel')}</span>
-      </div>
+    <Section title={t('appUpdatesTitle')} meta={t('stableChannel')} className="app-update-card">
+      <p className="app-update-help">{t('updateChannelDescription')}</p>
       <div className="app-update-status" role="status" aria-live="polite">
-        {busy && <RefreshCw size={16} className="animate-spin" aria-hidden="true" />}
+        <Icon
+          size={16}
+          strokeWidth={1.75}
+          className={cn(iconTone, busy && !reducedMotion && 'ui-spin')}
+          aria-hidden="true"
+        />
         <span>{label}</span>
       </div>
       {status.state === 'error' && (
@@ -126,7 +141,9 @@ export function AppUpdateCard() {
         </p>
       )}
       {status.state === 'downloading' && (
-        <progress className="app-update-progress" value={progress} max={100} aria-label={label} />
+        <div className="app-update-progress">
+          <ProgressBar value={progress / 100} label={label} />
+        </div>
       )}
       {isPortable && <p className="app-update-help">{t('portableUpdatesDesc')}</p>}
       {status.state === 'downloaded' && (
@@ -134,9 +151,18 @@ export function AppUpdateCard() {
       )}
       <div className="app-update-actions">
         {!isPortable && <UpdateAction />}
-        <a className="pulse-text-button" href={APP_RELEASES_URL} target="_blank" rel="noreferrer">
-          {t(isPortable ? 'portableDownload' : 'viewReleases')}
-          <ArrowUpRight size={15} aria-hidden="true" />
+        <a
+          className="ui-button"
+          data-variant="ghost"
+          data-size="md"
+          href={APP_RELEASES_URL}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span className="ui-button-label">
+            {t(isPortable ? 'portableDownload' : 'viewReleases')}
+          </span>
+          <External className="ui-button-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
         </a>
       </div>
       {status.checkedAt && !isPortable && (
@@ -150,6 +176,6 @@ export function AppUpdateCard() {
           <div>{status.releaseNotes}</div>
         </details>
       )}
-    </section>
+    </Section>
   )
 }

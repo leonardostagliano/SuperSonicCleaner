@@ -1,0 +1,550 @@
+/* Software pages (/updates, /drivers, /uninstaller, /debloater, /context-menu): the pieces
+   they share on top of components/ui. Tokens only. A declaration marked "legacy:" beats an
+   older global rule that forces its value; Task C1 deletes those rules, then it can go. */
+
+/* ── Page body: one flat card per block, a fixed rhythm between them ───────── */
+.sw-page {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.sw-page > * {
+  min-width: 0;
+}
+
+/* ── Summary: the number that matters and the action that uses it ──────────── */
+.sw-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+}
+.sw-summary-text {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.sw-summary-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-20);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.sw-summary-detail {
+  margin: var(--space-1) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.sw-summary-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/* ── Progress card ──────────────────────────────────────────────────────── */
+.sw-progress {
+  display: grid;
+  gap: var(--space-2);
+}
+.sw-progress-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.sw-progress-status {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.sw-progress-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sw-progress-meta {
+  flex: none;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+.sw-progress-detail {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.sw-progress-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+
+/* ── Note: a neutral remark with an icon (warnings that are not errors) ───── */
+.sw-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+.sw-note-icon {
+  flex: none;
+  margin-top: 2px;
+  color: var(--text-muted);
+}
+.sw-note-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.sw-note-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.sw-note-text {
+  margin: 0;
+}
+.sw-note-aside {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── List card: a toolbar, then hairline rows ──────────────────────────────── */
+.sw-list {
+  padding-block: var(--space-3);
+}
+.sw-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-medium);
+}
+/* Takes the rest of the line and keeps its controls at the end, wrapping when short. */
+.sw-toolbar-end {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.sw-select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline-start: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.sw-list-empty {
+  margin: 0;
+  padding: var(--space-4) var(--space-3) var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-13);
+}
+/* Row content inside a ListRow (components/ui): name and sub line, then an aside. */
+.ui-list-row[data-muted] .sw-row-name {
+  color: var(--text-secondary);
+}
+.sw-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sw-row-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+  line-height: 1.5;
+}
+.sw-row-name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sw-row-sub {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.sw-row-aside {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-3);
+}
+.sw-row-meta {
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.sw-row-meta-sub {
+  display: block;
+  color: var(--text-muted);
+}
+.sw-row-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+}
+.sw-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+.sw-muted {
+  color: var(--text-muted);
+}
+.sw-version-new {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+/* Green only for a verified result, red only for errors (spec 3.1). */
+.sw-ok-text {
+  color: var(--signal-ok-text);
+}
+.sw-danger-text {
+  color: var(--signal-danger-text);
+}
+
+/* ── Result: what an operation did, item by item ───────────────────────────── */
+.sw-result {
+  display: grid;
+  gap: var(--space-3);
+}
+.sw-result-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.sw-result-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sw-result-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+.sw-result-facts {
+  margin: var(--space-1) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.sw-result-list {
+  max-height: 16rem;
+  margin: 0;
+  overflow-y: auto;
+  padding: 0;
+  border-top: 1px solid var(--border-default);
+  list-style: none;
+}
+.sw-result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-2) 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.sw-result-item + .sw-result-item {
+  border-top: 1px solid var(--border-default);
+}
+.sw-result-item-icon {
+  flex: none;
+  margin-top: 2px;
+}
+.sw-result-name {
+  min-width: 0;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.sw-result-versions {
+  flex: none;
+  color: var(--text-muted);
+}
+.sw-command {
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  user-select: all;
+  cursor: text;
+}
+
+/* ── Long lists: rows off screen skip style and layout until they scroll in ───
+   `auto` remembers each row's real height once rendered; the sizes are content-box
+   heights (a 37.5 px two-line row; padding and the hairline come on top). */
+.update-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 38px;
+}
+/* Update rows stack a third line (the versions) below their own 820 px container
+   breakpoint, reached when the list is under 832 px (820 + the 12 px row inset). */
+@container update-list (width < 832px) {
+  .update-row {
+    contain-intrinsic-size: auto 56px;
+  }
+}
+
+/* ── Package manager toggles (/updates) ──────────────────────────────────── */
+.sw-managers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.sw-managers-label {
+  margin-inline-end: var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+.sw-managers .ui-button[data-unavailable] .ui-button-label {
+  color: var(--text-muted);
+}
+
+/* ── Search field ──────────────────────────────────────────────────────── */
+.sw-search {
+  position: relative;
+  flex: 0 1 240px;
+  min-width: 160px;
+}
+.sw-search-icon {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 10px;
+  color: var(--text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.sw-search .sw-search-input {
+  width: 100%;
+  height: 32px;
+  padding-block: 0;
+  padding-inline: 32px var(--space-3);
+  border: 1px solid;
+  /* legacy: .app-content :where(input:not([type=checkbox])…) forces the border colour. */
+  border-color: var(--border-strong) !important;
+  border-radius: var(--radius-control);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-13);
+  outline: none;
+}
+.sw-search .sw-search-input::placeholder {
+  color: var(--text-muted);
+}
+.sw-search .sw-search-input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* ── Native select ─────────────────────────────────────────────────────── */
+.sw-toolbar .sw-select {
+  height: 32px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 32px;
+  max-width: 100%;
+  padding: 0 var(--space-3);
+  border: 1px solid;
+  /* legacy: .app-content :where(…select…) forces the border colour. */
+  border-color: var(--border-strong) !important;
+  border-radius: var(--radius-control);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-13);
+}
+
+/* ── Menu button (sort) ────────────────────────────────────────────────── */
+.sw-menu {
+  position: relative;
+}
+.sw-menu-list {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  inset-inline-end: 0;
+  z-index: 40;
+  min-width: 180px;
+  margin: 0;
+  padding: var(--space-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-container);
+  background: var(--flyout-bg);
+  box-shadow: var(--shadow-flyout);
+  list-style: none;
+}
+.sw-menu .sw-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 32px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-13);
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--duration-feedback) var(--ease-out);
+}
+.sw-menu .sw-menu-item:hover,
+.sw-menu .sw-menu-item:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.sw-menu-check {
+  flex: none;
+  width: 16px;
+  color: var(--text-primary);
+}
+.sw-menu-hint {
+  margin-inline-start: auto;
+  padding-inline-start: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+
+/* ── Disclosure: a collapsed list under a counted heading ─────────────────── */
+.sw-disclosure {
+  display: grid;
+  gap: var(--space-2);
+}
+.sw-disclosure .sw-disclosure-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-self: start;
+  height: 32px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: var(--text-13);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    color var(--duration-feedback) var(--ease-out);
+}
+.sw-disclosure .sw-disclosure-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.sw-disclosure .sw-disclosure-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.sw-disclosure-chevron {
+  flex: none;
+  transition: transform var(--duration-feedback) var(--ease-out);
+}
+.sw-disclosure-toggle[aria-expanded='true'] .sw-disclosure-chevron {
+  transform: rotate(90deg);
+}
+.sw-disclosure-toggle[aria-expanded='false'] .sw-disclosure-chevron:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/* ── Inline text button (links inside receipts and notes) ──────────────────── */
+.sw-page .sw-text-button {
+  height: auto;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.sw-page .sw-text-button:hover {
+  color: var(--text-primary);
+  text-decoration-color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sw-disclosure-chevron,
+  .sw-menu .sw-menu-item,
+  .sw-disclosure .sw-disclosure-toggle {
+    transition: none;
+  }
+}

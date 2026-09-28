@@ -537,19 +537,11 @@ summary,
 /* Long lists: rows off screen skip style and layout until they scroll in.
    `auto` remembers each row's real height once it has been rendered. The
    sizes are content-box heights: padding and border come on top of them
-   (update and uninstaller 78px, startup 111px rows; `.service-row` is
-   contained with its other rules further down). */
-.update-row,
+   (startup 111px rows; `.service-row` is contained with its other rules
+   further down; update rows in components/software/software.css). */
 .list-row-cv {
   content-visibility: auto;
   contain-intrinsic-size: auto 45px;
-}
-/* Update rows stack (100px) below their own 820px container breakpoint,
-   reached when the list is under 862px (820 + 40 padding + 2 border). */
-@container update-list (width < 862px) {
-  .update-row {
-    contain-intrinsic-size: auto 66px;
-  }
 }
 .app-content > * {
   width: 100%;
