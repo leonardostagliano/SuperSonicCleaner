@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}} ชม. ที่แล้ว",
   "daysAgo": "{{days}} วันที่แล้ว",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "สิ่งที่ตรวจสอบ"
 }

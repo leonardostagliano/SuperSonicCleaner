@@ -14,7 +14,7 @@
   "runAtStartupDescriptionWindows": "เปิด SuperSonicCleaner เมื่อ Windows เริ่มทำงาน เพื่อให้พีซีของคุณสะอาดอยู่เสมอโดยอัตโนมัติ",
   "runAtStartupDescriptionOther": "เปิด SuperSonicCleaner เมื่อเริ่มต้นระบบ เพื่อให้คอมพิวเตอร์ของคุณสะอาดอยู่เสมอโดยอัตโนมัติ",
   "minimizeToTrayLabel": "ย่อไปยังถาดระบบ",
-  "minimizeToTrayDescription": "ให้ SuperSonicCleaner ทำงานอย่างเงียบ ๆ ในเบื้องหลัง",
+  "minimizeToTrayDescription": "ให้ SuperSonicCleaner ทำงานต่อในเบื้องหลังอย่างเงียบ ๆ",
   "weeklyAutoCleanLabel": "ทำความสะอาดอัตโนมัติทุกสัปดาห์",
   "weeklyAutoCleanDescription": "สแกนและล้างไฟล์ขยะทุกวันจันทร์ เวลา 9:00 น.",
   "back": "ย้อนกลับ",
