@@ -14,5 +14,6 @@
   "hoursAgo": "לפני {{hours}} שע׳",
   "daysAgo": "לפני {{days}} ימים",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "מה נבדק"
 }
