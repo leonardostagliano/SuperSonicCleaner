@@ -1,0 +1,288 @@
+/* Home: the view switch and the advanced report (spec 5.2). Tokens only.
+   This sheet loads before globals.css and pulse.css (it comes with the Home module), so
+   selectors start at .dashboard-view to outrank their equal-specificity rules. */
+
+.dashboard-view {
+  min-width: 0;
+}
+.dashboard-view .dashboard-view-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.dashboard-view .dashboard-view-toolbar > span {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+
+/* ── Report ─────────────────────────────────────────────────────────────── */
+.dashboard-view .home-report {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.dashboard-view .home-report > .page-header {
+  margin-bottom: var(--space-1);
+}
+.dashboard-view .home-outcome:empty {
+  display: none;
+}
+.dashboard-view .home-operation {
+  display: grid;
+  gap: var(--space-2);
+}
+.dashboard-view .home-operation-text {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  color: var(--text-primary);
+  font-size: var(--text-13);
+}
+.dashboard-view .home-operation-count {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-view .home-note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.dashboard-view .home-note p {
+  margin: 0;
+}
+.dashboard-view .home-note .home-note-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Resources: two readings and the session chart */
+.dashboard-view .home-resources {
+  container-type: inline-size;
+}
+.dashboard-view .home-readings {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(160px, 1fr) minmax(260px, 2fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+@container (width < 700px) {
+  .dashboard-view .home-readings {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dashboard-view .home-readings > .home-chart {
+    grid-column: 1 / -1;
+  }
+}
+.dashboard-view .home-reading {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.dashboard-view .home-reading-label {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+.dashboard-view .home-reading-value {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.dashboard-view .home-reading-unit {
+  margin-inline-start: var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--text-15);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.dashboard-view .home-reading-detail {
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-view .home-chart {
+  min-width: 0;
+  margin: 0;
+}
+.dashboard-view .home-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+}
+.dashboard-view .home-chart-title {
+  margin-inline-end: auto;
+  color: var(--text-muted);
+}
+.dashboard-view .home-chart-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dashboard-view .home-chart-key i {
+  display: inline-block;
+  width: 10px;
+  height: 2px;
+  background: var(--chart-1);
+}
+.dashboard-view .home-chart-key i[data-series='memory'] {
+  background: var(--chart-2);
+}
+/* Axis labels and plot are drawn left to right in every language. */
+.dashboard-view .home-chart-plot {
+  position: relative;
+  height: 92px;
+  padding-left: 36px;
+  direction: ltr;
+}
+.dashboard-view .home-chart-plot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.dashboard-view .home-chart-scale span {
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: var(--text-11);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-view .home-chart-waiting {
+  position: absolute;
+  inset: 0 0 0 36px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  text-align: center;
+}
+.dashboard-view .home-chart-times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-1);
+  padding-left: 36px;
+  color: var(--text-muted);
+  font-size: var(--text-11);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+}
+
+/* Storage: one row per drive */
+.dashboard-view .home-drives,
+.dashboard-view .home-activity-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dashboard-view .home-drive {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
+}
+.dashboard-view .home-drive:first-child {
+  padding-top: 0;
+}
+.dashboard-view .home-drive:last-child {
+  padding-bottom: 0;
+}
+.dashboard-view .home-drive + .home-drive {
+  border-top: 1px solid var(--border-default);
+}
+.dashboard-view .home-drive-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+}
+.dashboard-view .home-drive-name {
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.dashboard-view .home-drive-free {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-view .home-drive-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Checks */
+.dashboard-view .home-table-frame {
+  min-width: 0;
+  overflow-x: auto;
+}
+.dashboard-view .home-checks .ui-table tbody td.home-check-name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.dashboard-view .home-checks .ui-table tbody td.home-check-result {
+  color: var(--text-secondary);
+}
+.dashboard-view .home-checks .ui-table .ui-tag {
+  font-size: var(--text-13);
+  white-space: normal;
+}
+.dashboard-view .home-checks .ui-table tbody td.home-check-when {
+  white-space: nowrap;
+}
+.dashboard-view .home-checks .ui-table tbody td.home-check-action {
+  width: 1%;
+  text-align: end;
+}
+/* The report rows are not interactive: no hover tint. */
+.dashboard-view .home-checks .ui-table tbody tr:hover {
+  background: none;
+}
+
+/* Recent activity */
+.dashboard-view .home-activity-row {
+  padding: var(--space-2) 0;
+}
+.dashboard-view .home-activity-row:first-child {
+  padding-top: 0;
+}
+.dashboard-view .home-activity-row + .home-activity-row {
+  border-top: 1px solid var(--border-default);
+}
+.dashboard-view .home-schedule {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+}

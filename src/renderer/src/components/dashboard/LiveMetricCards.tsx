@@ -1,96 +1,77 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { Activity, ArrowRight, Cpu, MemoryStick } from 'lucide-react'
-import { MetricSparkline } from '@/components/perf/MetricSparkline'
+import { Section } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
 import { QuickTelemetryChart } from '@/components/perf/QuickTelemetryChart'
 import { useQuickTelemetry } from '@/hooks/useQuickTelemetry'
 import { formatBytes, NO_VALUE } from '@/lib/utils'
+import { formatPercent } from './when'
 
-// Home's live cards read telemetry themselves: a new sample re-renders these
-// three components, not the whole dashboard. They take no props, so memo also
-// keeps the dashboard's own re-renders (Game Mode's 1 s timer) from reaching them.
+/** CPU at or above this load reads as high. */
+const CPU_HIGH = 70
+const NBSP = ' '
 
-export const CpuCard = memo(function CpuCard() {
-  const { t: tx } = useTranslation('experience')
-  const { current: perf, samples } = useQuickTelemetry()
-  const cpuPct = perf?.cpuPercent ?? 0
-  return (
-    <section className="pulse-card pulse-cpu">
-      <div className="pulse-metric">
-        <div className="pulse-card-heading">
-          <h2>{tx('home.cpu')}</h2>
-          <Cpu size={19} />
-        </div>
-        <div className="pulse-big-value">
-          {perf ? Math.round(cpuPct) : NO_VALUE}
-          <small>{perf ? '%' : ''}</small>
-        </div>
-        <MetricSparkline samples={samples} metric="cpu" label={tx('home.cpu')} />
-        <p>{perf ? tx(cpuPct >= 70 ? 'home.loadHigh' : 'home.loadLow') : tx('home.unavailable')}</p>
-      </div>
-    </section>
-  )
-})
+/** "22,1 GB" as a value and its unit, so the unit can be set smaller. */
+const splitUnit = (text: string): [string, string] => {
+  const at = text.lastIndexOf(NBSP)
+  return at === -1 ? [text, ''] : [text.slice(0, at), text.slice(at + 1)]
+}
 
-export const MemoryCard = memo(function MemoryCard() {
-  const { t: tx } = useTranslation('experience')
-  const { current: perf, samples } = useQuickTelemetry()
-  const ramPct = perf?.memPercent ?? 0
-  return (
-    <section className="pulse-card pulse-memory">
-      <div className="pulse-metric">
-        <div className="pulse-card-heading">
-          <h2>{tx('home.memory')}</h2>
-          <MemoryStick size={20} />
-        </div>
-        <div className="pulse-big-value">
-          {perf ? formatBytes(perf.memUsedBytes) : NO_VALUE}
-          <small>{perf ? ' / ' + formatBytes(perf.memTotalBytes) : ''}</small>
-        </div>
-        <MetricSparkline samples={samples} metric="memory" label={tx('home.memory')} />
-        <p>
-          {tx(!perf ? 'home.memoryUnknown' : ramPct >= 80 ? 'home.memoryBusy' : 'home.memoryRoom')}
-        </p>
-        <span className="pulse-live-label">
-          {perf ? tx('home.used', { percent: Math.round(ramPct) }) : tx('home.unavailable')}
-        </span>
-      </div>
-    </section>
-  )
-})
-
-export const TelemetryPanel = memo(function TelemetryPanel() {
-  const { t } = useTranslation('dashboard')
-  const { t: tx } = useTranslation('experience')
+// Home's live readings subscribe to telemetry themselves: a new sample re-renders this
+// section only. It takes no props, so memo keeps the report's own re-renders out.
+export const ResourcesSection = memo(function ResourcesSection() {
+  const { t, i18n } = useTranslation('dashboard')
   const navigate = useNavigate()
   const { current: perf, samples } = useQuickTelemetry()
+  const locale = i18n.language || 'en'
+  const last = samples.at(-1)
+  const previous = samples.at(-2)
+  const cadence = last && previous ? Math.max(1, Math.round((last.at - previous.at) / 1000)) : null
+  const [memValue, memUnit] = perf ? splitUnit(formatBytes(perf.memUsedBytes)) : [NO_VALUE, '']
   return (
-    <section className="pulse-card pulse-home-telemetry">
-      <div className="pulse-card-heading">
-        <div>
-          <h2>{tx('home.telemetry')}</h2>
-          <p>{tx('home.telemetryDescription')}</p>
+    <Section
+      title={t('resources.title')}
+      meta={cadence ? t('resources.cadence', { seconds: cadence }) : t('resources.waiting')}
+      actions={
+        <Button variant="ghost" onClick={() => navigate('/performance')}>
+          {t('resources.open')}
+        </Button>
+      }
+      className="home-resources"
+    >
+      <div className="home-readings">
+        <div className="home-reading">
+          <span className="home-reading-label">{t('resources.cpu')}</span>
+          <span className="home-reading-value">
+            <span data-audit="home-cpu">{perf ? Math.round(perf.cpuPercent) : NO_VALUE}</span>
+            {perf && <span className="home-reading-unit">%</span>}
+          </span>
+          <span className="home-reading-detail">
+            {perf
+              ? t(perf.cpuPercent >= CPU_HIGH ? 'resources.cpuHigh' : 'resources.cpuLow', {
+                  threshold: formatPercent(CPU_HIGH, locale)
+                })
+              : t('resources.unavailable')}
+          </span>
         </div>
-        <Activity size={18} />
+        <div className="home-reading">
+          <span className="home-reading-label">{t('resources.memory')}</span>
+          <span className="home-reading-value">
+            <span data-audit="home-memory">{memValue}</span>
+            {memUnit && <span className="home-reading-unit">{memUnit}</span>}
+          </span>
+          <span className="home-reading-detail">
+            {perf
+              ? t('resources.memoryOf', {
+                  total: formatBytes(perf.memTotalBytes),
+                  percent: formatPercent(perf.memPercent, locale)
+                })
+              : t('resources.unavailable')}
+          </span>
+        </div>
+        <QuickTelemetryChart samples={samples} />
       </div>
-      <div className="pulse-chart-legend">
-        <span>
-          <i />
-          {tx('home.cpu')}
-          <b>{perf ? Math.round(perf.cpuPercent) + '%' : NO_VALUE}</b>
-        </span>
-        <span>
-          <i />
-          {t('glanceMemory')}
-          <b>{perf ? Math.round(perf.memPercent) + '%' : NO_VALUE}</b>
-        </span>
-      </div>
-      <QuickTelemetryChart samples={samples} />
-      <button className="pulse-text-button" onClick={() => navigate('/performance')}>
-        {tx('home.telemetryAction')}
-        <ArrowRight size={15} />
-      </button>
-    </section>
+    </Section>
   )
 })

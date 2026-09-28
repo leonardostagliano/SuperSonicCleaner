@@ -31,9 +31,9 @@ const NBSP = ' '
 /** Extreme values per route; targets that are not on the page are skipped. */
 const INJECTIONS = {
   '/': [
-    ['.pulse-home-storage .pulse-big-value', `1023,99${NBSP}GB`],
-    ['.pulse-memory .pulse-big-value', `1023,99${NBSP}GB`],
-    ['.pulse-cpu .pulse-big-value', '100']
+    ['[data-audit="home-drive-free"]', `1023,99${NBSP}GB liberi`],
+    ['[data-audit="home-memory"]', `1023,99${NBSP}GB`],
+    ['[data-audit="home-cpu"]', '100']
   ],
   '/updates': [
     ['[data-audit="version-current"]', 'N-124279-g0f6ba39122-20260430'],

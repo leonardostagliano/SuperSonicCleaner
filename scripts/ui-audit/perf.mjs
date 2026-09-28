@@ -98,7 +98,7 @@ try {
     await s.navigate('/about')
     await sleep(1000)
     firstValue.homeStorageMs = await s.evaluate(
-      timeToValue('/', hasValue('.pulse-home-storage .pulse-big-value'))
+      timeToValue('/', hasValue('[data-audit="home-drive-free"]'))
     )
     await s.navigate('/about')
     await sleep(1000)
