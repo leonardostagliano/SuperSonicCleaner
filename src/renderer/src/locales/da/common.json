@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}}t siden",
   "daysAgo": "{{days}}d siden",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Hvad der kontrolleres"
 }

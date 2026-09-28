@@ -1,0 +1,61 @@
+{
+  "title": "AI-analyse",
+  "description": "Få endnu en vurdering af disse scanningsresultater.",
+  "hubDescription": "En ekstra vurdering af scanninger og ydelsesregistreringer, ved hjælp af dit Codex-login.",
+  "hubPrivacy": "Scanninger deler kun anonyme filmetadata. Registreringer deler numeriske målinger af CPU, hukommelse og disk med midlertidige proces-id'er. Navne, stier, noter og filindhold forbliver på denne enhed.",
+  "connectionTitle": "Codex-forbindelse",
+  "connectionIntro": "Brug Codex på denne computer. Kontrollér forbindelsen, og vælg derefter et værktøj nedenfor.",
+  "connected": "Codex er forbundet og klar til analyse, der kun bruger metadata.",
+  "scanFirst": "Kør en scanning først. AI-analysen bliver tilgængelig, når resultaterne er klar.",
+  "anotherRunning": "En anden AI-analyse kører allerede. Du kan finde den under Indstillinger → AI-analyse.",
+  "continuesInBackground": "Analysen fortsætter, mens du bruger andre visninger. Vend tilbage hertil for at se resultatet.",
+  "returnToAnalysis": "Tilbage til analysen",
+  "openTool": "Åbn værktøj",
+  "hubInstructions": "Fuldfør en scanning, eller gem en ydelsesregistrering, aktivér dens AI-analyse, og start den derefter med den dedikerede knap. Der sendes intet automatisk.",
+  "tools": {
+    "cleaner": {
+      "title": "Systemoprydning",
+      "description": "Gennemgå scannede oprydningskandidater ved hjælp af anonyme filmetadata. Privatlivsspor er udelukket."
+    },
+    "largeFiles": {
+      "title": "Store filer",
+      "description": "Vurdér, hvilke store filer der fortjener et nærmere kig, ud fra størrelse, kategori og cirka alder."
+    },
+    "duplicates": {
+      "title": "Dubletfiler",
+      "description": "Få forslag til dubletgrupper, der skal gennemgås. Du vælger, hvilke filer der skal beholdes."
+    },
+    "disk": {
+      "title": "Diskanalyse",
+      "description": "Gennemgå de største mapper ved hjælp af aggregerede størrelsesoplysninger."
+    },
+    "performance": {
+      "title": "Ydelsesregistreringer",
+      "description": "Kobl CPU-, hukommelses- og diskaktivitet sammen for at undersøge en langsomhed, med understøttende målinger og foreslåede kontroller."
+    }
+  },
+  "enable": "Aktivér AI-analyse for denne visning",
+  "privacy": "Kun midlertidige id'er, generiske filtyper, størrelser og cirka filaldre sendes. Navne, stier, hashværdier og filindhold forbliver på denne enhed.",
+  "accessCaveat": "Seneste adgang er filsystemmetadata. Den kan mangle eller være ændret af en anden app og beviser ikke, hvornår du sidst åbnede en fil.",
+  "diskAggregation": "En mapperække repræsenterer dens samlede størrelse. Den viser ikke, hvilke filer i mappen der bør gennemgås.",
+  "checking": "Kontrollerer AI-tilgængelighed…",
+  "codexMissing": "Installer Codex på denne computer for at bruge AI-analyse.",
+  "unsupportedVersion": "Denne Codex-version kan ikke garantere den påkrævede privatlivsgrænse, der er begrænset til metadata. Brug den understøttede version, Codex 0.157.1.",
+  "unsafeConfiguration": "Den aktuelle Codex-konfiguration kan ikke garantere en analyse, der kun bruger metadata. Gennemgå din lokale Codex-konfiguration, før du prøver igen.",
+  "signIn": "Åbn Codex på denne computer, og log ind for at bruge AI-analyse.",
+  "unavailable": "AI-analyse er ikke tilgængelig lige nu. Kontrollér Codex på denne computer, og prøv igen.",
+  "retryConnection": "Kontrollér igen",
+  "analyze": "Analysér disse resultater",
+  "analyzing": "Analyserer…",
+  "cancelling": "Annullerer…",
+  "cancel": "Annuller",
+  "limit": "Op til {{count}} elementer",
+  "omitted": "{{count}} yderligere elementer blev udeladt af denne analyse.",
+  "failed": "Analysen kunne ikke fuldføres. Prøv igen.",
+  "advisory": "Gennemgå selv disse forslag. AI-analysen vælger eller sletter aldrig filer.",
+  "priority": {
+    "low": "Lav prioritet",
+    "medium": "Mellem prioritet",
+    "high": "Høj prioritet"
+  }
+}
