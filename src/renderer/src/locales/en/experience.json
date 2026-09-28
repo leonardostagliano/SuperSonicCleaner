@@ -19,7 +19,7 @@
     "uninstaller": "Keep the apps you use. Review an app's details before uninstalling or removing leftover files.",
     "history": "The last 100 scans and cleanups run on this PC, with date, duration, items processed and space freed, and the receipt of each cleanup.",
     "settings": "Appearance, language, startup, notifications, updates, backups, cleaning preferences and exclusions. Every change is saved immediately.",
-    "about": "Open source, thoughtfully made. Find your version, check for updates, and meet the project.",
+    "about": "Installed version, updates, MIT licence and the original project (Kudu).",
     "breach": "Check whether an email appears in known breaches. Review what was exposed and the recommended next steps.",
     "privacy": "Choose what your computer shares. Review each recommendation and keep the settings you rely on.",
     "services": "Understand the services behind your system. Check purpose and safety before changing startup behavior.",

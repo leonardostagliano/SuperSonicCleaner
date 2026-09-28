@@ -73,7 +73,7 @@
   "addButton": "Add",
   "sectionAbout": "About",
   "appVersion": "SuperSonicCleaner v{{version}}",
-  "license": "MIT License · Open Source",
+  "license": "MIT licence · open source",
   "checkForUpdates": "Check for updates",
   "checkingForUpdates": "Checking for updates...",
   "upToDate": "You're up to date",

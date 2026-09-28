@@ -1,71 +1,65 @@
+import './about-page.css'
 import { useTranslation } from 'react-i18next'
-import { Github, Bug, ExternalLink } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { AppUpdateCard } from '@/components/updates/AppUpdates'
+import { Card, Section } from '@/components/ui'
 import { APP_REPOSITORY_URL } from '@shared/app-release'
+import { icons } from '@/lib/icons'
 import logoSrc from '@/assets/logo.png'
 import { BrandWordmark } from '@/components/shared/BrandWordmark'
 
 declare const __APP_VERSION__: string
 
+const UPSTREAM_URL = 'https://github.com/AdventDevInc/kudu'
+
 export function AboutPage() {
   const { t } = useTranslation('settings')
   return (
-    <div className="animate-fade-in">
+    <div className="about-page">
       <PageHeader title={t('sectionAbout')} />
-      <section className="glass-card rounded-2xl p-7">
-        <div className="flex flex-wrap items-center gap-5">
-          <img src={logoSrc} alt="" className="h-20 w-20" />
-          <div className="min-w-0 flex-1">
-            <BrandWordmark className="mb-3" />
-            <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
-              {t('appVersion', { version: __APP_VERSION__ })}
-            </h2>
-            <p className="mt-1 text-[13px]" style={{ color: 'var(--text-muted)' }}>
-              {t('license')}
+      <div className="about-stack">
+        <Card className="about-product">
+          <img src={logoSrc} alt="" className="about-logo" />
+          <div className="about-product-text">
+            <BrandWordmark className="about-wordmark" />
+            <h2 className="about-version">{t('appVersion', { version: __APP_VERSION__ })}</h2>
+            <p className="about-meta">
+              {t('license')} · {t('forkEdition')}
             </p>
           </div>
-          <span className="app-release-channel">{t('forkEdition')}</span>
-        </div>
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <LinkButton icon={Github} label={t('github')} href={APP_REPOSITORY_URL} />
-          <LinkButton icon={Bug} label={t('reportBug')} href={`${APP_REPOSITORY_URL}/issues`} />
-        </div>
-      </section>
-      <AppUpdateCard />
-      <div className="mt-6 flex flex-wrap items-center gap-4 p-2">
-        <Github size={19} style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
-        <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-medium" style={{ color: 'var(--text-secondary)' }}>
-            {t('upstreamCredit')}
-          </p>
-          <p className="mt-1 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-            {t('forkAttribution')}
-          </p>
-        </div>
-        <LinkButton
-          icon={Github}
-          label={t('upstreamRepository')}
-          href="https://github.com/AdventDevInc/kudu"
-        />
+          <div className="about-links">
+            <ExternalLink href={APP_REPOSITORY_URL} label={t('github')} />
+            <ExternalLink href={`${APP_REPOSITORY_URL}/issues`} label={t('reportBug')} />
+          </div>
+        </Card>
+
+        <AppUpdateCard />
+
+        <Section
+          title={t('upstreamCredit')}
+          actions={<ExternalLink href={UPSTREAM_URL} label={t('upstreamRepository')} />}
+        >
+          <p className="about-text">{t('forkAttribution')}</p>
+        </Section>
       </div>
     </div>
   )
 }
 
-function LinkButton({
-  icon: Icon,
-  label,
-  href
-}: {
-  icon: typeof Github
-  label: string
-  href: string
-}) {
+/** A link that leaves the app, drawn as a secondary button with the external glyph. */
+function ExternalLink({ href, label }: { href: string; label: string }) {
+  const External = icons.external
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="pulse-button">
-      <Icon size={15} strokeWidth={1.8} aria-hidden="true" /> {label}
-      <ExternalLink size={12} aria-hidden="true" />
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="ui-button"
+      data-variant="secondary"
+      data-size="md"
+    >
+      <External className="ui-button-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
+      <span className="ui-button-label">{label}</span>
     </a>
   )
 }
