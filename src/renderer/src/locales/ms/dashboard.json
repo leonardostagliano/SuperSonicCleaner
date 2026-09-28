@@ -90,7 +90,7 @@
   "greetingEvening": "Selamat malam",
   "greetingDeviceNeedsAttention": "Peranti anda memerlukan perhatian. {{count}} ancaman aktif masih kekal.",
   "greetingDeviceNeedsAttentionPlural": "Peranti anda memerlukan perhatian. {{count}} ancaman aktif masih kekal.",
-  "greetingEstablishingStatus": "SuperSonicCleaner masih menentukan status peranti ini. Selesaikan semakan yang selebihnya untuk ringkasan kesihatan yang boleh dipercayai.",
+  "greetingEstablishingStatus": "SuperSonicCleaner masih menentukan status peranti ini. Lengkapkan semakan yang tinggal untuk ringkasan kesihatan yang boleh dipercayai.",
   "greetingHealthyAllUpToDate": "PC anda berada dalam keadaan baik dan semua yang penting adalah terkini.",
   "greetingChecksCompleteItems": "Semakan anda telah selesai. {{count}} item sedia untuk disemak.",
   "greetingChecksCompleteItemsPlural": "Semakan anda telah selesai. {{count}} item sedia untuk disemak.",

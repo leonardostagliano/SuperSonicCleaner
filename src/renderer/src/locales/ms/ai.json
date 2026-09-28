@@ -1,0 +1,61 @@
+{
+  "title": "Analisis AI",
+  "description": "Dapatkan pendapat kedua tentang hasil imbasan ini.",
+  "hubDescription": "Pendapat kedua tentang imbasan dan rakaman prestasi, menggunakan log masuk Codex anda.",
+  "hubPrivacy": "Imbasan hanya berkongsi metadata fail tanpa nama. Rakaman berkongsi ukuran berangka CPU, memori dan cakera berserta ID proses sementara. Nama, laluan, nota dan kandungan fail kekal pada peranti ini.",
+  "connectionTitle": "Sambungan Codex",
+  "connectionIntro": "Gunakan Codex pada komputer ini. Semak sambungan, kemudian pilih alat di bawah.",
+  "connected": "Codex disambungkan dan sedia untuk analisis metadata sahaja.",
+  "scanFirst": "Jalankan imbasan dahulu. Analisis AI tersedia apabila hasilnya siap.",
+  "anotherRunning": "Analisis AI lain sedang berjalan. Anda boleh mencarinya dalam Keutamaan → Analisis AI.",
+  "continuesInBackground": "Analisis diteruskan semasa anda menggunakan paparan lain. Kembali ke sini untuk melihat hasilnya.",
+  "returnToAnalysis": "Kembali ke analisis",
+  "openTool": "Buka alat",
+  "hubInstructions": "Lengkapkan imbasan atau simpan rakaman prestasi, dayakan analisis AI untuknya, kemudian mulakan dengan butang khusus. Tiada apa-apa dihantar secara automatik.",
+  "tools": {
+    "cleaner": {
+      "title": "Pembersihan sistem",
+      "description": "Semak calon pembersihan yang diimbas menggunakan metadata fail tanpa nama. Jejak privasi tidak disertakan."
+    },
+    "largeFiles": {
+      "title": "Fail besar",
+      "description": "Semak fail besar yang wajar diteliti, menggunakan saiz, kategori dan anggaran umur."
+    },
+    "duplicates": {
+      "title": "Fail pendua",
+      "description": "Dapatkan cadangan tentang kumpulan pendua untuk disemak. Anda memilih fail yang hendak disimpan."
+    },
+    "disk": {
+      "title": "Analisis cakera",
+      "description": "Semak folder terbesar menggunakan maklumat saiz teragregat."
+    },
+    "performance": {
+      "title": "Rakaman prestasi",
+      "description": "Hubungkan aktiviti CPU, memori dan cakera untuk menyiasat kelembapan, berserta ukuran sokongan dan semakan yang dicadangkan."
+    }
+  },
+  "enable": "Dayakan analisis AI untuk paparan ini",
+  "privacy": "Hanya ID sementara, jenis fail generik, saiz dan anggaran umur fail dihantar. Nama, laluan, hash dan kandungan fail kekal pada peranti ini.",
+  "accessCaveat": "Akses terakhir ialah metadata sistem fail. Ia mungkin tiada atau diubah oleh aplikasi lain, dan tidak membuktikan bila anda terakhir membuka fail tersebut.",
+  "diskAggregation": "Satu baris folder mewakili jumlah saiznya. Ia tidak menunjukkan fail mana di dalam folder yang perlu disemak.",
+  "checking": "Menyemak ketersediaan AI…",
+  "codexMissing": "Pasang Codex pada komputer ini untuk menggunakan analisis AI.",
+  "unsupportedVersion": "Versi Codex ini tidak dapat menyediakan sempadan privasi metadata sahaja yang diperlukan. Gunakan versi Codex 0.157.1 yang disokong.",
+  "unsafeConfiguration": "Konfigurasi Codex semasa tidak dapat menjamin analisis metadata sahaja. Semak konfigurasi Codex tempatan anda sebelum mencuba lagi.",
+  "signIn": "Buka Codex pada komputer ini dan log masuk untuk menggunakan analisis AI.",
+  "unavailable": "Analisis AI tidak tersedia buat masa ini. Semak Codex pada komputer ini dan cuba lagi.",
+  "retryConnection": "Semak semula",
+  "analyze": "Analisis hasil ini",
+  "analyzing": "Menganalisis…",
+  "cancelling": "Membatalkan…",
+  "cancel": "Batal",
+  "limit": "Sehingga {{count}} item",
+  "omitted": "{{count}} item lagi tidak disertakan dalam analisis ini.",
+  "failed": "Analisis tidak dapat diselesaikan. Cuba lagi.",
+  "advisory": "Semak cadangan ini sendiri. Analisis AI tidak pernah memilih atau memadam fail.",
+  "priority": {
+    "low": "Keutamaan rendah",
+    "medium": "Keutamaan sederhana",
+    "high": "Keutamaan tinggi"
+  }
+}
