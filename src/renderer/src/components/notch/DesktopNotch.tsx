@@ -238,6 +238,8 @@ export function DesktopNotch() {
       className={`desktop-notch ${state.expanded ? 'is-expanded' : ''}`}
       style={
         {
+          '--panel-x': `${state.panelOrigin.x}px`,
+          '--panel-y': `${state.panelOrigin.y}px`,
           '--compact-x': `${compactX}px`,
           '--compact-y': `${compactY}px`
         } as CSSProperties

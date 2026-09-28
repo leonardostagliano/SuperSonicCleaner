@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, nativeTheme } from 'electron'
 import { NOTCH_IPC, NOTCH_MOTION_MS, type NotchState } from '../../shared/desktop-notch'
 import { initDesktopNotch } from './desktop-notch'
 import { perfMonitor } from './perf-monitor'
@@ -129,10 +129,19 @@ const invoke = (name: string, ...args: unknown[]) => {
   const sender = window.webContents
   return mocks.handlers.get(name)?.({ sender, senderFrame: sender.mainFrame }, ...args)
 }
-const beginMove = (window: BrowserWindow) => {
-  const movingWindow = window as unknown as { listeners: Map<string, () => void> }
-  movingWindow.listeners.get('move')?.()
+const emit = (window: BrowserWindow, name: string) => {
+  const target = window as unknown as { listeners: Map<string, () => void> }
+  target.listeners.get(name)?.()
 }
+const beginMove = (window: BrowserWindow) => emit(window, 'move')
+/** The OS move loop of a drag by the grip on Windows: 'will-move' … 'move' … 'moved'. */
+const dragTo = (window: BrowserWindow, x: number, y: number) => {
+  emit(window, 'will-move')
+  window.setPosition(x, y)
+  emit(window, 'move')
+}
+const TAB = { x: 280, y: 264, width: 64, height: 202 }
+const CANVAS = { width: 624, height: 730 }
 const readyToShow = (window: BrowserWindow) => {
   const readyWindow = window as unknown as { listeners: Map<string, () => void> }
   readyWindow.listeners.get('ready-to-show')?.()
@@ -164,6 +173,7 @@ describe('desktop notch motion lifecycle', () => {
     )
     const window = mocks.current as InstanceType<typeof BrowserWindow>
     const bounds = window.getBounds()
+    // No window region on macOS: the window stays the panel, not the larger canvas.
     expect(bounds).toMatchObject({ width: 344, height: 466 })
     expect(shapeOf(window)).toEqual([])
 
@@ -185,8 +195,8 @@ describe('desktop notch motion lifecycle', () => {
     )
     const window = mocks.current as InstanceType<typeof BrowserWindow>
     const bounds = window.getBounds()
-    expect(bounds).toMatchObject({ width: 344, height: 466 })
-    expect(shapeOf(window)).toMatchObject([{ width: 64, height: 202 }])
+    expect(bounds).toMatchObject(CANVAS)
+    expect(shapeOf(window)).toEqual([TAB])
 
     invoke(NOTCH_IPC.EXPANDED, true)
     expect(window.getBounds()).toEqual(bounds)
@@ -194,10 +204,10 @@ describe('desktop notch motion lifecycle', () => {
     invoke(NOTCH_IPC.EXPANDED, false)
     expect(window.getBounds()).toEqual(bounds)
     invoke(NOTCH_IPC.MOVE, 10, 0)
-    expect(window.getBounds()).toMatchObject({ width: 344, height: 466 })
+    expect(window.getBounds()).toMatchObject(CANVAS)
     invoke(NOTCH_IPC.COLLAPSE_FINISHED)
-    expect(window.getBounds()).toMatchObject({ width: 344, height: 466 })
-    expect(shapeOf(window)).toMatchObject([{ width: 64, height: 202 }])
+    expect(window.getBounds()).toMatchObject(CANVAS)
+    expect(shapeOf(window)).toEqual([TAB])
     dispose()
   })
 
@@ -213,7 +223,7 @@ describe('desktop notch motion lifecycle', () => {
     invoke(NOTCH_IPC.EXPANDED, true)
     vi.advanceTimersByTime(NOTCH_MOTION_MS + 200)
     invoke(NOTCH_IPC.COLLAPSE_FINISHED)
-    expect(window.getBounds()).toMatchObject({ width: 344, height: 466 })
+    expect(window.getBounds()).toMatchObject(CANVAS)
     expect(shapeOf(window)).toMatchObject([{ width: 344, height: 466 }])
     dispose()
   })
@@ -229,14 +239,16 @@ describe('desktop notch motion lifecycle', () => {
     const offset = (invoke(NOTCH_IPC.GET) as NotchState).compactOffset
     expect(offset.x).toBeGreaterThan(0)
     expect(offset.y).toBeGreaterThan(0)
-    expect(shapeOf(window)).toMatchObject([{ x: offset.x, y: offset.y, width: 64, height: 202 }])
+    expect(shapeOf(window)).toEqual([TAB])
     beginMove(window)
     invoke(NOTCH_IPC.EXPANDED, true)
-    expect(window.getBounds()).toMatchObject({ width: 344, height: 466 })
-    expect(shapeOf(window)).toMatchObject([{ width: 64, height: 202 }])
+    expect(window.getBounds()).toMatchObject(CANVAS)
+    expect(shapeOf(window)).toEqual([TAB])
     vi.advanceTimersByTime(650)
-    expect(window.getBounds()).toMatchObject({ width: 344, height: 466 })
-    expect(shapeOf(window)).toMatchObject([{ width: 344, height: 466 }])
+    expect(window.getBounds()).toMatchObject(CANVAS)
+    expect(shapeOf(window)).toEqual([
+      { x: TAB.x - offset.x, y: TAB.y - offset.y, width: 344, height: 466 }
+    ])
     dispose()
   })
 
@@ -251,8 +263,8 @@ describe('desktop notch motion lifecycle', () => {
     invoke(NOTCH_IPC.EXPANDED, true)
     invoke(NOTCH_IPC.EXPANDED, false)
     vi.advanceTimersByTime(700)
-    expect(window.getBounds()).toMatchObject({ width: 344, height: 466 })
-    expect(shapeOf(window)).toMatchObject([{ width: 64, height: 202 }])
+    expect(window.getBounds()).toMatchObject(CANVAS)
+    expect(shapeOf(window)).toEqual([TAB])
     dispose()
   })
 
@@ -273,10 +285,59 @@ describe('desktop notch motion lifecycle', () => {
     expect(after.height).toBe(before.height)
     expect(after.x + afterShape.x).toBe(before.x + beforeShape.x - 10)
     expect(after.y + afterShape.y).toBe(before.y + beforeShape.y - 10)
-    expect((invoke(NOTCH_IPC.GET) as NotchState).compactOffset).toEqual({
-      x: afterShape.x,
-      y: afterShape.y
-    })
+    const offset = (invoke(NOTCH_IPC.GET) as NotchState).compactOffset
+    invoke(NOTCH_IPC.EXPANDED, true)
+    vi.advanceTimersByTime(650)
+    expect(shapeOf(window)).toEqual([
+      { x: TAB.x - offset.x, y: TAB.y - offset.y, width: 344, height: 466 }
+    ])
+    dispose()
+  })
+
+  it('leaves a dragged tab where it was dropped and only then restores its input region', () => {
+    vi.useFakeTimers()
+    mocks.position = { displayId: 1, x: 1, y: 1 }
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    const send = vi.mocked(window.webContents.send)
+    const themeChanged = vi.mocked(nativeTheme.on).mock.calls[0][1] as () => void
+    const start = window.getBounds()
+    expect((invoke(NOTCH_IPC.GET) as NotchState).compactOffset).toEqual({ x: 280, y: 264 })
+
+    // Windows keeps the region in physical pixels: on a display with another scale it
+    // would crop the tab, so the drag runs without one.
+    dragTo(window, start.x - 500, start.y - 300)
+    expect(shapeOf(window)).toEqual([])
+    themeChanged()
+    vi.advanceTimersByTime(1000)
+    expect(send).not.toHaveBeenCalled()
+    expect(window.getBounds()).toMatchObject({ x: start.x - 500, y: start.y - 300 })
+
+    emit(window, 'moved')
+    // The panel now opens to the right and below, but the tab stays where it was dropped.
+    expect(window.getBounds()).toEqual({ ...start, x: start.x - 500, y: start.y - 300 })
+    expect(shapeOf(window)).toEqual([TAB])
+    const state = send.mock.lastCall?.[1] as NotchState
+    expect(state.compactOffset).toEqual({ x: 0, y: 0 })
+    dispose()
+  })
+
+  it('snaps a tab dropped past the edge of the screen back onto it', () => {
+    vi.useFakeTimers()
+    mocks.position = { displayId: 1, x: 1, y: 0.5 }
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    const start = window.getBounds()
+    dragTo(window, start.x + 40, start.y)
+    emit(window, 'moved')
+    expect(window.getBounds()).toEqual(start)
+    expect(shapeOf(window)).toEqual([TAB])
     dispose()
   })
 

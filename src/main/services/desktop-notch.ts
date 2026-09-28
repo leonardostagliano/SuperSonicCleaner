@@ -4,6 +4,7 @@ import { statfs } from 'node:fs/promises'
 import { join, parse } from 'node:path'
 import { app } from 'electron'
 import {
+  NOTCH_COMPACT,
   NOTCH_IPC,
   NOTCH_MOTION_MS,
   type NotchMetrics,
@@ -12,7 +13,7 @@ import {
 } from '../../shared/desktop-notch'
 import { getDataDir, getSettings } from './settings-store'
 import { perfMonitor } from './perf-monitor'
-import { restoreNotchBounds, saveNotchPosition } from './notch-position'
+import { notchLayout, restoreNotchBounds, saveNotchPosition } from './notch-position'
 
 interface NotchConfig {
   enabled: boolean
@@ -56,6 +57,8 @@ export function initDesktopNotch(
   let collapseTimer: ReturnType<typeof setTimeout> | null = null
   let expandTimer: ReturnType<typeof setTimeout> | null = null
   let shrinkTimer: ReturnType<typeof setTimeout> | null = null
+  let dragTimer: ReturnType<typeof setTimeout> | null = null
+  let dragging = false
   let movingUntil = 0
   let placingUntil = 0
   let shuttingDown = false
@@ -70,16 +73,22 @@ export function initDesktopNotch(
       console.error('Could not save desktop notch settings:', error)
     }
   }
-  const state = (): NotchState => {
-    const settings = getSettings()
+  const layout = () => {
     const availableDisplays = displays()
     const compact = restoreNotchBounds(config.position, availableDisplays, false)
     const open = restoreNotchBounds(config.position, availableDisplays, true)
+    // macOS has no window region, so there the window stays the size of the panel.
+    return { compact, open, ...notchLayout(compact, open, process.platform !== 'darwin') }
+  }
+  const state = (): NotchState => {
+    const settings = getSettings()
+    const { compact, open, panel } = layout()
     return {
       enabled: config.enabled,
       pinned: config.pinned,
       expanded,
       compactOffset: { x: compact.x - open.x, y: compact.y - open.y },
+      panelOrigin: { x: panel.x, y: panel.y },
       theme:
         settings.theme === 'system'
           ? nativeTheme.shouldUseDarkColors
@@ -91,6 +100,8 @@ export function initDesktopNotch(
     }
   }
   const broadcast = () => {
+    // A drag ends with a broadcast; repainting the tab while the OS moves it only adds work.
+    if (dragging) return
     for (const target of [win, getMainWindow()]) {
       if (target && !target.isDestroyed() && !target.webContents.isDestroyed()) {
         try {
@@ -146,8 +157,8 @@ export function initDesktopNotch(
     syncVisibility()
   }
   const place = () => {
-    if (!win || win.isDestroyed()) return
-    const bounds = restoreNotchBounds(config.position, displays(), true)
+    if (!win || win.isDestroyed() || dragging) return
+    const bounds = layout().window
     placingUntil = Date.now() + 200
     const current = win.getBounds()
     if (
@@ -160,22 +171,10 @@ export function initDesktopNotch(
     shapeWindow()
   }
   const shapeWindow = () => {
-    if (!win || win.isDestroyed()) return
+    if (!win || win.isDestroyed() || dragging) return
     if (process.platform === 'darwin') return
-    const bounds = restoreNotchBounds(config.position, displays(), true)
-    const compact = restoreNotchBounds(config.position, displays(), false)
-    win.setShape(
-      expanded || shrinkTimer
-        ? [{ x: 0, y: 0, width: bounds.width, height: bounds.height }]
-        : [
-            {
-              x: compact.x - bounds.x,
-              y: compact.y - bounds.y,
-              width: compact.width,
-              height: compact.height
-            }
-          ]
-    )
+    const { tab, panel } = layout()
+    win.setShape([expanded || shrinkTimer ? panel : tab])
   }
   const cancelShrink = () => {
     if (shrinkTimer) clearTimeout(shrinkTimer)
@@ -197,17 +196,36 @@ export function initDesktopNotch(
   const rememberPosition = () => {
     if (!win || win.isDestroyed()) return
     const bounds = win.getBounds()
-    const compact = restoreNotchBounds(config.position, displays(), false)
-    const expandedBounds = restoreNotchBounds(config.position, displays(), true)
-    config.position = saveNotchPosition(
-      {
-        ...compact,
-        x: bounds.x + compact.x - expandedBounds.x,
-        y: bounds.y + compact.y - expandedBounds.y
-      },
-      screen.getDisplayMatching(bounds)
-    )
+    const { tab } = layout()
+    const onScreen = { ...NOTCH_COMPACT, x: bounds.x + tab.x, y: bounds.y + tab.y }
+    config.position = saveNotchPosition(onScreen, screen.getDisplayMatching(onScreen))
     persist()
+  }
+  const settle = () => {
+    rememberPosition()
+    place()
+    broadcast()
+  }
+  // A drag by the grip is the OS move loop ('will-move' … 'moved'). Nothing is placed,
+  // shaped or repainted until it ends, so the window just follows the pointer. The input
+  // region is dropped for the drag: Windows keeps it in physical pixels, so on a display
+  // with another scale factor it would crop the tab.
+  const beginDrag = () => {
+    if (dragTimer) clearTimeout(dragTimer)
+    // Fallback for a move loop that never reports its end.
+    dragTimer = setTimeout(endDrag, 10000)
+    if (dragging || !win || win.isDestroyed()) return
+    if (moveTimer) clearTimeout(moveTimer)
+    moveTimer = null
+    win.setShape([])
+    dragging = true
+  }
+  const endDrag = () => {
+    if (dragTimer) clearTimeout(dragTimer)
+    dragTimer = null
+    if (!dragging) return
+    dragging = false
+    settle()
   }
   const cancelCollapse = () => {
     if (collapseTimer) clearTimeout(collapseTimer)
@@ -284,7 +302,7 @@ export function initDesktopNotch(
     expanded = config.pinned
     notchReady = false
     win = new BrowserWindow({
-      ...restoreNotchBounds(config.position, displays(), true),
+      ...layout().window,
       title: 'SuperSonicCleaner · Desktop monitor',
       frame: false,
       transparent: true,
@@ -316,19 +334,27 @@ export function initDesktopNotch(
         broadcast()
       }
     })
+    if (process.platform === 'win32') {
+      // On macOS 'moved' is an alias of 'move'; there the debounce below settles a drag.
+      win.on('will-move', beginDrag)
+      win.on('moved', endDrag)
+    }
     win.on('move', () => {
       if (Date.now() < placingUntil) return
       movingUntil = Date.now() + 600
+      if (dragging) return
       if (moveTimer) clearTimeout(moveTimer)
       moveTimer = setTimeout(() => {
         moveTimer = null
-        rememberPosition()
-        place()
+        settle()
       }, 400)
     })
     win.on('closed', () => {
       win = null
       notchReady = false
+      if (dragTimer) clearTimeout(dragTimer)
+      dragTimer = null
+      dragging = false
       cancelCollapse()
       cancelExpand()
       cancelShrink()

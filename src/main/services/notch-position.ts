@@ -1,4 +1,10 @@
-import { NOTCH_COMPACT, NOTCH_EXPANDED, type NotchPosition } from '../../shared/desktop-notch'
+import {
+  NOTCH_ANCHOR,
+  NOTCH_CANVAS,
+  NOTCH_COMPACT,
+  NOTCH_EXPANDED,
+  type NotchPosition
+} from '../../shared/desktop-notch'
 export { NOTCH_COMPACT, NOTCH_EXPANDED } from '../../shared/desktop-notch'
 interface Area {
   x: number
@@ -31,6 +37,38 @@ export function restoreNotchBounds(
     ),
     width: Math.min(size.width, area.width),
     height: Math.min(size.height, area.height)
+  }
+}
+
+/**
+ * Window geometry for the on-screen tab (`compact`) and panel (`open`); `tab` and `panel`
+ * are in window coordinates. With `canvas` (where a window region clips input: Windows,
+ * Linux) the window is NOTCH_CANVAS with the tab at NOTCH_ANCHOR. Without it (macOS) a
+ * larger window would block clicks around the tab, so the window is the panel itself.
+ */
+export function notchLayout(
+  compact: Area,
+  open: Area,
+  canvas: boolean
+): { window: Area; tab: Area; panel: Area } {
+  const offset = { x: compact.x - open.x, y: compact.y - open.y }
+  const origin = canvas
+    ? { x: NOTCH_ANCHOR.x - offset.x, y: NOTCH_ANCHOR.y - offset.y }
+    : { x: 0, y: 0 }
+  return {
+    window: {
+      x: open.x - origin.x,
+      y: open.y - origin.y,
+      width: canvas ? NOTCH_CANVAS.width : open.width,
+      height: canvas ? NOTCH_CANVAS.height : open.height
+    },
+    tab: {
+      x: origin.x + offset.x,
+      y: origin.y + offset.y,
+      width: compact.width,
+      height: compact.height
+    },
+    panel: { ...origin, width: open.width, height: open.height }
   }
 }
 

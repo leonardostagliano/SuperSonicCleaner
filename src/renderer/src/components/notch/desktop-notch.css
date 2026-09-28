@@ -10,8 +10,8 @@ html.desktop-notch-surface,
 .desktop-notch {
   --notch-tone: var(--chart-1);
   position: absolute;
-  left: 0;
-  top: 0;
+  left: var(--panel-x, 0);
+  top: var(--panel-y, 0);
   width: 344px;
   height: 466px;
   overflow: hidden;
