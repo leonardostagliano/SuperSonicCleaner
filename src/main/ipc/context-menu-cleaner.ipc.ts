@@ -18,7 +18,8 @@ import type {
   ContextMenuScanResult,
   ContextMenuScope,
   ContextMenuSource,
-  ContextMenuStatus
+  ContextMenuStatus,
+  ProgressLabel
 } from '../../shared/types'
 import type { WindowGetter } from './index'
 
@@ -679,12 +680,14 @@ async function applyOne(
   entry: ContextMenuEntry,
   action: ContextMenuAction,
   signal?: AbortSignal
-): Promise<{ ok: true; newStatus: ContextMenuStatus } | { ok: false; reason: string }> {
+): Promise<
+  { ok: true; newStatus: ContextMenuStatus } | { ok: false; reason: string | ProgressLabel }
+> {
   if (entry.protected && action !== 'enable') {
-    return { ok: false, reason: 'Entry is protected and cannot be modified.' }
+    return { ok: false, reason: { key: 'contextMenu:errors.protected' } }
   }
   if (entry.requiresAdmin && !isAdmin()) {
-    return { ok: false, reason: 'Access denied — run SuperSonicCleaner as administrator.' }
+    return { ok: false, reason: { key: 'contextMenu:errors.adminRequired' } }
   }
 
   try {
@@ -737,13 +740,13 @@ async function applyOne(
   }
 }
 
-function cleanRegError(message: string): string {
+/** reg.exe's own message when there is one; the known cases as translatable lines. */
+function cleanRegError(message: string): string | ProgressLabel {
   // reg.exe error messages usually start with "ERROR: ".
   const m = message.match(/ERROR:\s*(.+?)(?:\r?\n|$)/)
   if (m) return m[1].trim()
-  if (/access is denied/i.test(message))
-    return 'Access denied — run SuperSonicCleaner as administrator.'
-  if (/cancel/i.test(message)) return 'Operation cancelled'
+  if (/access is denied/i.test(message)) return { key: 'contextMenu:errors.adminRequired' }
+  if (/cancel/i.test(message)) return { key: 'contextMenu:errors.cancelled' }
   return message.length > 200 ? message.substring(0, 200) + '…' : message
 }
 
@@ -756,7 +759,7 @@ export async function applyContextMenu(
   const result: ContextMenuApplyResult = { succeeded: 0, failed: 0, errors: [], updates: [] }
   if (total === 0) return result
 
-  onProgress?.({ current: 0, total, currentLabel: 'Backing up registry…' })
+  onProgress?.({ current: 0, total, currentLabel: { key: 'contextMenu:progress.backup' } })
   await backupShellExtensionHives(signal)
 
   const disabled = readDisabledState()
@@ -768,16 +771,17 @@ export async function applyContextMenu(
     onProgress?.({
       current: i + 1,
       total,
-      currentLabel: entry
-        ? `${labelForAction(req.action)} ${entry.displayName}`
-        : `${labelForAction(req.action)} (unknown)`
+      currentLabel: {
+        key: `contextMenu:progress.${req.action}`,
+        params: { name: entry ? entry.displayName : req.entryId }
+      }
     })
     if (!entry) {
       result.failed++
       result.errors.push({
         entryId: req.entryId,
         displayName: '(unknown)',
-        reason: 'Entry not found — re-scan and try again.'
+        reason: { key: 'contextMenu:errors.notFound' }
       })
       continue
     }
@@ -814,17 +818,6 @@ export async function applyContextMenu(
     /* skip */
   }
   return result
-}
-
-function labelForAction(action: ContextMenuAction): string {
-  switch (action) {
-    case 'disable':
-      return 'Disabling'
-    case 'enable':
-      return 'Enabling'
-    case 'delete':
-      return 'Deleting'
-  }
 }
 
 // ── IPC registration ─────────────────────────────────────────────────

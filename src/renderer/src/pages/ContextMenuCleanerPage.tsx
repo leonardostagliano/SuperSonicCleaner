@@ -1,28 +1,18 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  MousePointerClick,
-  Search,
-  StopCircle,
-  Loader2,
-  ChevronDown,
-  Lock,
-  Shield,
-  CheckCircle2,
-  X,
-  Power,
-  Trash2,
-  RotateCcw,
-  Filter,
-  AlertTriangle
-} from 'lucide-react'
+import type { TFunction } from 'i18next'
+import { ChevronDown, Lock, Power, PowerOff, Search, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
-import { ScanProgress } from '@/components/shared/ScanProgress'
+import { Receipt } from '@/components/shared/Receipt'
+import { Button, Card, Checkbox, ListRow, Tag } from '@/components/ui'
+import { Note, ProgressCard, SearchField, SummaryCard } from '@/components/software/SoftwareBlocks'
+import { joinFacts } from '@/components/software/format'
 import { usePlatform } from '@/hooks/usePlatform'
+import { progressText } from '@/lib/progress-label'
 import { useContextMenuStore } from '@/stores/context-menu-store'
 import type {
   ContextMenuAction,
@@ -35,43 +25,10 @@ import type {
 
 const WIN11_NOTICE_KEY = 'kudu.contextMenu.win11Notice.dismissed'
 
-const SOURCE_PILL_COLOR: Record<ContextMenuSource, { bg: string; text: string }> = {
-  '7-Zip': { bg: 'rgba(59,130,246,0.10)', text: '#60a5fa' },
-  WinRAR: { bg: 'rgba(168,85,247,0.10)', text: '#c084fc' },
-  OneDrive: { bg: 'rgba(14,165,233,0.10)', text: '#38bdf8' },
-  'Notepad++': { bg: 'rgba(34,197,94,0.10)', text: '#4ade80' },
-  VSCode: { bg: 'rgba(99,102,241,0.10)', text: '#818cf8' },
-  Defender: { bg: 'rgba(34,197,94,0.10)', text: '#22c55e' },
-  Git: { bg: 'rgba(244,114,22,0.10)', text: '#fb923c' },
-  Dropbox: { bg: 'rgba(59,130,246,0.10)', text: '#60a5fa' },
-  'Google Drive': { bg: 'rgba(245,158,11,0.10)', text: '#fbbf24' },
-  PowerToys: { bg: 'rgba(168,85,247,0.10)', text: '#c084fc' },
-  Microsoft: { bg: 'rgba(20,184,166,0.10)', text: '#2dd4bf' },
-  Windows: { bg: 'rgba(20,184,166,0.10)', text: '#2dd4bf' },
-  Unknown: { bg: 'var(--bg-hover)', text: 'var(--text-muted)' }
-}
-
 // Sources we hide from the list unconditionally — these are first-party Windows
 // pieces that the user almost never wants to disable, and showing them buries
 // the third-party noise the page is actually for.
 const HIDDEN_SOURCES: ReadonlySet<ContextMenuSource> = new Set(['Microsoft', 'Windows', 'Defender'])
-
-const GROUP_PALETTE: ReadonlyArray<{ bg: string; text: string }> = [
-  { bg: 'rgba(59,130,246,0.10)', text: '#60a5fa' },
-  { bg: 'rgba(168,85,247,0.10)', text: '#c084fc' },
-  { bg: 'rgba(14,165,233,0.10)', text: '#38bdf8' },
-  { bg: 'rgba(34,197,94,0.10)', text: '#4ade80' },
-  { bg: 'rgba(99,102,241,0.10)', text: '#818cf8' },
-  { bg: 'rgba(244,114,22,0.10)', text: '#fb923c' },
-  { bg: 'rgba(245,158,11,0.10)', text: '#fbbf24' },
-  { bg: 'rgba(20,184,166,0.10)', text: '#2dd4bf' }
-]
-
-function colorForBinary(name: string): { bg: string; text: string } {
-  let hash = 0
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0
-  return GROUP_PALETTE[hash % GROUP_PALETTE.length]
-}
 
 const SCOPE_LABEL_KEY: Record<ContextMenuScope, string> = {
   AllFiles: 'scopeAllFiles',
@@ -89,17 +46,12 @@ export function ContextMenuCleanerPage() {
 
   if (!features.contextMenu) {
     return (
-      <div className="animate-fade-in">
+      <div>
         <PageHeader
           title={t('pageHeaderUnavailableTitle')}
           description={t('pageHeaderUnavailableDescription')}
-          showWorkflow={false}
         />
-        <EmptyState
-          icon={MousePointerClick}
-          title={t('notAvailableTitle')}
-          description={t('notAvailableDescription')}
-        />
+        <EmptyState title={t('notAvailableTitle')} description={t('notAvailableDescription')} />
       </div>
     )
   }
@@ -201,6 +153,8 @@ function ContextMenuCleanerPageContent() {
   // the 'Unknown' source bucket, so source-based grouping collapsed everything
   // into one giant group.
   const groups = useMemo(() => groupByBinary(visible), [visible])
+  const programCount = useMemo(() => groupByBinary(baseEntries).length, [baseEntries])
+  const disabledCount = baseEntries.filter((e) => e.status === 'disabled').length
 
   // Available filter options derived from the post-hidden list, so the source
   // dropdown doesn't offer Microsoft/Windows/Defender (which would filter to
@@ -269,294 +223,200 @@ function ContextMenuCleanerPageContent() {
   }, [pendingDelete, handleApply])
 
   const requiresAdminInSelection = selectedRequests.some((e) => e.requiresAdmin)
+  const deleteCount = pendingDelete?.length ?? 0
+  const showBar = selectedCount > 0 && !applying
 
   return (
-    <div className="animate-fade-in">
+    <div className={showBar ? 'sw-has-selection-bar' : undefined}>
       <PageHeader
         title={t('pageTitle')}
         description={t('pageDescription')}
         action={
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={handleScan}
-              disabled={scanning || applying}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
-              style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
-            >
-              {scanned ? (
-                <RotateCcw className="h-4 w-4" strokeWidth={1.8} />
-              ) : (
-                <Search className="h-4 w-4" strokeWidth={1.8} />
-              )}
-              {scanned ? t('rescanButton') : t('scanButton')}
-            </button>
-          </div>
+          <Button
+            variant={scanned ? 'secondary' : 'primary'}
+            icon={Search}
+            busy={scanning}
+            disabled={applying}
+            onClick={handleScan}
+          >
+            {scanned ? t('rescanButton') : t('scanButton')}
+          </Button>
         }
       />
 
-      {showWin11 && (
-        <div
-          className="mb-5 flex items-start gap-3 rounded-2xl px-5 py-4"
-          style={{
-            background: 'var(--accent-muted-bg)',
-            border: '1px solid var(--accent-muted-bg)'
-          }}
-        >
-          <Shield className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" strokeWidth={1.8} />
-          <div className="flex-1 text-[12px]">
-            <p className="font-semibold text-amber-500">{t('win11NoticeTitle')}</p>
-            <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>
-              {t('win11NoticeBody')}
-            </p>
-          </div>
-          <button
-            onClick={dismissWin11}
-            className="rounded-md p-1 transition-colors hover:bg-zinc-800"
-            aria-label={t('win11NoticeDismiss')}
+      <div className="sw-page">
+        {showWin11 && (
+          <Note
+            icon="note"
+            title={t('win11NoticeTitle')}
+            onDismiss={dismissWin11}
+            dismissLabel={t('win11NoticeDismiss')}
           >
-            <X className="h-3.5 w-3.5" style={{ color: 'var(--text-muted)' }} strokeWidth={2} />
-          </button>
-        </div>
-      )}
+            {t('win11NoticeBody')}
+          </Note>
+        )}
 
-      {error && (
-        <ErrorAlert
-          message={error}
-          onDismiss={() => useContextMenuStore.getState().setError(null)}
-          className="mb-5"
-        />
-      )}
+        {error && (
+          <ErrorAlert
+            message={error}
+            onDismiss={() => useContextMenuStore.getState().setError(null)}
+          />
+        )}
 
-      {scanning && (
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex-1">
-            <ScanProgress status="scanning" progress={0} currentPath={t('scanningLabel')} />
-          </div>
-          <button
-            onClick={handleScanCancel}
-            className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-[12px] font-medium text-red-400 transition hover:text-red-300"
-            style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)' }}
-          >
-            <StopCircle className="h-3.5 w-3.5" strokeWidth={2} /> {t('cancelButton')}
-          </button>
-        </div>
-      )}
+        {scanning && (
+          <ProgressCard
+            title={t('scanningLabel')}
+            action={
+              <Button variant="ghost" onClick={handleScanCancel}>
+                {t('cancelButton')}
+              </Button>
+            }
+          />
+        )}
 
-      {applying && applyProg && (
-        <div
-          className="mb-5 rounded-2xl p-5"
-          style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
-        >
-          <div className="mb-3 flex items-center gap-2.5">
-            <Loader2 className="h-4 w-4 animate-spin text-amber-400" />
-            <span className="text-[13px] font-medium text-zinc-200">{t('applyingTitle')}</span>
-            <span
-              className="ml-auto font-mono text-[12px]"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              {applyProg.current} / {applyProg.total}
-            </span>
-          </div>
-          <div
-            className="mb-2 h-[6px] overflow-hidden rounded-full"
-            style={{ background: 'var(--bg-subtle-2)' }}
-          >
-            <div
-              className="h-full rounded-full transition-[width] duration-200 ease-out"
-              style={{
-                width: `${applyProg.total > 0 ? (applyProg.current / applyProg.total) * 100 : 0}%`,
-                background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)'
-              }}
-            />
-          </div>
-          <p className="truncate font-mono text-[11px]" style={{ color: 'var(--text-muted)' }}>
-            {applyProg.currentLabel}
-          </p>
-        </div>
-      )}
+        {applying && applyProg && (
+          <ProgressCard
+            title={t('applyingTitle')}
+            meta={t('progressCount', { current: applyProg.current, total: applyProg.total })}
+            value={applyProg.total > 0 ? applyProg.current / applyProg.total : undefined}
+            detail={progressText(t, applyProg.currentLabel)}
+          />
+        )}
 
-      {applyResult && (
-        <div
-          className="mb-5 overflow-hidden rounded-2xl"
-          style={{
-            border: `1px solid ${applyResult.failed > 0 ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)'}`
-          }}
-        >
-          <div
-            className="flex items-center gap-3 p-4"
-            style={{
-              background: applyResult.failed > 0 ? 'rgba(239,68,68,0.04)' : 'rgba(34,197,94,0.06)'
-            }}
-          >
-            <CheckCircle2 className="h-5 w-5 text-green-500" strokeWidth={1.8} />
-            <p className="flex-1 text-[13px] text-zinc-200">
-              {applyResult.succeeded === 1
-                ? t('applyDoneSuccess', { count: applyResult.succeeded })
-                : t('applyDoneSuccessPlural', { count: applyResult.succeeded })}
-              {applyResult.failed > 0 && (
+        {applyResult && (
+          <Receipt
+            title={t('receiptTitle')}
+            value={t('receiptUpdated', { count: applyResult.succeeded })}
+            facts={[
+              applyResult.failed > 0 ? t('receiptFailed', { count: applyResult.failed }) : ''
+            ]}
+            links={
+              applyResult.failed > 0 && applyResult.errors.length > 0 ? (
                 <button
+                  type="button"
+                  className="sw-text-button"
+                  aria-expanded={showErrors}
                   onClick={() => useContextMenuStore.getState().setShowErrors(!showErrors)}
-                  className="ml-2 text-red-400 underline decoration-red-400/30 hover:decoration-red-400 transition-colors"
                 >
-                  {t('applyDoneFailureCount', { count: applyResult.failed })} —{' '}
                   {showErrors ? t('applyHideFailures') : t('applyShowFailures')}
                 </button>
-              )}
-            </p>
-          </div>
-          {showErrors && applyResult.errors.length > 0 && (
-            <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-              {applyResult.errors.map((err, i) => (
-                <div
-                  key={`${err.entryId}-${i}`}
-                  className="flex items-start gap-3 px-5 py-3"
-                  style={{
-                    borderBottom:
-                      i < applyResult.errors.length - 1 ? '1px solid var(--bg-subtle)' : 'none'
-                  }}
-                >
-                  <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" />
-                  <div className="min-w-0">
-                    <p className="text-[12px] text-zinc-300">{err.displayName}</p>
-                    <p className="mt-0.5 text-[11px] text-red-400/80">{err.reason}</p>
-                  </div>
+              ) : undefined
+            }
+          />
+        )}
+        {applyResult && showErrors && applyResult.errors.length > 0 && (
+          <Card className="sw-list">
+            {applyResult.errors.map((err, i) => (
+              <ListRow key={`${err.entryId}-${i}`}>
+                <div className="min-w-0 flex-1">
+                  <span className="sw-row-name block">{err.displayName}</span>
+                  <p className="sw-row-sub sw-danger-text" title={progressText(t, err.reason)}>
+                    {progressText(t, err.reason)}
+                  </p>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+              </ListRow>
+            ))}
+          </Card>
+        )}
 
-      {!scanned && !scanning && (
-        <EmptyState
-          icon={MousePointerClick}
-          title={t('emptyStateTitle')}
-          description={t('emptyStateDescription')}
-          action={
-            <button
-              onClick={handleScan}
-              disabled={applying}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <Search className="h-4 w-4" strokeWidth={1.8} /> {t('scanButton')}
-            </button>
-          }
-        />
-      )}
+        {/* Before the first scan: the real state and what the scan reads */}
+        {!scanned && !scanning && (
+          <EmptyState
+            title={t('emptyStateTitle')}
+            description={t('emptyStateDescription')}
+            checks={[
+              { title: t('checkVerbsTitle'), detail: t('checkVerbsDetail') },
+              { title: t('checkHandlersTitle'), detail: t('checkHandlersDetail') },
+              { title: t('checkHiddenTitle'), detail: t('checkHiddenDetail') }
+            ]}
+          />
+        )}
 
-      {scanned && entries.length > 0 && (
-        <FilterBar
-          filters={filters}
-          availableScopes={availableScopes}
-          availableSources={availableSources}
-          onChange={(key, value) => useContextMenuStore.getState().setFilter(key, value)}
-        />
-      )}
+        {scanned && baseEntries.length > 0 && (
+          <SummaryCard
+            title={t('summaryTitle', { count: baseEntries.length })}
+            detail={joinFacts([
+              t('summaryPrograms', { count: programCount }),
+              disabledCount > 0 && t('summaryDisabled', { count: disabledCount })
+            ])}
+          />
+        )}
 
-      {scanned && visible.length === 0 && (
-        <EmptyState
-          icon={Filter}
-          title={t('noResultsTitle')}
-          description={t('noResultsDescription')}
-        />
-      )}
+        {requiresAdminInSelection && selectedCount > 0 && !applying && (
+          <Note
+            icon="warning"
+            action={
+              <Button onClick={() => window.kudu.elevationRelaunch?.().catch(() => {})}>
+                {t('elevationRelaunch')}
+              </Button>
+            }
+          >
+            {t('elevationPrompt')}
+          </Note>
+        )}
 
-      {scanned && groups.length > 0 && (
-        <div
-          className="grid grid-cols-1 gap-3"
-          style={{ paddingBottom: selectedCount > 0 ? 90 : 0 }}
-        >
-          {groups.map((group) => {
-            const groupKey = `bin:${group.binary}`
-            const isExpanded = expanded.has(groupKey)
-            const eligibleIds = group.entries.filter((e) => !e.protected).map((e) => e.id)
-            const allSelected =
-              eligibleIds.length > 0 &&
-              eligibleIds.every((id) => entries.find((e) => e.id === id)?.selected)
-            const pill = colorForBinary(group.binary)
-            return (
-              <div
-                key={groupKey}
-                className="overflow-hidden rounded-2xl"
-                style={{
-                  border: '1px solid var(--border-default)',
-                  opacity: applying ? 0.5 : 1,
-                  pointerEvents: applying ? 'none' : 'auto'
-                }}
-              >
-                <div
-                  className="flex items-center gap-4 px-5 py-4"
-                  style={{ background: 'var(--bg-subtle)' }}
-                >
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                    style={{ background: pill.bg }}
-                  >
-                    <MousePointerClick
-                      className="h-5 w-5"
-                      style={{ color: pill.text }}
-                      strokeWidth={1.8}
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2.5">
-                      <span className="truncate font-mono text-[13px] font-semibold text-zinc-200">
-                        {group.binary}
-                      </span>
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[11px] font-medium"
-                        style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
-                      >
-                        {group.entries.length}
-                      </span>
-                    </div>
-                  </div>
-                  {eligibleIds.length > 0 && (
-                    <button
-                      onClick={() =>
-                        useContextMenuStore.getState().toggleAllVisible(eligibleIds, !allSelected)
-                      }
-                      className="toggle-switch relative h-6 w-11 rounded-full transition-colors"
-                      data-checked={allSelected}
-                      style={{ background: allSelected ? pill.text : 'var(--toggle-off-bg)' }}
-                      aria-label="toggle all"
-                    >
-                      <div
-                        className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full transition"
-                        style={{
-                          transform: allSelected ? 'translateX(20px)' : undefined,
-                          background: allSelected ? '#fff' : 'var(--text-secondary)'
-                        }}
+        {scanned && (baseEntries.length > 0 || visible.length === 0) && (
+          <Card className="sw-list">
+            {entries.length > 0 && (
+              <FilterBar
+                filters={filters}
+                availableScopes={availableScopes}
+                availableSources={availableSources}
+                onChange={(key, value) => useContextMenuStore.getState().setFilter(key, value)}
+              />
+            )}
+
+            {visible.length === 0 && (
+              <div className="sw-list-empty">
+                <p className="sw-note-title">{t('noResultsTitle')}</p>
+                <p className="m-0">{t('noResultsDescription')}</p>
+              </div>
+            )}
+
+            {groups.map((group) => {
+              const groupKey = `bin:${group.binary}`
+              const isExpanded = expanded.has(groupKey)
+              const eligibleIds = group.entries.filter((e) => !e.protected).map((e) => e.id)
+              const selectedInGroup = group.entries.filter((e) => e.selected).length
+              const allSelected = eligibleIds.length > 0 && selectedInGroup === eligibleIds.length
+              return (
+                <div key={groupKey} className="sw-group" data-busy={applying || undefined}>
+                  <div className="sw-group-head">
+                    {eligibleIds.length > 0 ? (
+                      <Checkbox
+                        checked={allSelected}
+                        indeterminate={selectedInGroup > 0 && !allSelected}
+                        onChange={(value) =>
+                          useContextMenuStore.getState().toggleAllVisible(eligibleIds, value)
+                        }
+                        label={t('groupSelectAll', { name: group.binary })}
                       />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => useContextMenuStore.getState().toggleGroup(groupKey)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
-                    style={{ background: 'var(--bg-subtle-2)' }}
-                  >
-                    <ChevronDown
-                      className="h-4 w-4 transition-transform"
-                      style={{
-                        color: 'var(--text-secondary)',
-                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
-                      }}
-                      strokeWidth={2}
+                    ) : (
+                      <span className="sw-group-spacer" aria-hidden="true" />
+                    )}
+                    <span className="sw-group-name sw-mono" title={group.binary}>
+                      {group.binary}
+                    </span>
+                    <span className="sw-row-meta sw-muted">
+                      {t('groupCount', { count: group.entries.length })}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      icon={ChevronDown}
+                      className="sw-group-toggle"
+                      aria-expanded={isExpanded}
+                      aria-label={t(isExpanded ? 'groupCollapse' : 'groupExpand', {
+                        name: group.binary
+                      })}
+                      onClick={() => useContextMenuStore.getState().toggleGroup(groupKey)}
                     />
-                  </button>
-                </div>
+                  </div>
 
-                {isExpanded && (
-                  <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                    {group.entries.map((entry, i) => (
+                  {isExpanded &&
+                    group.entries.map((entry) => (
                       <EntryRow
                         key={entry.id}
                         entry={entry}
-                        isLast={i === group.entries.length - 1}
                         onToggle={() => useContextMenuStore.getState().toggleEntry(entry.id)}
                         onAction={(action) => {
                           if (action === 'delete') {
@@ -567,64 +427,30 @@ function ContextMenuCleanerPageContent() {
                         }}
                       />
                     ))}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      )}
+                </div>
+              )
+            })}
+          </Card>
+        )}
+      </div>
 
-      {selectedCount > 0 && !applying && (
+      {/* Disabling is reversible, deleting is not: only the delete confirmation is red */}
+      {showBar && (
         <div
-          className="fixed bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-2xl px-3 py-2"
-          style={{
-            background: 'var(--card-bg)',
-            border: '1px solid var(--border-medium)',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.35)'
-          }}
+          className="sw-selection-bar"
+          role="toolbar"
+          aria-label={t('selectedCount', { count: selectedCount })}
         >
-          <span className="px-3 text-[12px] font-medium text-zinc-300">
-            {t('selectedCount', { count: selectedCount })}
-          </span>
-          <button
-            onClick={() => handleApply('disable')}
-            className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium text-zinc-200 transition-colors"
-            style={{ background: 'var(--bg-hover)' }}
-          >
-            <Power className="h-3.5 w-3.5" strokeWidth={2} /> {t('disableSelected')}
-          </button>
-          <button
-            onClick={() => handleApply('enable')}
-            className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium text-emerald-400 transition-colors"
-            style={{ background: 'rgba(34,197,94,0.08)' }}
-          >
-            <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={2} /> {t('enableSelected')}
-          </button>
-          <button
-            onClick={() => setPendingDelete(buildRequests('delete'))}
-            className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium text-red-400 transition-colors"
-            style={{ background: 'rgba(239,68,68,0.08)' }}
-          >
-            <Trash2 className="h-3.5 w-3.5" strokeWidth={2} /> {t('deleteSelected')}
-          </button>
-        </div>
-      )}
-
-      {requiresAdminInSelection && selectedCount > 0 && !applying && (
-        <div
-          className="mb-3 flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-[12px]"
-          style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.18)' }}
-        >
-          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" strokeWidth={1.8} />
-          <span className="flex-1 text-zinc-300">{t('elevationPrompt')}</span>
-          <button
-            onClick={() => window.kudu.elevationRelaunch?.().catch(() => {})}
-            className="rounded-md px-3 py-1 text-[11px] font-medium text-amber-400"
-            style={{ background: 'rgba(245,158,11,0.10)' }}
-          >
-            {t('elevationRelaunch')}
-          </button>
+          <span className="sw-selection-count">{t('selectedCount', { count: selectedCount })}</span>
+          <Button variant="primary" icon={PowerOff} onClick={() => handleApply('disable')}>
+            {t('disableSelected')}
+          </Button>
+          <Button icon={Power} onClick={() => handleApply('enable')}>
+            {t('enableSelected')}
+          </Button>
+          <Button icon={Trash2} onClick={() => setPendingDelete(buildRequests('delete'))}>
+            {t('deleteSelected')}
+          </Button>
         </div>
       )}
 
@@ -632,13 +458,9 @@ function ContextMenuCleanerPageContent() {
         open={!!pendingDelete}
         onConfirm={onConfirmDelete}
         onCancel={() => setPendingDelete(null)}
-        title={t('confirmDeleteTitle')}
-        description={
-          (pendingDelete?.length ?? 0) === 1
-            ? t('confirmDeleteDescription', { count: pendingDelete?.length ?? 0 })
-            : t('confirmDeleteDescriptionPlural', { count: pendingDelete?.length ?? 0 })
-        }
-        confirmLabel={t('confirmDeleteLabel')}
+        title={t('confirmDeleteTitle', { count: deleteCount })}
+        description={t('confirmDeleteDescription', { count: deleteCount })}
+        confirmLabel={t('confirmDeleteLabel', { count: deleteCount })}
         variant="danger"
       />
     </div>
@@ -646,6 +468,11 @@ function ContextMenuCleanerPageContent() {
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────
+
+/** Sources are program names, except the bucket for entries no program claims. */
+function sourceLabel(t: TFunction, source: ContextMenuSource): string {
+  return source === 'Unknown' ? t('sourceUnknown') : source
+}
 
 function filterEntries(
   entries: ContextMenuEntry[],
@@ -708,135 +535,79 @@ function groupByBinary(
 
 interface EntryRowProps {
   entry: ContextMenuEntry
-  isLast: boolean
   onToggle: () => void
   onAction: (action: ContextMenuAction) => void
 }
 
-function EntryRow({ entry, isLast, onToggle, onAction }: EntryRowProps) {
+function EntryRow({ entry, onToggle, onAction }: EntryRowProps) {
   const { t } = useTranslation('contextMenu')
   const subline = entry.command || entry.dllPath || entry.clsid || entry.keyPath
+  const enabled = entry.status === 'enabled'
   return (
-    <div
-      className="flex items-center gap-3 px-5 py-3 transition-colors"
-      style={{
-        background: entry.selected ? 'rgba(245,158,11,0.04)' : 'transparent',
-        borderBottom: !isLast ? '1px solid var(--bg-subtle)' : 'none',
-        opacity: entry.protected ? 0.7 : 1
-      }}
-    >
-      <div className="w-6 shrink-0">
-        <input
-          type="checkbox"
-          checked={entry.selected}
-          disabled={entry.protected}
-          onChange={onToggle}
-          className="accent-amber-500"
-          aria-label={`select ${entry.displayName}`}
-        />
-      </div>
+    <ListRow data-muted={entry.protected || undefined}>
+      <Checkbox
+        checked={entry.selected}
+        disabled={entry.protected}
+        onChange={onToggle}
+        label={entry.displayName}
+      />
 
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="truncate text-[13px] text-zinc-200">{entry.displayName}</p>
-          <span
-            className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-            style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
-          >
-            {t(SCOPE_LABEL_KEY[entry.scope])}
+      <div className="min-w-0 flex-1">
+        <div className="sw-row-title">
+          <span className="sw-row-name" title={entry.displayName}>
+            {entry.displayName}
           </span>
-          {entry.kind === 'handler' && (
-            <span
-              className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-              style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
-            >
-              {t('kindHandler')}
-            </span>
-          )}
+          <Tag tone="neutral">{t(SCOPE_LABEL_KEY[entry.scope])}</Tag>
+          {entry.kind === 'handler' && <Tag tone="neutral">{t('kindHandler')}</Tag>}
           {entry.protected && (
-            <span
-              title={t('protectedTooltip')}
-              className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium"
-              style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
-            >
-              <Lock className="h-2.5 w-2.5" strokeWidth={2} /> {t('protectedBadge')}
+            <span className="sw-row-meta sw-muted" title={t('protectedTooltip')}>
+              <Lock size={12} strokeWidth={1.75} aria-hidden="true" /> {t('protectedBadge')}
             </span>
           )}
           {entry.requiresAdmin && (
-            <span
-              title={t('adminTooltip')}
-              className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-              style={{ background: 'rgba(245,158,11,0.10)', color: '#f59e0b' }}
-            >
-              {t('adminBadge')}
+            <span title={t('adminTooltip')}>
+              <Tag tone="neutral">{t('adminBadge')}</Tag>
             </span>
           )}
         </div>
-        <p
-          className="mt-0.5 truncate font-mono text-[10px]"
-          style={{ color: 'var(--text-muted)' }}
-          title={subline}
-        >
+        <p className="sw-row-sub sw-mono" title={subline}>
           {subline}
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2">
-        <span
-          className="rounded-md px-2 py-0.5 text-[11px] font-medium"
-          style={{
-            background: entry.status === 'enabled' ? 'rgba(34,197,94,0.10)' : 'var(--bg-hover)',
-            color: entry.status === 'enabled' ? '#22c55e' : 'var(--text-muted)'
-          }}
-        >
-          {entry.status === 'enabled' ? t('statusEnabled') : t('statusDisabled')}
-        </span>
-        <span
-          className="rounded-md px-2 py-0.5 text-[11px] font-medium"
-          style={{
-            background: SOURCE_PILL_COLOR[entry.source].bg,
-            color: SOURCE_PILL_COLOR[entry.source].text
-          }}
-        >
-          {entry.source}
-        </span>
-        {!entry.protected && (
-          <div className="flex items-center gap-1">
-            {entry.status === 'enabled' ? (
-              <button
-                onClick={() => onAction('disable')}
-                title={t('actionDisable')}
-                className="flex h-7 w-7 items-center justify-center rounded-md transition-colors"
-                style={{ background: 'var(--bg-hover)' }}
-              >
-                <Power
-                  className="h-3.5 w-3.5"
-                  style={{ color: 'var(--text-secondary)' }}
-                  strokeWidth={2}
-                />
-              </button>
-            ) : (
-              <button
-                onClick={() => onAction('enable')}
-                title={t('actionEnable')}
-                className="flex h-7 w-7 items-center justify-center rounded-md transition-colors"
-                style={{ background: 'rgba(34,197,94,0.10)' }}
-              >
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" strokeWidth={2} />
-              </button>
-            )}
-            <button
-              onClick={() => onAction('delete')}
-              title={t('actionDelete')}
-              className="flex h-7 w-7 items-center justify-center rounded-md transition-colors"
-              style={{ background: 'rgba(239,68,68,0.08)' }}
-            >
-              <Trash2 className="h-3.5 w-3.5 text-red-400" strokeWidth={2} />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+      <span className={enabled ? 'sw-row-meta shrink-0' : 'sw-row-meta sw-muted shrink-0'}>
+        {enabled ? t('statusEnabled') : t('statusDisabled')}
+        <span className="sw-row-meta-sub">{sourceLabel(t, entry.source)}</span>
+      </span>
+      {!entry.protected && (
+        <div className="sw-row-actions">
+          {enabled ? (
+            <Button
+              variant="ghost"
+              icon={PowerOff}
+              onClick={() => onAction('disable')}
+              title={t('actionDisable')}
+              aria-label={`${t('actionDisable')} ${entry.displayName}`}
+            />
+          ) : (
+            <Button
+              variant="ghost"
+              icon={Power}
+              onClick={() => onAction('enable')}
+              title={t('actionEnable')}
+              aria-label={`${t('actionEnable')} ${entry.displayName}`}
+            />
+          )}
+          <Button
+            variant="ghost"
+            icon={Trash2}
+            onClick={() => onAction('delete')}
+            title={t('actionDelete')}
+            aria-label={`${t('actionDelete')} ${entry.displayName}`}
+          />
+        </div>
+      )}
+    </ListRow>
   )
 }
 
@@ -858,58 +629,50 @@ interface FilterBarProps {
 function FilterBar({ filters, availableScopes, availableSources, onChange }: FilterBarProps) {
   const { t } = useTranslation('contextMenu')
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      <div className="relative flex-1 min-w-[240px]">
-        <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2"
-          style={{ color: 'var(--text-muted)' }}
-          strokeWidth={2}
-        />
-        <input
-          type="text"
-          value={filters.search}
-          onChange={(e) => onChange('search', e.target.value)}
-          placeholder={t('filterSearchPlaceholder')}
-          className="w-full rounded-xl pl-9 pr-3 py-2 text-[12px] text-zinc-200 transition-colors outline-none"
-          style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-        />
+    <div className="sw-toolbar">
+      <SearchField
+        value={filters.search}
+        onChange={(value) => onChange('search', value)}
+        placeholder={t('filterSearchPlaceholder')}
+      />
+      <div className="sw-toolbar-end">
+        <select
+          className="sw-select"
+          aria-label={t('filterScopeLabel')}
+          value={filters.scope}
+          onChange={(e) => onChange('scope', e.target.value as ContextMenuScope | 'all')}
+        >
+          <option value="all">{t('filterScopeAll')}</option>
+          {availableScopes.map((s) => (
+            <option key={s} value={s}>
+              {t(SCOPE_LABEL_KEY[s])}
+            </option>
+          ))}
+        </select>
+        <select
+          className="sw-select"
+          aria-label={t('filterSourceLabel')}
+          value={filters.source}
+          onChange={(e) => onChange('source', e.target.value as ContextMenuSource | 'all')}
+        >
+          <option value="all">{t('filterSourceAll')}</option>
+          {availableSources.map((s) => (
+            <option key={s} value={s}>
+              {sourceLabel(t, s)}
+            </option>
+          ))}
+        </select>
+        <select
+          className="sw-select"
+          aria-label={t('filterStatusLabel')}
+          value={filters.status}
+          onChange={(e) => onChange('status', e.target.value as ContextMenuStatus | 'all')}
+        >
+          <option value="all">{t('filterStatusAll')}</option>
+          <option value="enabled">{t('filterStatusEnabled')}</option>
+          <option value="disabled">{t('filterStatusDisabled')}</option>
+        </select>
       </div>
-      <select
-        value={filters.scope}
-        onChange={(e) => onChange('scope', e.target.value as ContextMenuScope | 'all')}
-        className="rounded-xl px-3 py-2 text-[12px] text-zinc-200 outline-none"
-        style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-      >
-        <option value="all">{t('filterScopeAll')}</option>
-        {availableScopes.map((s) => (
-          <option key={s} value={s}>
-            {t(SCOPE_LABEL_KEY[s])}
-          </option>
-        ))}
-      </select>
-      <select
-        value={filters.source}
-        onChange={(e) => onChange('source', e.target.value as ContextMenuSource | 'all')}
-        className="rounded-xl px-3 py-2 text-[12px] text-zinc-200 outline-none"
-        style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-      >
-        <option value="all">{t('filterSourceAll')}</option>
-        {availableSources.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-      <select
-        value={filters.status}
-        onChange={(e) => onChange('status', e.target.value as ContextMenuStatus | 'all')}
-        className="rounded-xl px-3 py-2 text-[12px] text-zinc-200 outline-none"
-        style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-      >
-        <option value="all">{t('filterStatusAll')}</option>
-        <option value="enabled">{t('filterStatusEnabled')}</option>
-        <option value="disabled">{t('filterStatusDisabled')}</option>
-      </select>
     </div>
   )
 }

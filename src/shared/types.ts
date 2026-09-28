@@ -1524,12 +1524,14 @@ export interface ContextMenuApplyRequest {
 export interface ContextMenuApplyResult {
   succeeded: number
   failed: number
-  errors: { entryId: string; displayName: string; reason: string }[]
+  /** `reason` is reg.exe's own message, or a translatable line for the known cases. */
+  errors: { entryId: string; displayName: string; reason: string | ProgressLabel }[]
   updates: { entryId: string; status: ContextMenuStatus }[]
 }
 
 export interface ContextMenuApplyProgress {
   current: number
   total: number
-  currentLabel: string
+  /** What is being done to which entry, as a translatable line. */
+  currentLabel: string | ProgressLabel
 }
