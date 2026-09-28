@@ -59,7 +59,7 @@
   "confirmUninstallLabel": "Gỡ cài đặt",
   "confirmBatchTitle": "Gỡ cài đặt {{count}} chương trình?",
   "confirmBatchTitlePlural": "Gỡ cài đặt {{count}} chương trình?",
-  "confirmBatchDescription": "Thao tác này sẽ chạy trình gỡ cài đặt gốc của từng chương trình lần lượt. Sau mỗi lần, SuperSonicCleaner sẽ tự động quét và dọn dẹp các tệp còn sót lại.",
+  "confirmBatchDescription": "Thao tác này sẽ chạy trình gỡ cài đặt gốc của từng chương trình lần lượt. Sau mỗi chương trình, SuperSonicCleaner sẽ tự động quét và dọn dẹp các tệp còn sót lại.",
   "confirmBatchLabel": "Gỡ cài đặt {{count}}",
   "batchResultProgramsSingular": "{{count}} chương trình",
   "batchResultProgramsPlural": "{{count}} chương trình",

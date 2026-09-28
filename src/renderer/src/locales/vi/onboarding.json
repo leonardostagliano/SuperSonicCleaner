@@ -14,13 +14,13 @@
   "runAtStartupDescriptionWindows": "Khởi chạy SuperSonicCleaner khi Windows khởi động để PC của bạn luôn được dọn dẹp tự động",
   "runAtStartupDescriptionOther": "Khởi chạy SuperSonicCleaner khi khởi động để máy tính của bạn luôn được dọn dẹp tự động",
   "minimizeToTrayLabel": "Thu nhỏ vào khay hệ thống",
-  "minimizeToTrayDescription": "Giữ SuperSonicCleaner chạy yên lặng trong nền",
+  "minimizeToTrayDescription": "Giữ SuperSonicCleaner chạy lặng lẽ trong nền",
   "weeklyAutoCleanLabel": "Tự động dọn dẹp hằng tuần",
   "weeklyAutoCleanDescription": "Quét và dọn dẹp các tệp rác vào mỗi Thứ Hai lúc 9:00 SA",
   "back": "Quay lại",
   "continue": "Tiếp tục",
   "allSetTitle": "Mọi thứ đã sẵn sàng!",
-  "allSetDescription": "SuperSonicCleaner sẽ giúp PC của bạn hoạt động mượt mà trong nền.",
+  "allSetDescription": "SuperSonicCleaner sẽ giúp PC của bạn luôn chạy trơn tru trong nền.",
   "firstScanScheduled": "Lần quét tự động đầu tiên của bạn được lên lịch vào Thứ Hai lúc 9:00 SA.",
   "startCleaning": "Bắt đầu dọn dẹp"
 }

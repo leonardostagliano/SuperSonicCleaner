@@ -1,0 +1,61 @@
+{
+  "title": "Phân tích AI",
+  "description": "Nhận ý kiến thứ hai về các kết quả quét này.",
+  "hubDescription": "Ý kiến thứ hai về các lượt quét và bản ghi hiệu năng, sử dụng tài khoản Codex bạn đã đăng nhập.",
+  "hubPrivacy": "Các lượt quét chỉ chia sẻ siêu dữ liệu tệp ẩn danh. Các bản ghi chia sẻ số liệu CPU, bộ nhớ và ổ đĩa cùng với ID tiến trình tạm thời. Tên, đường dẫn, ghi chú và nội dung tệp vẫn ở lại trên thiết bị này.",
+  "connectionTitle": "Kết nối Codex",
+  "connectionIntro": "Sử dụng Codex trên máy tính này. Kiểm tra kết nối, sau đó chọn một công cụ bên dưới.",
+  "connected": "Codex đã kết nối và sẵn sàng cho việc phân tích chỉ dựa trên siêu dữ liệu.",
+  "scanFirst": "Hãy chạy một lượt quét trước. Phân tích AI sẽ khả dụng khi có kết quả.",
+  "anotherRunning": "Một phân tích AI khác đang chạy. Bạn có thể tìm thấy nó trong Tùy chọn → Phân tích AI.",
+  "continuesInBackground": "Quá trình phân tích tiếp tục khi bạn sử dụng các trang khác. Quay lại đây để xem kết quả.",
+  "returnToAnalysis": "Quay lại phân tích",
+  "openTool": "Mở công cụ",
+  "hubInstructions": "Hoàn tất một lượt quét hoặc lưu một bản ghi hiệu năng, bật phân tích AI cho nó, rồi bắt đầu bằng nút riêng. Không có gì được gửi đi tự động.",
+  "tools": {
+    "cleaner": {
+      "title": "Dọn dẹp hệ thống",
+      "description": "Xem lại các mục có thể dọn dẹp đã quét được bằng siêu dữ liệu tệp ẩn danh. Dấu vết quyền riêng tư không được đưa vào."
+    },
+    "largeFiles": {
+      "title": "Tệp lớn",
+      "description": "Xem lại những tệp lớn nào đáng để kiểm tra kỹ hơn, dựa trên kích thước, danh mục và tuổi tệp gần đúng."
+    },
+    "duplicates": {
+      "title": "Tệp trùng lặp",
+      "description": "Nhận gợi ý về các nhóm tệp trùng lặp cần xem lại. Bạn là người chọn tệp nào sẽ giữ lại."
+    },
+    "disk": {
+      "title": "Phân tích ổ đĩa",
+      "description": "Xem lại các thư mục lớn nhất bằng thông tin kích thước tổng hợp."
+    },
+    "performance": {
+      "title": "Bản ghi hiệu năng",
+      "description": "Kết nối hoạt động CPU, bộ nhớ và ổ đĩa để tìm hiểu nguyên nhân chậm máy, cùng với số liệu hỗ trợ và các bước kiểm tra được gợi ý."
+    }
+  },
+  "enable": "Bật phân tích AI cho trang này",
+  "privacy": "Chỉ ID tạm thời, loại tệp chung, kích thước và tuổi tệp gần đúng được gửi đi. Tên, đường dẫn, mã băm và nội dung tệp vẫn ở lại trên thiết bị này.",
+  "accessCaveat": "Lần truy cập gần nhất là siêu dữ liệu hệ thống tệp. Giá trị này có thể bị thiếu hoặc bị ứng dụng khác thay đổi, và không chứng minh được thời điểm bạn thực sự mở tệp lần cuối.",
+  "diskAggregation": "Một dòng thư mục thể hiện tổng kích thước của nó. Nó không cho biết tệp nào bên trong thư mục cần được xem lại.",
+  "checking": "Đang kiểm tra khả năng sử dụng AI…",
+  "codexMissing": "Cài đặt Codex trên máy tính này để sử dụng phân tích AI.",
+  "unsupportedVersion": "Phiên bản Codex này không thể cung cấp ranh giới quyền riêng tư chỉ dựa trên siêu dữ liệu theo yêu cầu. Hãy dùng phiên bản Codex 0.157.1 được hỗ trợ.",
+  "unsafeConfiguration": "Cấu hình Codex hiện tại không thể đảm bảo việc phân tích chỉ dựa trên siêu dữ liệu. Hãy xem lại cấu hình Codex cục bộ trước khi thử lại.",
+  "signIn": "Mở Codex trên máy tính này và đăng nhập để sử dụng phân tích AI.",
+  "unavailable": "Phân tích AI hiện không khả dụng. Kiểm tra Codex trên máy tính này rồi thử lại.",
+  "retryConnection": "Kiểm tra lại",
+  "analyze": "Phân tích các kết quả này",
+  "analyzing": "Đang phân tích…",
+  "cancelling": "Đang hủy…",
+  "cancel": "Hủy",
+  "limit": "Tối đa {{count}} mục",
+  "omitted": "{{count}} mục khác không được đưa vào phân tích này.",
+  "failed": "Không thể hoàn tất phân tích. Hãy thử lại.",
+  "advisory": "Tự bạn hãy xem lại các gợi ý này. Phân tích AI không bao giờ tự chọn hoặc xóa tệp.",
+  "priority": {
+    "low": "Ưu tiên thấp",
+    "medium": "Ưu tiên trung bình",
+    "high": "Ưu tiên cao"
+  }
+}

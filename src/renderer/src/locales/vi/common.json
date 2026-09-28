@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}} giờ trước",
   "daysAgo": "{{days}} ngày trước",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Những gì được kiểm tra"
 }
