@@ -1,4 +1,3 @@
-import '@/components/shared/feature-layout.css'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -7,9 +6,12 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { Link } from 'react-router-dom'
 import type { CleanupReceipt, CleanupReceiptItem } from '@shared/cleanup-receipts'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { Receipt } from '@/components/shared/Receipt'
 import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 import { Table, TableCell, TableHead, TableHeaderCell, TableRow } from '@/components/ui/Table'
+import { receiptsListView } from '@/lib/cleanup-receipts-view'
 import { formatBytes } from '@/lib/utils'
 
 type StoredReceipt = CleanupReceipt & { retryable: number }
@@ -70,6 +72,7 @@ export function CleanupReceipts() {
     }
   }, [selected, page, t])
   const receipt = receipts.find((r) => r.id === selected)
+  const view = receiptsListView({ loading, count: receipts.length, error: !!error })
   const run = async (action: () => Promise<unknown>) => {
     setBusy(true)
     try {
@@ -82,10 +85,7 @@ export function CleanupReceipts() {
     }
   }
   return (
-    <section
-      className="feature-page feature-layout feature-layout cleanup-receipts space-y-4"
-      aria-label={t('receipts.title')}
-    >
+    <section className="cleanup-receipts space-y-4" aria-label={t('receipts.title')}>
       <div className="flex flex-wrap items-center gap-3">
         <Button icon={RefreshCw} busy={loading} disabled={busy} onClick={() => void load()}>
           {t('receipts.refresh')}
@@ -97,15 +97,17 @@ export function CleanupReceipts() {
         >
           {t('clearButton')}
         </Button>
-        <p className="text-sm text-[var(--text-muted)]">{t('receipts.description')}</p>
+        {view.toolbarDescription && (
+          <p className="text-sm text-[var(--text-muted)]">{t('receipts.description')}</p>
+        )}
       </div>
-      {error && <p role="alert">{error}</p>}
+      {error && <ErrorAlert message={error} />}
       {loading && (
         <p role="status" className="text-sm text-[var(--text-muted)]">
           {t('receipts.loading')}
         </p>
       )}
-      {!loading && !receipts.length && !error && (
+      {view.empty && (
         <EmptyState
           icon={FileText}
           title={t('receipts.empty')}
@@ -117,7 +119,7 @@ export function CleanupReceipts() {
           {receipts.map((r) => (
             <button
               key={r.id}
-              className="w-full rounded-[var(--radius-container)] border bg-[var(--card-bg)] px-4 py-3 text-start transition-colors hover:bg-[var(--bg-hover)]"
+              className="w-full rounded-[var(--radius-container)] border border-[var(--border-default)] bg-[var(--card-bg)] px-4 py-3 text-start transition-colors hover:bg-[var(--bg-hover)] aria-pressed:border-[var(--border-stronger)] aria-pressed:bg-[var(--bg-active)]"
               aria-pressed={selected === r.id}
               onClick={() => {
                 setSelected(r.id)
@@ -148,7 +150,7 @@ export function CleanupReceipts() {
                   .join(' · ') || undefined
               }
             />
-            <div className="feature-card min-w-0 space-y-4">
+            <Card className="min-w-0 space-y-4">
               <p>
                 {t('receipts.selectionContext', {
                   found: receipt.found ?? '—',
@@ -245,7 +247,7 @@ export function CleanupReceipts() {
               {!!receipt.detailsTruncated && (
                 <p>{t('receipts.truncated', { count: receipt.detailsTruncated })}</p>
               )}
-            </div>
+            </Card>
           </div>
         )}
       </div>
