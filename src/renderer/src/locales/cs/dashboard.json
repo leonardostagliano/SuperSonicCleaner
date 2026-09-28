@@ -104,7 +104,7 @@
   "briefingDescThreats": "{{count}} aktivní hrozba vyžaduje pozornost.",
   "briefingDescThreatsPlural": "{{count}} aktivní hrozby vyžadují pozornost.",
   "briefingDescThreatsLastScan": " Poslední kontrola malwaru proběhla {{date}}.",
-  "briefingDescClean": "Při poslední kontrole malwaru {{date}} nebyly nalezeny žádné aktivní hrozby. SuperSonicCleaner za celou dobu používání uvolnilo {{size}}.",
+  "briefingDescClean": "Při poslední kontrole škodlivého softwaru {{date}} nebyly nalezeny žádné aktivní hrozby. SuperSonicCleaner za celou dobu používání uvolnilo {{size}}.",
   "briefingDescBaseline": "Spusťte úplnou kontrolu, abyste vytvořili základní úroveň ochrany a odhalili bezpečné možnosti čištění.",
   "recommendedHeading": "Doporučeno pro vás",
   "safeActionsOnly": "Pouze bezpečné akce",

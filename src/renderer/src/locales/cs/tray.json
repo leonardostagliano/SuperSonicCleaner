@@ -2,9 +2,9 @@
   "trayTooltip": "SuperSonicCleaner",
   "openKudu": "Otevřít SuperSonicCleaner",
   "quit": "Ukončit",
-  "scheduledTaskNotificationTitle": "SuperSonicCleaner – Naplánovaná úloha",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner – naplánovaná úloha",
   "scheduledTaskNotificationBody": "Spouští se „{{name}}“…",
-  "scanCompleteNotificationTitle": "SuperSonicCleaner – Kontrola dokončena",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner – kontrola dokončena",
   "scanCompleteNotificationBody": "Bylo nalezeno {{itemCount}} položek ({{sizeMB}} MB), které lze vyčistit.",
   "scheduledScanName": "Naplánovaná kontrola"
 }

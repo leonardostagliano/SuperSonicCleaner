@@ -1,0 +1,61 @@
+{
+  "title": "Analýza AI",
+  "description": "Vyžádejte si další posouzení těchto výsledků kontroly.",
+  "hubDescription": "Další posouzení kontrol a záznamů výkonu pomocí vašeho přihlášení Codex.",
+  "hubPrivacy": "Kontroly sdílejí pouze anonymní metadata souborů. Záznamy sdílejí číselná měření CPU, paměti a disku s dočasnými ID procesů. Názvy, cesty, poznámky a obsah souborů zůstávají na tomto zařízení.",
+  "connectionTitle": "Připojení k Codex",
+  "connectionIntro": "Používejte Codex na tomto počítači. Zkontrolujte připojení a poté níže vyberte nástroj.",
+  "connected": "Codex je připojen a připraven na analýzu pouze na základě metadat.",
+  "scanFirst": "Nejprve spusťte kontrolu. Analýza AI bude dostupná, jakmile budou výsledky připravené.",
+  "anotherRunning": "Jiná analýza AI již probíhá. Najdete ji v Předvolby → Analýza AI.",
+  "continuesInBackground": "Analýza pokračuje, i když používáte jiná zobrazení. Vraťte se sem a zobrazte výsledek.",
+  "returnToAnalysis": "Vrátit se k analýze",
+  "openTool": "Otevřít nástroj",
+  "hubInstructions": "Dokončete kontrolu nebo uložte záznam výkonu, zapněte pro něj analýzu AI a poté ji spusťte příslušným tlačítkem. Nic se neodesílá automaticky.",
+  "tools": {
+    "cleaner": {
+      "title": "Vyčištění systému",
+      "description": "Projděte zkontrolované kandidáty k vyčištění pomocí anonymních metadat souborů. Stopy soukromí jsou vyloučeny."
+    },
+    "largeFiles": {
+      "title": "Velké soubory",
+      "description": "Projděte, které velké soubory stojí za bližší pohled, podle velikosti, kategorie a přibližného stáří."
+    },
+    "duplicates": {
+      "title": "Duplicitní soubory",
+      "description": "Získejte návrhy, které skupiny duplicit projít. Sami vybíráte, které soubory zachovat."
+    },
+    "disk": {
+      "title": "Analýza disku",
+      "description": "Projděte největší složky pomocí agregovaných informací o velikosti."
+    },
+    "performance": {
+      "title": "Záznamy výkonu",
+      "description": "Propojte aktivitu CPU, paměti a disku k prošetření zpomalení, s podpůrnými měřeními a navrhovanými kontrolami."
+    }
+  },
+  "enable": "Zapnout analýzu AI pro toto zobrazení",
+  "privacy": "Odesílají se pouze dočasná ID, obecné typy souborů, velikosti a přibližné stáří souborů. Názvy, cesty, hashe a obsah souborů zůstávají na tomto zařízení.",
+  "accessCaveat": "Poslední přístup jsou metadata souborového systému. Mohou chybět nebo být změněna jinou aplikací a nedokazují, kdy jste soubor naposledy otevřeli.",
+  "diskAggregation": "Řádek složky představuje její celkovou velikost. Neodhaluje, které soubory ve složce stojí za projití.",
+  "checking": "Kontroluje se dostupnost AI…",
+  "codexMissing": "Nainstalujte Codex na tento počítač, abyste mohli používat analýzu AI.",
+  "unsupportedVersion": "Tato verze Codex nemůže poskytnout požadovanou hranici soukromí založenou pouze na metadatech. Použijte podporovanou verzi Codex 0.157.1.",
+  "unsafeConfiguration": "Aktuální konfigurace Codex nemůže zaručit analýzu pouze na základě metadat. Před další zkouškou zkontrolujte místní konfiguraci Codex.",
+  "signIn": "Otevřete Codex na tomto počítači a přihlaste se, abyste mohli používat analýzu AI.",
+  "unavailable": "Analýza AI je právě nedostupná. Zkontrolujte Codex na tomto počítači a zkuste to znovu.",
+  "retryConnection": "Zkontrolovat znovu",
+  "analyze": "Analyzovat tyto výsledky",
+  "analyzing": "Analyzuje se…",
+  "cancelling": "Ruší se…",
+  "cancel": "Zrušit",
+  "limit": "Až {{count}} položek",
+  "omitted": "{{count}} dalších položek bylo z této analýzy vynecháno.",
+  "failed": "Analýzu se nepodařilo dokončit. Zkuste to znovu.",
+  "advisory": "Tyto návrhy si sami vyhodnoťte. Analýza AI nikdy nevybírá ani neodstraňuje soubory.",
+  "priority": {
+    "low": "Nízká priorita",
+    "medium": "Střední priorita",
+    "high": "Vysoká priorita"
+  }
+}
