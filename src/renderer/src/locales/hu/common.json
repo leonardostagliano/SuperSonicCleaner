@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}} órája",
   "daysAgo": "{{days}} napja",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Mi kerül ellenőrzésre"
 }

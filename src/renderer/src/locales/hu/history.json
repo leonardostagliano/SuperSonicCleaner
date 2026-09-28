@@ -1,7 +1,7 @@
 {
   "recovery": {
     "title": "Helyreállítási központ",
-    "description": "A SuperSonicCleaner által végrehajtott támogatott módosítások áttekintése és visszaállítása",
+    "description": "A SuperSonicCleaner által végzett támogatott módosítások áttekintése és visszaállítása",
     "limits": "A helyreállítás a rögzített Windows DWORD adatvédelmi/rendszerleíróadatbázis-értékekre, ütemezett feladatokra és szolgáltatáskonfigurációra terjed ki. A véglegesen törölt fájlok nem állíthatók vissza. A régebbi vagy nem támogatott módosításokhoz csak kézi biztonsági mentés állhat rendelkezésre. Egyes visszaállított beállításokhoz újraindítás szükséges.",
     "refresh": "Frissítés",
     "export": "Helyreállítási előzmények exportálása",
@@ -21,7 +21,7 @@
     "backupDescription": "Ezek a biztonsági mentési fájlok nem tartalmaznak ellenőrzött utólagos állapotinformációt. Kézi visszaállítás előtt ellenőrizze őket a biztonsági mentési mappában; importálásuk felülírhat újabb beállításokat. A biztonsági mentési fájl nem azonos az operációs rendszer visszaállítási pontjával.",
     "openBackups": "Biztonsági mentési mappa megnyitása",
     "confirmTitle": "Visszaállítja ezt a módosítást?",
-    "confirmDescription": "A SuperSonicCleaner a visszaállítás előtt ellenőrzi az aktuális állapotot, majd visszaállítja a rögzített eredeti értéket. Az újabb, ütköző módosítások megmaradnak. Rendszergazdai jogosultság szükséges lehet.",
+    "confirmDescription": "A SuperSonicCleaner ellenőrzi a jelenlegi állapotot, mielőtt visszaállítja a rögzített eredeti értéket. Az újabb, ütköző módosítások megmaradnak. Rendszergazdai jogosultság lehet szükséges.",
     "status": {
       "pending": "Megszakítva / függőben",
       "ready": "Elérhető",
@@ -30,7 +30,7 @@
       "conflict": "Újabb módosítás észlelve"
     },
     "remove": "Bejegyzés eltávolítása",
-    "removeDescription": "Eltávolítja ezt a helyreállítási bejegyzést a helyi előzményekből? Ez nem módosítja a beállításait, és nem törli a rendszerleíróadatbázis biztonsági mentéseit. A SuperSonicCleaner ezután már nem tudja visszaállítani ezt a módosítást.",
+    "removeDescription": "Eltávolítja ezt a helyreállítási bejegyzést a helyi előzményekből? Ez nem módosítja a beállításait, és nem törli a beállításjegyzék biztonsági mentéseit. A SuperSonicCleaner ezután már nem tudja visszaállítani ezt a módosítást Ön helyett.",
     "unreadable": "Ez a helyreállítási bejegyzés nem olvasható. Lehet, hogy egy másik felhasználói fiók hozta létre, vagy a lemezen megsérült.",
     "loading": "Helyreállítási előzmények betöltése?",
     "emptyTitle": "Itt kezdődnek a helyreállítási előzményei",
@@ -41,14 +41,14 @@
     },
     "registryBackups": {
       "title": "Registry biztonsági mentések",
-      "description": "A SuperSonicCleaner elmenti azokat a registrykulcsokat, amelyeket módosítani készül. A célzott biztonsági mentések itt állíthatók vissza. A teljes ág exportjai csak a biztonsági mentések mappájában tekinthetők meg, mert importálásuk visszavonná az azóta végzett, nem kapcsolódó módosításokat is.",
+      "description": "A SuperSonicCleaner elmenti azokat a beállításjegyzék-kulcsokat, amelyeket módosítani készül. A célzott biztonsági mentések itt állíthatók vissza. A teljes ág exportjai csak a biztonsági mentések mappájában tekinthetők meg, mivel importálásuk visszavonná az azóta végzett, nem kapcsolódó módosításokat.",
       "empty": "Még nincsenek registry biztonsági mentések.",
       "restore": "Visszaállítás",
       "showInFolder": "Megjelenítés a mappában",
       "moreKeys": "+{{count}} további",
       "requiresAdmin": "Rendszergazdai jogosultság szükséges",
       "confirmTitle": "Visszaállítja ezt a registry biztonsági mentést?",
-      "confirmDescription": "A SuperSonicCleaner importálja az alábbi kulcsokat. A biztonsági mentésben lévő értékek lecserélik a jelenlegieket, a hiányzó kulcsok és értékek pedig visszakerülnek. Semmi más nem törlődik, kivéve hogy egy visszaállítás előtti biztonsági mentés visszaállítása eltávolítja azokat a kulcsokat és értékeket is, amelyeket az általa visszavont visszaállítás adott hozzá. Az importálás előtt a SuperSonicCleaner a kulcsok jelenlegi állapotát egy visszaállítás előtti biztonsági mentésként menti. Egyes módosítások csak kijelentkezés vagy újraindítás után lépnek érvénybe.",
+      "confirmDescription": "A SuperSonicCleaner importálja az alábbi kulcsokat. A biztonsági mentésből származó értékek felülírják a jelenlegieket, és a hiányzó kulcsok és értékek visszakerülnek. Semmi más nem törlődik, kivéve, hogy egy helyreállítás előtti biztonsági mentés visszaállítása egyben eltávolítja azokat a kulcsokat és értékeket is, amelyeket a most visszavont helyreállítás adott hozzá. Importálás előtt a SuperSonicCleaner elmenti e kulcsok jelenlegi állapotát helyreállítás előtti biztonsági mentésként. Egyes módosítások csak kijelentkezés vagy újraindítás után lépnek életbe.",
       "restored": "Visszaállítva. Az előző állapot mentése ide történt: {{file}}.",
       "restoredNoBackup": "Visszaállítva. Ezek közül a kulcsok közül korábban egyik sem létezett, ezért nem volt mit előzetesen menteni.",
       "failed": "A visszaállítás sikertelen: {{error}}",
@@ -61,13 +61,13 @@
       "blocked": {
         "full-export": "Teljes ág exportja. Visszaállítása nem kapcsolódó módosításokat is visszavonna, ezért csak megtekinthető.",
         "too-large": "Túl nagy ahhoz, hogy célzott biztonsági mentés legyen.",
-        "format": "Nem a SuperSonicCleaner által írt registry exportformátumban van.",
-        "deletion": "Törlési bejegyzéseket tartalmaz, pedig a SuperSonicCleaner biztonsági mentései soha nem tartalmaznak ilyet.",
-        "forbidden-key": "A SuperSonicCleaner által módosított területeken kívüli kulcsokat tartalmaz.",
+        "format": "Nem a SuperSonicCleaner által írt beállításjegyzék-exportformátumban van.",
+        "deletion": "Törlési bejegyzéseket tartalmaz, amelyeket a SuperSonicCleaner biztonsági mentései soha nem tartalmaznak.",
+        "forbidden-key": "Olyan kulcsokat tartalmaz, amelyek kívül esnek azokon a területeken, amelyeket a SuperSonicCleaner módosít.",
         "empty": "Nem tartalmaz registrykulcsokat.",
         "unreadable": "Nem olvasható.",
-        "classes-root": "HKEY_CLASSES_ROOT kulcsokat tartalmaz, amelyek a gépszintű és a felhasználónkénti osztályokat egyesítik, ezért a SuperSonicCleaner nem tudja megállapítani, melyikbe kellene visszaállítani őket. Csak megtekinthetők.",
-        "unverified": "Ez a biztonsági mentés nem ellenőrizhető — lehet, hogy a SuperSonicCleaner létrehozása óta módosították, ezért csak megtekinthető."
+        "classes-root": "HKEY_CLASSES_ROOT kulcsokat tartalmaz, amelyek egyesítik a gép- és a felhasználói osztályokat, ezért a SuperSonicCleaner nem tudja megállapítani, melyikbe kellene visszaállítani őket. Ezek csak megtekinthetők.",
+        "unverified": "Ez a biztonsági mentés nem ellenőrizhető — előfordulhat, hogy módosult azóta, hogy a SuperSonicCleaner létrehozta, ezért csak megtekinthető."
       }
     }
   },

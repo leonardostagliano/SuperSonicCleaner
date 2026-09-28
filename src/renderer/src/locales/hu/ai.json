@@ -1,0 +1,61 @@
+{
+  "title": "AI-elemzés",
+  "description": "Kérjen független véleményt ezekről a vizsgálati eredményekről.",
+  "hubDescription": "Független vélemény a vizsgálatokról és teljesítményrögzítésekről a Codex-bejelentkezés használatával.",
+  "hubPrivacy": "A vizsgálatok csak névtelen fájlmetaadatokat osztanak meg. A rögzítések számszerű CPU-, memória- és lemezméréseket osztanak meg ideiglenes folyamatazonosítókkal. A nevek, útvonalak, megjegyzések és fájltartalmak ezen az eszközön maradnak.",
+  "connectionTitle": "Codex-kapcsolat",
+  "connectionIntro": "Használja a Codexet ezen a számítógépen. Ellenőrizze a kapcsolatot, majd válasszon eszközt lent.",
+  "connected": "A Codex csatlakoztatva van, és készen áll a csak metaadatokon alapuló elemzésre.",
+  "scanFirst": "Először futtasson egy vizsgálatot. Az AI-elemzés akkor válik elérhetővé, amikor az eredmények készen állnak.",
+  "anotherRunning": "Már fut egy másik AI-elemzés. Megtalálja a Beállítások → AI-elemzés menüpontban.",
+  "continuesInBackground": "Az elemzés más nézetek használata közben is folytatódik. Térjen vissza ide az eredmény megtekintéséhez.",
+  "returnToAnalysis": "Vissza az elemzéshez",
+  "openTool": "Eszköz megnyitása",
+  "hubInstructions": "Fejezzen be egy vizsgálatot vagy mentsen el egy teljesítményrögzítést, kapcsolja be hozzá az AI-elemzést, majd indítsa el a megfelelő gombbal. Semmi sem kerül automatikusan elküldésre.",
+  "tools": {
+    "cleaner": {
+      "title": "Rendszertisztítás",
+      "description": "Tekintse át a megvizsgált tisztítási jelölteket névtelen fájlmetaadatok segítségével. Az adatvédelmi nyomok ki vannak zárva."
+    },
+    "largeFiles": {
+      "title": "Nagy fájlok",
+      "description": "Tekintse át, mely nagy fájlok érdemelnek közelebbi vizsgálatot méret, kategória és becsült kor alapján."
+    },
+    "duplicates": {
+      "title": "Duplikált fájlok",
+      "description": "Kapjon javaslatokat, mely duplikátumcsoportokat érdemes áttekinteni. Ön választja ki, mely fájlokat tartja meg."
+    },
+    "disk": {
+      "title": "Lemezelemzés",
+      "description": "Tekintse át a legnagyobb mappákat összesített méretinformációk segítségével."
+    },
+    "performance": {
+      "title": "Teljesítményrögzítések",
+      "description": "Kapcsolja össze a CPU-, memória- és lemezaktivitást egy lassulás kivizsgálásához, alátámasztó mérésekkel és javasolt ellenőrzésekkel."
+    }
+  },
+  "enable": "AI-elemzés bekapcsolása ehhez a nézethez",
+  "privacy": "Csak ideiglenes azonosítók, általános fájltípusok, méretek és becsült fájlkor kerül elküldésre. A nevek, útvonalak, hash-ek és fájltartalmak ezen az eszközön maradnak.",
+  "accessCaveat": "Az utolsó hozzáférés fájlrendszer-metaadat. Hiányozhat, vagy egy másik alkalmazás módosíthatta, és nem bizonyítja, mikor nyitotta meg utoljára a fájlt.",
+  "diskAggregation": "Egy mappasor a teljes méretét jeleníti meg. Nem árulja el, mely fájlokat érdemes áttekinteni a mappán belül.",
+  "checking": "AI elérhetőségének ellenőrzése…",
+  "codexMissing": "Telepítse a Codexet erre a számítógépre az AI-elemzés használatához.",
+  "unsupportedVersion": "Ez a Codex-verzió nem képes biztosítani a szükséges, csak metaadatokon alapuló adatvédelmi határt. Használja a támogatott Codex 0.157.1 verziót.",
+  "unsafeConfiguration": "A jelenlegi Codex-konfiguráció nem tudja garantálni a csak metaadatokon alapuló elemzést. Az újbóli próbálkozás előtt ellenőrizze a helyi Codex-konfigurációt.",
+  "signIn": "Nyissa meg a Codexet ezen a számítógépen, és jelentkezzen be az AI-elemzés használatához.",
+  "unavailable": "Az AI-elemzés jelenleg nem érhető el. Ellenőrizze a Codexet ezen a számítógépen, és próbálja újra.",
+  "retryConnection": "Ellenőrzés újra",
+  "analyze": "Ezen eredmények elemzése",
+  "analyzing": "Elemzés…",
+  "cancelling": "Megszakítás…",
+  "cancel": "Mégse",
+  "limit": "Legfeljebb {{count}} elem",
+  "omitted": "{{count}} további elem kimaradt ebből az elemzésből.",
+  "failed": "Az elemzést nem sikerült befejezni. Próbálja újra.",
+  "advisory": "Ezeket a javaslatokat saját maga értékelje ki. Az AI-elemzés soha nem választ ki és nem töröl fájlokat.",
+  "priority": {
+    "low": "Alacsony prioritás",
+    "medium": "Közepes prioritás",
+    "high": "Magas prioritás"
+  }
+}
