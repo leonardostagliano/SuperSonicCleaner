@@ -1,36 +1,31 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Cpu,
-  Search,
-  Trash2,
-  Shield,
-  CheckCircle2,
-  Loader2,
-  AlertTriangle,
-  Download,
-  ArrowUpCircle,
-  RefreshCw,
-  Sparkles,
-  EyeOff,
-  Eye,
-  ChevronDown,
-  ChevronRight
-} from 'lucide-react'
+import { Eye, EyeOff, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
-import { ScanProgress } from '@/components/shared/ScanProgress'
+import { Receipt } from '@/components/shared/Receipt'
+import { Button, Card, Checkbox, ListRow, Section, Tag } from '@/components/ui'
+import { Disclosure, Note, ProgressCard, SummaryCard } from '@/components/software/SoftwareBlocks'
+import { formatClock, formatDateTime, joinFacts } from '@/components/software/format'
 import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useDriverStore } from '@/stores/driver-store'
+import { icons } from '@/lib/icons'
+import { progressText } from '@/lib/progress-label'
 import { formatBytes } from '@/lib/utils'
-import type { DriverUpdate } from '@shared/types'
+import type { DriverPackage, DriverUpdate } from '@shared/types'
+
+/** When this session's last scan finished: survives leaving and reopening the page. */
+let lastScanAt: number | null = null
+
+/** A click on the checkbox must not also reach the row's own toggle. */
+const stop = (event: MouseEvent) => event.stopPropagation()
 
 export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
-  const { t } = useTranslation('updates')
+  const { t, i18n } = useTranslation('updates')
   const packages = useDriverStore((s) => s.packages)
   const scanning = useDriverStore((s) => s.scanning)
   const scanProgress = useDriverStore((s) => s.scanProgress)
@@ -49,6 +44,7 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
   const updatesDisabled = useDriverStore((s) => s.updatesDisabled)
   const applying = useDriverStore((s) => s.applying)
   const hasScanned = useDriverStore((s) => s.hasScanned)
+  const history = useHistoryStore((s) => s.entries)
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [showIgnored, setShowIgnored] = useState(false)
@@ -120,6 +116,7 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
     final.setUpdateScanning(false)
     final.setScanProgress(null)
     final.setUpdateProgress(null)
+    lastScanAt = Date.now()
     final.setHasScanned(true)
 
     // Record scan in history so dashboard reflects completion
@@ -266,11 +263,14 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
       s.setUpdateScanning(false)
       s.setScanProgress(null)
       s.setUpdateProgress(null)
+      lastScanAt = Date.now()
     }
   }, [])
 
   const stalePackages = packages.filter((p) => !p.isCurrent)
-  const selectedStaleCount = stalePackages.filter((p) => p.selected).length
+  const selectedStale = stalePackages.filter((p) => p.selected)
+  const selectedStaleCount = selectedStale.length
+  const selectedStaleSize = selectedStale.reduce((sum, p) => sum + p.size, 0)
   // ─── Ignore / restore a driver update ─────────────────────
   // Optimistic: move the row immediately, then persist and hide/unhide the
   // update in Windows Update itself. Hiding needs elevation; if that part
@@ -336,549 +336,454 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
   const allStaleSelected = stalePackages.length > 0 && stalePackages.every((p) => p.selected)
   const allUpdatesSelected = updates.length > 0 && updates.every((u) => u.selected)
 
-  // Build confirmation description
-  const confirmParts: string[] = []
-  if (selectedUpdateCount > 0) {
-    confirmParts.push(t('driverManager.confirmDescriptionInstall', { count: selectedUpdateCount }))
-  }
-  if (selectedStaleCount > 0) {
-    confirmParts.push(t('driverManager.confirmDescriptionRemove', { count: selectedStaleCount }))
-  }
-  const confirmDesc = `${t('driverManager.confirmDescriptionPrefix')} ${confirmParts.join(` ${t('driverManager.confirmDescriptionAnd')} `)}. ${selectedUpdateCount > 0 ? `${t('driverManager.confirmDescriptionRebootNote')} ` : ''}${t('driverManager.confirmDescriptionSuffix')}`
+  // The button says what it does; the confirmation repeats it with the limits.
+  const both = selectedUpdateCount > 0 && selectedStaleCount > 0
+  const applyLabel = both
+    ? t('driverManager.applyBoth', { count: totalSelected })
+    : selectedUpdateCount > 0
+      ? t('driverManager.applyInstall', { count: selectedUpdateCount })
+      : selectedStaleCount > 0
+        ? t('driverManager.applyRemove', { count: selectedStaleCount })
+        : t('driverManager.applyNone')
+  const confirmTitle = both
+    ? t('driverManager.confirmBothTitle', { count: totalSelected })
+    : selectedUpdateCount > 0
+      ? t('driverManager.confirmInstallTitle', { count: selectedUpdateCount })
+      : t('driverManager.confirmRemoveTitle', { count: selectedStaleCount })
+  const confirmDescription = [
+    selectedUpdateCount > 0 &&
+      t('driverManager.confirmInstallBody', { count: selectedUpdateCount }),
+    selectedStaleCount > 0 &&
+      t('driverManager.confirmRemoveBody', {
+        count: selectedStaleCount,
+        size: formatBytes(selectedStaleSize)
+      }),
+    t('driverManager.confirmActiveNote')
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const hasResults = updates.length > 0 || stalePackages.length > 0
+  // Windows Update may be off or unreachable, and the Driver Store scan may fail: an
+  // empty result only covers the side that was really checked.
+  const updatesChecked = !updateError && !updatesDisabled
+  const allClear =
+    hasScanned && !isScanning && !hasResults
+      ? updatesChecked && !error
+        ? 'allUpToDate'
+        : updatesChecked
+          ? 'noUpdates'
+          : !error
+            ? 'noStale'
+            : null
+      : null
+  const scanTime = lastScanAt ? formatClock(lastScanAt, i18n.language) : ''
+  const lastEntry = history.find((entry) => entry.type === 'drivers')
+  const lastResult = lastEntry
+    ? lastEntry.totalItemsCleaned > 0
+      ? t('driverManager.lastClean', {
+          count: lastEntry.totalItemsCleaned,
+          size: formatBytes(lastEntry.totalSpaceSaved),
+          date: formatDateTime(lastEntry.timestamp, i18n.language)
+        })
+      : t('driverManager.lastScan', {
+          count: lastEntry.totalItemsFound,
+          date: formatDateTime(lastEntry.timestamp, i18n.language)
+        })
+    : t('driverManager.emptyStateDescription')
+
+  const scanButton = (
+    <Button
+      variant={hasScanned ? 'secondary' : 'primary'}
+      icon={Search}
+      busy={isScanning}
+      disabled={applying}
+      onClick={handleScan}
+    >
+      {hasScanned ? t('driverManager.rescanButton') : t('driverManager.scanDriversButton')}
+    </Button>
+  )
 
   return (
-    <div className={embedded ? '' : 'animate-fade-in'}>
+    <div>
       {!embedded && (
         <PageHeader
           title={t('driverManager.pageTitle')}
           description={t('driverManager.pageDescription')}
+          action={scanButton}
         />
       )}
 
-      {/* Actions */}
-      <div className="mb-5 flex items-center gap-2.5">
-        <button
-          onClick={handleScan}
-          disabled={isBusy}
-          className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
-          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
-        >
-          <Search className={`h-4 w-4 ${isScanning ? 'animate-pulse' : ''}`} strokeWidth={1.8} />
-          {isScanning ? t('driverManager.scanningButton') : t('driverManager.scanDriversButton')}
-        </button>
-        <button
-          onClick={() => setShowConfirm(true)}
-          disabled={totalSelected === 0 || isBusy}
-          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
-          style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', color: '#fff' }}
-        >
-          {applying ? (
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-          ) : (
-            <Sparkles className="h-4 w-4" strokeWidth={2} />
-          )}
-          {applying
-            ? installing
-              ? t('driverManager.installingButton')
-              : cleaning
-                ? t('driverManager.cleaningButton')
-                : t('driverManager.applyingButton')
-            : t('driverManager.updateAndCleanButton', { count: totalSelected })}
-        </button>
-      </div>
+      <div className="sw-page">
+        {embedded && <div className="sw-summary-actions">{scanButton}</div>}
 
-      {/* Info banner */}
-      <div
-        className="mb-5 flex items-center gap-3 rounded-2xl px-5 py-4"
-        style={{ background: 'var(--accent-muted-bg)', border: '1px solid var(--accent-muted-bg)' }}
-      >
-        <Shield className="h-5 w-5 shrink-0 text-amber-500" strokeWidth={1.8} />
-        <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-          <span className="font-semibold text-amber-500">
-            {t('driverManager.safeOperationBold')}
-          </span>{' '}
-          — {t('driverManager.safeOperationText')}
-        </p>
-      </div>
-
-      {/* Errors */}
-      {error && (
-        <ErrorAlert
-          message={error}
-          onDismiss={() => useDriverStore.getState().setError(null)}
-          className="mb-5"
-        />
-      )}
-      {updateError && (
-        <ErrorAlert
-          message={updateError}
-          onDismiss={() => useDriverStore.getState().setUpdateError(null)}
-          className="mb-5"
-        />
-      )}
-
-      {/* Scan progress */}
-      {scanning && scanProgress && (
-        <ScanProgress
-          status="scanning"
-          progress={
-            scanProgress.total > 0
-              ? Math.round((scanProgress.current / scanProgress.total) * 100)
-              : 0
-          }
-          currentPath={scanProgress.currentDriver}
-          className="mb-5"
-        />
-      )}
-      {scanning && !scanProgress && (
-        <ScanProgress
-          status="scanning"
-          progress={0}
-          currentPath={t('driverManager.enumeratingPackages')}
-          className="mb-5"
-        />
-      )}
-
-      {/* Update progress (during scan or install) */}
-      {(updateScanning || installing) && updateProgress && (
-        <div
-          className="mb-5 rounded-2xl p-4"
-          style={{ background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.08)' }}
-        >
-          <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-2.5">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-400" strokeWidth={2} />
-              <span className="text-[13px] font-medium text-zinc-200">
-                {updateProgress.phase === 'checking'
-                  ? t('driverManager.updateProgressChecking')
-                  : updateProgress.phase === 'downloading'
-                    ? t('driverManager.updateProgressDownloading')
-                    : t('driverManager.updateProgressInstalling')}
-                {updateProgress.total > 0 && ` (${updateProgress.current}/${updateProgress.total})`}
-              </span>
-            </div>
-            <span className="text-[12px] font-mono" style={{ color: 'var(--text-secondary)' }}>
-              {updateProgress.percent}%
-            </span>
-          </div>
-          <div
-            className="h-1.5 w-full rounded-full overflow-hidden"
-            style={{ background: 'var(--bg-hover-2)' }}
-          >
-            <div
-              className="h-full rounded-full transition-[width] duration-300"
-              style={{
-                width: `${updateProgress.percent}%`,
-                background: 'linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%)'
-              }}
-            />
-          </div>
-          <p className="mt-2 text-[11px] truncate" style={{ color: 'var(--text-secondary)' }}>
-            {updateProgress.currentDevice}
-          </p>
-        </div>
-      )}
-      {updateScanning && !updateProgress && !scanning && (
-        <ScanProgress
-          status="scanning"
-          progress={0}
-          currentPath={t('driverManager.queryingWindowsUpdate')}
-          className="mb-5"
-        />
-      )}
-
-      {/* Results summary */}
-      {installResult && (
-        <div
-          className="mb-5 flex items-center gap-3 rounded-2xl p-4"
-          style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.1)' }}
-        >
-          <CheckCircle2 className="h-5 w-5 text-green-500" strokeWidth={1.8} />
-          <div className="text-[13px] text-zinc-200">
-            <p>
-              {installResult.installed !== 1
-                ? t('driverManager.installedDriverUpdatesPlural', {
-                    count: installResult.installed
-                  })
-                : t('driverManager.installedDriverUpdates', { count: installResult.installed })}
-              {installResult.failed > 0 && (
-                <span className="text-red-400">
-                  {' '}
-                  {t('driverManager.failedCount', { count: installResult.failed })}
-                </span>
-              )}
-            </p>
-            {installResult.rebootRequired && (
-              <p className="mt-1 text-[12px] text-amber-400">{t('driverManager.rebootRequired')}</p>
-            )}
-          </div>
-        </div>
-      )}
-      {cleanResult && (
-        <div
-          className="mb-5 flex items-center gap-3 rounded-2xl p-4"
-          style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.1)' }}
-        >
-          <CheckCircle2 className="h-5 w-5 text-green-500" strokeWidth={1.8} />
-          <p className="text-[13px] text-zinc-200">
-            {cleanResult.removed !== 1
-              ? t('driverManager.removedStalePackagesPlural', { count: cleanResult.removed })
-              : t('driverManager.removedStalePackages', { count: cleanResult.removed })}
-            {cleanResult.spaceRecovered > 0 && (
-              <span className="text-green-400">
-                {' '}
-                —{' '}
-                {t('driverManager.spaceRecovered', {
-                  size: formatBytes(cleanResult.spaceRecovered)
-                })}
-              </span>
-            )}
-            {cleanResult.failed > 0 && (
-              <span className="text-red-400">
-                {' '}
-                {t('driverManager.failedCount', { count: cleanResult.failed })}
-              </span>
-            )}
-          </p>
-        </div>
-      )}
-
-      {/* Driver updates turned off in Windows */}
-      {hasScanned && !isScanning && updatesDisabled && (
-        <div
-          className="mb-5 flex items-start gap-3 rounded-2xl px-5 py-4"
-          style={{ background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)' }}
-        >
-          <AlertTriangle className="h-5 w-5 shrink-0 text-blue-400 mt-0.5" strokeWidth={1.8} />
-          <div>
-            <p className="text-[13px] font-medium text-zinc-200">
-              {t('driverManager.updatesDisabledTitle')}
-            </p>
-            <p className="mt-1 text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-              {t('driverManager.updatesDisabledText')}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!hasScanned && !isScanning && (
-        <EmptyState
-          icon={Cpu}
-          title={t('driverManager.emptyStateTitle')}
-          description={t('driverManager.emptyStateDescription')}
-          action={
-            <button
-              onClick={handleScan}
-              disabled={isBusy}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <Search className="h-4 w-4" strokeWidth={1.8} />
-              {t('driverManager.scanDriversButton')}
-            </button>
-          }
-        />
-      )}
-
-      {/* All up to date state */}
-      {hasScanned &&
-        !isScanning &&
-        !updatesDisabled &&
-        updates.length === 0 &&
-        stalePackages.length === 0 && (
-          <div
-            className="flex flex-col items-center justify-center py-16 rounded-2xl"
-            style={{ background: 'rgba(34,197,94,0.03)', border: '1px solid rgba(34,197,94,0.08)' }}
-          >
-            <CheckCircle2 className="h-12 w-12 text-green-500 mb-4" strokeWidth={1.5} />
-            <p className="text-[15px] font-medium text-zinc-200">
-              {t('driverManager.allUpToDateTitle')}
-            </p>
-            <p className="mt-1 text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-              {t('driverManager.allUpToDateDescription')}
-            </p>
-          </div>
+        {error && (
+          <ErrorAlert message={error} onDismiss={() => useDriverStore.getState().setError(null)} />
+        )}
+        {updateError && (
+          <ErrorAlert
+            message={updateError}
+            onDismiss={() => useDriverStore.getState().setUpdateError(null)}
+          />
         )}
 
-      {/* ─── Updates Section ──────────────────────────────────── */}
-      {updates.length > 0 && !isScanning && (
-        <div className="mb-6">
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <ArrowUpCircle className="h-4.5 w-4.5 text-blue-400" strokeWidth={1.8} />
-              <span className="text-[13px] font-semibold text-zinc-200">
-                {t('driverManager.updatesAvailable', { count: updates.length })}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() =>
-                  allUpdatesSelected
-                    ? useDriverStore.getState().deselectAllUpdates()
-                    : useDriverStore.getState().selectAllUpdates()
-                }
-                className="rounded-full px-3 py-1.5 text-[11px] font-medium transition-colors"
-                style={{ background: 'var(--bg-subtle-2)', color: 'var(--text-secondary)' }}
-              >
-                {allUpdatesSelected ? t('driverManager.deselectAll') : t('driverManager.selectAll')}
-              </button>
-            </div>
-          </div>
+        {/* Scan progress: driver packages and Windows Update run side by side */}
+        {scanning && !cleaning && (
+          <ProgressCard
+            title={t('driverManager.progressPackagesTitle')}
+            meta={
+              scanProgress && scanProgress.total > 0
+                ? t('driverManager.progressCount', {
+                    current: scanProgress.current,
+                    total: scanProgress.total
+                  })
+                : undefined
+            }
+            value={
+              scanProgress && scanProgress.total > 0 && scanProgress.phase === 'measuring'
+                ? scanProgress.current / scanProgress.total
+                : undefined
+            }
+            detail={
+              scanProgress
+                ? progressText(t, scanProgress.currentDriver)
+                : t('driverManager.progress.enumerating')
+            }
+          />
+        )}
+        {updateScanning && !installing && (
+          <ProgressCard
+            title={t('driverManager.progressUpdatesTitle')}
+            meta={
+              updateProgress && updateProgress.total > 0
+                ? t('driverManager.progressCount', {
+                    current: updateProgress.current,
+                    total: updateProgress.total
+                  })
+                : undefined
+            }
+            value={
+              updateProgress && updateProgress.total > 0 ? updateProgress.percent / 100 : undefined
+            }
+            detail={
+              updateProgress
+                ? progressText(t, updateProgress.currentDevice)
+                : t('driverManager.progress.querying')
+            }
+          />
+        )}
 
-          <div className="grid grid-cols-1 gap-2">
-            {updates.map((upd) => (
-              <div
-                key={upd.id}
-                onClick={() => useDriverStore.getState().toggleUpdate(upd.id)}
-                className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors cursor-pointer"
-                style={{
-                  background: upd.selected ? 'rgba(59,130,246,0.04)' : 'var(--bg-subtle)',
-                  border: `1px solid ${upd.selected ? 'rgba(59,130,246,0.1)' : 'var(--border-subtle)'}`
-                }}
+        {/* Apply progress */}
+        {installing && (
+          <ProgressCard
+            title={t('driverManager.installProgressTitle')}
+            meta={
+              updateProgress && updateProgress.total > 0
+                ? t('driverManager.progressCount', {
+                    current: updateProgress.current,
+                    total: updateProgress.total
+                  })
+                : undefined
+            }
+            value={updateProgress ? updateProgress.percent / 100 : undefined}
+            detail={
+              updateProgress
+                ? progressText(t, updateProgress.currentDevice)
+                : t('driverManager.progress.preparing')
+            }
+          />
+        )}
+        {cleaning && <ProgressCard title={t('driverManager.cleanProgressTitle')} />}
+
+        {/* What the last apply did */}
+        {installResult && (
+          <Receipt
+            title={t('driverManager.installReceiptTitle')}
+            value={t('driverManager.installedCount', { count: installResult.installed })}
+            facts={[
+              installResult.failed > 0
+                ? t('driverManager.failedCount', { count: installResult.failed })
+                : '',
+              installResult.rebootRequired ? t('driverManager.rebootRequired') : ''
+            ]}
+          />
+        )}
+        {cleanResult && (
+          <Receipt
+            title={t('driverManager.cleanReceiptTitle')}
+            value={
+              cleanResult.spaceRecovered > 0
+                ? t('driverManager.spaceRecovered', {
+                    size: formatBytes(cleanResult.spaceRecovered)
+                  })
+                : undefined
+            }
+            facts={[
+              t('driverManager.removedCount', { count: cleanResult.removed }),
+              cleanResult.failed > 0
+                ? t('driverManager.failedCount', { count: cleanResult.failed })
+                : '',
+              t('driverManager.notReversible')
+            ]}
+          />
+        )}
+
+        {/* Driver updates turned off in Windows */}
+        {hasScanned && !isScanning && updatesDisabled && (
+          <Note icon="warning" title={t('driverManager.updatesDisabledTitle')}>
+            {t('driverManager.updatesDisabledText')}
+          </Note>
+        )}
+
+        {/* Before the first scan: the real state and what the scan reads */}
+        {!hasScanned && !isScanning && (
+          <EmptyState
+            title={t('driverManager.emptyStateTitle')}
+            description={lastResult}
+            checks={[
+              {
+                title: t('driverManager.checkUpdatesTitle'),
+                detail: t('driverManager.checkUpdatesDetail')
+              },
+              {
+                title: t('driverManager.checkStaleTitle'),
+                detail: t('driverManager.checkStaleDetail')
+              },
+              {
+                title: t('driverManager.checkActiveTitle'),
+                detail: t('driverManager.checkActiveDetail')
+              }
+            ]}
+          />
+        )}
+
+        {/* Nothing found: say only what was actually checked */}
+        {allClear && (
+          <EmptyState
+            icon={icons.allUpToDate}
+            title={t(`driverManager.${allClear}Title`)}
+            description={joinFacts([
+              t(`driverManager.${allClear}Description`),
+              scanTime && t('driverManager.scannedAt', { time: scanTime })
+            ])}
+          />
+        )}
+
+        {/* The number that matters and the action that uses it */}
+        {hasScanned && !isScanning && hasResults && (
+          <SummaryCard
+            title={joinFacts([
+              updates.length > 0 && t('driverManager.summaryUpdates', { count: updates.length }),
+              stalePackages.length > 0 &&
+                t('driverManager.summaryStale', { count: stalePackages.length })
+            ])}
+            detail={joinFacts([
+              totalStaleSize > 0 &&
+                t('driverManager.summaryStaleSize', { size: formatBytes(totalStaleSize) }),
+              scanTime && t('driverManager.scannedAt', { time: scanTime })
+            ])}
+            action={
+              <Button
+                variant="primary"
+                icon={icons.drivers}
+                busy={applying}
+                disabled={totalSelected === 0 || isScanning}
+                onClick={() => setShowConfirm(true)}
               >
-                <div className="w-6">
-                  <input
-                    type="checkbox"
-                    checked={upd.selected}
-                    readOnly
-                    className="pointer-events-none accent-blue-500 cursor-pointer"
-                  />
-                </div>
-                <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                  style={{ background: 'rgba(59,130,246,0.1)' }}
-                >
-                  <ArrowUpCircle
-                    className="h-5 w-5"
-                    style={{ color: '#3b82f6' }}
-                    strokeWidth={1.8}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-[13px] font-medium text-zinc-200">{upd.deviceName}</span>
-                    <span
-                      className="rounded-md px-2 py-0.5 text-[10px] font-medium"
-                      style={{ background: 'rgba(59,130,246,0.1)', color: '#60a5fa' }}
-                    >
-                      {upd.className}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                    {upd.provider} —{' '}
-                    {upd.currentVersion
-                      ? `v${upd.currentVersion}`
-                      : t('driverManager.versionUnknown')}{' '}
-                    → v{upd.availableVersion}
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  {upd.downloadSize && (
-                    <span className="text-[12px] font-medium text-zinc-400">
-                      {upd.downloadSize}
-                    </span>
-                  )}
-                  {upd.availableDate && (
-                    <div
-                      className="mt-0.5 text-[10px] font-mono"
-                      style={{ color: 'var(--text-muted)' }}
-                    >
-                      {upd.availableDate}
-                    </div>
-                  )}
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    void handleIgnore(upd)
+                {applyLabel}
+              </Button>
+            }
+          />
+        )}
+
+        {/* ─── Updates ─────────────────────────────────────────── */}
+        {updates.length > 0 && !isScanning && (
+          <Section
+            title={t('driverManager.updatesSection')}
+            meta={t('driverManager.sectionSelected', {
+              selected: selectedUpdateCount,
+              total: updates.length
+            })}
+            actions={
+              <label className="sw-select-all">
+                <Checkbox
+                  checked={allUpdatesSelected}
+                  indeterminate={selectedUpdateCount > 0 && !allUpdatesSelected}
+                  onChange={(value) => {
+                    const store = useDriverStore.getState()
+                    if (value) store.selectAllUpdates()
+                    else store.deselectAllUpdates()
                   }}
-                  disabled={isBusy || pendingIgnoreIds.has(upd.id)}
-                  title={t('driverManager.ignoreButton')}
-                  aria-label={t('driverManager.ignoreButton')}
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-[11px] font-medium text-zinc-500 transition hover:bg-white/5 hover:text-zinc-300 disabled:opacity-30 shrink-0"
-                  style={{ border: '1px solid var(--border-medium)' }}
-                >
-                  <EyeOff className="h-3.5 w-3.5" strokeWidth={1.8} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ─── Ignored Updates Section ─────────────────────────── */}
-      {ignoredUpdates.length > 0 && !isScanning && (
-        <div className="mb-6">
-          <button
-            onClick={() => setShowIgnored(!showIgnored)}
-            className="mb-3 flex items-center gap-2 text-[13px] font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
+                  label={t('driverManager.selectAllUpdates')}
+                  disabled={applying}
+                />
+              </label>
+            }
           >
-            {showIgnored ? (
-              <ChevronDown className="h-4 w-4" strokeWidth={2} />
-            ) : (
-              <ChevronRight className="h-4 w-4" strokeWidth={2} />
-            )}
-            <EyeOff className="h-4 w-4 text-zinc-500" strokeWidth={1.8} />
-            {t('driverManager.ignoredSection', { count: ignoredUpdates.length })}
-          </button>
+            {updates.map((upd) => (
+              <UpdateRow
+                key={upd.id}
+                update={upd}
+                disabled={isBusy || pendingIgnoreIds.has(upd.id)}
+                onIgnore={() => void handleIgnore(upd)}
+              />
+            ))}
+          </Section>
+        )}
 
-          {showIgnored && (
-            <div className="grid grid-cols-1 gap-1.5">
-              {ignoredUpdates.map((upd) => (
-                <div
-                  key={upd.id}
-                  className="flex items-center gap-4 rounded-xl px-5 py-3"
-                  style={{
-                    background: 'var(--bg-subtle)',
-                    border: '1px solid var(--border-subtle)',
-                    opacity: 0.7
+        {/* ─── Stale packages: safe to remove, pre-selected ───────── */}
+        {stalePackages.length > 0 && !isScanning && (
+          <Section
+            title={t('driverManager.staleSection')}
+            meta={t('driverManager.sectionSelected', {
+              selected: selectedStaleCount,
+              total: stalePackages.length
+            })}
+            actions={
+              <label className="sw-select-all">
+                <Checkbox
+                  checked={allStaleSelected}
+                  indeterminate={selectedStaleCount > 0 && !allStaleSelected}
+                  onChange={(value) => {
+                    const store = useDriverStore.getState()
+                    if (value) store.selectAllStale()
+                    else store.deselectAllStale()
                   }}
-                >
-                  <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                    style={{ background: 'rgba(113,113,122,0.08)' }}
-                  >
-                    <EyeOff className="h-4 w-4 text-zinc-500" strokeWidth={1.8} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[12px] font-medium text-zinc-400 truncate block">
+                  label={t('driverManager.selectAllStale')}
+                  disabled={applying}
+                />
+              </label>
+            }
+          >
+            {stalePackages.map((pkg) => (
+              <StaleRow key={pkg.id} pkg={pkg} disabled={applying} />
+            ))}
+          </Section>
+        )}
+
+        {/* ─── Ignored updates ─────────────────────────────────── */}
+        {ignoredUpdates.length > 0 && !isScanning && (
+          <Disclosure
+            label={t('driverManager.ignoredSection', { count: ignoredUpdates.length })}
+            open={showIgnored}
+            onToggle={() => setShowIgnored(!showIgnored)}
+          >
+            <Card className="sw-list">
+              {ignoredUpdates.map((upd) => (
+                <ListRow key={upd.id} data-muted="">
+                  <div className="min-w-0 flex-1">
+                    <span className="sw-row-name block" title={upd.deviceName}>
                       {upd.deviceName}
                     </span>
-                    <span
-                      className="text-[10px] truncate block"
-                      style={{ color: 'var(--text-muted)' }}
-                    >
-                      {upd.provider} — {upd.updateTitle}
-                    </span>
+                    <p className="sw-row-sub" title={upd.updateTitle}>
+                      {joinFacts([upd.provider, upd.updateTitle])}
+                    </p>
                   </div>
-                  <span className="text-[11px] font-mono text-zinc-600 shrink-0">
-                    v{upd.availableVersion}
-                  </span>
-                  <button
+                  <span className="sw-row-meta sw-mono shrink-0">v{upd.availableVersion}</span>
+                  <Button
+                    variant="ghost"
+                    icon={Eye}
                     onClick={() => void handleUnignore(upd)}
                     disabled={isBusy || pendingIgnoreIds.has(upd.id)}
-                    className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-zinc-400 transition hover:bg-white/5 hover:text-zinc-200 disabled:opacity-30 shrink-0"
-                    style={{ border: '1px solid var(--border-medium)' }}
+                    aria-label={`${t('driverManager.unignoreButton')} ${upd.deviceName}`}
                   >
-                    <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
                     {t('driverManager.unignoreButton')}
-                  </button>
-                </div>
+                  </Button>
+                </ListRow>
               ))}
-            </div>
-          )}
-        </div>
-      )}
+            </Card>
+          </Disclosure>
+        )}
 
-      {/* ─── Stale Packages Section ──────────────────────────── */}
-      {stalePackages.length > 0 && !isScanning && (
-        <div className="mb-6">
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Trash2 className="h-4.5 w-4.5 text-amber-400" strokeWidth={1.8} />
-              <span className="text-[13px] font-semibold text-zinc-200">
-                {t('driverManager.stalePackages', { count: stalePackages.length })}
-              </span>
-              {totalStaleSize > 0 && (
-                <span
-                  className="rounded-md px-2 py-0.5 text-[10px] font-medium"
-                  style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}
-                >
-                  {formatBytes(totalStaleSize)}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() =>
-                  allStaleSelected
-                    ? useDriverStore.getState().deselectAllStale()
-                    : useDriverStore.getState().selectAllStale()
-                }
-                className="rounded-full px-3 py-1.5 text-[11px] font-medium transition-colors"
-                style={{ background: 'var(--bg-subtle-2)', color: 'var(--text-secondary)' }}
-              >
-                {allStaleSelected ? t('driverManager.deselectAll') : t('driverManager.selectAll')}
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-2">
-            {stalePackages.map((pkg) => (
-              <div
-                key={pkg.id}
-                onClick={() => useDriverStore.getState().togglePackage(pkg.id)}
-                className="flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors cursor-pointer"
-                style={{
-                  background: pkg.selected ? 'rgba(245,158,11,0.04)' : 'var(--bg-subtle)',
-                  border: `1px solid ${pkg.selected ? 'rgba(245,158,11,0.1)' : 'var(--border-subtle)'}`
-                }}
-              >
-                <div className="w-6">
-                  <input
-                    type="checkbox"
-                    checked={pkg.selected}
-                    readOnly
-                    className="pointer-events-none accent-amber-500 cursor-pointer"
-                  />
-                </div>
-                <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                  style={{ background: 'rgba(245,158,11,0.1)' }}
-                >
-                  <AlertTriangle
-                    className="h-5 w-5"
-                    style={{ color: '#f59e0b' }}
-                    strokeWidth={1.8}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-[13px] font-medium text-zinc-200">
-                      {pkg.originalName}
-                    </span>
-                    <span
-                      className="rounded-md px-2 py-0.5 text-[10px] font-medium"
-                      style={{ background: 'rgba(139,92,246,0.1)', color: '#a78bfa' }}
-                    >
-                      {pkg.className}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                    {pkg.provider} — v{pkg.version}
-                    {pkg.date ? ` — ${pkg.date}` : ''}
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <span className="text-[12px] font-medium text-zinc-400">
-                    {formatBytes(pkg.size)}
-                  </span>
-                  <div
-                    className="mt-0.5 text-[10px] font-mono"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    {pkg.publishedName}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <ConfirmDialog
-        open={showConfirm}
-        onConfirm={handleApply}
-        onCancel={() => setShowConfirm(false)}
-        title={t('driverManager.confirmTitle')}
-        description={confirmDesc}
-        confirmLabel={t('driverManager.confirmLabel')}
-        variant="danger"
-      />
+        <ConfirmDialog
+          open={showConfirm}
+          onConfirm={handleApply}
+          onCancel={() => setShowConfirm(false)}
+          title={confirmTitle}
+          description={confirmDescription}
+          confirmLabel={applyLabel}
+          variant={selectedStaleCount > 0 ? 'danger' : 'default'}
+        />
+      </div>
     </div>
+  )
+}
+
+function UpdateRow({
+  update,
+  disabled,
+  onIgnore
+}: {
+  update: DriverUpdate
+  disabled: boolean
+  onIgnore: () => void
+}) {
+  const { t } = useTranslation('updates')
+  const toggle = () => useDriverStore.getState().toggleUpdate(update.id)
+  const from = update.currentVersion
+    ? `v${update.currentVersion}`
+    : t('driverManager.versionUnknown')
+  return (
+    <ListRow className="cursor-pointer" onClick={toggle}>
+      <span onClick={stop} className="flex">
+        <Checkbox checked={update.selected} onChange={toggle} label={update.deviceName} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <span className="sw-row-name block" title={update.deviceName}>
+          {update.deviceName}
+        </span>
+        <p className="sw-row-sub">
+          {joinFacts([update.className, update.provider, `${from} → v${update.availableVersion}`])}
+        </p>
+      </div>
+      <span className="sw-row-meta shrink-0">
+        {update.downloadSize}
+        {update.availableDate && <span className="sw-row-meta-sub">{update.availableDate}</span>}
+      </span>
+      <span onClick={stop} className="flex">
+        <Button
+          variant="ghost"
+          icon={EyeOff}
+          onClick={onIgnore}
+          disabled={disabled}
+          title={t('driverManager.ignoreButton')}
+          aria-label={`${t('driverManager.ignoreButton')}: ${update.deviceName}`}
+        />
+      </span>
+    </ListRow>
+  )
+}
+
+function StaleRow({ pkg, disabled }: { pkg: DriverPackage; disabled: boolean }) {
+  const { t } = useTranslation('updates')
+  const toggle = () => {
+    if (!disabled) useDriverStore.getState().togglePackage(pkg.id)
+  }
+  return (
+    <ListRow className="cursor-pointer" recommended onClick={toggle}>
+      <span onClick={stop} className="flex">
+        <Checkbox
+          checked={pkg.selected}
+          onChange={toggle}
+          label={pkg.originalName}
+          disabled={disabled}
+        />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="sw-row-title">
+          <span className="sw-row-name" title={pkg.originalName}>
+            {pkg.originalName}
+          </span>
+          <Tag tone="recommended">{t('driverManager.recommended')}</Tag>
+        </div>
+        <p className="sw-row-sub">
+          {joinFacts([pkg.className, pkg.provider, `v${pkg.version}`, pkg.date])}
+        </p>
+      </div>
+      <span className="sw-row-meta shrink-0">
+        {formatBytes(pkg.size)}
+        <span className="sw-row-meta-sub sw-mono">{pkg.publishedName}</span>
+      </span>
+    </ListRow>
   )
 }

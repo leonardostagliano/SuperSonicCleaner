@@ -540,7 +540,8 @@ export interface DriverScanProgress {
   phase: 'enumerating' | 'analyzing' | 'measuring'
   current: number
   total: number
-  currentDriver: string
+  /** The package being measured, or the phase as a translatable line. */
+  currentDriver: string | ProgressLabel
 }
 
 export interface DriverUpdate {
@@ -592,7 +593,8 @@ export interface DriverUpdateProgress {
   phase: 'checking' | 'downloading' | 'installing'
   current: number
   total: number
-  currentDevice: string
+  /** The device being handled, or the phase as a translatable line. */
+  currentDevice: string | ProgressLabel
   percent: number
 }
 

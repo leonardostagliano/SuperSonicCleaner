@@ -46,6 +46,8 @@ import {
 } from './driver-manager.ipc'
 import type { RawDriver } from './driver-manager.ipc'
 import type { DriverUpdate } from '../../shared/types'
+import itUpdates from '../../renderer/src/locales/it/updates.json'
+import enUpdates from '../../renderer/src/locales/en/updates.json'
 
 const originalPlatform = process.platform
 
@@ -450,6 +452,36 @@ describe('scanDrivers', () => {
     stubPowerShell([])
     const result = await scanDrivers()
     expect(result.packages).toEqual([])
+  })
+
+  it('reports its phases as translatable lines and the measured package as data', async () => {
+    mockExecNative.mockResolvedValue({ stdout: enumOutput([WINTUN]), stderr: '' })
+    stubPowerShell([])
+    const progress: unknown[] = []
+
+    await scanDrivers((data) => progress.push(data.currentDriver))
+
+    expect(progress.slice(0, 2)).toEqual([
+      { key: 'updates:driverManager.progress.enumerating' },
+      { key: 'updates:driverManager.progress.analyzing' }
+    ])
+    expect(progress.length).toBeGreaterThan(2)
+    expect(progress.slice(2).every((line) => typeof line === 'string')).toBe(true)
+  })
+
+  it('has Italian and English copy for every phase line the main process sends', () => {
+    const phases = [
+      'enumerating',
+      'analyzing',
+      'querying',
+      'preparing',
+      'downloading',
+      'installing'
+    ]
+    for (const locale of [itUpdates, enUpdates]) {
+      const lines = locale.driverManager.progress as Record<string, string>
+      for (const phase of phases) expect(lines[phase], phase).toBeTruthy()
+    }
   })
 })
 

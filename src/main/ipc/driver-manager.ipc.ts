@@ -375,7 +375,7 @@ export async function scanDrivers(
     phase: 'enumerating',
     current: 0,
     total: 0,
-    currentDriver: 'Enumerating installed driver packages...'
+    currentDriver: { key: 'updates:driverManager.progress.enumerating' }
   })
 
   // Step 1: Enumerate all OEM driver packages
@@ -399,7 +399,7 @@ export async function scanDrivers(
     phase: 'analyzing',
     current: 0,
     total: rawDrivers.length,
-    currentDriver: 'Identifying active drivers...'
+    currentDriver: { key: 'updates:driverManager.progress.analyzing' }
   })
 
   // Step 2: Determine which drivers are currently active + get folder mapping
@@ -554,7 +554,7 @@ export async function scanDriverUpdates(
     phase: 'checking',
     current: 0,
     total: 0,
-    currentDevice: 'Querying Windows Update for driver updates...',
+    currentDevice: { key: 'updates:driverManager.progress.querying' },
     percent: 0
   })
 
@@ -829,7 +829,7 @@ export async function installDriverUpdates(
     phase: 'downloading',
     current: 0,
     total: wuUpdateIds.length,
-    currentDevice: 'Preparing driver updates...',
+    currentDevice: { key: 'updates:driverManager.progress.preparing' },
     percent: 0
   })
 
@@ -911,8 +911,7 @@ export async function installDriverUpdates(
           phase,
           current: 0,
           total,
-          currentDevice:
-            phase === 'installing' ? 'Installing drivers...' : 'Downloading drivers...',
+          currentDevice: { key: `updates:driverManager.progress.${phase}` },
           percent: phase === 'installing' ? 50 : 25
         })
       } else if (line.startsWith('INSTALLED|')) {
