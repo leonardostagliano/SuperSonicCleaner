@@ -551,10 +551,6 @@ summary,
     contain-intrinsic-size: auto 66px;
   }
 }
-/* Startup rows add a third line (the command) */
-.app-content[data-route='/startup'] .list-row-cv {
-  contain-intrinsic-size: auto 69px;
-}
 .app-content > * {
   width: 100%;
 }
