@@ -297,7 +297,7 @@ function Overview({
       <Section
         title={t('overview.recent')}
         actions={
-          <Button variant="ghost" icon={icons.next} onClick={onShowAll}>
+          <Button variant="ghost" onClick={onShowAll}>
             {t('overview.showAll')}
           </Button>
         }
