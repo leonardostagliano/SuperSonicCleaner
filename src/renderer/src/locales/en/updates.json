@@ -1,14 +1,4 @@
 {
-  "pageTitle": "Updates",
-  "pageDescription": "Keep your software and drivers up to date",
-  "tabs": {
-    "software": "Software",
-    "drivers": "Drivers",
-    "softwareDescriptionWindows": "Third-party apps via winget, Chocolatey, Scoop & npm",
-    "softwareDescriptionMac": "Third-party apps via Homebrew",
-    "softwareDescriptionLinux": "Third-party apps via package manager",
-    "driversDescription": "Updates & stale cleanup"
-  },
   "softwareUpdater": {
     "pageTitle": "Software Updater",
     "pageDescription": "Compares each app's installed version with the one offered by your package managers. Only the apps you select are updated; some installers ask for administrator consent.",

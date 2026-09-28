@@ -1,15 +1,4 @@
 {
-  "pageTitle": "Protezione del sistema",
-  "descriptionWindows": "Alleggerisci Windows — rimuovi telemetria, bloatware e servizi non necessari",
-  "descriptionOther": "Rafforza il tuo sistema — gestisci le impostazioni sulla privacy e i servizi non necessari",
-  "tabs": {
-    "privacy": "Privacy",
-    "bloatware": "Bloatware",
-    "services": "Servizi",
-    "privacyDescription": "Telemetria, annunci, tracciamento",
-    "bloatwareDescription": "App preinstallate",
-    "servicesDescription": "Servizi non necessari"
-  },
   "privacy": {
     "pageTitle": "Scudo privacy",
     "pageDescription": "Legge le impostazioni di telemetria, pubblicità, ricerca e sincronizzazione e le confronta con il valore più riservato. Un'impostazione cambia solo quando usi il suo interruttore o confermi; quasi tutte si possono riportare al valore predefinito.",

@@ -1,14 +1,4 @@
 {
-  "pageTitle": "Aggiornamenti",
-  "pageDescription": "Mantieni aggiornati software e driver",
-  "tabs": {
-    "software": "Software",
-    "drivers": "Driver",
-    "softwareDescriptionWindows": "App di terze parti tramite winget, Chocolatey, Scoop e npm",
-    "softwareDescriptionMac": "App di terze parti tramite Homebrew",
-    "softwareDescriptionLinux": "App di terze parti tramite gestore pacchetti",
-    "driversDescription": "Aggiornamenti e pulizia dei pacchetti obsoleti"
-  },
   "softwareUpdater": {
     "pageTitle": "Aggiornamento software",
     "pageDescription": "Confronta la versione installata di ogni app con quella offerta dai gestori pacchetti. Vengono aggiornate solo le app che selezioni; alcuni installer chiedono il consenso di amministratore.",

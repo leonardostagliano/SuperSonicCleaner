@@ -224,8 +224,6 @@
     "scheduled": "pianificata",
     "scheduledBy": "pianificata: {{name}}",
     "categoriesLabel": "Categorie",
-    "statFound": "Trovati",
-    "statProcessed": "Elaborati",
     "deletedFiles": {
       "title": "File eliminati",
       "loading": "Lettura del registro delle eliminazioni…",

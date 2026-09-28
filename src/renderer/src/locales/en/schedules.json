@@ -1,8 +1,6 @@
 {
   "pageTitle": "Schedules",
   "pageScope": "Runs cleanups, registry fixes and updates at set times, when the conditions you choose are met. With auto-apply, actions start without confirmation.",
-  "pageDescription": "Automate scans, cleanups, and updates on a schedule",
-  "dismissNudge": "Hide this card",
   "newScheduleButton": "New schedule",
   "emptyStateTitle": "No schedules",
   "emptyStateDescription": "The schedules you create appear here, with their next run and the result of the last one.",

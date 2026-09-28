@@ -2,9 +2,7 @@
   "scanning": "Scanning...",
   "cleaning": "Cleaning...",
   "foundLabel": "Found:",
-  "itemsUnit": "items",
   "sizeLabel": "Size:",
-  "health": "Health",
   "cancel": "Cancel",
   "confirm": "Confirm",
   "adminBannerMessage": "Started without administrator rights: {{features}} are not available.",
@@ -28,6 +26,5 @@
   "hoursAgo": "{{hours}}h ago",
   "daysAgo": "{{days}}d ago",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "What is checked"
 }

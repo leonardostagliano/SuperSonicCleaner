@@ -1,8 +1,6 @@
 {
   "pageTitle": "Pianificazioni",
   "pageScope": "Esegue pulizie, correzioni del registro e aggiornamenti a orari fissi, quando le condizioni che scegli sono soddisfatte. Con l'applicazione automatica le azioni partono senza conferma.",
-  "pageDescription": "Automatizza scansioni, pulizie e aggiornamenti secondo una pianificazione",
-  "dismissNudge": "Nascondi questa scheda",
   "newScheduleButton": "Nuova pianificazione",
   "emptyStateTitle": "Nessuna pianificazione",
   "emptyStateDescription": "Qui compaiono le pianificazioni create, con la prossima esecuzione e l'esito dell'ultima.",

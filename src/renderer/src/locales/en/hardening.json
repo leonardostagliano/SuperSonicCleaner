@@ -1,15 +1,4 @@
 {
-  "pageTitle": "System Hardening",
-  "descriptionWindows": "Strip down Windows — remove telemetry, bloatware, and unnecessary services",
-  "descriptionOther": "Harden your system — manage privacy settings and unnecessary services",
-  "tabs": {
-    "privacy": "Privacy",
-    "bloatware": "Bloatware",
-    "services": "Services",
-    "privacyDescription": "Telemetry, ads, tracking",
-    "bloatwareDescription": "Pre-installed apps",
-    "servicesDescription": "Unnecessary services"
-  },
   "privacy": {
     "pageTitle": "Privacy Shield",
     "pageDescription": "Reads the telemetry, advertising, search and sync settings and compares them with the most private value. A setting changes only when you use its switch or confirm; most can be set back to the default.",

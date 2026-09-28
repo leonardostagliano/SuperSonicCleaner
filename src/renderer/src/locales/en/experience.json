@@ -1,55 +1,13 @@
 {
   "routes": {
-    "cleaner": "Make space for what matters. Scan for clutter, compare categories, then review what to remove.",
-    "registry": "Find outdated registry entries and review the proposed fixes before making changes.",
-    "contextMenu": "A simpler right-click menu. Review shell extensions, then disable entries you don't need.",
-    "startup": "Give your next startup a little breathing room. Review high-impact apps first.",
-    "disk": "See where your space goes. Choose a drive, analyze it, and explore the folders behind the numbers.",
-    "duplicates": "One good copy is often enough. Compare matching files and choose which copies to keep.",
-    "largeFiles": "Find the files making the biggest impression on your storage. Review them by size and location.",
-    "emptyFolders": "Tidy the spaces left behind. Choose a folder and review empty directories before removing them.",
-    "shredder": "Permanently erase files you choose. Check every selected path before confirming removal.",
-    "repair": "Investigate Windows file and disk problems with a focused check. Each tool explains what it repairs.",
-    "maintenance": "Give each drive the right care. Review drive type and available maintenance before running a task.",
-    "network": "Review saved network data. Clear caches or remove old connections individually, when you need to.",
-    "malware": "Check for malware and suspicious files. Review the findings and choose how to handle each detection.",
-    "cve": "Turn vulnerability findings into a plan. Review higher-severity issues and update affected software.",
-    "gameMode": "Make room for play. Review the optimizations and activate them when you're ready.",
-    "performance": "Understand what your PC is doing. Compare resource trends and find the processes behind the load.",
-    "uninstaller": "Keep the apps you use. Review an app's details before uninstalling or removing leftover files.",
     "history": "The last 100 scans and cleanups run on this PC, with date, duration, items processed and space freed, and the receipt of each cleanup.",
     "settings": "Appearance, language, startup, notifications, updates, backups, cleaning preferences and exclusions. Every change is saved immediately.",
     "about": "Installed version, updates, MIT licence and the original project (Kudu).",
-    "breach": "Check whether an email appears in known breaches. Review what was exposed and the recommended next steps.",
-    "privacy": "Choose what your computer shares. Review each recommendation and keep the settings you rely on.",
-    "services": "Understand the services behind your system. Check purpose and safety before changing startup behavior.",
-    "firewall": "See which apps can accept connections. Inspect broad rules and missing programs before making changes.",
-    "debloater": "Make Windows more your own. Review preinstalled packages and remove only the apps you don't need.",
-    "updates": "Keep your everyday essentials current. Check available updates, compare versions, and choose what to install.",
-    "schedules": "Good care, on your schedule. Choose the tasks, timing, and frequency that suit this computer.",
-    "drivers": "Review driver updates and older packages in one place. Check the proposed changes before applying them.",
-    "storageHistory": "See what is growing. Save local folder snapshots and compare where storage has changed.",
-    "recovery": "Changes to the registry, services and scheduled tasks made by SuperSonicCleaner, with the backups to undo them. Deleted files cannot be recovered.",
-    "diagnostics": "Record a slowdown, stop and save, then analyze the measurements on this device."
-  },
-  "home": {
-    "collecting": "Collecting readings. Your graph will appear shortly."
-  },
-  "schedules": {
-    "upcoming": "Coming up next",
-    "enabled_one": "{{count}} active routine",
-    "enabled_other": "{{count}} active routines",
-    "conditions": "Planned times. Run conditions can defer a task."
-  },
-  "recovery": {
-    "recorded": "Recorded changes",
-    "backups": "Registry backups",
-    "hint": "Review the original change and restore details. Only supported changes can be restored here."
+    "recovery": "Changes to the registry, services and scheduled tasks made by SuperSonicCleaner, with the backups to undo them. Deleted files cannot be recovered."
   },
   "storageTrend": {
     "title": "Storage over time",
     "description": "Complete snapshots on this page, for the same folder and volume.",
-    "empty": "Capture at least two complete snapshots to see the trend.",
     "size": "Folder size"
   }
 }

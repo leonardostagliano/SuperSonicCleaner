@@ -224,8 +224,6 @@
     "scheduled": "scheduled",
     "scheduledBy": "scheduled: {{name}}",
     "categoriesLabel": "Categories",
-    "statFound": "Found",
-    "statProcessed": "Processed",
     "deletedFiles": {
       "title": "Deleted files",
       "loading": "Reading the deletion log…",
