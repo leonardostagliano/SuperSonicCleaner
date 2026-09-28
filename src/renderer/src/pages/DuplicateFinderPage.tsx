@@ -597,7 +597,7 @@ function DuplicateGroupRow({
       </button>
       {expanded && (
         <div id={bodyId} className="storage-group-body">
-          <Table>
+          <Table className="storage-table-fixed">
             <TableHead>
               <TableHeaderCell className="storage-col-check">
                 <span className="sr-only">{t('colSelect')}</span>

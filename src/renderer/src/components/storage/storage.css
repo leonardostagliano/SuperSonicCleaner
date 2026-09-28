@@ -293,7 +293,11 @@ button.storage-icon-action:focus-visible {
   padding-inline: var(--space-1);
   text-align: end;
 }
-/* Fixed widths keep the columns of consecutive tables (duplicate groups) aligned. */
+/* Consecutive tables (duplicate groups) keep the same columns: the header widths are
+   binding and the path column takes the rest. */
+.ui-table.storage-table-fixed {
+  table-layout: fixed;
+}
 .ui-table th.storage-col-status,
 .ui-table td.storage-col-status {
   width: 160px;
