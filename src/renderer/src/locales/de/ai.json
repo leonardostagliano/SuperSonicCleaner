@@ -1,0 +1,61 @@
+{
+  "title": "AI-Analyse",
+  "description": "Holen Sie eine zweite Meinung zu diesen Scan-Ergebnissen ein.",
+  "hubDescription": "Eine zweite Meinung zu Scans und Leistungsaufzeichnungen, über Ihre Codex-Anmeldung.",
+  "hubPrivacy": "Scans übermitteln nur anonyme Dateimetadaten. Aufzeichnungen übermitteln numerische CPU-, Arbeitsspeicher- und Datenträgermesswerte mit temporären Prozess-IDs. Namen, Pfade, Notizen und Dateiinhalte verbleiben auf diesem Gerät.",
+  "connectionTitle": "Codex-Verbindung",
+  "connectionIntro": "Verwenden Sie Codex auf diesem Computer. Prüfen Sie die Verbindung, und wählen Sie dann unten ein Werkzeug aus.",
+  "connected": "Codex ist verbunden und bereit für die reine Metadatenanalyse.",
+  "scanFirst": "Führen Sie zuerst einen Scan aus. Die AI-Analyse steht zur Verfügung, sobald die Ergebnisse vorliegen.",
+  "anotherRunning": "Eine andere AI-Analyse läuft bereits. Sie finden sie unter Einstellungen → AI-Analyse.",
+  "continuesInBackground": "Die Analyse läuft weiter, während Sie andere Ansichten verwenden. Kehren Sie hierher zurück, um das Ergebnis zu sehen.",
+  "returnToAnalysis": "Zur Analyse zurückkehren",
+  "openTool": "Werkzeug öffnen",
+  "hubInstructions": "Schließen Sie einen Scan ab, oder speichern Sie eine Leistungsaufzeichnung, aktivieren Sie deren AI-Analyse, und starten Sie sie dann über die entsprechende Schaltfläche. Es wird nichts automatisch gesendet.",
+  "tools": {
+    "cleaner": {
+      "title": "Systembereinigung",
+      "description": "Prüfen Sie gescannte Bereinigungskandidaten anhand anonymer Dateimetadaten. Datenschutzspuren sind ausgeschlossen."
+    },
+    "largeFiles": {
+      "title": "Große Dateien",
+      "description": "Prüfen Sie anhand von Größe, Kategorie und ungefährem Alter, welche großen Dateien eine genauere Betrachtung verdienen."
+    },
+    "duplicates": {
+      "title": "Duplikate",
+      "description": "Erhalten Sie Vorschläge zu Duplikatgruppen, die geprüft werden sollten. Sie entscheiden, welche Dateien behalten werden."
+    },
+    "disk": {
+      "title": "Datenträgeranalyse",
+      "description": "Prüfen Sie die größten Ordner anhand aggregierter Größenangaben."
+    },
+    "performance": {
+      "title": "Leistungsaufzeichnungen",
+      "description": "Verknüpfen Sie CPU-, Arbeitsspeicher- und Datenträgeraktivität, um eine Verlangsamung zu untersuchen, mit unterstützenden Messwerten und vorgeschlagenen Prüfungen."
+    }
+  },
+  "enable": "AI-Analyse für diese Ansicht aktivieren",
+  "privacy": "Es werden nur temporäre IDs, allgemeine Dateitypen, Größen und ungefähre Dateialter gesendet. Namen, Pfade, Hashes und Dateiinhalte verbleiben auf diesem Gerät.",
+  "accessCaveat": "Der letzte Zugriff ist ein Dateisystem-Metadatum. Er kann fehlen oder von einer anderen App geändert worden sein und belegt nicht, wann Sie eine Datei zuletzt geöffnet haben.",
+  "diskAggregation": "Eine Ordnerzeile steht für dessen Gesamtgröße. Sie zeigt nicht, welche Dateien im Ordner geprüft werden sollten.",
+  "checking": "AI-Verfügbarkeit wird geprüft…",
+  "codexMissing": "Installieren Sie Codex auf diesem Computer, um die AI-Analyse zu nutzen.",
+  "unsupportedVersion": "Diese Codex-Version kann die erforderliche, auf Metadaten beschränkte Datenschutzgrenze nicht gewährleisten. Verwenden Sie die unterstützte Codex-Version 0.157.1.",
+  "unsafeConfiguration": "Die aktuelle Codex-Konfiguration kann eine reine Metadatenanalyse nicht garantieren. Prüfen Sie Ihre lokale Codex-Konfiguration, bevor Sie es erneut versuchen.",
+  "signIn": "Öffnen Sie Codex auf diesem Computer, und melden Sie sich an, um die AI-Analyse zu nutzen.",
+  "unavailable": "Die AI-Analyse ist derzeit nicht verfügbar. Prüfen Sie Codex auf diesem Computer, und versuchen Sie es erneut.",
+  "retryConnection": "Erneut prüfen",
+  "analyze": "Diese Ergebnisse analysieren",
+  "analyzing": "Wird analysiert…",
+  "cancelling": "Wird abgebrochen…",
+  "cancel": "Abbrechen",
+  "limit": "Bis zu {{count}} Elemente",
+  "omitted": "{{count}} weitere Elemente wurden aus dieser Analyse ausgeschlossen.",
+  "failed": "Die Analyse konnte nicht abgeschlossen werden. Versuchen Sie es erneut.",
+  "advisory": "Prüfen Sie diese Vorschläge selbst. Die AI-Analyse wählt oder löscht niemals Dateien.",
+  "priority": {
+    "low": "Niedrige Priorität",
+    "medium": "Mittlere Priorität",
+    "high": "Hohe Priorität"
+  }
+}
