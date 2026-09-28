@@ -104,7 +104,7 @@
   "briefingDescThreats": "{{count}} ενεργή απειλή χρειάζεται προσοχή.",
   "briefingDescThreatsPlural": "{{count}} ενεργές απειλές χρειάζονται προσοχή.",
   "briefingDescThreatsLastScan": " Η τελευταία σάρωση malware εκτελέστηκε {{date}}.",
-  "briefingDescClean": "Δεν βρέθηκαν ενεργές απειλές στην τελευταία σας σάρωση malware {{date}}. Το SuperSonicCleaner έχει ανακτήσει {{size}} συνολικά μέχρι σήμερα.",
+  "briefingDescClean": "Δεν βρέθηκαν ενεργές απειλές στην τελευταία σας σάρωση κακόβουλου λογισμικού {{date}}. Το SuperSonicCleaner έχει ανακτήσει συνολικά {{size}} από την έναρξη της χρήσης του.",
   "briefingDescBaseline": "Εκτελέστε μια πλήρη σάρωση για να δημιουργήσετε μια βασική γραμμή προστασίας και να εντοπίσετε ασφαλείς ευκαιρίες καθαρισμού.",
   "recommendedHeading": "Προτείνεται για εσάς",
   "safeActionsOnly": "Μόνο ασφαλείς ενέργειες",

@@ -14,5 +14,6 @@
   "hoursAgo": "πριν από {{hours}} ώ.",
   "daysAgo": "πριν από {{days}} ημ.",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Τι ελέγχεται"
 }
