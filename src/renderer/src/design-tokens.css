@@ -6,19 +6,9 @@
   --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'Cascadia Code', 'SFMono-Regular', 'Consolas', monospace;
-  --text-display: 38px;
-  --text-title: 30px;
-  --text-heading: 20px;
-  --text-body: 13px;
-  --text-caption: 11px;
 
-  --radius-card: 18px;
-  --radius-tile: 14px;
   --radius-control: 6px;
   --radius-pill: 999px;
-  --space-unit: 4px;
-  --duration-fast: 150ms;
-  --duration-normal: 260ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   --page-bg: #121216;
@@ -37,8 +27,6 @@
   --bg-hover: #ffffff0e;
   --bg-hover-2: #ffffff14;
   --bg-active: #ffffff1c;
-  --bg-elevated: var(--surface);
-  --bg-overlay: #30303a;
   --flyout-bg: #202026;
   --toast-bg: #26262e;
 
@@ -46,17 +34,10 @@
   --text-secondary: #c7c7d0;
   --text-muted: #a1a1aa;
   --text-dim: #9696a2;
-  --text-faint: #9696a2;
   --text-disabled: #71717a;
-  --text-ghost: var(--text-muted);
-  --text-ghost-2: var(--text-secondary);
-  --text-on-accent: #121216;
   --toast-text: var(--text-primary);
 
-  --brand-solid: #f5f5f7;
-  --brand-ink: #121216;
   --brand-surface: #ffffff0a;
-  --brand-border: #ffffff1f;
   --nav-active-bg: #ffffff0d;
   --nav-active-fg: #f5f5f7;
   --nav-inactive-fg: #b0b0bb;
@@ -69,44 +50,14 @@
   /* Control edges: at least 3:1 on --card-bg (design-tokens.test.ts). */
   --border-strong: #ffffff54;
   --border-stronger: #ffffff66;
-  --accent: #f5f5f7;
-  --accent-hover: #ffffff;
-  --accent-muted-bg: #ffffff0a;
-  --accent-muted-border: #ffffff26;
   --focus: #7aa2f7;
 
-  --success: #4ade80;
-  --success-text: #86efac;
-  --success-bg: #4ade801a;
-  --warning: #fbbf24;
-  --warning-text: #fcd34d;
-  --warning-bg: #fbbf241a;
-  --danger: #f87171;
-  --danger-text: #fca5a5;
-  --danger-bg: #f871711a;
-  --info: #9bbafa;
-  --info-text: #b8cdfb;
-  --info-bg: #7aa2f71a;
   --gauge-track: #ffffff0f;
-  --grid-line: #ffffff0a;
 
   --shadow-flyout: 0 16px 48px #00000040;
-  --card-shadow: 0 2px 5px #0000000a;
-  --card-highlight: inset 0 1px 0 #ffffff03;
-  --card-glow: #4ade800d;
-  --glass-bg: var(--card-bg);
-  --glass-border: var(--border-default);
-  --glass-inset: #ffffff03;
-  --glass-shadow: var(--card-shadow);
-  --glass-hover-bg: #202026;
-  --glass-hover-border: var(--border-strong);
-  --glass-hover-inset: #ffffff05;
-  --glass-hover-shadow: 0 5px 14px #00000010;
   --scrollbar-thumb: #a1a1aa33;
   --scrollbar-thumb-hover: #a1a1aa59;
   --selection-bg: #7aa2f740;
-  --glow-amber: transparent;
-  --glow-blue: transparent;
 
   /* Report roles: neutral primary, amber only for what the app recommends,
      green only for a verified result, red only for irreversible actions and errors. */
@@ -171,20 +122,14 @@
   --bg-hover: #1212160a;
   --bg-hover-2: #12121610;
   --bg-active: #12121617;
-  --bg-overlay: #e2e2e8;
   --flyout-bg: #ffffff;
   --toast-bg: #ffffff;
   --text-primary: #18181d;
   --text-secondary: #494953;
   --text-muted: #62626d;
   --text-dim: #686874;
-  --text-faint: #686874;
   --text-disabled: #868691;
-  --text-on-accent: #ffffff;
-  --brand-solid: #18181d;
-  --brand-ink: #ffffff;
   --brand-surface: #12121606;
-  --brand-border: #12121618;
   --nav-active-bg: #18181d0a;
   --nav-active-fg: #18181d;
   --nav-inactive-fg: #565662;
@@ -195,33 +140,9 @@
   --border-medium: #12121617;
   --border-strong: #12121673;
   --border-stronger: #12121685;
-  --accent: #18181d;
-  --accent-hover: #30303a;
-  --accent-muted-bg: #18181d07;
-  --accent-muted-border: #18181d24;
   --focus: #3865bf;
-  --success: #15803d;
-  --success-text: #166534;
-  --success-bg: #15803d0d;
-  --warning: #945900;
-  --warning-text: #854d0e;
-  --warning-bg: #d9920a12;
-  --danger: #b91c1c;
-  --danger-text: #991b1b;
-  --danger-bg: #b91c1c0d;
-  --info: #315eaf;
-  --info-text: #284d92;
-  --info-bg: #3865bf0d;
   --gauge-track: #1212160d;
-  --grid-line: #12121609;
   --shadow-flyout: 0 12px 36px #1212161a;
-  --card-shadow: 0 2px 5px #12121604, 0 8px 22px #12121602;
-  --card-highlight: inset 0 1px 0 #ffffff;
-  --card-glow: #15803d08;
-  --glass-inset: #ffffff;
-  --glass-hover-bg: #ffffff;
-  --glass-hover-inset: #ffffff;
-  --glass-hover-shadow: 0 5px 16px #12121608;
   --scrollbar-thumb: #62626d30;
   --scrollbar-thumb-hover: #62626d50;
   --selection-bg: #3865bf28;
