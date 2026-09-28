@@ -115,6 +115,40 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+
+  /* Report roles: neutral primary, amber only for what the app recommends,
+     green only for a verified result, red only for irreversible actions and errors. */
+  --primary-bg: #f5f5f7;
+  --primary-fg: #121216;
+  --signal-rec: #fbbf24;
+  --signal-rec-text: #fcd34d;
+  --signal-rec-bg: #fbbf2414;
+  --signal-ok-text: #86efac;
+  --signal-danger: #f87171;
+  --signal-danger-text: #fca5a5;
+  --danger-button-bg: #dc2626;
+  --danger-button-fg: #ffffff;
+  --chart-1: #c7c7d0;
+  --chart-2: #9bbafa;
+  --track: #ffffff12;
+
+  --radius-container: 10px;
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-15: 15px;
+  --text-20: 20px;
+  --text-26: 26px;
+  --text-hero: 32px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --duration-feedback: 120ms;
+  --duration-enter: 200ms;
 }
 
 .light {
@@ -189,4 +223,18 @@
   --scrollbar-thumb: #62626d30;
   --scrollbar-thumb-hover: #62626d50;
   --selection-bg: #3865bf28;
+
+  --primary-bg: #18181d;
+  --primary-fg: #ffffff;
+  --signal-rec: #d97706;
+  --signal-rec-text: #854d0e;
+  --signal-rec-bg: #d9920a12;
+  --signal-ok-text: #166534;
+  --signal-danger: #b91c1c;
+  --signal-danger-text: #991b1b;
+  --danger-button-bg: #b91c1c;
+  --danger-button-fg: #ffffff;
+  --chart-1: #494953;
+  --chart-2: #315eaf;
+  --track: #1212160f;
 }
