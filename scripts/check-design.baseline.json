@@ -1,22 +1,4 @@
 {
   "version": 1,
-  "counts": {
-    "src/renderer/src/components/shared/ErrorAlert.tsx|colour-literal": 2,
-    "src/renderer/src/components/shared/ErrorAlert.tsx|text-px": 1,
-    "src/renderer/src/components/shared/HealthScore.tsx|text-px": 7,
-    "src/renderer/src/components/shared/HealthScore.tsx|uppercase": 1,
-    "src/renderer/src/components/shared/ScanProgress.tsx|text-px": 4,
-    "src/renderer/src/components/shared/StatCard.tsx|text-px": 3,
-    "src/renderer/src/globals.css|colour-literal": 106,
-    "src/renderer/src/globals.css|gradient": 15,
-    "src/renderer/src/globals.css|uppercase": 1,
-    "src/renderer/src/locales/en/hardening.json|copy-lead-dash": 2,
-    "src/renderer/src/locales/it/experience.json|copy-cura": 1,
-    "src/renderer/src/locales/it/hardening.json|copy-lead-dash": 2,
-    "src/renderer/src/pages/SystemHardeningPage.tsx|text-px": 2,
-    "src/renderer/src/pages/UpdatesPage.tsx|text-px": 2,
-    "src/renderer/src/pulse.css|backdrop": 2,
-    "src/renderer/src/pulse.css|gradient": 4,
-    "src/renderer/src/pulse.css|uppercase": 1
-  }
+  "counts": {}
 }

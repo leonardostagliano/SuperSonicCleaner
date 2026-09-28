@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 // Design rules for the renderer and the it/en copy. See the spec, section 7.
-//   node scripts/check-design.mjs                 compare with the baseline; fail on any increase
+//   node scripts/check-design.mjs                 fail on any violation; while a baseline file
+//                                                 exists, fail only on an increase over it
 //   node scripts/check-design.mjs --list          list every violation with file:line
 //   node scripts/check-design.mjs --strict a b …  fail if the given files/dirs have any violation
 //   node scripts/check-design.mjs --update-baseline   rewrite the baseline (refuses increases)
+// A line containing "design-allow" is exempt; say on it why the rule does not apply.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -212,6 +214,14 @@ if (args[0] === '--list') {
     console.log(
       `baseline: ${Object.values(now).reduce((a, b) => a + b, 0)} violation(s) in ${Object.keys(now).length} file/rule pair(s)`
     )
+  } else if (!fs.existsSync(baselineFile)) {
+    // No baseline: the gate is zero violations.
+    print(violations)
+    if (violations.length) {
+      console.log(`FAIL: ${violations.length} design violation(s) (see the spec, section 7)`)
+      process.exit(1)
+    }
+    console.log('OK: no design violations')
   } else {
     if (grown.length) {
       grown.forEach(([k, n]) => {
