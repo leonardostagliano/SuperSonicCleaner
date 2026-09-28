@@ -1,38 +1,38 @@
-import { useState, useCallback, useRef } from 'react'
+import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { usePlatform } from '@/hooks/usePlatform'
-import {
-  Database,
-  Search,
-  Wrench,
-  Shield,
-  CheckCircle2,
-  ChevronDown,
-  ShieldAlert,
-  Gauge,
-  Wifi,
-  Server,
-  CalendarClock,
-  Trash2,
-  Loader2,
-  Check,
-  StopCircle
-} from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
+import { usePlatform } from '@/hooks/usePlatform'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
-import { ScanProgress } from '@/components/shared/ScanProgress'
+import { Receipt } from '@/components/shared/Receipt'
+import { ReportNotice } from '@/components/cleaner/ReportNotice'
+import '@/components/cleaner/pulizia.css'
+import {
+  Button,
+  Card,
+  Checkbox,
+  ProgressBar,
+  Section,
+  Table,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Tag
+} from '@/components/ui'
+import { formatDateTime, formatList, formatTime, latestEntry } from '@/lib/cleaner-report'
+import { formatNumber, NO_VALUE } from '@/lib/utils'
 import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useRegistryStore } from '@/stores/registry-store'
 import type { RegistryEntry } from '@shared/types'
-import type { LucideIcon } from 'lucide-react'
 
-type CardType = RegistryEntry['type']
+type EntryType = RegistryEntry['type']
 
-const typeKeyMap: Record<CardType, string> = {
+const typeKeyMap: Record<EntryType, string> = {
   obsolete: 'entryTypeObsolete',
   invalid: 'entryTypeInvalid',
   orphaned: 'entryTypeOrphaned',
@@ -51,134 +51,52 @@ const riskKeyMap: Record<RegistryEntry['risk'], string> = {
   high: 'riskHigh'
 }
 
-const typeColors: Record<CardType, { bg: string; text: string }> = {
-  obsolete: { bg: 'var(--bg-hover)', text: 'var(--text-muted)' },
-  invalid: { bg: 'rgba(245,158,11,0.1)', text: '#f59e0b' },
-  orphaned: { bg: 'rgba(59,130,246,0.1)', text: '#3b82f6' },
-  broken: { bg: 'rgba(239,68,68,0.1)', text: '#ef4444' },
-  vulnerability: { bg: 'rgba(168,85,247,0.1)', text: '#a855f7' },
-  privacy: { bg: 'rgba(236,72,153,0.1)', text: '#ec4899' }, // kept for type compat
-  performance: { bg: 'rgba(20,184,166,0.1)', text: '#14b8a6' },
-  network: { bg: 'rgba(99,102,241,0.1)', text: '#6366f1' },
-  service: { bg: 'rgba(251,146,60,0.1)', text: '#fb923c' },
-  task: { bg: 'rgba(163,230,53,0.1)', text: '#a3e635' }
-}
+const RISK_ORDER: Record<RegistryEntry['risk'], number> = { low: 0, medium: 1, high: 2 }
 
-const riskColors: Record<RegistryEntry['risk'], string> = {
-  low: '#22c55e',
-  medium: '#f59e0b',
-  high: '#ef4444'
-}
-
-interface CardDef {
-  types: CardType[]
-  icon: LucideIcon
+interface AreaDef {
+  types: EntryType[]
   titleKey: string
   descriptionKey: string
-  color: { bg: string; text: string }
-  /** Total number of checks for this card (undefined = dynamic/variable) */
+  /** Number of checks behind the area, when it is fixed (the rest vary with the system). */
   totalChecks?: number
 }
 
-const cards: CardDef[] = [
+const areas: AreaDef[] = [
   {
     types: ['obsolete', 'invalid', 'orphaned', 'broken'],
-    icon: Trash2,
     titleKey: 'cardRegistryCleanup',
-    descriptionKey: 'cardRegistryCleanupDescription',
-    color: { bg: 'rgba(245,158,11,0.1)', text: '#f59e0b' }
+    descriptionKey: 'cardRegistryCleanupDescription'
   },
   {
     types: ['vulnerability'],
-    icon: ShieldAlert,
     titleKey: 'cardSecurity',
     descriptionKey: 'cardSecurityDescription',
-    color: typeColors.vulnerability,
     totalChecks: 12
   },
   {
     types: ['performance'],
-    icon: Gauge,
     titleKey: 'cardPerformance',
     descriptionKey: 'cardPerformanceDescription',
-    color: typeColors.performance,
     totalChecks: 1
   },
   {
     types: ['network'],
-    icon: Wifi,
     titleKey: 'cardNetwork',
     descriptionKey: 'cardNetworkDescription',
-    color: typeColors.network,
     totalChecks: 2
   },
   {
     types: ['service'],
-    icon: Server,
     titleKey: 'cardServices',
     descriptionKey: 'cardServicesDescription',
-    color: typeColors.service,
     totalChecks: 2
   },
   {
     types: ['task'],
-    icon: CalendarClock,
     titleKey: 'cardScheduledTasks',
-    descriptionKey: 'cardScheduledTasksDescription',
-    color: typeColors.task
+    descriptionKey: 'cardScheduledTasksDescription'
   }
 ]
-
-function HealthRing({
-  percent,
-  color,
-  size = 36
-}: {
-  percent: number
-  color: string
-  size?: number
-}) {
-  const r = (size - 4) / 2
-  const circumference = 2 * Math.PI * r
-  const offset = circumference - (percent / 100) * circumference
-  const isComplete = percent === 100
-
-  return (
-    <div
-      className="relative flex items-center justify-center"
-      style={{ width: size, height: size }}
-    >
-      <svg width={size} height={size} className="-rotate-90">
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke="var(--gauge-track)"
-          strokeWidth={3}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke={isComplete ? '#22c55e' : color}
-          strokeWidth={3}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          className="transition-[stroke-dashoffset,stroke] duration-500"
-        />
-      </svg>
-      <span
-        className="absolute text-[10px] font-bold"
-        style={{ color: isComplete ? '#22c55e' : color }}
-      >
-        {isComplete ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : `${percent}%`}
-      </span>
-    </div>
-  )
-}
 
 export function RegistryPage() {
   const { features } = usePlatform()
@@ -186,17 +104,9 @@ export function RegistryPage() {
 
   if (!features.registry) {
     return (
-      <div className="animate-fade-in">
-        <PageHeader
-          title={t('pageHeaderUnavailableTitle')}
-          description={t('pageHeaderUnavailableDescription')}
-          showWorkflow={false}
-        />
-        <EmptyState
-          icon={Database}
-          title={t('notAvailableTitle')}
-          description={t('notAvailableDescription')}
-        />
+      <div className="pulizia-page">
+        <PageHeader title={t('pageTitle')} description={t('pageHeaderUnavailableDescription')} />
+        <EmptyState title={t('notAvailableTitle')} description={t('notAvailableDescription')} />
       </div>
     )
   }
@@ -205,7 +115,8 @@ export function RegistryPage() {
 }
 
 function RegistryPageContent() {
-  const { t } = useTranslation('registry')
+  const { t, i18n } = useTranslation('registry')
+  const navigate = useNavigate()
   const entries = useRegistryStore((s) => s.entries)
   const scanning = useRegistryStore((s) => s.scanning)
   const scanned = useRegistryStore((s) => s.scanned)
@@ -217,8 +128,11 @@ function RegistryPageContent() {
   const error = useRegistryStore((s) => s.error)
 
   const [showConfirm, setShowConfirm] = useState(false)
+  // When the list on screen was read; not kept across visits (the store has no clock).
+  const [scannedAt, setScannedAt] = useState<number | null>(null)
   const fixStartRef = useRef<number>(0)
-  const historyStore = useHistoryStore()
+  const addHistoryEntry = useHistoryStore((s) => s.addEntry)
+  const historyEntries = useHistoryStore((s) => s.entries)
   const recomputeStats = useStatsStore((s) => s.recompute)
 
   const handleScan = useCallback(async () => {
@@ -232,6 +146,7 @@ function RegistryPageContent() {
       const results = await window.kudu.registryScan()
       useRegistryStore.getState().setEntries(Array.isArray(results) ? results : [])
       useRegistryStore.getState().setScanned(true)
+      setScannedAt(Date.now())
     } catch (err) {
       console.error('Registry scan failed:', err)
       toast.error(t('toastScanFailed'), { description: t('toastScanFailedDescription') })
@@ -292,7 +207,7 @@ function RegistryPageContent() {
         byType[t].fixed = Math.round((byType[t].found / totalSelected) * result.fixed)
       }
 
-      await historyStore.addEntry({
+      await addHistoryEntry({
         id: Date.now().toString(),
         type: 'registry',
         timestamp: new Date().toISOString(),
@@ -317,432 +232,340 @@ function RegistryPageContent() {
     }
     useRegistryStore.getState().setFixing(false)
     useRegistryStore.getState().setFixProgress(null)
-  }, [historyStore, recomputeStats])
+  }, [addHistoryEntry, recomputeStats])
 
-  const selectedCount = entries.filter((e) => e.selected).length
+  const selected = entries.filter((e) => e.selected)
+  const selectedCount = selected.length
   const busy = scanning || fixing
+  const lastFix = useMemo(() => latestEntry(historyEntries, 'registry'), [historyEntries])
+  const scannedAtText = scannedAt ? formatTime(scannedAt, i18n.language) : ''
+  const showResults = scanned && !scanning && !fixing
+
+  const areaRows = areas.map((area) => {
+    const areaEntries = entries.filter((e) => area.types.includes(e.type))
+    const chosen = areaEntries.filter((e) => e.selected).length
+    const worst = areaEntries.reduce<RegistryEntry['risk'] | null>(
+      (max, e) => (max === null || RISK_ORDER[e.risk] > RISK_ORDER[max] ? e.risk : max),
+      null
+    )
+    return { area, areaEntries, chosen, worst }
+  })
+  const selectedAreaNames = areaRows
+    .filter((row) => row.chosen > 0)
+    .map((row) => t(row.area.titleKey))
+
+  const riskCell = (risk: RegistryEntry['risk'] | null) =>
+    risk === null ? (
+      NO_VALUE
+    ) : risk === 'high' ? (
+      <Tag tone="danger">{t(riskKeyMap[risk])}</Tag>
+    ) : (
+      t(riskKeyMap[risk])
+    )
+
+  const headerAction =
+    showResults || fixing ? (
+      <Button variant="ghost" onClick={handleScan} disabled={busy}>
+        {t('rescanButton')}
+      </Button>
+    ) : (
+      <Button variant="primary" size="lg" onClick={handleScan} busy={scanning} disabled={fixing}>
+        {t('scanButton')}
+      </Button>
+    )
 
   return (
-    <div className="animate-fade-in">
-      <PageHeader
-        title={t('pageTitle')}
-        description={t('pageDescription')}
-        action={
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={handleScan}
-              disabled={busy}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
-              style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-medium)' }}
-            >
-              <Search className="h-4 w-4" strokeWidth={1.8} /> {t('scanButton')}
-            </button>
-            <button
-              onClick={() => setShowConfirm(true)}
-              disabled={selectedCount === 0 || busy}
-              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-30"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <Wrench className="h-4 w-4" strokeWidth={2} />{' '}
-              {t('fixButton', { count: selectedCount })}
-            </button>
-          </div>
-        }
-      />
+    <div className="pulizia-page">
+      <PageHeader title={t('pageTitle')} description={t('pageDescription')} action={headerAction} />
 
-      {/* Warning */}
-      <div
-        className="mb-5 flex items-center gap-3 rounded-2xl px-5 py-4"
-        style={{ background: 'var(--accent-muted-bg)', border: '1px solid var(--accent-muted-bg)' }}
-      >
-        <Shield className="h-5 w-5 shrink-0 text-amber-500" strokeWidth={1.8} />
-        <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-          <span className="font-semibold text-amber-500">{t('advancedFeatureLabel')}</span> —{' '}
-          {t('advancedFeatureDescription')}
-        </p>
-      </div>
+      <ReportNotice as="div" title={t('advancedNotice')} />
 
       {error && (
-        <ErrorAlert
-          message={error}
-          onDismiss={() => useRegistryStore.getState().setError(null)}
-          className="mb-5"
-        />
+        <Card className="pulizia-notice-card">
+          <ReportNotice
+            as="div"
+            tone="danger"
+            role="alert"
+            title={error}
+            action={
+              <Button variant="ghost" onClick={() => useRegistryStore.getState().setError(null)}>
+                {t('dismissError')}
+              </Button>
+            }
+          />
+        </Card>
       )}
+
       {scanning && (
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex-1">
-            <ScanProgress status="scanning" progress={0} currentPath={t('scanProgressText')} />
+        <Section
+          title={t('scanningTitle')}
+          actions={
+            <Button variant="ghost" onClick={handleScanCancel}>
+              {t('cancelButton')}
+            </Button>
+          }
+        >
+          <div className="pulizia-progress" aria-live="polite">
+            <ProgressBar indeterminate label={t('scanningTitle')} />
+            <p className="pulizia-progress-step">{t('scanningDetail')}</p>
           </div>
-          <button
-            onClick={handleScanCancel}
-            className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-[12px] font-medium text-red-400 transition hover:text-red-300"
-            style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)' }}
-          >
-            <StopCircle className="h-3.5 w-3.5" strokeWidth={2} /> {t('cancelButton')}
-          </button>
-        </div>
+        </Section>
       )}
 
-      {/* Fix progress */}
       {fixing && fixProgress && (
-        <div
-          className="mb-5 rounded-2xl p-5"
-          style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
+        <Section
+          title={t('fixingTitle')}
+          meta={t('fixCounter', {
+            current: formatNumber(fixProgress.current),
+            total: formatNumber(fixProgress.total)
+          })}
+          actions={
+            <Button variant="ghost" onClick={handleFixCancel}>
+              {t('cancelButton')}
+            </Button>
+          }
         >
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Loader2 className="h-4 w-4 animate-spin text-amber-400" />
-              <span className="text-[13px] font-medium text-zinc-200">{t('fixingEntries')}</span>
-            </div>
-            <span className="font-mono text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-              {fixProgress.current} / {fixProgress.total}
-            </span>
-          </div>
-          <div
-            className="mb-3 h-[6px] overflow-hidden rounded-full"
-            style={{ background: 'var(--bg-subtle-2)' }}
-          >
-            <div
-              className="h-full rounded-full transition-[width] duration-200 ease-out"
-              style={{
-                width: `${fixProgress.total > 0 ? (fixProgress.current / fixProgress.total) * 100 : 0}%`,
-                background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)'
-              }}
+          <div className="pulizia-progress" aria-live="polite">
+            <ProgressBar
+              value={fixProgress.total > 0 ? fixProgress.current / fixProgress.total : undefined}
+              label={t('fixingTitle')}
             />
+            {fixProgress.currentEntry && (
+              <p className="pulizia-progress-path" title={fixProgress.currentEntry}>
+                {fixProgress.currentEntry}
+              </p>
+            )}
           </div>
-          <div className="flex items-center justify-between">
-            <p className="truncate font-mono text-[11px]" style={{ color: 'var(--text-muted)' }}>
-              {fixProgress.currentEntry}
-            </p>
-            <button
-              onClick={handleFixCancel}
-              className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-red-400 transition hover:text-red-300"
-              style={{
-                background: 'rgba(239,68,68,0.08)',
-                border: '1px solid rgba(239,68,68,0.15)'
-              }}
-            >
-              <StopCircle className="h-3 w-3" strokeWidth={2} /> {t('cancelButton')}
-            </button>
-          </div>
-        </div>
+        </Section>
       )}
 
-      {fixResult && (
-        <div
-          className="mb-5 overflow-hidden rounded-2xl"
-          style={{
-            border: `1px solid ${fixResult.failed > 0 ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)'}`
-          }}
-        >
-          <div
-            className="flex items-center gap-3 p-4"
-            style={{
-              background: fixResult.failed > 0 ? 'rgba(239,68,68,0.04)' : 'rgba(34,197,94,0.06)'
-            }}
-          >
-            <CheckCircle2 className="h-5 w-5 text-green-500" strokeWidth={1.8} />
-            <p className="flex-1 text-[13px] text-zinc-200">
-              {t('fixedEntries', { count: fixResult.fixed })}
-              {fixResult.failed > 0 && (
-                <button
-                  onClick={() => useRegistryStore.getState().setShowFailures(!showFailures)}
-                  className="ml-2 text-red-400 underline decoration-red-400/30 hover:decoration-red-400 transition-colors"
-                >
-                  {t('failedCount', { count: fixResult.failed })} —{' '}
-                  {showFailures ? t('failedHideDetails') : t('failedShowDetails')}
-                </button>
-              )}
-            </p>
-          </div>
+      {fixResult && !fixing && (
+        <>
+          <Receipt
+            title={fixResult.failed > 0 ? t('receiptTitleFailed') : t('receiptTitle')}
+            value={t('receiptFixed', {
+              count: fixResult.fixed,
+              n: formatNumber(fixResult.fixed)
+            })}
+            facts={[
+              lastFix ? formatDateTime(lastFix.timestamp, i18n.language) : '',
+              t('receiptBackup')
+            ]}
+            skipped={
+              fixResult.failed > 0
+                ? t('receiptFailed', {
+                    count: fixResult.failed,
+                    n: formatNumber(fixResult.failed)
+                  })
+                : undefined
+            }
+            links={
+              <>
+                {fixResult.failures.length > 0 && (
+                  <>
+                    <button
+                      type="button"
+                      className="pulizia-link"
+                      aria-expanded={showFailures}
+                      onClick={() => useRegistryStore.getState().setShowFailures(!showFailures)}
+                    >
+                      {showFailures ? t('receiptHideDetails') : t('receiptDetails')}
+                    </button>
+                    {' · '}
+                  </>
+                )}
+                <Link to="/recovery">{t('receiptRecovery')}</Link>
+              </>
+            }
+          />
           {showFailures && fixResult.failures.length > 0 && (
-            <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-              {fixResult.failures.map((f, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-3 px-5 py-3"
-                  style={{
-                    borderBottom:
-                      i < fixResult.failures.length - 1 ? '1px solid var(--bg-subtle)' : 'none'
-                  }}
-                >
-                  <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" />
-                  <div className="min-w-0">
-                    <p className="text-[12px] text-zinc-300">{f.issue}</p>
-                    <p className="mt-0.5 text-[11px] text-red-400/80">{f.reason}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <Section title={t('failuresTitle')}>
+              <ul className="pulizia-errors">
+                {fixResult.failures.map((f, i) => (
+                  <li key={i}>
+                    <span className="pulizia-path">{f.issue}</span>
+                    {': '}
+                    {f.reason}
+                  </li>
+                ))}
+              </ul>
+            </Section>
           )}
-        </div>
+        </>
       )}
 
       {!scanned && !scanning && (
         <EmptyState
-          icon={Database}
-          title={t('emptyStateTitle')}
-          description={t('emptyStateDescription')}
-          action={
-            <button
-              onClick={handleScan}
-              disabled={fixing}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <Search className="h-4 w-4" strokeWidth={1.8} />
-              {t('startScan')}
-            </button>
+          title={t('emptyTitle')}
+          description={
+            lastFix
+              ? t('emptyLastFix', {
+                  date: formatDateTime(lastFix.timestamp, i18n.language),
+                  count: lastFix.totalItemsCleaned,
+                  n: formatNumber(lastFix.totalItemsCleaned)
+                })
+              : t('emptyNoFix')
           }
+          action={
+            lastFix ? (
+              <Button onClick={() => navigate('/recovery')}>{t('receiptRecovery')}</Button>
+            ) : undefined
+          }
+          checks={areas.map((area) => ({
+            title: t(area.titleKey),
+            detail: t(area.descriptionKey)
+          }))}
         />
       )}
 
-      {/* ============ CARDS ============ */}
-      {scanned && !scanning && (
-        <div className="grid grid-cols-1 gap-3">
-          {cards.map((card, cardIndex) => {
-            const cardEntries = entries.filter((e) => card.types.includes(e.type))
-            const issueCount = cardEntries.length
-            const selectedInCard = cardEntries.filter((e) => e.selected).length
-            const allSelected = issueCount > 0 && selectedInCard === issueCount
-            const isExpanded = expandedCards.has(cardIndex)
-            const highRiskCount = cardEntries.filter((e) => e.risk === 'high').length
-            const mediumRiskCount = cardEntries.filter((e) => e.risk === 'medium').length
-            const Icon = card.icon
-            const color = card.color
-
-            // Health percentage for cards with known total checks
-            const hasPercentage = card.totalChecks !== undefined
-            const healthPercent = hasPercentage
-              ? Math.round(((card.totalChecks! - issueCount) / card.totalChecks!) * 100)
-              : issueCount === 0
-                ? 100
-                : undefined
-            const isClean = issueCount === 0
-
-            return (
-              <div
-                key={cardIndex}
-                className="overflow-hidden rounded-2xl"
-                style={{
-                  border: `1px solid ${isClean ? 'rgba(34,197,94,0.15)' : allSelected ? color.text + '20' : 'var(--border-default)'}`,
-                  opacity: fixing ? 0.5 : 1,
-                  pointerEvents: fixing ? 'none' : 'auto'
-                }}
+      {showResults && (
+        <Card as="section" className="pulizia-summary" aria-label={t('pageTitle')}>
+          <div className="pulizia-summary-main">
+            <div className="pulizia-summary-text">
+              <p className="pulizia-summary-value">
+                {entries.length === 0
+                  ? t('noIssuesTitle')
+                  : selectedCount > 0
+                    ? t('summarySelected', { count: selectedCount, n: formatNumber(selectedCount) })
+                    : t('summaryNothingSelected')}
+              </p>
+              {scannedAtText && (
+                <p className="pulizia-summary-meta">
+                  {t('summaryMeta', {
+                    count: entries.length,
+                    n: formatNumber(entries.length),
+                    time: scannedAtText
+                  })}
+                </p>
+              )}
+            </div>
+            {entries.length > 0 && (
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => setShowConfirm(true)}
+                disabled={selectedCount === 0}
               >
-                {/* Card header */}
-                <div
-                  className="flex items-center gap-4 px-5 py-4"
-                  style={{
-                    background: isClean
-                      ? 'rgba(34,197,94,0.03)'
-                      : allSelected
-                        ? color.bg
-                        : 'var(--bg-subtle)'
-                  }}
-                >
-                  {/* Health ring or icon */}
-                  {hasPercentage || isClean ? (
-                    <HealthRing percent={healthPercent ?? 100} color={color.text} size={40} />
-                  ) : (
-                    <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                      style={{ background: color.bg }}
-                    >
-                      <Icon className="h-5 w-5" style={{ color: color.text }} strokeWidth={1.8} />
-                    </div>
-                  )}
+                {selectedCount > 0
+                  ? t('fixSelected', { count: selectedCount, n: formatNumber(selectedCount) })
+                  : t('fixNone')}
+              </Button>
+            )}
+          </div>
+        </Card>
+      )}
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-[14px] font-semibold text-zinc-200">
-                        {t(card.titleKey)}
-                      </span>
-                      {isClean ? (
-                        <span
-                          className="rounded-full px-2 py-0.5 text-[11px] font-medium"
-                          style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e' }}
-                        >
-                          {t('allClear')}
-                        </span>
-                      ) : (
-                        <>
-                          <span
-                            className="rounded-full px-2 py-0.5 text-[11px] font-medium"
-                            style={{
-                              background: 'var(--bg-hover)',
-                              color: 'var(--text-secondary)'
-                            }}
-                          >
-                            {issueCount !== 1
-                              ? t('issueCountPlural', { count: issueCount })
-                              : t('issueCount', { count: issueCount })}
-                          </span>
-                          {highRiskCount > 0 && (
-                            <span
-                              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                              style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}
-                            >
-                              {t('highRisk', { count: highRiskCount })}
-                            </span>
-                          )}
-                          {mediumRiskCount > 0 && highRiskCount === 0 && (
-                            <span
-                              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                              style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}
-                            >
-                              {t('mediumRisk', { count: mediumRiskCount })}
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </div>
-                    <p className="mt-0.5 text-[12px]" style={{ color: 'var(--text-dim)' }}>
-                      {t(card.descriptionKey)}
-                      {hasPercentage && !isClean && (
-                        <span
-                          style={{
-                            color:
-                              healthPercent! >= 80
-                                ? '#22c55e'
-                                : healthPercent! >= 50
-                                  ? '#f59e0b'
-                                  : '#ef4444'
-                          }}
-                        >
-                          {' '}
-                          —{' '}
-                          {t('checksPassed', {
-                            passed: card.totalChecks! - issueCount,
-                            total: card.totalChecks!
-                          })}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-
-                  {/* Toggle + Expand (only show if there are issues) */}
-                  {!isClean && (
-                    <div className="flex items-center gap-3 shrink-0">
-                      <button
-                        onClick={() => useRegistryStore.getState().toggleCardAll(card.types)}
-                        className="toggle-switch relative h-6 w-11 rounded-full transition-colors"
-                        data-checked={allSelected}
-                        style={{ background: allSelected ? color.text : 'var(--toggle-off-bg)' }}
-                      >
-                        <div
-                          className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full transition"
-                          style={{
-                            transform: allSelected ? 'translateX(20px)' : undefined,
-                            background: allSelected ? '#fff' : 'var(--text-secondary)'
-                          }}
-                        />
-                      </button>
-
-                      <button
-                        onClick={() => useRegistryStore.getState().toggleCardExpand(cardIndex)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
-                        style={{ background: 'var(--bg-subtle-2)' }}
-                      >
-                        <ChevronDown
-                          className="h-4 w-4 transition-transform"
-                          style={{
-                            color: 'var(--text-secondary)',
-                            transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
-                          }}
-                          strokeWidth={2}
-                        />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Green check for clean cards */}
-                  {isClean && (
-                    <div
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
-                      style={{ background: 'rgba(34,197,94,0.1)' }}
-                    >
-                      <Check className="h-4 w-4 text-green-500" strokeWidth={2.5} />
-                    </div>
-                  )}
-                </div>
-
-                {/* Expanded items */}
-                {isExpanded && !isClean && (
-                  <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                    {cardEntries.map((entry, i) => (
-                      <div
-                        key={entry.id}
-                        className="flex items-center gap-4 px-5 py-3 transition-colors"
-                        style={{
-                          background: entry.selected
-                            ? color.bg.replace('0.1', '0.03')
-                            : 'transparent',
-                          borderBottom:
-                            i < cardEntries.length - 1 ? '1px solid var(--bg-subtle)' : 'none'
-                        }}
-                      >
-                        <div
-                          className="w-6 cursor-pointer"
-                          onClick={() => useRegistryStore.getState().toggleEntry(entry.id)}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={entry.selected}
-                            readOnly
-                            className="pointer-events-none accent-amber-500"
+      {showResults && (
+        <Card className="pulizia-table-card">
+          <Table className="pulizia-table">
+            <TableHead>
+              <TableHeaderCell className="pulizia-check">
+                <span className="sr-only">{t('columnSelect')}</span>
+              </TableHeaderCell>
+              <TableHeaderCell>{t('columnArea')}</TableHeaderCell>
+              <TableHeaderCell numeric>{t('columnIssues')}</TableHeaderCell>
+              <TableHeaderCell>{t('columnRisk')}</TableHeaderCell>
+              <TableHeaderCell>{t('columnNote')}</TableHeaderCell>
+            </TableHead>
+            <tbody>
+              {areaRows.map(({ area, areaEntries, chosen, worst }, index) => {
+                const count = areaEntries.length
+                const open = count > 0 && expandedCards.has(index)
+                const title = t(area.titleKey)
+                const checks =
+                  area.totalChecks !== undefined
+                    ? t('checksPassed', {
+                        passed: Math.max(0, area.totalChecks - count),
+                        total: area.totalChecks
+                      })
+                    : ''
+                return (
+                  <Fragment key={area.titleKey}>
+                    <TableRow selected={count > 0 && chosen === count}>
+                      <TableCell className="pulizia-check">
+                        {count > 0 && (
+                          <Checkbox
+                            checked={chosen === count}
+                            indeterminate={chosen > 0 && chosen < count}
+                            onChange={() => useRegistryStore.getState().toggleCardAll(area.types)}
+                            label={t('selectArea', { name: title })}
                           />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[12px] text-zinc-300">{entry.issue}</p>
-                          <p
-                            className="mt-0.5 font-mono text-[10px]"
-                            style={{ color: 'var(--text-muted)' }}
-                          >
-                            {entry.keyPath}
-                          </p>
-                        </div>
-                        <span
-                          className="shrink-0 rounded-md px-2 py-0.5 text-[11px] font-medium"
-                          style={{
-                            background: typeColors[entry.type].bg,
-                            color: typeColors[entry.type].text
-                          }}
-                        >
-                          {t(typeKeyMap[entry.type])}
+                        )}
+                      </TableCell>
+                      <TableCell className="pulizia-name">
+                        <span className="pulizia-name-line">
+                          {count > 0 ? (
+                            <button
+                              type="button"
+                              className="pulizia-disclosure"
+                              aria-expanded={open}
+                              onClick={() => useRegistryStore.getState().toggleCardExpand(index)}
+                            >
+                              <ChevronRight
+                                className="pulizia-chevron"
+                                size={14}
+                                strokeWidth={1.75}
+                                aria-hidden="true"
+                              />
+                              <span>{title}</span>
+                            </button>
+                          ) : (
+                            <span>{title}</span>
+                          )}
+                          {count === 0 && (
+                            <Tag tone="ok">
+                              <span aria-hidden="true">· </span>
+                              {t('noIssues')}
+                            </Tag>
+                          )}
                         </span>
-                        <span
-                          className="shrink-0 text-[11px] font-medium"
-                          style={{ color: riskColors[entry.risk] }}
-                        >
-                          {t(riskKeyMap[entry.risk])}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+                      </TableCell>
+                      <TableCell numeric>{formatNumber(count)}</TableCell>
+                      <TableCell>{riskCell(worst)}</TableCell>
+                      <TableCell muted className="pulizia-note">
+                        {[t(area.descriptionKey), checks].filter(Boolean).join(' · ')}
+                      </TableCell>
+                    </TableRow>
+                    {open &&
+                      areaEntries.map((entry) => (
+                        <TableRow key={entry.id} data-level="sub" selected={entry.selected}>
+                          <TableCell className="pulizia-check">
+                            <Checkbox
+                              checked={entry.selected}
+                              onChange={() => useRegistryStore.getState().toggleEntry(entry.id)}
+                              label={entry.issue}
+                            />
+                          </TableCell>
+                          <TableCell className="pulizia-name pulizia-sub">
+                            <span className="pulizia-entry">
+                              <span>{entry.issue}</span>
+                              <span className="pulizia-path">{entry.keyPath}</span>
+                            </span>
+                          </TableCell>
+                          <TableCell numeric />
+                          <TableCell>{riskCell(entry.risk)}</TableCell>
+                          <TableCell muted className="pulizia-note">
+                            {t(typeKeyMap[entry.type])}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </Fragment>
+                )
+              })}
+            </tbody>
+          </Table>
+        </Card>
       )}
 
       <ConfirmDialog
         open={showConfirm}
         onConfirm={handleFix}
         onCancel={() => setShowConfirm(false)}
-        title={t('confirmFixTitle')}
-        description={t('confirmFixDescription', { count: selectedCount })}
-        confirmLabel={t('confirmFixLabel')}
-        variant="warning"
+        title={t('confirmTitle', { count: selectedCount, n: formatNumber(selectedCount) })}
+        description={t('confirmDescription', {
+          list: formatList(selectedAreaNames, i18n.language)
+        })}
+        confirmLabel={t('fixSelected', { count: selectedCount, n: formatNumber(selectedCount) })}
       />
     </div>
   )
