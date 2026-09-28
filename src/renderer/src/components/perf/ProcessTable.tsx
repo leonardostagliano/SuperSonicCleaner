@@ -1,14 +1,22 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, ArrowUpDown, Zap, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, Search, X } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn, formatBytes } from '@/lib/utils'
+import { formatBytes } from '@/lib/utils'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { Button } from '@/components/ui/Button'
+import { Section } from '@/components/ui/Card'
+import { Tag } from '@/components/ui/Tag'
+import { Table, TableCell, TableHead, TableHeaderCell, TableRow } from '@/components/ui/Table'
 import { usePerfStore } from '@/stores/perf-store'
 import type { PerfProcess } from '@shared/types'
+import { formatPercent } from './perf-summary'
+
+type SortColumn = 'name' | 'pid' | 'cpuPercent' | 'memBytes'
 
 export function ProcessTable() {
-  const { t } = useTranslation('performance')
+  const { t, i18n } = useTranslation('performance')
+  const locale = i18n.language
   const processList = usePerfStore((s) => s.processList)
   const processCount = usePerfStore((s) => s.processCount)
   const filter = usePerfStore((s) => s.processFilter)
@@ -57,156 +65,136 @@ export function ProcessTable() {
       setKilling(false)
       setKillTarget(null)
     }
-  }, [killTarget])
+  }, [killTarget, t])
 
-  const SortHeader = ({
-    column,
-    label,
-    width
-  }: {
-    column: typeof sortColumn
-    label: string
-    width: string
-  }) => (
-    <button
-      onClick={() => setSort(column)}
-      className={cn(
-        'flex items-center gap-1 text-left text-[11px] font-semibold uppercase tracking-wider transition-colors',
-        sortColumn === column ? 'text-amber-400' : 'text-zinc-600 hover:text-zinc-400'
-      )}
-      style={{ width }}
-    >
-      {label}
-      <ArrowUpDown className="h-3 w-3" />
-    </button>
-  )
-
-  function cpuBarColor(pct: number): string {
-    if (pct >= 50) return '#ef4444'
-    if (pct >= 20) return '#f59e0b'
-    return '#22c55e'
-  }
+  const columns: { column: SortColumn; label: string; numeric?: boolean }[] = [
+    { column: 'name', label: t('columnName') },
+    { column: 'pid', label: t('columnPid'), numeric: true },
+    { column: 'cpuPercent', label: t('columnCpu'), numeric: true },
+    { column: 'memBytes', label: t('columnMemory'), numeric: true }
+  ]
+  const SortIcon = sortDir === 'asc' ? ArrowUp : ArrowDown
 
   return (
-    <div
-      className="rounded-2xl p-5"
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
-    >
-      {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-baseline gap-2">
-          <span className="text-[13px] font-semibold text-white">{t('processes')}</span>
-          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-            {processCount} {t('totalSuffix')}
-          </span>
-        </div>
-        <div
-          className="flex items-center gap-2 rounded-lg px-3 py-1.5"
-          style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-medium)' }}
-        >
-          <Search className="h-3.5 w-3.5" style={{ color: 'var(--text-muted)' }} />
+    <Section
+      title={t('processes')}
+      meta={
+        processList.length > 0
+          ? t('processesMeta', { shown: processList.length, total: processCount })
+          : undefined
+      }
+      actions={
+        <div className="perf-search">
+          <Search size={14} strokeWidth={1.75} aria-hidden="true" />
           <input
             type="text"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder={t('filterProcessesPlaceholder')}
-            className="bg-transparent text-[12px] text-zinc-300 placeholder-zinc-600 outline-none"
-            style={{ width: 160 }}
+            aria-label={t('filterProcessesPlaceholder')}
           />
           {filter && (
-            <button onClick={() => setFilter('')}>
-              <X className="h-3 w-3" style={{ color: 'var(--text-muted)' }} />
+            <button
+              type="button"
+              className="perf-search-clear"
+              aria-label={t('clearFilter')}
+              onClick={() => setFilter('')}
+            >
+              <X size={14} strokeWidth={1.75} aria-hidden="true" />
             </button>
           )}
         </div>
-      </div>
-
-      {/* Column headers */}
-      <div className="mb-2 flex items-center gap-2 px-2">
-        <SortHeader column="name" label={t('columnName')} width="40%" />
-        <SortHeader column="pid" label={t('columnPid')} width="12%" />
-        <SortHeader column="cpuPercent" label={t('columnCpu')} width="20%" />
-        <SortHeader column="memBytes" label={t('columnMemory')} width="18%" />
-        <div style={{ width: '10%' }} />
-      </div>
-
-      {/* Rows */}
-      <div className="max-h-[340px] space-y-0.5 overflow-y-auto pr-1">
-        {filtered.map((p) => (
-          <div
-            key={p.pid}
-            className="group flex items-center gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-white/[0.02]"
-          >
-            {/* Name */}
-            <div className="flex items-center gap-2" style={{ width: '40%' }}>
-              <span className="truncate text-[12px] font-medium text-zinc-300">{p.name}</span>
-              {p.isStartupItem && (
-                <span
-                  className="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase"
-                  style={{ background: 'var(--accent-muted-bg)', color: 'var(--accent)' }}
-                  title={t('startupItemTooltip', { name: p.startupItemName })}
+      }
+    >
+      <div className="perf-process-scroll">
+        <Table className="perf-process-table">
+          <colgroup>
+            <col />
+            <col className="perf-col-pid" />
+            <col className="perf-col-cpu" />
+            <col className="perf-col-memory" />
+            <col className="perf-col-action" />
+          </colgroup>
+          <TableHead>
+            {columns.map(({ column, label, numeric }) => {
+              const active = sortColumn === column
+              return (
+                <TableHeaderCell
+                  key={column}
+                  numeric={numeric}
+                  aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
-                  <Zap className="mr-0.5 inline h-2.5 w-2.5" />
-                  {t('startupBadge')}
-                </span>
-              )}
-            </div>
-
-            {/* PID */}
-            <span
-              className="text-[11px] font-mono"
-              style={{ width: '12%', color: 'var(--text-muted)' }}
-            >
-              {p.pid}
-            </span>
-
-            {/* CPU */}
-            <div style={{ width: '20%' }} className="flex items-center gap-2">
-              <div
-                className="h-1.5 flex-1 rounded-full"
-                style={{ background: 'var(--bg-subtle-2)' }}
-              >
-                <div
-                  className="h-full rounded-full transition-[width,background-color]"
-                  style={{
-                    width: `${Math.min(100, p.cpuPercent)}%`,
-                    background: cpuBarColor(p.cpuPercent)
-                  }}
-                />
-              </div>
-              <span className="w-10 text-right text-[11px] font-mono text-zinc-400">
-                {p.cpuPercent.toFixed(1)}
-              </span>
-            </div>
-
-            {/* Memory */}
-            <span className="text-[11px] font-mono text-zinc-400" style={{ width: '18%' }}>
-              {formatBytes(p.memBytes)}
-            </span>
-
-            {/* Kill */}
-            <div style={{ width: '10%' }} className="flex justify-end">
-              <button
-                onClick={() => setKillTarget(p)}
-                className="rounded-lg px-2 py-1 text-[10px] font-medium opacity-0 transition group-hover:opacity-100"
-                style={{ background: 'rgba(239,68,68,0.08)', color: '#ef4444' }}
-              >
-                {t('endButton')}
-              </button>
-            </div>
-          </div>
-        ))}
+                  <button
+                    type="button"
+                    className="perf-sort"
+                    data-active={active || undefined}
+                    onClick={() => setSort(column)}
+                  >
+                    {label}
+                    {active && <SortIcon size={12} strokeWidth={1.75} aria-hidden="true" />}
+                  </button>
+                </TableHeaderCell>
+              )
+            })}
+            <TableHeaderCell>
+              <span className="sr-only">{t('columnAction')}</span>
+            </TableHeaderCell>
+          </TableHead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <TableCell colSpan={5} muted>
+                  {filter ? t('processesNoMatch', { filter }) : t('waitingForSample')}
+                </TableCell>
+              </tr>
+            ) : (
+              filtered.map((p) => (
+                <TableRow key={p.pid}>
+                  <TableCell>
+                    <span className="perf-process-name">
+                      <span className="perf-truncate" title={p.name}>
+                        {p.name}
+                      </span>
+                      {p.isStartupItem && (
+                        <span title={t('startupItemTooltip', { name: p.startupItemName })}>
+                          <Tag tone="neutral">{t('startupBadge')}</Tag>
+                        </span>
+                      )}
+                    </span>
+                  </TableCell>
+                  <TableCell numeric muted>
+                    {p.pid}
+                  </TableCell>
+                  <TableCell numeric>{formatPercent(p.cpuPercent, locale, 1)}</TableCell>
+                  <TableCell numeric>{formatBytes(p.memBytes)}</TableCell>
+                  <TableCell numeric>
+                    <Button
+                      variant="ghost"
+                      className="perf-end"
+                      aria-label={t('endButtonLabel', { name: p.name })}
+                      onClick={() => setKillTarget(p)}
+                    >
+                      {t('endButton')}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </tbody>
+        </Table>
       </div>
 
       <ConfirmDialog
         open={!!killTarget}
         onConfirm={handleKill}
         onCancel={() => setKillTarget(null)}
-        title={t('endProcessTitle', { name: killTarget?.name ?? 'process' })}
+        title={t('endProcessTitle', { name: killTarget?.name })}
         description={t('endProcessDescription', { name: killTarget?.name, pid: killTarget?.pid })}
-        confirmLabel={killing ? t('endProcessEnding') : t('endProcessConfirm')}
+        confirmLabel={
+          killing ? t('endProcessEnding') : t('endProcessConfirm', { name: killTarget?.name })
+        }
         variant="danger"
       />
-    </div>
+    </Section>
   )
 }

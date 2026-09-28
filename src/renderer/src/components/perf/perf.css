@@ -1,0 +1,415 @@
+/* Performance monitor and diagnostics (spec 5.4): flat sections, neutral meters and
+   charts, tokens only. Loaded with the pages' lazy chunks, after ui.css. */
+
+.perf-stack {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* A line of help, a loading state or an empty result inside a section. */
+.perf-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+
+/* ── System information ─────────────────────────────────────────────────── */
+.ui-card.perf-system-info {
+  padding-block: var(--space-3);
+}
+.perf-system-info dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+}
+.perf-system-info dl > div {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.perf-system-info dt {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  white-space: nowrap;
+}
+.perf-system-info dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.perf-system-info dd.perf-system-sub {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+  white-space: nowrap;
+}
+/* Typical widths, kept by empty slots and values alike (sub-project 1, no layout shift). */
+.perf-system-info [data-slot='cpu'] {
+  min-width: 26.5ch;
+}
+.perf-system-info [data-slot='cpu-sub'] {
+  min-width: 20ch;
+}
+.perf-system-info [data-slot='memory'] {
+  min-width: 6.5ch;
+  white-space: nowrap;
+}
+.perf-system-info [data-slot='os'] {
+  min-width: 30.5ch;
+}
+.perf-system-info [data-slot='uptime'] {
+  min-width: 15.5ch;
+  white-space: nowrap;
+}
+
+/* ── Current load ───────────────────────────────────────────────────────── */
+.perf-resources,
+.perf-trend {
+  container-type: inline-size;
+}
+.perf-alert {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  color: var(--text-secondary);
+}
+.perf-alert svg {
+  flex: none;
+  margin-top: 1px;
+}
+.perf-gauges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-5);
+}
+@container (width < 720px) {
+  .perf-gauges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (width < 360px) {
+  .perf-gauges {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.perf-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.perf-gauge-label {
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: var(--text-13);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.perf-gauge-value {
+  display: flex;
+  align-items: flex-end;
+  min-height: 32px;
+  margin: 0;
+}
+.perf-gauge-value strong {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-26);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.perf-gauge-value small {
+  margin-inline-start: 2px;
+  color: var(--text-muted);
+  font-size: var(--text-13);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.perf-gauge-waiting {
+  color: var(--text-muted);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.perf-gauge-detail {
+  margin: 0 0 var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.perf-gauge .ui-progress {
+  margin-top: auto;
+}
+
+/* ── Trend charts ───────────────────────────────────────────────────────── */
+.perf-charts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-5);
+}
+@container (width < 840px) {
+  .perf-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.perf-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+}
+.perf-chart-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+.perf-chart-title {
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  font-weight: 500;
+}
+.perf-chart-unit {
+  margin-inline-start: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 400;
+}
+.perf-chart-legend {
+  display: flex;
+  gap: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+.perf-chart-legend span::before {
+  display: inline-block;
+  width: 10px;
+  height: 2px;
+  margin-inline-end: var(--space-1);
+  vertical-align: middle;
+  background: var(--chart-1);
+  content: '';
+}
+.perf-chart-legend [data-series='2']::before {
+  background: var(--chart-2);
+}
+.perf-chart-body,
+.perf-chart-note {
+  height: 160px;
+  min-width: 0;
+}
+/* The chart is always drawn left to right, whatever the language's direction. */
+.perf-chart-body {
+  direction: ltr;
+}
+.perf-chart-note {
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-control);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.perf-chart-times {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Processes ──────────────────────────────────────────────────────────── */
+.perf-search {
+  display: flex;
+  flex: 0 1 240px;
+  align-items: center;
+  gap: var(--space-2);
+  width: 240px;
+  max-width: 100%;
+  height: 32px;
+  padding-inline: var(--space-3) var(--space-1);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-muted);
+}
+.perf-search:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.perf-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+}
+.perf-search input::placeholder {
+  color: var(--text-muted);
+}
+.perf-search input:focus-visible {
+  outline: none;
+}
+.perf-search .perf-search-clear {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.perf-search .perf-search-clear:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.perf-process-scroll {
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+.ui-table.perf-process-table {
+  table-layout: fixed;
+}
+.perf-process-table .perf-col-pid {
+  width: 84px;
+}
+.perf-process-table .perf-col-cpu {
+  width: 88px;
+}
+.perf-process-table .perf-col-memory {
+  width: 104px;
+}
+.perf-process-table .perf-col-action {
+  width: 104px;
+}
+.ui-table.perf-process-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card-bg);
+}
+.ui-table.perf-process-table tbody td {
+  padding-block: var(--space-1);
+  height: 40px;
+}
+.perf-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.perf-sort:hover,
+.perf-sort[data-active] {
+  color: var(--text-primary);
+}
+.perf-process-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.perf-truncate {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The end button shows with its row (hover or keyboard focus); touch screens always show it. */
+.perf-process-table .perf-end {
+  opacity: 0;
+  transition:
+    opacity var(--duration-feedback) var(--ease-out),
+    background-color var(--duration-feedback) var(--ease-out);
+}
+.perf-process-table tr:hover .perf-end,
+.perf-process-table tr:focus-within .perf-end {
+  opacity: 1;
+}
+@media (hover: none) {
+  .perf-process-table .perf-end {
+    opacity: 1;
+  }
+}
+
+/* ── Disk health ────────────────────────────────────────────────────────── */
+.perf-disks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.perf-disk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px var(--space-4);
+  padding-block: var(--space-2);
+}
+.perf-disk + .perf-disk {
+  border-top: 1px solid var(--border-default);
+}
+.perf-disk-name {
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.perf-disk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-secondary);
+}
+.perf-disk-facts {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.perf-disk-facts strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .perf-process-table .perf-end {
+    transition: none;
+  }
+}

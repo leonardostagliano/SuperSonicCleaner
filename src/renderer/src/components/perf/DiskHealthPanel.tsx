@@ -1,213 +1,82 @@
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  HardDrive,
-  Thermometer,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  HelpCircle,
-  ShieldAlert
-} from 'lucide-react'
 import type { DiskSmartInfo } from '@shared/types'
-import { formatBytes, NO_VALUE } from '@/lib/utils'
+import { Section } from '@/components/ui/Card'
+import { Tag, type TagTone } from '@/components/ui/Tag'
+import { icons } from '@/lib/icons'
+import { formatBytes } from '@/lib/utils'
+import { diskFacts } from './perf-summary'
 
 interface DiskHealthPanelProps {
   disks: DiskSmartInfo[]
   loading?: boolean
 }
 
-const statusConfig = {
-  Healthy: { icon: CheckCircle, color: '#22c55e', bg: 'rgba(34,197,94,0.1)' },
-  Caution: { icon: AlertTriangle, color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-  Bad: { icon: XCircle, color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
-  Unknown: { icon: HelpCircle, color: 'var(--text-muted)', bg: 'rgba(110,110,118,0.1)' }
+/** Green only for a disk that reports itself healthy, red only for a reported failure. */
+const STATUS: Record<DiskSmartInfo['healthStatus'], { key: string; tone: TagTone }> = {
+  Healthy: { key: 'diskStatusHealthy', tone: 'ok' },
+  Caution: { key: 'diskStatusCaution', tone: 'neutral' },
+  Bad: { key: 'diskStatusBad', tone: 'danger' },
+  Unknown: { key: 'diskStatusUnknown', tone: 'neutral' }
 }
 
-const statusI18nKeys = {
-  Healthy: 'diskStatusHealthy',
-  Caution: 'diskStatusCaution',
-  Bad: 'diskStatusBad',
-  Unknown: 'diskStatusUnknown'
-} as const
+const Warning = icons.warning
 
-function DiskCard({ disk }: { disk: DiskSmartInfo }) {
-  const { t } = useTranslation('performance')
-  const status = statusConfig[disk.healthStatus]
-  const StatusIcon = status.icon
-
+function DiskRow({ disk }: { disk: DiskSmartInfo }) {
+  const { t, i18n } = useTranslation('performance')
+  const status = STATUS[disk.healthStatus]
+  const summary = t('diskSummary', {
+    type: disk.type === 'Unknown' ? t('diskTypeUnknown') : disk.type,
+    size: formatBytes(disk.sizeBytes)
+  })
+  const facts = diskFacts(disk, i18n.language)
   return (
-    <div
-      className="flex flex-col gap-3 rounded-2xl p-5"
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-xl"
-            style={{ background: 'var(--bg-subtle-2)' }}
-          >
-            <HardDrive className="h-4 w-4 text-zinc-400" />
-          </div>
-          <div>
-            <div className="text-[13px] font-semibold text-white">{disk.model}</div>
-            <div className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
-              {disk.type} &middot; {formatBytes(disk.sizeBytes)}
-            </div>
-          </div>
-        </div>
-
-        {/* Status badge */}
-        <div
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1"
-          style={{ background: status.bg }}
-        >
-          <StatusIcon className="h-3.5 w-3.5" style={{ color: status.color }} />
-          <span className="text-[11px] font-semibold" style={{ color: status.color }}>
-            {t(statusI18nKeys[disk.healthStatus])}
-          </span>
-        </div>
-      </div>
-
-      {/* Stats grid */}
-      <div
-        className="grid grid-cols-3 gap-3 rounded-xl p-3"
-        style={{ background: 'var(--bg-subtle)' }}
-      >
-        <StatItem
-          icon={<Thermometer className="h-3.5 w-3.5" />}
-          label={t('temperature')}
-          value={disk.temperature !== null ? `${disk.temperature}°C` : NO_VALUE}
-          warn={disk.temperature !== null && disk.temperature > 60}
-        />
-        <StatItem
-          label={t('powerOnHours')}
-          value={disk.powerOnHours !== null ? formatHours(disk.powerOnHours) : NO_VALUE}
-        />
-        <StatItem
-          label={t('remainingLife')}
-          value={disk.remainingLife !== null ? `${disk.remainingLife}%` : NO_VALUE}
-          warn={disk.remainingLife !== null && disk.remainingLife < 20}
-        />
-      </div>
-
-      {/* Error stats (only show if any data available) */}
-      {(disk.readErrors !== null ||
-        disk.writeErrors !== null ||
-        disk.reallocatedSectors !== null) && (
-        <div
-          className="grid grid-cols-3 gap-3 rounded-xl p-3"
-          style={{ background: 'var(--bg-subtle)' }}
-        >
-          {disk.readErrors !== null && (
-            <StatItem
-              label={t('readErrors')}
-              value={String(disk.readErrors)}
-              warn={disk.readErrors > 0}
-            />
-          )}
-          {disk.writeErrors !== null && (
-            <StatItem
-              label={t('writeErrors')}
-              value={String(disk.writeErrors)}
-              warn={disk.writeErrors > 0}
-            />
-          )}
-          {disk.reallocatedSectors !== null && (
-            <StatItem
-              label={t('reallocatedSectors')}
-              value={String(disk.reallocatedSectors)}
-              warn={disk.reallocatedSectors > 0}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-function StatItem({
-  icon,
-  label,
-  value,
-  warn
-}: {
-  icon?: React.ReactNode
-  label: string
-  value: string
-  warn?: boolean
-}) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex items-center gap-1">
-        {icon && <span style={{ color: warn ? '#f59e0b' : 'var(--text-muted)' }}>{icon}</span>}
-        <span className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>
-          {label}
-        </span>
-      </div>
-      <span
-        className="text-[15px] font-bold"
-        style={{ color: warn ? '#f59e0b' : 'var(--text-primary)' }}
-      >
-        {value}
+    <li className="perf-disk">
+      <span className="perf-disk-name">{disk.model}</span>
+      <span className="perf-disk-status">
+        {disk.healthStatus === 'Caution' && (
+          <Warning size={14} strokeWidth={1.75} aria-hidden="true" />
+        )}
+        <Tag tone={status.tone}>{t(status.key)}</Tag>
       </span>
-    </div>
+      <p className="perf-disk-facts">
+        {summary}
+        {facts.map((fact) => {
+          const text = t(fact.key, fact.params)
+          return (
+            <Fragment key={fact.key}>
+              {' · '}
+              {fact.warn ? <strong>{text}</strong> : text}
+            </Fragment>
+          )
+        })}
+      </p>
+    </li>
   )
 }
 
-function formatHours(hours: number): string {
-  if (hours < 24) return `${hours}h`
-  const days = Math.floor(hours / 24)
-  if (days < 365) return `${days}d`
-  const years = (days / 365).toFixed(1)
-  return `${years}y`
-}
-
+/** S.M.A.R.T. health per disk: one row each, the reported values in one line. */
 export function DiskHealthPanel({ disks, loading }: DiskHealthPanelProps) {
   const { t } = useTranslation('performance')
-  if (disks.length === 0) {
-    if (!loading) return null
-    // Keep the panel's place while SMART data loads, so nothing jumps
-    return (
-      <div className="mb-6" aria-busy="true">
-        <div className="mb-3">
-          <h3 className="text-[13px] font-semibold text-zinc-400">{t('diskHealthTitle')}</h3>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div
-            className="h-[150px] rounded-2xl"
-            style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  const hasDetailedData = disks.some(
+  const detailed = disks.some(
     (d) => d.temperature !== null || d.powerOnHours !== null || d.remainingLife !== null
   )
-
   return (
-    <div className="mb-6">
-      <div className="mb-3 flex items-center gap-2">
-        <h3 className="text-[13px] font-semibold text-zinc-400">{t('diskHealthTitle')}</h3>
-        {!hasDetailedData && (
-          <div
-            className="flex items-center gap-1 rounded-md px-2 py-0.5"
-            style={{ background: 'var(--accent-muted-bg)' }}
-          >
-            <ShieldAlert className="h-3 w-3" style={{ color: '#92700c' }} />
-            <span className="text-[10px] font-medium" style={{ color: '#92700c' }}>
-              {t('diskHealthAdminHint')}
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        {disks.map((disk) => (
-          <DiskCard key={disk.device} disk={disk} />
-        ))}
-      </div>
-    </div>
+    <Section
+      title={t('diskHealthTitle')}
+      meta={disks.length > 0 && !detailed ? t('diskHealthAdminHint') : undefined}
+    >
+      {disks.length === 0 ? (
+        <p className="perf-note" role={loading ? 'status' : undefined}>
+          {loading ? t('diskHealthLoading') : t('diskHealthNone')}
+        </p>
+      ) : (
+        <ul className="perf-disks">
+          {disks.map((disk) => (
+            <DiskRow key={disk.device} disk={disk} />
+          ))}
+        </ul>
+      )}
+    </Section>
   )
 }

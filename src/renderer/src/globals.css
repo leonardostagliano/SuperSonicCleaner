@@ -1971,15 +1971,6 @@ thead {
   min-height: calc(100vh - 332px);
 }
 
-.performance-page .page-header + div,
-.performance-page .page-header ~ div {
-  border-color: var(--border-default);
-}
-.performance-page [class*='grid-cols-4'] > *,
-.performance-page [class*='grid-cols-3'] > * {
-  border-radius: 17px !important;
-}
-
 .settings-page {
   max-width: none !important;
 }

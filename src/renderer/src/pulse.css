@@ -264,21 +264,6 @@ body {
   letter-spacing: 0;
   font-weight: 400;
 }
-.pulse-segments {
-  display: flex;
-  gap: 5px;
-  width: 100%;
-  height: 27px;
-}
-.pulse-segments i {
-  flex: 1;
-  min-width: 0;
-  background: color-mix(in srgb, var(--meter-color) 10%, var(--card-bg));
-  border-radius: 3px;
-}
-.pulse-segments i.is-filled {
-  background: var(--meter-color);
-}
 .pulse-home-metrics p {
   color: var(--text-muted);
   font-size: 12px;
@@ -861,74 +846,6 @@ body {
 .malware-page .empty-state {
   min-height: 320px;
 }
-.performance-page .pulse-performance-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 22px;
-}
-.pulse-resource-card {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 22px;
-  gap: 13px;
-  border: 1px solid var(--border-medium);
-  background: var(--card-bg);
-  border-radius: var(--radius-card);
-  min-width: 0;
-}
-.pulse-resource-card h2 {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-.pulse-resource-card strong {
-  font-size: var(--text-display);
-  font-weight: 600;
-  letter-spacing: -1px;
-  font-variant-numeric: tabular-nums;
-}
-.pulse-resource-card strong small {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-inline-start: 4px;
-}
-.pulse-resource-card p {
-  font-size: 12px;
-  line-height: 1.7;
-  color: var(--text-muted);
-}
-.pulse-resource-card .pulse-segments {
-  height: 21px;
-  gap: 4px;
-}
-.pulse-time-chart {
-  padding: 22px;
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-card);
-  background: var(--card-bg);
-}
-.pulse-time-chart h3 {
-  color: var(--text-secondary);
-  font-size: 13px;
-  margin-bottom: 18px;
-  font-weight: 600;
-}
-.pulse-time-chart footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  color: var(--text-dim);
-  font-size: 11px;
-  margin-top: 8px;
-}
-.pulse-performance-charts {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin-bottom: 24px;
-}
 .settings-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 26px 22px;
@@ -998,19 +915,6 @@ body {
   }
   .pulse-big-value {
     font-size: 29px;
-  }
-  .pulse-segments {
-    gap: 4px;
-    height: 23px;
-  }
-  .performance-page .pulse-performance-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .pulse-performance-charts {
-    grid-template-columns: 1fr;
-  }
-  .pulse-time-chart .recharts-responsive-container {
-    min-height: 190px;
   }
 }
 @media (max-width: 980px) {
@@ -1126,9 +1030,6 @@ body {
   }
 }
 @media (max-width: 500px) {
-  .performance-page .pulse-performance-metrics {
-    grid-template-columns: 1fr;
-  }
   .app-content .feature-page > .grid-cols-3,
   .app-content .feature-page > .grid-cols-4 {
     grid-template-columns: 1fr;
@@ -1281,29 +1182,6 @@ body {
   .pulse-updater-toolbar > div {
     min-width: 0;
   }
-}
-
-.pulse-disk-unit {
-  float: inline-end;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 400;
-}
-.pulse-disk-legend {
-  display: flex;
-  gap: 16px;
-  font-size: 10px;
-  margin-top: -12px;
-  margin-bottom: 6px;
-}
-.pulse-disk-legend span::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-inline-end: 5px;
-  border-radius: 50%;
-  background: currentColor;
 }
 
 .app-content .pulse-primary-action:disabled,

@@ -1,106 +1,74 @@
 import { useTranslation } from 'react-i18next'
-import { Cpu, MemoryStick, Monitor, Clock } from 'lucide-react'
-import { formatBytes, NO_VALUE } from '@/lib/utils'
+import { Card } from '@/components/ui/Card'
+import { formatBytes } from '@/lib/utils'
 import type { PerfSystemInfo } from '@shared/types'
+import { uptimeParts } from './perf-summary'
 
 interface SystemInfoHeaderProps {
   info: PerfSystemInfo | null
   uptime: number
-  /** System info is still being read (the header shows placeholders meanwhile). */
+  /** System info is still being read (the header keeps its slots empty meanwhile). */
   loading?: boolean
 }
 
-function formatUptime(seconds: number): string {
-  const d = Math.floor(seconds / 86400)
-  const h = Math.floor((seconds % 86400) / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  if (d > 0) return `${d}d ${h}h ${m}m`
-  if (h > 0) return `${h}h ${m}m`
-  return `${m}m`
-}
-
-const NBSP = String.fromCharCode(0xa0)
+const NBSP = '\u00a0'
 
 /**
- * Typical value widths (a Windows CPU model and OS version string, a memory size,
- * a days-hours-minutes uptime). Placeholders and real values both reserve them,
- * so the header wraps into the same rows before and after its data arrives and
- * nothing below it moves.
+ * Every value slot reserves a typical width (perf.css, `data-slot`): a Windows CPU model
+ * and OS version, the core count, a memory size and a days-hours-minutes uptime. Empty
+ * slots and real values take the same room, so the header wraps into the same rows
+ * before and after its data arrives and nothing below it moves.
  */
-const VALUE_WIDTH = {
-  cpu: '26.5ch',
-  cores: '7.5ch',
-  memory: '6.5ch',
-  os: '30.5ch',
-  uptime: '10.5ch'
-}
-
 export function SystemInfoHeader({ info, uptime, loading = false }: SystemInfoHeaderProps) {
   const { t } = useTranslation('performance')
+  // Nothing to wait for any more: say so instead of leaving the slot blank.
+  const missing = loading ? NBSP : t('systemInfoUnavailable')
+  const { days, hours, minutes } = uptimeParts(uptime)
+  const uptimeText =
+    uptime <= 0
+      ? NBSP
+      : days > 0
+        ? t('uptimeDays', { days, hours, minutes })
+        : hours > 0
+          ? t('uptimeHours', { hours, minutes })
+          : t('uptimeMinutes', { minutes })
 
   const items = [
     {
-      icon: Cpu,
+      slot: 'cpu',
       label: t('systemInfoCpu'),
-      value: info?.cpuModel,
-      width: VALUE_WIDTH.cpu,
-      // A no-break space keeps the slot's line box while the core count is unknown
-      sub: info ? `${info.cpuCores}C / ${info.cpuThreads}T` : NBSP,
-      subWidth: VALUE_WIDTH.cores
+      value: info?.cpuModel || missing,
+      sub: info ? t('systemInfoCores', { cores: info.cpuCores, threads: info.cpuThreads }) : NBSP
     },
     {
-      icon: MemoryStick,
+      slot: 'memory',
       label: t('systemInfoMemory'),
-      value: info ? formatBytes(info.totalMemBytes) : undefined,
-      width: VALUE_WIDTH.memory
+      value: info ? formatBytes(info.totalMemBytes) : missing
     },
-    { icon: Monitor, label: t('systemInfoOs'), value: info?.osVersion, width: VALUE_WIDTH.os },
-    {
-      icon: Clock,
-      label: t('systemInfoUptime'),
-      value: uptime > 0 ? formatUptime(uptime) : undefined,
-      width: VALUE_WIDTH.uptime
-    }
+    { slot: 'os', label: t('systemInfoOs'), value: info?.osVersion || missing },
+    { slot: 'uptime', label: t('systemInfoUptime'), value: uptimeText }
   ]
 
   return (
-    <div
-      className="mb-6 flex flex-wrap gap-4 rounded-2xl p-4"
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
+    <Card
+      className="perf-system-info"
+      aria-label={t('systemInfoLabel')}
       aria-busy={!info && loading}
       data-system-info-header
     >
-      {items.map((item) => (
-        <div key={item.label} className="flex items-center gap-3 px-2">
-          <item.icon
-            className="h-4 w-4 shrink-0"
-            style={{ color: 'var(--text-muted)' }}
-            strokeWidth={1.8}
-          />
-          <div className="flex items-baseline gap-2">
-            <span
-              className="text-[11px] font-medium uppercase tracking-wider"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {item.label}
-            </span>
-            <span
-              className="text-[12px] font-medium text-zinc-300"
-              style={{ minWidth: item.width }}
-            >
-              {item.value ?? NO_VALUE}
-            </span>
+      <dl>
+        {items.map((item) => (
+          <div key={item.slot}>
+            <dt>{item.label}</dt>
+            <dd data-slot={item.slot}>{item.value}</dd>
             {item.sub && (
-              <span
-                className="text-[11px]"
-                style={{ color: 'var(--text-muted)', minWidth: item.subWidth }}
-              >
+              <dd className="perf-system-sub" data-slot={`${item.slot}-sub`}>
                 {item.sub}
-              </span>
+              </dd>
             )}
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </dl>
+    </Card>
   )
 }

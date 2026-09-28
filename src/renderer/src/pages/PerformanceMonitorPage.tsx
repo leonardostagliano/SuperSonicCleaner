@@ -6,15 +6,28 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { GaugeCard } from '@/components/perf/GaugeCard'
 import { SystemInfoHeader } from '@/components/perf/SystemInfoHeader'
 import { TimeSeriesChart } from '@/components/perf/TimeSeriesChart'
-import { AlertBanner } from '@/components/perf/AlertBanner'
 import { DiskHealthPanel } from '@/components/perf/DiskHealthPanel'
 import { ProcessTable } from '@/components/perf/ProcessTable'
+import {
+  diskRateState,
+  formatClock,
+  formatPercent,
+  loadAlerts
+} from '@/components/perf/perf-summary'
+import '@/components/perf/perf.css'
+import { Button } from '@/components/ui/Button'
+import { Section } from '@/components/ui/Card'
+import { Segmented } from '@/components/ui/Segmented'
+import { icons } from '@/lib/icons'
 import { acquirePerfMonitoring, setPerfMonitoringPaused, usePerfStore } from '@/stores/perf-store'
-import { formatBytes, formatSpeed, NO_VALUE } from '@/lib/utils'
-import { cn } from '@/lib/utils'
+import { formatBytes, formatSpeed } from '@/lib/utils'
+
+type TimeRange = '60s' | '5m' | '15m'
+const Warning = icons.warning
 
 export function PerformanceMonitorPage() {
-  const { t } = useTranslation('performance')
+  const { t, i18n } = useTranslation('performance')
+  const locale = i18n.language
   const systemInfo = usePerfStore((s) => s.systemInfo)
   const snapshot = usePerfStore((s) => s.currentSnapshot)
   const history = usePerfStore((s) => s.history)
@@ -47,11 +60,41 @@ export function PerformanceMonitorPage() {
 
   const togglePause = useCallback(() => setPerfMonitoringPaused(!paused), [paused])
 
-  const timeRangeOptions: Array<{ value: '60s' | '5m' | '15m'; label: string }> = [
-    { value: '60s', label: '1m' },
-    { value: '5m', label: '5m' },
-    { value: '15m', label: '15m' }
+  const timeRangeOptions: { value: TimeRange; label: string }[] = [
+    { value: '60s', label: t('timeRange1m') },
+    { value: '5m', label: t('timeRange5m') },
+    { value: '15m', label: t('timeRange15m') }
   ]
+
+  // Warnings about load are not errors: an icon and neutral text in the section header,
+  // where they take no room from the gauges (nothing below moves when one appears).
+  const alerts = paused ? [] : loadAlerts(snapshot, history)
+  const resourcesMeta = paused ? (
+    snapshot ? (
+      t('pausedMeta', { time: formatClock(snapshot.timestamp, locale) })
+    ) : (
+      t('pausedMetaNoSample')
+    )
+  ) : alerts.length > 0 ? (
+    <span className="perf-alert" role="status">
+      <Warning size={14} strokeWidth={1.75} aria-hidden="true" />
+      <span>
+        {alerts
+          .map((alert) =>
+            alert.id === 'cpu-high'
+              ? t('cpuHighAlert')
+              : t('memoryHighAlert', { percent: formatPercent(alert.percent, locale) })
+          )
+          .join(' ')}
+      </span>
+    </span>
+  ) : (
+    t('resourcesMeta')
+  )
+
+  const diskState = diskRateState(snapshot, history)
+  const diskMeasured = !!snapshot && diskState === 'measured'
+  const diskUnavailable = diskState === 'unavailable' ? t('diskIoUnavailable') : undefined
 
   return (
     <div className="feature-page performance-page mx-auto max-w-[1320px]">
@@ -59,135 +102,115 @@ export function PerformanceMonitorPage() {
         title={t('pageTitle')}
         description={t('pageDescription')}
         action={
-          <>
-            {/* Time range pills */}
-            <div
-              className="flex rounded-lg p-0.5"
-              style={{ background: 'var(--bg-subtle-2)', border: '1px solid var(--border-medium)' }}
-            >
-              {timeRangeOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setTimeRange(opt.value)}
-                  className={cn(
-                    'rounded-md px-3 py-1.5 text-[11px] font-semibold transition',
-                    timeRange === opt.value ? 'text-amber-400' : 'text-zinc-500 hover:text-zinc-300'
-                  )}
-                  style={
-                    timeRange === opt.value ? { background: 'rgba(245,158,11,0.1)' } : undefined
-                  }
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Pause/Resume */}
-            <button
-              onClick={togglePause}
-              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-colors"
-              style={{
-                background: paused ? 'rgba(34,197,94,0.1)' : 'var(--bg-subtle-2)',
-                color: paused ? '#22c55e' : 'var(--text-secondary)',
-                border: `1px solid ${paused ? 'rgba(34,197,94,0.2)' : 'var(--border-medium)'}`
-              }}
-            >
-              {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-              {paused ? t('resume') : t('pause')}
-            </button>
-          </>
+          <Button icon={paused ? Play : Pause} onClick={togglePause}>
+            {paused ? t('resume') : t('pause')}
+          </Button>
         }
       />
 
-      <SystemInfoHeader
-        info={systemInfo}
-        uptime={snapshot?.uptime ?? 0}
-        loading={systemInfoLoading}
-      />
+      <div className="perf-stack">
+        <SystemInfoHeader
+          info={systemInfo}
+          uptime={snapshot?.uptime ?? 0}
+          loading={systemInfoLoading}
+        />
 
-      <AlertBanner snapshot={snapshot} history={history} />
+        <Section title={t('resourcesTitle')} meta={resourcesMeta} className="perf-resources">
+          <div className="perf-gauges">
+            <GaugeCard
+              label={t('gaugeCpu')}
+              percent={snapshot?.cpu.overall ?? null}
+              detail={
+                snapshot ? t('cpuThreadsDetail', { count: snapshot.cpu.perCore.length }) : undefined
+              }
+            />
+            <GaugeCard
+              label={t('gaugeMemory')}
+              percent={snapshot?.memory.percent ?? null}
+              detail={
+                snapshot
+                  ? t('memoryDetail', {
+                      used: formatBytes(snapshot.memory.usedBytes),
+                      total: formatBytes(snapshot.memory.totalBytes)
+                    })
+                  : undefined
+              }
+            />
+            <GaugeCard
+              label={t('gaugeDiskIo')}
+              value={
+                diskMeasured
+                  ? formatSpeed(snapshot.disk.readBytesPerSec + snapshot.disk.writeBytesPerSec)
+                  : null
+              }
+              detail={
+                diskMeasured
+                  ? t('diskIoDetail', {
+                      read: formatSpeed(snapshot.disk.readBytesPerSec),
+                      write: formatSpeed(snapshot.disk.writeBytesPerSec)
+                    })
+                  : undefined
+              }
+              note={diskUnavailable}
+            />
+            <GaugeCard
+              label={t('gaugeNetwork')}
+              value={
+                snapshot
+                  ? formatSpeed(snapshot.network.rxBytesPerSec + snapshot.network.txBytesPerSec)
+                  : null
+              }
+              detail={
+                snapshot
+                  ? t('networkDetail', {
+                      rx: formatSpeed(snapshot.network.rxBytesPerSec),
+                      tx: formatSpeed(snapshot.network.txBytesPerSec)
+                    })
+                  : undefined
+              }
+            />
+          </div>
+        </Section>
 
-      {/* Gauges */}
-      <div className="pulse-performance-metrics">
-        <GaugeCard
-          label={t('gaugeCpu')}
-          percent={snapshot?.cpu.overall ?? null}
-          detail={
-            snapshot ? t('cpuThreadsDetail', { count: snapshot.cpu.perCore.length }) : NO_VALUE
+        <Section
+          title={t('trendTitle')}
+          className="perf-trend"
+          actions={
+            <Segmented
+              options={timeRangeOptions}
+              value={timeRange}
+              onChange={setTimeRange}
+              label={t('timeRangeLabel')}
+            />
           }
-        />
-        <GaugeCard
-          label={t('gaugeMemory')}
-          percent={snapshot?.memory.percent ?? null}
-          detail={
-            snapshot
-              ? `${formatBytes(snapshot.memory.usedBytes)} / ${formatBytes(snapshot.memory.totalBytes)}`
-              : NO_VALUE
-          }
-        />
-        <GaugeCard
-          label={t('gaugeDiskIo')}
-          percent={null}
-          value={
-            snapshot && snapshot.disk.available !== false
-              ? formatSpeed(snapshot.disk.readBytesPerSec + snapshot.disk.writeBytesPerSec)
-              : NO_VALUE
-          }
-          detail={
-            snapshot && snapshot.disk.available !== false
-              ? t('diskIoDetail', {
-                  read: formatSpeed(snapshot.disk.readBytesPerSec),
-                  write: formatSpeed(snapshot.disk.writeBytesPerSec)
-                })
-              : NO_VALUE
-          }
-        />
-        <GaugeCard
-          label={t('gaugeNetwork')}
-          percent={null}
-          value={
-            snapshot
-              ? formatSpeed(snapshot.network.rxBytesPerSec + snapshot.network.txBytesPerSec)
-              : NO_VALUE
-          }
-          detail={
-            snapshot
-              ? `${formatSpeed(snapshot.network.rxBytesPerSec)} / ${formatSpeed(snapshot.network.txBytesPerSec)}`
-              : NO_VALUE
-          }
-        />
+        >
+          <div className="perf-charts">
+            <TimeSeriesChart
+              history={history}
+              timeRange={timeRange}
+              dataKey="cpu"
+              label={t('chartCpuUsage')}
+            />
+            <TimeSeriesChart
+              history={history}
+              timeRange={timeRange}
+              dataKey="memory"
+              label={t('chartMemoryUsage')}
+            />
+            <TimeSeriesChart
+              history={history}
+              timeRange={timeRange}
+              dataKey="disk"
+              label={t('chartDiskIo')}
+              unavailable={diskUnavailable && t('chartDiskUnavailable')}
+            />
+          </div>
+        </Section>
+
+        <ProcessTable />
+
+        <DiskHealthPanel disks={diskHealth} loading={diskHealthLoading} />
       </div>
-
-      {/* Charts */}
-      <div className="pulse-performance-charts">
-        <TimeSeriesChart
-          history={history}
-          timeRange={timeRange}
-          dataKey="cpu"
-          label={t('chartCpuUsage')}
-          color="var(--accent)"
-        />
-        <TimeSeriesChart
-          history={history}
-          timeRange={timeRange}
-          dataKey="memory"
-          label={t('chartMemoryUsage')}
-          color="var(--success)"
-        />
-        <TimeSeriesChart
-          history={history}
-          timeRange={timeRange}
-          dataKey="disk"
-          label={t('chartDiskIo')}
-          color="var(--info)"
-        />
-      </div>
-
-      {/* Disk Health */}
-      <DiskHealthPanel disks={diskHealth} loading={diskHealthLoading} />
-
-      {/* Process Table */}
-      <ProcessTable />
     </div>
   )
 }
