@@ -1461,25 +1461,6 @@ body {
   }
 }
 
-.pulse-diagnostics-page {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-  gap: 22px;
-  align-items: start;
-}
-.pulse-diagnostics-page > * {
-  grid-column: 1 / -1;
-}
-.pulse-diagnostics-page > .diagnostics-recorder {
-  grid-column: 1;
-}
-.pulse-diagnostics-page > .diagnostics-recorder + .diagnostics-library {
-  grid-column: 2;
-}
-.pulse-diagnostics-page .empty-state {
-  background: transparent !important;
-  border: 0 !important;
-}
 .pulse-recovery-overview {
   display: grid;
   grid-template-columns: 1fr 1fr 1.4fr;
@@ -1534,15 +1515,6 @@ body {
   color: var(--text-dim) !important;
   border-color: var(--border-default) !important;
 }
-@media (max-width: 1150px) {
-  .pulse-diagnostics-page {
-    grid-template-columns: 1fr;
-  }
-  .pulse-diagnostics-page > .diagnostics-recorder,
-  .pulse-diagnostics-page > .diagnostics-recorder + .diagnostics-library {
-    grid-column: 1;
-  }
-}
 @media (max-width: 800px) {
   .pulse-recovery-overview {
     grid-template-columns: 1fr 1fr;
@@ -1567,10 +1539,6 @@ body {
   text-align: center;
   font-size: 13px;
   color: var(--text-muted);
-}
-
-.pulse-diagnostics-page {
-  align-content: start;
 }
 .sidebar-submenu-item > span:first-of-type {
   white-space: normal;
