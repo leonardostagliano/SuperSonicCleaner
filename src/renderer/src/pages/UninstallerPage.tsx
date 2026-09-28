@@ -1,31 +1,27 @@
-import { useState, useCallback, useEffect, useRef, useMemo, Fragment } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Package,
-  Search,
-  Loader2,
-  CheckCircle2,
-  Shield,
-  Trash2,
-  RefreshCw,
-  ArrowUpDown,
-  ChevronDown,
-  AlertTriangle,
-  Clock,
-  CheckSquare,
-  Square,
-  MinusSquare
-} from 'lucide-react'
+import type { TFunction } from 'i18next'
+import { ArrowUpDown, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { AppIcon } from '@/components/shared/AppIcon'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { Receipt } from '@/components/shared/Receipt'
+import { Button, Card, Checkbox, ListRow, Segmented, Tag } from '@/components/ui'
+import {
+  MenuButton,
+  ProgressCard,
+  SearchField,
+  SummaryCard
+} from '@/components/software/SoftwareBlocks'
+import { joinFacts } from '@/components/software/format'
 import { useHistoryStore } from '@/stores/history-store'
 import { useStatsStore } from '@/stores/stats-store'
 import { useUninstallerStore, UNUSED_THRESHOLD_DAYS } from '@/stores/uninstaller-store'
-import { formatBytes } from '@/lib/utils'
+import { icons } from '@/lib/icons'
+import { formatBytes, NO_VALUE } from '@/lib/utils'
 import type { InstalledProgram } from '@shared/types'
 
 function formatDate(raw: string): string {
@@ -44,27 +40,30 @@ function isUnused(prog: InstalledProgram): boolean {
   return Date.now() - prog.lastUsed > UNUSED_THRESHOLD_MS
 }
 
-function formatLastUsed(
-  ts: number,
-  t: (key: string, opts?: Record<string, unknown>) => string
-): string {
+function formatLastUsed(ts: number, t: TFunction): string {
   if (ts <= 0) return t('lastUsedNeverDetected')
   const days = Math.floor((Date.now() - ts) / (24 * 60 * 60 * 1000))
   if (days === 0) return t('lastUsedToday')
   if (days === 1) return t('lastUsedYesterday')
-  if (days < 30) return t('lastUsedDaysAgo', { days })
+  if (days < 30) return t('lastUsedDaysAgo', { count: days })
   const months = Math.floor(days / 30)
-  if (months < 12) return t('lastUsedMonthsAgo', { months })
+  if (months < 12) return t('lastUsedMonthsAgo', { count: months })
   const years = Math.floor(months / 12)
-  return t('lastUsedYearsAgo', { years })
+  return t('lastUsedYearsAgo', { count: years })
 }
 
-const SORT_LABEL_KEYS: Record<string, string> = {
+type SortField = 'displayName' | 'estimatedSize' | 'installDate' | 'publisher'
+type FilterMode = 'all' | 'unused'
+
+const SORT_LABEL_KEYS: Record<SortField, string> = {
   displayName: 'sortByName',
   estimatedSize: 'sortBySize',
   installDate: 'sortByDate',
   publisher: 'sortByPublisher'
 }
+
+/** Rows off screen skip layout: a two-line row is 37.5 px high (content box). */
+const ROW_CLASS = '[content-visibility:auto] [contain-intrinsic-size:auto_38px]'
 
 export function UninstallerPage() {
   const { t } = useTranslation('uninstaller')
@@ -85,8 +84,6 @@ export function UninstallerPage() {
   const [confirmProgram, setConfirmProgram] = useState<InstalledProgram | null>(null)
   const [confirmForceRemove, setConfirmForceRemove] = useState<InstalledProgram | null>(null)
   const [confirmBatch, setConfirmBatch] = useState(false)
-  const [showSortMenu, setShowSortMenu] = useState(false)
-  const sortMenuRef = useRef<HTMLDivElement>(null)
   const uninstallStartRef = useRef<number>(0)
   const lastFailedProgramRef = useRef<InstalledProgram | null>(null)
   const historyStore = useHistoryStore()
@@ -96,18 +93,6 @@ export function UninstallerPage() {
   useEffect(() => {
     if (!hasLoaded && !loading) handleLoad()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Close sort menu on click outside
-  useEffect(() => {
-    if (!showSortMenu) return
-    const handler = (e: globalThis.MouseEvent) => {
-      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node)) {
-        setShowSortMenu(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [showSortMenu])
 
   // ─── Load programs ─────────────────────────────────────────
   const handleLoad = useCallback(async () => {
@@ -377,543 +362,238 @@ export function UninstallerPage() {
     [unusedPrograms]
   )
 
-  const isBusy = loading || uninstalling
+  const selectedCount = selectedIds.size
+  const filteredSelected = filteredPrograms.filter((p) => selectedIds.has(p.id)).length
+  const allFilteredSelected =
+    filteredPrograms.length > 0 && filteredSelected === filteredPrograms.length
+  const failedProgram = lastFailedProgramRef.current
+
+  const progressTitle = progress
+    ? progress.phase === 'uninstalling'
+      ? t('progressUninstalling', { programName: progress.currentProgram })
+      : progress.phase === 'force-removing'
+        ? t('progressForceRemoving', { programName: progress.currentProgram })
+        : progress.phase === 'scanning-leftovers'
+          ? t('progressScanningLeftovers')
+          : progress.phase === 'cleaning-leftovers'
+            ? t('progressCleaningLeftovers')
+            : t('progressLoading')
+    : ''
 
   return (
-    <div className="animate-fade-in">
-      <PageHeader title={t('pageTitle')} description={t('pageDescription')} />
+    <div>
+      <PageHeader
+        title={t('pageTitle')}
+        description={t('pageDescription')}
+        action={
+          <Button icon={RefreshCw} busy={loading} disabled={uninstalling} onClick={handleLoad}>
+            {hasLoaded ? t('refresh') : t('loadPrograms')}
+          </Button>
+        }
+      />
 
-      {/* Actions */}
-      <div className="mb-5 flex items-center gap-2.5">
-        <button
-          onClick={handleLoad}
-          disabled={isBusy}
-          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-zinc-300 transition disabled:opacity-40"
-          style={{
-            background: 'var(--bg-hover)',
-            border: '1px solid var(--border-medium)'
-          }}
-        >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.8} />
-          ) : (
-            <RefreshCw className="h-4 w-4" strokeWidth={1.8} />
-          )}
-          {loading ? t('loading') : hasLoaded ? t('refresh') : t('loadPrograms')}
-        </button>
-
-        {/* Filter tabs — only show when Prefetch data is available */}
-        {hasLoaded && hasPrefetchData && (
-          <div
-            className="flex rounded-xl overflow-hidden"
-            style={{ border: '1px solid var(--border-medium)' }}
-          >
-            <button
-              onClick={() => useUninstallerStore.getState().setFilterMode('all')}
-              className="px-4 py-2.5 text-[12px] font-medium transition-colors"
-              style={{
-                background: filterMode === 'all' ? 'var(--bg-active)' : 'var(--bg-subtle)',
-                color: filterMode === 'all' ? 'var(--text-primary)' : 'var(--text-muted)'
-              }}
-            >
-              {t('filterAll', { count: programs.length })}
-            </button>
-            <button
-              onClick={() => useUninstallerStore.getState().setFilterMode('unused')}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-[12px] font-medium transition-colors"
-              style={{
-                background: filterMode === 'unused' ? 'rgba(245,158,11,0.1)' : 'var(--bg-subtle)',
-                color: filterMode === 'unused' ? 'var(--accent-hover)' : 'var(--text-muted)',
-                borderLeft: '1px solid var(--border-medium)'
-              }}
-            >
-              <AlertTriangle className="h-3 w-3" strokeWidth={2} />
-              {t('filterUnused', { count: unusedPrograms.length })}
-            </button>
-          </div>
+      <div className="sw-page">
+        {error && (
+          <ErrorAlert
+            message={error}
+            onDismiss={() => useUninstallerStore.getState().setError(null)}
+          />
         )}
 
-        {/* Search */}
-        {hasLoaded && (
-          <div
-            className="flex items-center gap-2 rounded-xl px-4 py-2.5"
-            style={{
-              background: 'var(--bg-subtle)',
-              border: '1px solid var(--border-medium)'
-            }}
-          >
-            <Search className="h-4 w-4 text-zinc-500" strokeWidth={1.8} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => useUninstallerStore.getState().setSearchQuery(e.target.value)}
-              placeholder={t('searchPlaceholder')}
-              className="bg-transparent text-[13px] text-zinc-300 placeholder-zinc-600 outline-none w-48"
+        {uninstalling && progress && (
+          <ProgressCard
+            title={progressTitle}
+            meta={`${progress.progress}%`}
+            value={progress.progress / 100}
+            detail={
+              progress.phase === 'scanning-leftovers' || progress.phase === 'cleaning-leftovers'
+                ? progress.currentProgram
+                : undefined
+            }
+          />
+        )}
+
+        {/* What the last uninstall did */}
+        {uninstallResult && uninstallResult.success && (
+          <Receipt
+            title={t('receiptTitle')}
+            value={
+              uninstallResult.leftoversSize > 0
+                ? t('receiptFreed', { size: formatBytes(uninstallResult.leftoversSize) })
+                : undefined
+            }
+            facts={[
+              uninstallResult.programName,
+              uninstallResult.leftoversCleaned > 0
+                ? t('receiptLeftovers', { count: uninstallResult.leftoversCleaned })
+                : uninstallResult.leftoversFound === 0
+                  ? t('receiptNoLeftovers')
+                  : '',
+              t('notReversible')
+            ]}
+            skipped={uninstallResult.error}
+          />
+        )}
+        {uninstallResult && !uninstallResult.success && (
+          <Card className="sw-note">
+            <icons.warning
+              className="sw-note-icon sw-danger-text"
+              size={16}
+              strokeWidth={1.75}
+              aria-hidden="true"
             />
-          </div>
-        )}
-
-        {/* Sort */}
-        {hasLoaded && (
-          <div className="relative" ref={sortMenuRef}>
-            <button
-              onClick={() => setShowSortMenu(!showSortMenu)}
-              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-400 transition"
-              style={{
-                background: 'var(--bg-subtle)',
-                border: '1px solid var(--border-medium)'
-              }}
-            >
-              <ArrowUpDown className="h-3.5 w-3.5" strokeWidth={1.8} />
-              {t(SORT_LABEL_KEYS[sortField])}
-              <ChevronDown className="h-3 w-3" strokeWidth={2} />
-            </button>
-            {showSortMenu && (
-              <div
-                className="absolute top-full left-0 z-50 mt-1 rounded-xl py-1 shadow-xl"
-                style={{
-                  background: '#1e1e22',
-                  border: '1px solid var(--border-strong)',
-                  minWidth: 140
-                }}
-              >
-                {Object.entries(SORT_LABEL_KEYS).map(([field, labelKey]) => (
-                  <button
-                    key={field}
-                    onClick={() => {
-                      const store = useUninstallerStore.getState()
-                      if (sortField === field) {
-                        store.setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-                      } else {
-                        store.setSortField(field as any)
-                        store.setSortDirection(field === 'estimatedSize' ? 'desc' : 'asc')
-                      }
-                      setShowSortMenu(false)
-                    }}
-                    className="flex w-full items-center gap-2 px-4 py-2 text-[12px] text-zinc-300 hover:bg-white/5 transition-colors"
-                  >
-                    {t(labelKey)}
-                    {sortField === field && (
-                      <span className="ml-auto text-amber-400 text-[10px]">
-                        {sortDirection === 'asc' ? t('sortAscending') : t('sortDescending')}
-                      </span>
-                    )}
-                  </button>
-                ))}
+            <div className="sw-note-body" role="alert">
+              <p className="sw-note-title">
+                {t('failedTitle', { programName: uninstallResult.programName })}
+              </p>
+              {uninstallResult.error && <p className="sw-note-text">{uninstallResult.error}</p>}
+            </div>
+            {failedProgram && failedProgram.registryKey && (
+              <div className="sw-note-aside">
+                <Button
+                  onClick={() => setConfirmForceRemove(failedProgram)}
+                  disabled={uninstalling}
+                >
+                  {t('forceRemoveButton')}
+                </Button>
               </div>
             )}
-          </div>
+          </Card>
         )}
 
-        {/* Uninstall Selected */}
-        {hasLoaded && selectedIds.size > 0 && (
-          <button
-            onClick={() => setConfirmBatch(true)}
-            disabled={uninstalling}
-            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-red-400 transition disabled:opacity-30"
-            style={{
-              background: 'rgba(239,68,68,0.06)',
-              border: '1px solid rgba(239,68,68,0.15)'
-            }}
-          >
-            <Trash2 className="h-4 w-4" strokeWidth={1.8} />
-            {t('uninstallSelected', { count: selectedIds.size })}
-          </button>
+        {/* Before the list is loaded: the real state and what the list reads */}
+        {!hasLoaded && !loading && (
+          <EmptyState
+            title={t('emptyStateTitle')}
+            description={t('emptyStateDescription')}
+            checks={[
+              { title: t('checkRegistryTitle'), detail: t('checkRegistryDetail') },
+              { title: t('checkUsageTitle'), detail: t('checkUsageDetail') },
+              { title: t('checkLeftoversTitle'), detail: t('checkLeftoversDetail') }
+            ]}
+          />
+        )}
+
+        {loading && <ProgressCard title={t('loadingInstalledPrograms')} />}
+
+        {hasLoaded && !loading && programs.length === 0 && (
+          <EmptyState title={t('noInstalledProgramsFound')} />
+        )}
+
+        {/* One summary line; unused programs are what the page suggests reviewing */}
+        {hasLoaded && !loading && programs.length > 0 && (
+          <SummaryCard
+            title={t('summaryTitle', { count: programs.length })}
+            detail={
+              hasPrefetchData && unusedPrograms.length > 0
+                ? unusedTotalSize > 0
+                  ? t('summaryUnused', {
+                      count: unusedPrograms.length,
+                      days: UNUSED_THRESHOLD_DAYS,
+                      size: formatBytes(unusedTotalSize)
+                    })
+                  : t('summaryUnusedNoSize', {
+                      count: unusedPrograms.length,
+                      days: UNUSED_THRESHOLD_DAYS
+                    })
+                : undefined
+            }
+            action={
+              <Button
+                variant="primary"
+                icon={icons.uninstall}
+                disabled={selectedCount === 0 || uninstalling}
+                onClick={() => setConfirmBatch(true)}
+              >
+                {selectedCount > 0
+                  ? t('uninstallSelected', { count: selectedCount })
+                  : t('uninstallNone')}
+              </Button>
+            }
+          />
+        )}
+
+        {hasLoaded && !loading && programs.length > 0 && (
+          <Card className="sw-list">
+            <div className="sw-toolbar">
+              <label className="sw-select-all">
+                <Checkbox
+                  checked={allFilteredSelected}
+                  indeterminate={filteredSelected > 0 && !allFilteredSelected}
+                  onChange={(value) => {
+                    const store = useUninstallerStore.getState()
+                    if (value) store.selectAll(filteredPrograms.map((p) => p.id))
+                    else store.clearSelected()
+                  }}
+                  label={t('selectAll')}
+                  disabled={uninstalling || filteredPrograms.length === 0}
+                />
+                <span>{t('selectedCount', { count: selectedCount })}</span>
+              </label>
+              <div className="sw-toolbar-end">
+                <SearchField
+                  value={searchQuery}
+                  onChange={(value) => useUninstallerStore.getState().setSearchQuery(value)}
+                  placeholder={t('searchPlaceholder')}
+                />
+                {/* Filter only when Prefetch data says which programs go unused */}
+                {hasPrefetchData && (
+                  <Segmented<FilterMode>
+                    label={t('filterLabel')}
+                    value={filterMode}
+                    onChange={(mode) => useUninstallerStore.getState().setFilterMode(mode)}
+                    options={[
+                      { value: 'all', label: t('filterAll', { count: programs.length }) },
+                      {
+                        value: 'unused',
+                        label: t('filterUnused', { count: unusedPrograms.length })
+                      }
+                    ]}
+                  />
+                )}
+                <MenuButton<SortField>
+                  icon={ArrowUpDown}
+                  label={t(SORT_LABEL_KEYS[sortField])}
+                  menuLabel={t('sortLabel')}
+                  value={sortField}
+                  checkedHint={sortDirection === 'asc' ? t('sortAscending') : t('sortDescending')}
+                  options={(Object.keys(SORT_LABEL_KEYS) as SortField[]).map((value) => ({
+                    value,
+                    label: t(SORT_LABEL_KEYS[value])
+                  }))}
+                  onSelect={(field) => {
+                    const store = useUninstallerStore.getState()
+                    if (sortField === field) {
+                      store.setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+                    } else {
+                      store.setSortField(field)
+                      store.setSortDirection(field === 'estimatedSize' ? 'desc' : 'asc')
+                    }
+                  }}
+                />
+              </div>
+            </div>
+
+            {filteredPrograms.length === 0 ? (
+              <p className="sw-list-empty">
+                {filterMode === 'unused' ? t('noUnusedProgramsFound') : t('noProgramsMatchSearch')}
+              </p>
+            ) : (
+              filteredPrograms.map((prog) => (
+                <ProgramRow
+                  key={prog.id}
+                  program={prog}
+                  selected={selectedIds.has(prog.id)}
+                  disabled={uninstalling}
+                  onUninstall={() => setConfirmProgram(prog)}
+                />
+              ))
+            )}
+          </Card>
         )}
       </div>
 
-      {/* Unused recommendation banner */}
-      {hasLoaded &&
-        !loading &&
-        hasPrefetchData &&
-        unusedPrograms.length > 0 &&
-        filterMode === 'all' && (
-          <div
-            className="mb-5 flex items-center justify-between rounded-2xl px-5 py-4 cursor-pointer transition-colors hover:border-amber-500/20"
-            style={{
-              background: 'rgba(245,158,11,0.04)',
-              border: '1px solid var(--accent-muted-bg)'
-            }}
-            onClick={() => useUninstallerStore.getState().setFilterMode('unused')}
-          >
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="h-5 w-5 shrink-0 text-amber-500" strokeWidth={1.8} />
-              <div>
-                <p className="text-[13px] font-medium text-zinc-200">
-                  {unusedPrograms.length !== 1
-                    ? t('unusedBannerTitlePlural', {
-                        count: unusedPrograms.length,
-                        days: UNUSED_THRESHOLD_DAYS
-                      })
-                    : t('unusedBannerTitle', {
-                        count: unusedPrograms.length,
-                        days: UNUSED_THRESHOLD_DAYS
-                      })}
-                </p>
-                <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                  {unusedTotalSize > 0
-                    ? t('unusedBannerDescriptionWithSize', { size: formatBytes(unusedTotalSize) })
-                    : t('unusedBannerDescriptionNoSize')}
-                </p>
-              </div>
-            </div>
-            <span
-              className="rounded-full px-3 py-1 text-[11px] font-medium"
-              style={{ background: 'rgba(245,158,11,0.1)', color: 'var(--accent-hover)' }}
-            >
-              {t('unusedBannerViewButton')}
-            </span>
-          </div>
-        )}
-
-      {/* Info banner */}
-      <div
-        className="mb-5 flex items-center gap-3 rounded-2xl px-5 py-4"
-        style={{
-          background: 'rgba(245,158,11,0.04)',
-          border: '1px solid rgba(245,158,11,0.08)'
-        }}
-      >
-        <Shield className="h-5 w-5 shrink-0 text-amber-500" strokeWidth={1.8} />
-        <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-          <span className="font-semibold text-amber-500">{t('safeUninstallLabel')}</span> —{' '}
-          {t('safeUninstallDescription')}
-        </p>
-      </div>
-
-      {/* Errors */}
-      {error && (
-        <ErrorAlert
-          message={error}
-          onDismiss={() => useUninstallerStore.getState().setError(null)}
-          className="mb-5"
-        />
-      )}
-
-      {/* Uninstall progress */}
-      {uninstalling && progress && (
-        <div
-          className="mb-5 rounded-2xl p-4"
-          style={{
-            background: 'rgba(245,158,11,0.04)',
-            border: '1px solid var(--accent-muted-bg)'
-          }}
-        >
-          <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-2.5">
-              <Loader2 className="h-4 w-4 animate-spin text-amber-400" strokeWidth={2} />
-              <span className="text-[13px] font-medium text-zinc-200">
-                {progress.phase === 'uninstalling'
-                  ? t('progressUninstalling', { programName: progress.currentProgram })
-                  : progress.phase === 'force-removing'
-                    ? t('progressForceRemoving', { programName: progress.currentProgram })
-                    : progress.phase === 'scanning-leftovers'
-                      ? t('progressScanningLeftovers')
-                      : progress.phase === 'cleaning-leftovers'
-                        ? t('progressCleaningLeftovers')
-                        : t('progressLoading')}
-              </span>
-            </div>
-            <span className="text-[12px] font-mono" style={{ color: 'var(--text-muted)' }}>
-              {progress.progress}%
-            </span>
-          </div>
-          <div
-            className="h-1.5 w-full rounded-full overflow-hidden"
-            style={{ background: 'var(--bg-hover-2)' }}
-          >
-            <div
-              className="h-full rounded-full transition-[width] duration-300"
-              style={{
-                width: `${progress.progress}%`,
-                background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)'
-              }}
-            />
-          </div>
-          <p className="mt-2 text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
-            {progress.detail}
-          </p>
-        </div>
-      )}
-
-      {/* Uninstall result */}
-      {uninstallResult && (
-        <div
-          className="mb-5 flex items-center gap-3 rounded-2xl p-4"
-          style={{
-            background: uninstallResult.success ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)',
-            border: `1px solid ${uninstallResult.success ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)'}`
-          }}
-        >
-          {uninstallResult.success ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" strokeWidth={1.8} />
-          ) : (
-            <Shield className="h-5 w-5 text-red-500 shrink-0" strokeWidth={1.8} />
-          )}
-          <div className="text-[13px] text-zinc-200">
-            {uninstallResult.success ? (
-              <p>
-                {t('successfullyUninstalled')}{' '}
-                <span className="font-medium">{uninstallResult.programName}</span>
-                {uninstallResult.leftoversCleaned > 0 && (
-                  <span className="text-green-400">
-                    {' '}
-                    —{' '}
-                    {uninstallResult.leftoversCleaned !== 1
-                      ? t('leftoversCleanedPlural', {
-                          count: uninstallResult.leftoversCleaned,
-                          size: formatBytes(uninstallResult.leftoversSize)
-                        })
-                      : t('leftoversCleaned', {
-                          count: uninstallResult.leftoversCleaned,
-                          size: formatBytes(uninstallResult.leftoversSize)
-                        })}
-                  </span>
-                )}
-                {uninstallResult.leftoversFound === 0 && (
-                  <span style={{ color: 'var(--text-muted)' }}> — {t('noLeftoverFilesFound')}</span>
-                )}
-              </p>
-            ) : (
-              <p>
-                {t('failedToUninstall')}{' '}
-                <span className="font-medium">{uninstallResult.programName}</span>
-                {uninstallResult.error && (
-                  <span style={{ color: 'var(--text-muted)' }}> — {uninstallResult.error}</span>
-                )}
-              </p>
-            )}
-          </div>
-          {!uninstallResult.success &&
-            lastFailedProgramRef.current &&
-            lastFailedProgramRef.current.registryKey && (
-              <button
-                onClick={() => setConfirmForceRemove(lastFailedProgramRef.current)}
-                disabled={uninstalling}
-                className="ml-auto shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-amber-400 transition hover:bg-amber-500/10 disabled:opacity-30"
-                style={{ border: '1px solid rgba(245,158,11,0.15)' }}
-              >
-                <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />
-                {t('forceRemoveButton')}
-              </button>
-            )}
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!hasLoaded && !loading && (
-        <EmptyState
-          icon={Package}
-          title={t('emptyStateTitle')}
-          description={t('emptyStateDescription')}
-          action={
-            <button
-              onClick={handleLoad}
-              disabled={isBusy}
-              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <Search className="h-4 w-4" strokeWidth={1.8} />
-              {t('loadPrograms')}
-            </button>
-          }
-        />
-      )}
-
-      {/* Loading state */}
-      {loading && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <Loader2 className="h-10 w-10 animate-spin text-amber-400 mb-4" strokeWidth={1.5} />
-          <p className="text-[13px] text-zinc-400">{t('loadingInstalledPrograms')}</p>
-        </div>
-      )}
-
-      {/* Program list */}
-      {hasLoaded && !loading && filteredPrograms.length === 0 && programs.length > 0 && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <Search className="h-10 w-10 text-zinc-600 mb-4" strokeWidth={1.5} />
-          <p className="text-[13px] text-zinc-400">
-            {filterMode === 'unused' ? t('noUnusedProgramsFound') : t('noProgramsMatchSearch')}
-          </p>
-        </div>
-      )}
-
-      {hasLoaded && !loading && programs.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <CheckCircle2 className="h-10 w-10 text-green-500 mb-4" strokeWidth={1.5} />
-          <p className="text-[13px] text-zinc-400">{t('noInstalledProgramsFound')}</p>
-        </div>
-      )}
-
-      {hasLoaded && !loading && filteredPrograms.length > 0 && (
-        <div className="mb-6">
-          <div className="mb-3 flex items-center gap-2.5">
-            <button
-              onClick={() => {
-                const store = useUninstallerStore.getState()
-                const allFilteredIds = filteredPrograms.map((p) => p.id)
-                const allSelected = allFilteredIds.every((id) => selectedIds.has(id))
-                if (allSelected) {
-                  store.clearSelected()
-                } else {
-                  store.selectAll(allFilteredIds)
-                }
-              }}
-              disabled={uninstalling}
-              className="text-zinc-400 hover:text-zinc-200 transition-colors disabled:opacity-30"
-              title={
-                filteredPrograms.every((p) => selectedIds.has(p.id))
-                  ? t('deselectAll')
-                  : t('selectAll')
-              }
-            >
-              {filteredPrograms.length > 0 &&
-              filteredPrograms.every((p) => selectedIds.has(p.id)) ? (
-                <CheckSquare className="h-4.5 w-4.5 text-amber-400" strokeWidth={1.8} />
-              ) : filteredPrograms.some((p) => selectedIds.has(p.id)) ? (
-                <MinusSquare className="h-4.5 w-4.5 text-amber-400" strokeWidth={1.8} />
-              ) : (
-                <Square className="h-4.5 w-4.5" strokeWidth={1.8} />
-              )}
-            </button>
-            {filterMode === 'unused' ? (
-              <AlertTriangle className="h-4.5 w-4.5 text-amber-400" strokeWidth={1.8} />
-            ) : (
-              <Package className="h-4.5 w-4.5 text-amber-400" strokeWidth={1.8} />
-            )}
-            <span className="text-[13px] font-semibold text-zinc-200">
-              {filterMode === 'unused' ? t('unusedProgramsHeading') : t('installedProgramsHeading')}{' '}
-              {searchQuery
-                ? t('programCount', {
-                    filtered: filteredPrograms.length,
-                    total: filterMode === 'unused' ? unusedPrograms.length : programs.length
-                  })
-                : `(${filteredPrograms.length})`}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 gap-2">
-            {filteredPrograms.map((prog) => {
-              const unused = isUnused(prog)
-              const isSelected = selectedIds.has(prog.id)
-              return (
-                <Fragment key={prog.id}>
-                  <div
-                    className="list-row-cv flex items-center gap-4 rounded-2xl px-5 py-4 transition-colors"
-                    style={{
-                      background: isSelected
-                        ? 'var(--accent-muted-bg)'
-                        : unused
-                          ? 'rgba(245,158,11,0.03)'
-                          : 'var(--bg-subtle)',
-                      border: `1px solid ${isSelected ? 'var(--accent-muted-border)' : unused ? 'var(--accent-muted-bg)' : 'var(--border-subtle)'}`
-                    }}
-                  >
-                    <button
-                      type="button"
-                      role="checkbox"
-                      aria-label={prog.displayName}
-                      aria-checked={isSelected}
-                      onClick={() => useUninstallerStore.getState().toggleSelected(prog.id)}
-                      disabled={uninstalling}
-                      className="shrink-0 text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-30"
-                    >
-                      {isSelected ? (
-                        <CheckSquare className="h-5 w-5 text-amber-400" strokeWidth={1.8} />
-                      ) : (
-                        <Square className="h-5 w-5" strokeWidth={1.8} />
-                      )}
-                    </button>
-                    <AppIcon
-                      iconDataUrl={prog.iconDataUrl}
-                      fallback={
-                        unused ? (
-                          <AlertTriangle
-                            className="h-5 w-5"
-                            style={{ color: 'var(--warning-text)' }}
-                            strokeWidth={1.8}
-                          />
-                        ) : undefined
-                      }
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-[13px] font-medium text-zinc-200 truncate">
-                          {prog.displayName}
-                        </span>
-                        {prog.displayVersion && (
-                          <span
-                            className="rounded-md px-2 py-0.5 text-[10px] font-medium shrink-0"
-                            style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
-                          >
-                            v{prog.displayVersion}
-                          </span>
-                        )}
-                        {unused && (
-                          <span
-                            className="rounded-md px-2 py-0.5 text-[10px] font-medium shrink-0"
-                            style={{
-                              background: 'rgba(245,158,11,0.1)',
-                              color: 'var(--accent-hover)'
-                            }}
-                          >
-                            {t('unusedBadge')}
-                          </span>
-                        )}
-                      </div>
-                      <div className="mt-0.5 flex items-center gap-3">
-                        <p className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
-                          {prog.publisher || t('unknownPublisher')}
-                          {prog.installDate ? ` — ${formatDate(prog.installDate)}` : ''}
-                        </p>
-                        {prog.lastUsed > 0 && (
-                          <span
-                            className="flex items-center gap-1 text-[10px] shrink-0"
-                            style={{ color: unused ? 'var(--accent)' : 'var(--text-muted)' }}
-                          >
-                            <Clock className="h-3 w-3" strokeWidth={1.8} />
-                            {formatLastUsed(prog.lastUsed, t)}
-                          </span>
-                        )}
-                        {prog.lastUsed === 0 && filterMode === 'unused' && (
-                          <span
-                            className="flex items-center gap-1 text-[10px] shrink-0"
-                            style={{ color: 'var(--accent)' }}
-                          >
-                            <Clock className="h-3 w-3" strokeWidth={1.8} />
-                            {t('lastUsedNeverDetected')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="shrink-0 flex items-center gap-4">
-                      <div className="text-right">
-                        <span className="text-[12px] font-medium text-zinc-400">
-                          {formatBytes(prog.estimatedSize)}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => setConfirmProgram(prog)}
-                        disabled={uninstalling}
-                        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-medium text-red-400 transition hover:bg-red-500/10 disabled:opacity-30"
-                        style={{ border: '1px solid rgba(239,68,68,0.15)' }}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />
-                        {t('uninstallButton')}
-                      </button>
-                    </div>
-                  </div>
-                </Fragment>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Confirm dialog — single */}
+      {/* Uninstalling is irreversible: every confirmation is red and repeats the action */}
       <ConfirmDialog
         open={!!confirmProgram}
         onConfirm={handleUninstall}
@@ -924,26 +604,20 @@ export function UninstallerPage() {
         variant="danger"
       />
 
-      {/* Confirm dialog — batch */}
       <ConfirmDialog
         open={confirmBatch}
         onConfirm={handleBatchUninstall}
         onCancel={() => setConfirmBatch(false)}
-        title={
-          selectedIds.size !== 1
-            ? t('confirmBatchTitlePlural', { count: selectedIds.size })
-            : t('confirmBatchTitle', { count: selectedIds.size })
-        }
+        title={t('confirmBatchTitle', { count: selectedCount })}
         description={t('confirmBatchDescription')}
         details={programs
           .filter((p) => selectedIds.has(p.id))
           .map((p) => p.displayName)
           .join(', ')}
-        confirmLabel={t('confirmBatchLabel', { count: selectedIds.size })}
+        confirmLabel={t('confirmBatchLabel', { count: selectedCount })}
         variant="danger"
       />
 
-      {/* Confirm dialog — force remove */}
       <ConfirmDialog
         open={!!confirmForceRemove}
         onConfirm={handleForceRemove}
@@ -951,8 +625,69 @@ export function UninstallerPage() {
         title={t('confirmForceRemoveTitle', { programName: confirmForceRemove?.displayName ?? '' })}
         description={t('confirmForceRemoveDescription')}
         confirmLabel={t('confirmForceRemoveLabel')}
-        variant="warning"
+        variant="danger"
       />
     </div>
+  )
+}
+
+function ProgramRow({
+  program,
+  selected,
+  disabled,
+  onUninstall
+}: {
+  program: InstalledProgram
+  selected: boolean
+  disabled: boolean
+  onUninstall: () => void
+}) {
+  const { t } = useTranslation('uninstaller')
+  const unused = isUnused(program)
+  const lastUsed =
+    program.lastUsed > 0 || (program.lastUsed === 0 && unused)
+      ? t('lastUsed', { when: formatLastUsed(program.lastUsed, t) })
+      : ''
+  return (
+    <ListRow className={ROW_CLASS} recommended={unused}>
+      <Checkbox
+        checked={selected}
+        onChange={() => useUninstallerStore.getState().toggleSelected(program.id)}
+        label={program.displayName}
+        disabled={disabled}
+      />
+      <AppIcon iconDataUrl={program.iconDataUrl} small />
+      <div className="min-w-0 flex-1">
+        <div className="sw-row-title">
+          <span className="sw-row-name" title={program.displayName}>
+            {program.displayName}
+          </span>
+          {program.displayVersion && (
+            <span className="sw-row-meta sw-muted shrink-0">v{program.displayVersion}</span>
+          )}
+          {unused && <Tag tone="recommended">{t('unusedBadge')}</Tag>}
+        </div>
+        <p className="sw-row-sub">
+          {joinFacts([
+            program.publisher || t('unknownPublisher'),
+            formatDate(program.installDate),
+            lastUsed
+          ])}
+        </p>
+      </div>
+      {/* A size of 0 means the program did not declare one */}
+      <span className="sw-row-meta shrink-0">
+        {program.estimatedSize > 0 ? formatBytes(program.estimatedSize) : NO_VALUE}
+      </span>
+      <Button
+        variant="ghost"
+        icon={icons.uninstall}
+        onClick={onUninstall}
+        disabled={disabled}
+        aria-label={`${t('uninstallButton')} ${program.displayName}`}
+      >
+        {t('uninstallButton')}
+      </Button>
+    </ListRow>
   )
 }
