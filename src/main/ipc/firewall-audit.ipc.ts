@@ -295,12 +295,8 @@ export async function scanFirewallRules(
     return { rules: [], totalCount: 0, staleCount: 0, unsignedCount: 0, broadScopeCount: 0 }
   }
 
-  onProgress?.({
-    phase: 'enumerating',
-    current: 0,
-    total: 0,
-    currentRule: 'Enumerating firewall rules...'
-  })
+  // The renderer names the phase; currentRule only ever carries a rule's own name.
+  onProgress?.({ phase: 'enumerating', current: 0, total: 0, currentRule: '' })
 
   // Pull all enabled inbound Allow rules and stream a single line per rule.
   // Skip Authenticode checks for system-owned paths (Windows / Program Files)

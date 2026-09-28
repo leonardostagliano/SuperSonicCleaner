@@ -100,6 +100,8 @@ describe('scanFirewallRules', () => {
       parsedAt.push(p.current)
     })
 
+    // No English status text: the enumerating event names no rule.
+    expect(seen[0]).toMatchObject({ phase: 'enumerating', currentRule: '' })
     const classifying = seen.filter((p) => p.phase === 'classifying')
     expect(classifying).toHaveLength(2)
     expect(classifying[0]).toMatchObject({ current: 1, total: 2, currentRule: 'My App (In)' })
