@@ -18,7 +18,10 @@ import { useStartupStore } from '@/stores/startup-store'
 import { useMalwareStore } from '@/stores/malware-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { lastCheckRun } from '@/stores/check-runs-store'
+import { driversResult, malwareResult, type ResultTone } from './check-results'
 import { formatCount, formatWhen } from './when'
+
+export type { ResultTone } from './check-results'
 
 // The updater store says whether this session checked, not when: note the moment it
 // first reports a completed check. This module loads with Home, before the deferred
@@ -38,8 +41,6 @@ export function useNow(intervalMs = 60_000): number {
   }, [intervalMs])
   return now
 }
-
-export type ResultTone = 'neutral' | 'recommended' | 'ok' | 'danger'
 
 export interface HomeCheck {
   id: CheckId
@@ -159,25 +160,14 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
           ].join(' · ')
         )
       }
-      case 'malware': {
-        if (openThreats > 0)
-          return {
-            result: t('checks.results.malwareThreats', { count: openThreats }),
-            resultTone: 'danger'
-          }
-        const entry = latestEntry(history, 'malware')
-        const recorded = entry ? new Date(entry.timestamp).getTime() : null
-        if (lastScan && (recorded === null || sessionScan! >= recorded))
-          return { result: t('checks.results.malwareClear'), resultTone: 'ok' }
-        if (entry)
-          return neutral(
-            t('checks.results.malwareHandled', {
-              handled: entry.totalItemsCleaned,
-              count: entry.totalItemsFound
-            })
-          )
-        return neutral(t('checks.results.malwareNever'))
-      }
+      case 'malware':
+        return malwareResult(t, {
+          openThreats,
+          entry: latestEntry(history, 'malware'),
+          lastScan,
+          sessionScan,
+          hasRecordedRun: lastCheckRun('malware') !== null
+        })
       case 'cleanup': {
         const entry = latestEntry(history, 'cleaner')
         if (!entry) return neutral(t('checks.results.cleanupNever'))
@@ -198,15 +188,11 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
             : t('checks.results.noFixRecorded')
         )
       }
-      case 'drivers': {
-        const entry = latestEntry(history, 'drivers')
-        if (!entry) return neutral(t('checks.results.driversNever'))
-        return neutral(
-          entry.totalItemsCleaned > 0
-            ? t('checks.results.driversRemoved', { count: entry.totalItemsCleaned })
-            : t('checks.results.driversFound', { count: entry.totalItemsFound })
-        )
-      }
+      case 'drivers':
+        return driversResult(t, {
+          entry: latestEntry(history, 'drivers'),
+          hasRecordedRun: lastCheckRun('drivers') !== null
+        })
       case 'privacy': {
         const entry = latestEntry(history, 'privacy')
         return neutral(

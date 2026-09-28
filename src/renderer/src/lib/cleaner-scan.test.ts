@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CleanerType, ScanStatus } from '@shared/enums'
 import type { ProgressData, ScanResult } from '@shared/types'
 import { useScanStore } from '@/stores/scan-store'
+import { lastCheckRun, useCheckRunsStore } from '@/stores/check-runs-store'
 import { cancelCleanerScan, startCleanerScan } from './cleaner-scan'
 
 function deferred<T>() {
@@ -47,6 +48,7 @@ describe('cleaner scan lifecycle', () => {
 
   beforeEach(() => {
     useScanStore.getState().reset()
+    useCheckRunsStore.setState({ runs: {} })
     listeners = new Set()
     unsubscribe = vi.fn()
     systemScan = vi.fn().mockResolvedValue(result(CleanerType.System, 'system'))
@@ -175,5 +177,38 @@ describe('cleaner scan lifecycle', () => {
     expect(browserScan).not.toHaveBeenCalled()
     expect(useScanStore.getState().scannedAt).toEqual(expect.any(Number))
     expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
+  })
+
+  it('records a completed cleanup check when the analysis finds a real result', async () => {
+    await startCleanerScan(categories)
+    expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
+    expect(lastCheckRun('cleanup')).toEqual(expect.any(Number))
+  })
+
+  // X1 fix 2: "Complete" with nothing but failures is not a completed check.
+  it('does not record a cleanup check when every category fails', async () => {
+    systemScan.mockRejectedValue(new Error('boom'))
+    browserScan.mockRejectedValue(new Error('boom'))
+    await startCleanerScan(categories)
+    expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
+    expect(useScanStore.getState().failedCategories).toEqual(['System', 'Browser'])
+    expect(lastCheckRun('cleanup')).toBeNull()
+  })
+
+  it('records a cleanup check when at least one category succeeds despite another failing', async () => {
+    systemScan.mockRejectedValue(new Error('boom'))
+    await startCleanerScan(categories)
+    expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
+    expect(useScanStore.getState().failedCategories).toEqual(['System'])
+    expect(lastCheckRun('cleanup')).toEqual(expect.any(Number))
+  })
+
+  it('does not record a cleanup check for a scan cancelled before anything completed', async () => {
+    const running = startCleanerScan(categories)
+    cancelCleanerScan()
+    await running
+    expect(useScanStore.getState().status).toBe(ScanStatus.Idle)
+    expect(systemScan).not.toHaveBeenCalled()
+    expect(lastCheckRun('cleanup')).toBeNull()
   })
 })

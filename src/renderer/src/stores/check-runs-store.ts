@@ -7,18 +7,22 @@ import type { CheckId } from '@/lib/checks'
 const STORAGE_KEY = 'kudu:check-runs'
 const STORAGE_VERSION = 1
 
-const CHECK_IDS: readonly CheckId[] = [
-  'updates',
-  'startup',
-  'malware',
-  'cleanup',
-  'registry',
-  'drivers',
-  'privacy'
-]
+// A `Record<CheckId, true>` object literal, not a plain array: TypeScript's excess- and
+// missing-property checks on it mean this fails to compile if `CheckId` in lib/checks.ts
+// ever gains or loses a member without this file being updated to match, so a new check
+// id cannot silently be dropped by `isCheckId`.
+const ALL_CHECK_IDS: Record<CheckId, true> = {
+  updates: true,
+  startup: true,
+  malware: true,
+  cleanup: true,
+  registry: true,
+  drivers: true,
+  privacy: true
+}
 
 function isCheckId(id: string): id is CheckId {
-  return (CHECK_IDS as readonly string[]).includes(id)
+  return Object.hasOwn(ALL_CHECK_IDS, id)
 }
 
 export type CheckRuns = Partial<Record<CheckId, number>>
