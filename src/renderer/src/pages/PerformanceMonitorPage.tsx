@@ -27,6 +27,7 @@ export function PerformanceMonitorPage() {
   const paused = usePerfStore((s) => s.monitoringPaused)
 
   const [diskHealthLoading, setDiskHealthLoading] = useState(true)
+  const [systemInfoLoading, setSystemInfoLoading] = useState(true)
 
   // Live data first; disk health (SMART, several seconds) loads beside it
   useEffect(() => {
@@ -35,6 +36,7 @@ export function PerformanceMonitorPage() {
       .perfGetSystemInfo()
       .then(setSystemInfo)
       .catch(() => {})
+      .finally(() => setSystemInfoLoading(false))
     window.kudu
       .perfGetDiskHealth()
       .then(setDiskHealth)
@@ -97,7 +99,11 @@ export function PerformanceMonitorPage() {
         }
       />
 
-      <SystemInfoHeader info={systemInfo} uptime={snapshot?.uptime ?? 0} />
+      <SystemInfoHeader
+        info={systemInfo}
+        uptime={snapshot?.uptime ?? 0}
+        loading={systemInfoLoading}
+      />
 
       <AlertBanner snapshot={snapshot} history={history} />
 
