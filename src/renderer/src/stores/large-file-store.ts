@@ -19,6 +19,9 @@ interface LargeFileState {
   selectedPaths: Set<string>
   deleteMode: LargeFileDeleteMode
   deleteResult: LargeFileDeleteResult | null
+  /** When the last deletion finished and where the files went, for its receipt. */
+  deletedAt: number | null
+  deletedMode: LargeFileDeleteMode | null
 
   setDirectory: (dir: string | null) => void
   setMinFileSize: (size: number) => void
@@ -28,7 +31,8 @@ interface LargeFileState {
   setProgress: (progress: LargeFileScanProgress | null) => void
   setResult: (result: LargeFileScanResult | null) => void
   setDeleteMode: (mode: LargeFileDeleteMode) => void
-  setDeleteResult: (result: LargeFileDeleteResult | null) => void
+  /** Records the result with the mode it ran with (default: the current mode) and the time. */
+  setDeleteResult: (result: LargeFileDeleteResult | null, mode?: LargeFileDeleteMode) => void
   togglePath: (path: string) => void
   selectAll: () => void
   deselectAll: () => void
@@ -49,6 +53,8 @@ export const useLargeFileStore = create<LargeFileState>((set, get) => ({
   selectedPaths: new Set(),
   deleteMode: 'recycle',
   deleteResult: null,
+  deletedAt: null,
+  deletedMode: null,
 
   setDirectory: (directory) => set({ directory }),
   setMinFileSize: (minFileSize) => set({ minFileSize }),
@@ -58,7 +64,12 @@ export const useLargeFileStore = create<LargeFileState>((set, get) => ({
   setProgress: (progress) => set({ progress }),
   setResult: (result) => set({ result }),
   setDeleteMode: (deleteMode) => set({ deleteMode }),
-  setDeleteResult: (deleteResult) => set({ deleteResult }),
+  setDeleteResult: (deleteResult, mode) =>
+    set((s) => ({
+      deleteResult,
+      deletedAt: deleteResult ? Date.now() : null,
+      deletedMode: deleteResult ? (mode ?? s.deleteMode) : null
+    })),
   togglePath: (path) =>
     set((s) => {
       const next = new Set(s.selectedPaths)
@@ -93,6 +104,8 @@ export const useLargeFileStore = create<LargeFileState>((set, get) => ({
       progress: null,
       result: null,
       selectedPaths: new Set(),
-      deleteResult: null
+      deleteResult: null,
+      deletedAt: null,
+      deletedMode: null
     })
 }))
