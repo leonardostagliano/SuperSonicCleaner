@@ -1,55 +1,25 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Server,
-  Search,
-  Shield,
-  CheckCircle2,
-  Loader2,
-  AlertTriangle,
-  RefreshCw,
-  Sparkles,
-  ChevronDown,
-  ChevronRight,
-  Circle,
-  Link2,
-  Play
-} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ChevronDown, ChevronRight, Link2, Play, RefreshCw, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
+import '@/components/services/service-manager.css'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { Receipt } from '@/components/shared/Receipt'
+import { formatDateTime } from '@/components/perf/perf-summary'
+import { Button } from '@/components/ui/Button'
+import { Card, Section } from '@/components/ui/Card'
+import { Checkbox } from '@/components/ui/Checkbox'
+import { ProgressBar } from '@/components/ui/ProgressBar'
+import { Tag } from '@/components/ui/Tag'
+import { icons } from '@/lib/icons'
+import { progressText } from '@/lib/progress-label'
 import { useServiceStore } from '@/stores/service-store'
 import { useHistoryStore } from '@/stores/history-store'
-import type { WindowsService, ServiceCategory } from '@shared/types'
-
-const SAFETY_COLORS = {
-  safe: {
-    dot: 'var(--success)',
-    bg: 'color-mix(in srgb, var(--success), transparent 91%)',
-    border: 'color-mix(in srgb, var(--success), transparent 74%)'
-  },
-  caution: {
-    dot: 'var(--warning)',
-    bg: 'color-mix(in srgb, var(--warning), transparent 91%)',
-    border: 'color-mix(in srgb, var(--warning), transparent 74%)'
-  },
-  unsafe: {
-    dot: 'var(--danger)',
-    bg: 'color-mix(in srgb, var(--danger), transparent 91%)',
-    border: 'color-mix(in srgb, var(--danger), transparent 74%)'
-  }
-} as const
-
-const STATUS_COLORS: Record<string, string> = {
-  Running: 'var(--success)',
-  Stopped: 'var(--text-secondary)',
-  StartPending: 'var(--warning)',
-  StopPending: 'var(--warning)',
-  Paused: 'var(--warning)',
-  Unknown: 'var(--text-muted)'
-}
+import type { ServiceApplyResult, WindowsService, ServiceCategory } from '@shared/types'
 
 const START_TYPE_KEY_MAP: Record<string, string> = {
   Automatic: 'serviceManager.startTypeAutomatic',
@@ -74,6 +44,11 @@ function isTarget(svc: WindowsService, mode: ApplyMode): boolean {
   return mode === 'enable' ? svc.startType === 'Disabled' : svc.startType !== 'Disabled'
 }
 
+/** What "Seleziona i consigliati" picks (service-store selectRecommended): marked amber. */
+function isRecommended(svc: WindowsService): boolean {
+  return svc.safety === 'safe' && svc.startType !== 'Disabled'
+}
+
 const CATEGORY_LABEL_KEYS: Record<ServiceCategory | 'all', string> = {
   all: 'serviceManager.filterAllCategories',
   telemetry: 'serviceManager.categoryTelemetry',
@@ -92,8 +67,11 @@ const CATEGORY_LABEL_KEYS: Record<ServiceCategory | 'all', string> = {
   unknown: 'serviceManager.categoryOther'
 }
 
+const RecommendedIcon = icons.applyRecommended
+
 export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
-  const { t } = useTranslation('hardening')
+  const { t, i18n } = useTranslation('hardening')
+  const locale = i18n.language
   const services = useServiceStore((s) => s.services)
   const scanning = useServiceStore((s) => s.scanning)
   const applying = useServiceStore((s) => s.applying)
@@ -106,9 +84,11 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
   const categoryFilter = useServiceStore((s) => s.categoryFilter)
   const statusFilter = useServiceStore((s) => s.statusFilter)
   const enableStartType = useServiceStore((s) => s.enableStartType)
+  const lastChange = useHistoryStore((s) => s.entries.find((entry) => entry.type === 'services'))
 
   const [confirmMode, setConfirmMode] = useState<ApplyMode | null>(null)
   const [appliedMode, setAppliedMode] = useState<ApplyMode>('disable')
+  const [appliedAt, setAppliedAt] = useState<string | null>(null)
   const isBusy = scanning || applying
 
   // ─── Scan ──────────────────────────────────────────────────
@@ -136,9 +116,11 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
     }
   }, [t])
 
-  // Auto-scan on first visit
+  // Auto-scan on first visit; the last change (for the empty state) comes from the history
   useEffect(() => {
     if (!hasScanned && !scanning) handleScan()
+    const history = useHistoryStore.getState()
+    if (!history.loaded) void history.load()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Apply ─────────────────────────────────────────────────
@@ -163,6 +145,7 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
 
       try {
         const result = await window.kudu.serviceApply(changes)
+        setAppliedAt(new Date().toISOString())
         useServiceStore.getState().setApplyResult(result)
         if (result.succeeded > 0) {
           const key =
@@ -264,13 +247,14 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
 
   // A selected service is either on its way to Disabled or on its way back —
   // which one depends only on where it is now.
-  const disableCount = services.filter((s) => s.selected && isTarget(s, 'disable')).length
-  const enableCount = services.filter((s) => s.selected && isTarget(s, 'enable')).length
-  const totalSafeToDisable = services.filter(
-    (s) => s.safety === 'safe' && s.startType !== 'Disabled'
-  ).length
+  const disableTargets = services.filter((s) => s.selected && isTarget(s, 'disable'))
+  const enableTargets = services.filter((s) => s.selected && isTarget(s, 'enable'))
+  const disableCount = disableTargets.length
+  const enableCount = enableTargets.length
+  const totalSafeToDisable = services.filter(isRecommended).length
   const runningCount = services.filter((s) => s.status === 'Running').length
   const disabledCount = services.filter((s) => s.startType === 'Disabled').length
+  const selectedCount = disableCount + enableCount
 
   // ─── Categories present in scan results ────────────────────
   const presentCategories = useMemo(() => {
@@ -305,367 +289,253 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
     return groups.filter((g) => g.services.length > 0)
   }, [filteredServices, t])
 
+  const confirmTargets = confirmMode === 'enable' ? enableTargets : disableTargets
+
   return (
-    <div className={`service-manager-page ${embedded ? '' : 'px-8 py-8'}`}>
+    <div className="feature-page service-manager-page">
       {!embedded && (
         <PageHeader
           title={t('serviceManager.pageTitle')}
           description={t('serviceManager.pageDescription')}
-        />
-      )}
-
-      {/* ── Action bar ───────────────────────────────────────── */}
-      <div className="service-manager-actions mb-5 flex flex-wrap items-center gap-3">
-        <button
-          onClick={handleScan}
-          disabled={isBusy}
-          className="pulse-primary-action pulse-scan-action service-primary-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition"
-          style={{
-            background: 'var(--accent)',
-            color: 'var(--text-on-accent)'
-          }}
-        >
-          {scanning ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <RefreshCw className="h-4 w-4" strokeWidth={2} />
-          )}
-          {scanning ? t('serviceManager.scanningButton') : t('serviceManager.scanServicesButton')}
-        </button>
-
-        {hasScanned && (
-          <>
-            <button
-              onClick={handleSelectRecommended}
-              disabled={isBusy || totalSafeToDisable === 0}
-              className="service-recommended-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition"
-              style={{
-                background: 'color-mix(in srgb, var(--success), transparent 88%)',
-                color: 'var(--success)',
-                border: '1px solid color-mix(in srgb, var(--success), transparent 68%)'
-              }}
-            >
-              <Sparkles className="h-4 w-4" strokeWidth={2} />
-              {t('serviceManager.applyRecommendedButton', { count: totalSafeToDisable })}
-            </button>
-
-            <button
-              onClick={() => setConfirmMode('disable')}
-              disabled={isBusy || disableCount === 0}
-              className="service-danger-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition"
-              style={{
-                background: 'var(--danger)'
-              }}
-            >
-              {applying && appliedMode === 'disable' ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Shield className="h-4 w-4" strokeWidth={2} />
-              )}
-              {applying && appliedMode === 'disable'
-                ? t('serviceManager.applyingButton')
-                : t('serviceManager.disableSelectedButton', { count: disableCount })}
-            </button>
-
-            {enableCount > 0 && (
-              <>
-                <button
-                  onClick={() => setConfirmMode('enable')}
-                  disabled={isBusy}
-                  className="service-info-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition"
-                  style={{ background: 'var(--info)' }}
-                >
-                  {applying && appliedMode === 'enable' ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Play className="h-4 w-4" strokeWidth={2} />
-                  )}
-                  {applying && appliedMode === 'enable'
-                    ? t('serviceManager.applyingButton')
-                    : t('serviceManager.enableSelectedButton', { count: enableCount })}
-                </button>
-
-                <div title={t('serviceManager.enableStartTypeTitle')}>
-                  <FilterDropdown
-                    value={enableStartType}
-                    ariaLabel={t('serviceManager.enableStartTypeTitle')}
-                    options={[
-                      { value: 'Manual', label: t('serviceManager.startTypeManual') },
-                      { value: 'Automatic', label: t('serviceManager.startTypeAutomatic') }
-                    ]}
-                    onChange={(v) =>
-                      useServiceStore.getState().setEnableStartType(v as 'Manual' | 'Automatic')
-                    }
-                  />
-                </div>
-              </>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* ── Info banner ──────────────────────────────────────── */}
-      {hasScanned && !applyResult && (
-        <div
-          className="service-manager-guide mb-5 flex items-start gap-3 rounded-2xl px-5 py-4"
-          style={{
-            background: 'var(--card-bg)',
-            border: '1px solid var(--border-default)'
-          }}
-        >
-          <Shield
-            className="mt-0.5 h-5 w-5 shrink-0"
-            style={{ color: 'var(--warning)' }}
-            strokeWidth={2}
-          />
-          <div className="text-[13px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            <span className="font-semibold" style={{ color: 'var(--success)' }}>
-              {t('serviceManager.infoBannerGreen')}
-            </span>{' '}
-            {t('serviceManager.infoBannerSafeToDisable')}{' '}
-            <span className="font-semibold" style={{ color: 'var(--warning)' }}>
-              {t('serviceManager.infoBannerAmber')}
-            </span>{' '}
-            {t('serviceManager.infoBannerMayAffect')}{' '}
-            <span className="font-semibold" style={{ color: 'var(--danger)' }}>
-              {t('serviceManager.infoBannerRed')}
-            </span>{' '}
-            {t('serviceManager.infoBannerSystemCritical')}{' '}
-            {t('serviceManager.infoBannerUseRecommended')} {t('serviceManager.infoBannerReEnable')}
-          </div>
-        </div>
-      )}
-
-      {/* ── Error ────────────────────────────────────────────── */}
-      {error && (
-        <ErrorAlert
-          message={error}
-          onDismiss={() => useServiceStore.getState().setError(null)}
-          className="mb-5"
-        />
-      )}
-
-      {/* ── Scan progress ────────────────────────────────────── */}
-      {scanning && scanProgress && (
-        <div
-          className="mb-5 rounded-xl p-4"
-          style={{ background: 'var(--card-bg)', border: '1px solid var(--border-medium)' }}
-        >
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12.5px] font-medium" style={{ color: 'var(--text-secondary)' }}>
-              {scanProgress.phase === 'enumerating'
-                ? t('serviceManager.scanProgressEnumerating')
-                : t('serviceManager.scanProgressClassifying')}
-            </span>
-            {scanProgress.total > 0 && (
-              <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-                {scanProgress.current} / {scanProgress.total}
-              </span>
-            )}
-          </div>
-          {scanProgress.total > 0 && (
-            <div className="h-1.5 overflow-hidden rounded-full" style={{ background: '#27272a' }}>
-              <div
-                className="h-full rounded-full transition-[width] duration-300"
-                style={{
-                  background: 'var(--accent)',
-                  width: `${Math.round((scanProgress.current / scanProgress.total) * 100)}%`
-                }}
-              />
-            </div>
-          )}
-          <div className="mt-1.5 truncate text-[11.5px]" style={{ color: 'var(--text-muted)' }}>
-            {scanProgress.currentService}
-          </div>
-        </div>
-      )}
-
-      {/* ── Apply result ─────────────────────────────────────── */}
-      {applyResult && (
-        <div
-          className="mb-5 rounded-xl p-4"
-          style={{
-            background: applyResult.failed > 0 ? 'rgba(245,158,11,0.06)' : 'rgba(34,197,94,0.06)',
-            border: `1px solid ${applyResult.failed > 0 ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)'}`
-          }}
-        >
-          <div className="flex items-center gap-2">
-            {applyResult.failed > 0 ? (
-              <AlertTriangle className="h-4 w-4" style={{ color: '#f59e0b' }} />
-            ) : (
-              <CheckCircle2 className="h-4 w-4" style={{ color: '#22c55e' }} />
-            )}
-            <span className="text-[13px] font-medium text-white">
-              {t(
-                appliedMode === 'enable'
-                  ? applyResult.succeeded !== 1
-                    ? 'serviceManager.servicesEnabledPlural'
-                    : 'serviceManager.servicesEnabled'
-                  : applyResult.succeeded !== 1
-                    ? 'serviceManager.servicesDisabledPlural'
-                    : 'serviceManager.servicesDisabled',
-                { count: applyResult.succeeded }
-              )}
-              {applyResult.failed > 0 &&
-                `, ${t('serviceManager.servicesFailed', { count: applyResult.failed })}`}
-            </span>
-          </div>
-          {applyResult.errors.length > 0 && (
-            <div className="mt-2 space-y-1">
-              {applyResult.errors.map((e, i) => (
-                <div key={i} className="text-[11.5px]" style={{ color: 'var(--text-secondary)' }}>
-                  {e.displayName || e.name}: {e.reason}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Empty state ──────────────────────────────────────── */}
-      {!hasScanned && !scanning && (
-        <EmptyState
-          icon={Server}
-          title={t('serviceManager.emptyStateTitle')}
-          description={t('serviceManager.emptyStateDescription')}
           action={
-            <button
-              onClick={handleScan}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                color: 'var(--text-on-accent)'
-              }}
-            >
-              <RefreshCw className="h-4 w-4" strokeWidth={1.8} />
-              {t('serviceManager.scanServicesButton')}
-            </button>
+            <Button icon={RefreshCw} busy={scanning} disabled={isBusy} onClick={handleScan}>
+              {scanning
+                ? t('serviceManager.scanningButton')
+                : hasScanned
+                  ? t('serviceManager.rescanButton')
+                  : t('serviceManager.scanServicesButton')}
+            </Button>
           }
         />
       )}
 
-      {/* ── Stats row ────────────────────────────────────────── */}
-      {hasScanned && !scanning && (
-        <>
-          <div className="service-stats-grid mb-5 grid grid-cols-4 gap-3">
-            <StatCard
-              label={t('serviceManager.statTotal')}
-              value={services.length}
-              tone="neutral"
-              progress={100}
-            />
-            <StatCard
-              label={t('serviceManager.statRunning')}
-              value={runningCount}
-              tone="success"
-              progress={(runningCount / Math.max(services.length, 1)) * 100}
-            />
-            <StatCard
-              label={t('serviceManager.statDisabled')}
-              value={disabledCount}
-              tone="brand"
-              progress={(disabledCount / Math.max(services.length, 1)) * 100}
-            />
-            <StatCard
-              label={t('serviceManager.statSafeToDisable')}
-              value={totalSafeToDisable}
-              tone="warning"
-              progress={(totalSafeToDisable / Math.max(services.length, 1)) * 100}
-            />
-          </div>
+      <div className="svc-stack">
+        {error && (
+          <ErrorAlert message={error} onDismiss={() => useServiceStore.getState().setError(null)} />
+        )}
 
-          {/* ── Filter bar ─────────────────────────────────────── */}
-          <div className="service-filter-bar mb-4 flex items-center gap-3">
-            <div
-              className="service-search-field flex flex-1 items-center gap-2 rounded-xl px-3.5 py-2.5"
-              style={{ background: 'var(--card-bg)', border: '1px solid var(--border-medium)' }}
-            >
-              <Search
-                className="h-4 w-4 shrink-0"
-                style={{ color: 'var(--text-muted)' }}
-                strokeWidth={1.8}
-              />
-              <input
-                type="text"
-                placeholder={t('serviceManager.searchPlaceholder')}
-                aria-label={t('serviceManager.searchPlaceholder')}
-                value={searchQuery}
-                onChange={(e) => useServiceStore.getState().setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-[13px] outline-none"
-                style={{ color: 'var(--text-primary)' }}
-              />
+        {/* ── Scan progress ─────────────────────────────────────── */}
+        {scanning && (
+          <Card className="svc-progress" aria-busy="true">
+            <div className="svc-progress-head">
+              <p className="svc-progress-title" role="status">
+                {scanProgress?.phase === 'classifying'
+                  ? t('serviceManager.scanProgressClassifying')
+                  : t('serviceManager.scanProgressEnumerating')}
+              </p>
+              {!!scanProgress && scanProgress.total > 0 && (
+                <span className="svc-progress-count">
+                  {t('serviceManager.progressCount', {
+                    current: scanProgress.current,
+                    total: scanProgress.total
+                  })}
+                </span>
+              )}
             </div>
-
-            <FilterDropdown
-              value={safetyFilter}
-              ariaLabel={t('serviceManager.filterAllSafety')}
-              options={[
-                { value: 'all', label: t('serviceManager.filterAllSafety') },
-                { value: 'safe', label: t('serviceManager.filterSafe') },
-                { value: 'caution', label: t('serviceManager.filterCaution') },
-                { value: 'unsafe', label: t('serviceManager.filterUnsafe') }
-              ]}
-              onChange={(v) => useServiceStore.getState().setSafetyFilter(v as any)}
+            <ProgressBar
+              value={
+                scanProgress && scanProgress.total > 0
+                  ? scanProgress.current / scanProgress.total
+                  : undefined
+              }
+              label={t('serviceManager.scanningButton')}
             />
+            <p className="svc-progress-detail svc-truncate">
+              {progressText(t, scanProgress?.currentService) || '\u00a0'}
+            </p>
+          </Card>
+        )}
 
-            <FilterDropdown
-              value={categoryFilter}
-              ariaLabel={t('serviceManager.filterAllCategories')}
-              options={[
-                { value: 'all', label: t('serviceManager.filterAllCategories') },
-                ...Array.from(presentCategories)
-                  .sort()
-                  .map((c) => ({ value: c, label: t(CATEGORY_LABEL_KEYS[c]) || c }))
-              ]}
-              onChange={(v) => useServiceStore.getState().setCategoryFilter(v as any)}
-            />
+        {/* ── Outcome of the last change ────────────────────────── */}
+        {applyResult && (
+          <ApplyReceipt result={applyResult} mode={appliedMode} appliedAt={appliedAt} />
+        )}
 
-            <FilterDropdown
-              value={statusFilter}
-              ariaLabel={t('serviceManager.filterAllStatus')}
-              options={[
-                { value: 'all', label: t('serviceManager.filterAllStatus') },
-                { value: 'running', label: t('serviceManager.filterRunning') },
-                { value: 'stopped', label: t('serviceManager.filterStopped') },
-                { value: 'disabled', label: t('serviceManager.filterDisabled') }
-              ]}
-              onChange={(v) => useServiceStore.getState().setStatusFilter(v as any)}
-            />
-          </div>
+        {/* ── Not scanned yet ───────────────────────────────────── */}
+        {!hasScanned && !scanning && (
+          <EmptyState
+            title={t('serviceManager.emptyStateTitle')}
+            description={
+              lastChange
+                ? t('serviceManager.lastChange', {
+                    date: formatDateTime(lastChange.timestamp, locale)
+                  })
+                : t('serviceManager.emptyStateDescription')
+            }
+            checks={[
+              {
+                title: t('serviceManager.checkStartTitle'),
+                detail: t('serviceManager.checkStartDetail')
+              },
+              {
+                title: t('serviceManager.checkSafetyTitle'),
+                detail: t('serviceManager.checkSafetyDetail')
+              },
+              {
+                title: t('serviceManager.checkDepsTitle'),
+                detail: t('serviceManager.checkDepsDetail')
+              }
+            ]}
+            action={
+              <Button variant="primary" icon={RefreshCw} onClick={handleScan}>
+                {t('serviceManager.scanServicesButton')}
+              </Button>
+            }
+          />
+        )}
 
-          {/* ── Service list (grouped by safety) ────────────────── */}
-          {filteredServices.length === 0 ? (
-            <div
-              className="rounded-xl py-12 text-center text-[13px]"
-              style={{
-                background: 'var(--card-bg)',
-                border: '1px solid var(--border-medium)',
-                color: 'var(--text-muted)'
-              }}
-            >
-              {t('serviceManager.noServicesMatch')}
-            </div>
-          ) : (
-            <div className="service-groups space-y-4">
-              {safetyGroups.map((group) => (
-                <SafetyGroup
-                  key={group.key}
-                  safetyKey={group.key}
-                  label={group.label}
-                  services={group.services}
+        {hasScanned && !scanning && (
+          <>
+            {/* ── Summary: what is selected and what it would do ─── */}
+            <Card className="svc-summary">
+              <div className="svc-summary-text">
+                <h2 className="svc-summary-title">
+                  {selectedCount > 0
+                    ? t('serviceManager.summarySelected', { count: selectedCount })
+                    : t('serviceManager.summaryNoneSelected')}
+                </h2>
+                <p className="svc-summary-facts">
+                  {t('serviceManager.summaryFacts', {
+                    total: services.length,
+                    running: runningCount,
+                    disabled: disabledCount
+                  })}
+                  {totalSafeToDisable > 0 && (
+                    <>
+                      {' · '}
+                      <Tag tone="recommended">
+                        {t('serviceManager.summaryRecommended', { count: totalSafeToDisable })}
+                      </Tag>
+                    </>
+                  )}
+                </p>
+                {disabledCount > 0 && (
+                  <p className="svc-summary-hint">{t('serviceManager.summaryReEnableHint')}</p>
+                )}
+              </div>
+              <div className="svc-summary-actions">
+                <Button
+                  icon={RecommendedIcon}
+                  disabled={isBusy || totalSafeToDisable === 0}
+                  onClick={handleSelectRecommended}
+                >
+                  {t('serviceManager.selectRecommendedButton', { count: totalSafeToDisable })}
+                </Button>
+                {enableCount > 0 && (
+                  <>
+                    <label className="svc-inline-field">
+                      <span>{t('serviceManager.enableStartTypeTitle')}</span>
+                      <ServiceSelect
+                        value={enableStartType}
+                        ariaLabel={t('serviceManager.enableStartTypeTitle')}
+                        options={[
+                          { value: 'Manual', label: t('serviceManager.startTypeManual') },
+                          { value: 'Automatic', label: t('serviceManager.startTypeAutomatic') }
+                        ]}
+                        onChange={(v) =>
+                          useServiceStore.getState().setEnableStartType(v as 'Manual' | 'Automatic')
+                        }
+                      />
+                    </label>
+                    <Button
+                      icon={Play}
+                      busy={applying && appliedMode === 'enable'}
+                      disabled={isBusy}
+                      onClick={() => setConfirmMode('enable')}
+                    >
+                      {t('serviceManager.enableSelectedButton', { count: enableCount })}
+                    </Button>
+                  </>
+                )}
+                <Button
+                  variant="primary"
+                  busy={applying && appliedMode === 'disable'}
+                  disabled={isBusy || disableCount === 0}
+                  onClick={() => setConfirmMode('disable')}
+                >
+                  {t('serviceManager.disableSelectedButton', { count: disableCount })}
+                </Button>
+              </div>
+            </Card>
+
+            {/* ── Filters ─────────────────────────────────────────── */}
+            <div className="svc-filters">
+              <div className="svc-search">
+                <Search size={14} strokeWidth={1.75} aria-hidden="true" />
+                <input
+                  type="text"
+                  placeholder={t('serviceManager.searchPlaceholder')}
+                  aria-label={t('serviceManager.searchPlaceholder')}
+                  value={searchQuery}
+                  onChange={(e) => useServiceStore.getState().setSearchQuery(e.target.value)}
                 />
-              ))}
-            </div>
-          )}
+              </div>
 
-          <div className="mt-3 text-right text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-            {t('serviceManager.showingCount', {
-              filtered: filteredServices.length,
-              total: services.length
-            })}
-          </div>
-        </>
-      )}
+              <ServiceSelect
+                value={safetyFilter}
+                ariaLabel={t('serviceManager.filterAllSafety')}
+                options={[
+                  { value: 'all', label: t('serviceManager.filterAllSafety') },
+                  { value: 'safe', label: t('serviceManager.filterSafe') },
+                  { value: 'caution', label: t('serviceManager.filterCaution') },
+                  { value: 'unsafe', label: t('serviceManager.filterUnsafe') }
+                ]}
+                onChange={(v) =>
+                  useServiceStore.getState().setSafetyFilter(v as 'all' | WindowsService['safety'])
+                }
+              />
+
+              <ServiceSelect
+                value={categoryFilter}
+                ariaLabel={t('serviceManager.filterAllCategories')}
+                options={[
+                  { value: 'all', label: t('serviceManager.filterAllCategories') },
+                  ...Array.from(presentCategories)
+                    .sort()
+                    .map((c) => ({ value: c, label: t(CATEGORY_LABEL_KEYS[c]) || c }))
+                ]}
+                onChange={(v) =>
+                  useServiceStore.getState().setCategoryFilter(v as 'all' | ServiceCategory)
+                }
+              />
+
+              <ServiceSelect
+                value={statusFilter}
+                ariaLabel={t('serviceManager.filterAllStatus')}
+                options={[
+                  { value: 'all', label: t('serviceManager.filterAllStatus') },
+                  { value: 'running', label: t('serviceManager.filterRunning') },
+                  { value: 'stopped', label: t('serviceManager.filterStopped') },
+                  { value: 'disabled', label: t('serviceManager.filterDisabled') }
+                ]}
+                onChange={(v) =>
+                  useServiceStore
+                    .getState()
+                    .setStatusFilter(v as 'all' | 'running' | 'stopped' | 'disabled')
+                }
+              />
+
+              <span className="svc-filter-count">
+                {t('serviceManager.showingCount', {
+                  filtered: filteredServices.length,
+                  total: services.length
+                })}
+              </span>
+            </div>
+
+            {/* ── Service list (grouped by safety) ────────────────── */}
+            {filteredServices.length === 0 ? (
+              <Card>
+                <p className="svc-note">{t('serviceManager.noServicesMatch')}</p>
+              </Card>
+            ) : (
+              safetyGroups.map((group) => (
+                <SafetyGroup key={group.key} label={group.label} services={group.services} />
+              ))
+            )}
+          </>
+        )}
+      </div>
 
       {/* ── Confirm dialog ───────────────────────────────────── */}
       <ConfirmDialog
@@ -673,22 +543,23 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
         title={t(
           confirmMode === 'enable'
             ? 'serviceManager.confirmEnableTitle'
-            : 'serviceManager.confirmTitle'
+            : 'serviceManager.confirmTitle',
+          { count: confirmTargets.length }
         )}
         description={
           confirmMode === 'enable'
             ? t('serviceManager.confirmEnableDescription', {
-                count: enableCount,
                 startType: t(START_TYPE_KEY_MAP[enableStartType])
               })
-            : t('serviceManager.confirmDescription', { count: disableCount })
+            : t('serviceManager.confirmDescription')
         }
+        details={confirmTargets.map((s) => s.displayName).join('\n')}
         confirmLabel={t(
           confirmMode === 'enable'
-            ? 'serviceManager.confirmEnableLabel'
-            : 'serviceManager.confirmLabel'
+            ? 'serviceManager.enableSelectedButton'
+            : 'serviceManager.disableSelectedButton',
+          { count: confirmTargets.length }
         )}
-        variant={confirmMode === 'enable' ? 'default' : 'danger'}
         onConfirm={() => handleApply(confirmMode ?? 'disable')}
         onCancel={() => setConfirmMode(null)}
       />
@@ -698,264 +569,170 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
 
 // ─── Sub-components ──────────────────────────────────────────
 
-/** Header and rows are separate grids, so they must share one template to align. */
-const SERVICE_GRID_COLUMNS = '32px minmax(240px, 1fr) 132px 110px 76px'
-
-function SafetyGroup({
-  safetyKey,
-  label,
-  services
+/** The result of the last disable or re-enable: counts, time, reversibility, failures. */
+function ApplyReceipt({
+  result,
+  mode,
+  appliedAt
 }: {
-  safetyKey: 'safe' | 'caution' | 'unsafe'
-  label: string
-  services: WindowsService[]
+  result: ServiceApplyResult
+  mode: ApplyMode
+  appliedAt: string | null
 }) {
+  const { t, i18n } = useTranslation('hardening')
+  const failures = result.errors.map((e) => `${e.displayName || e.name}: ${e.reason}`).join('; ')
+  return (
+    <Receipt
+      title={t(
+        mode === 'enable'
+          ? 'serviceManager.receiptTitleEnable'
+          : 'serviceManager.receiptTitleDisable'
+      )}
+      value={t('serviceManager.receiptValue', {
+        done: result.succeeded,
+        total: result.succeeded + result.failed
+      })}
+      facts={[
+        appliedAt ? formatDateTime(appliedAt, i18n.language) : '',
+        t('serviceManager.receiptReversible')
+      ]}
+      skipped={
+        result.failed > 0
+          ? t('serviceManager.receiptFailed', { count: result.failed, list: failures })
+          : undefined
+      }
+      links={<Link to="/recovery">{t('serviceManager.openRecovery')}</Link>}
+    />
+  )
+}
+
+/**
+ * One safety group. Header and rows are separate grids sharing one column template
+ * (`.svc-grid` in service-manager.css, from sub-project 1), so they stay aligned.
+ */
+function SafetyGroup({ label, services }: { label: string; services: WindowsService[] }) {
   const { t } = useTranslation('hardening')
   const [collapsed, setCollapsed] = useState(false)
-  const colors = SAFETY_COLORS[safetyKey]
   const selectedInGroup = services.filter((s) => s.selected).length
   const alreadyDisabled = services.filter((s) => s.startType === 'Disabled').length
+  const meta = [
+    t(
+      services.length !== 1 ? 'serviceManager.servicesCountPlural' : 'serviceManager.servicesCount',
+      { count: services.length }
+    ),
+    alreadyDisabled > 0 ? t('serviceManager.alreadyDisabled', { count: alreadyDisabled }) : '',
+    selectedInGroup > 0 ? t('serviceManager.selectedCount', { count: selectedInGroup }) : ''
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
-    <div
-      className="service-safety-group overflow-hidden rounded-2xl"
-      data-safety={safetyKey}
-      style={{ background: 'var(--card-bg)', border: `1px solid ${colors.border}` }}
+    <Section
+      title={label}
+      meta={meta}
+      className="svc-group"
+      actions={
+        <Button
+          variant="ghost"
+          icon={collapsed ? ChevronRight : ChevronDown}
+          aria-expanded={!collapsed}
+          aria-label={t(collapsed ? 'serviceManager.expandGroup' : 'serviceManager.collapseGroup', {
+            group: label
+          })}
+          onClick={() => setCollapsed((c) => !c)}
+        />
+      }
     >
-      {/* Group header */}
-      <button
-        onClick={() => setCollapsed((c) => !c)}
-        className="service-group-header flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors"
-        style={{ background: colors.bg }}
-      >
-        {collapsed ? (
-          <ChevronRight
-            className="h-4 w-4 shrink-0"
-            style={{ color: colors.dot }}
-            strokeWidth={2}
-          />
-        ) : (
-          <ChevronDown className="h-4 w-4 shrink-0" style={{ color: colors.dot }} strokeWidth={2} />
-        )}
-        <Circle className="h-2.5 w-2.5 shrink-0" fill={colors.dot} stroke="none" />
-        <span className="text-[14px] font-bold" style={{ color: colors.dot }}>
-          {label}
-        </span>
-        <span
-          className="service-group-count rounded-full px-2.5 py-1 text-[12px] font-medium"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          {t(
-            services.length !== 1
-              ? 'serviceManager.servicesCountPlural'
-              : 'serviceManager.servicesCount',
-            { count: services.length }
-          )}
-          {alreadyDisabled > 0 &&
-            ` · ${t('serviceManager.alreadyDisabled', { count: alreadyDisabled })}`}
-          {selectedInGroup > 0 && (
-            <span style={{ color: colors.dot }}>
-              {' '}
-              · {t('serviceManager.selectedCount', { count: selectedInGroup })}
-            </span>
-          )}
-        </span>
-      </button>
-
       {!collapsed && (
         <>
-          {/* Column header */}
-          <div
-            className="service-column-header grid items-center gap-3 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider"
-            style={{
-              gridTemplateColumns: SERVICE_GRID_COLUMNS,
-              color: 'var(--text-muted)',
-              borderTop: `1px solid ${colors.border}`,
-              borderBottom: '1px solid var(--border-subtle)'
-            }}
-          >
+          <div className="svc-grid svc-columns" aria-hidden="true">
             <span />
             <span>{t('serviceManager.columnService')}</span>
             <span>{t('serviceManager.columnStartupType')}</span>
             <span>{t('serviceManager.columnStatus')}</span>
-            <span className="text-center leading-tight tracking-normal hyphens-auto [overflow-wrap:anywhere]">
-              {t('serviceManager.columnDeps')}
-            </span>
+            <span className="svc-deps">{t('serviceManager.columnDeps')}</span>
           </div>
-
-          {/* Rows */}
-          <div className="service-row-list max-h-[440px] overflow-y-auto">
+          <div className="svc-rows">
             {services.map((svc) => (
               <ServiceRow key={svc.name} service={svc} />
             ))}
           </div>
         </>
       )}
-    </div>
+    </Section>
   )
 }
 
 function ServiceRow({ service: svc }: { service: WindowsService }) {
   const { t } = useTranslation('hardening')
   const enableStartType = useServiceStore((s) => s.enableStartType)
-  const isUnsafe = svc.safety === 'unsafe'
   const isDisabled = svc.startType === 'Disabled'
   // Critical services can't be picked for disabling — but a disabled one is
   // selectable so it can be restored.
-  const locked = isUnsafe && !isDisabled
-  const colors = SAFETY_COLORS[svc.safety]
+  const locked = svc.safety === 'unsafe' && !isDisabled
+  const recommended = isRecommended(svc)
+  const startType =
+    svc.startType === 'AutomaticDelayed'
+      ? t('serviceManager.startTypeAutoDelayed')
+      : t(START_TYPE_KEY_MAP[svc.startType] || 'serviceManager.startTypeUnknown')
 
   return (
-    <button
-      onClick={() => !locked && useServiceStore.getState().toggleService(svc.name)}
+    <label
+      className="svc-grid svc-row"
+      data-recommended={recommended || undefined}
+      data-selected={svc.selected || undefined}
+      data-locked={locked || undefined}
       title={
-        locked ? undefined : isDisabled ? t('serviceManager.selectToReEnableTitle') : undefined
+        locked
+          ? t('serviceManager.lockedTitle')
+          : isDisabled
+            ? t('serviceManager.selectToReEnableTitle')
+            : undefined
       }
-      className="service-row grid w-full items-center gap-3 px-5 py-3 text-left transition-colors duration-100"
-      style={{
-        gridTemplateColumns: SERVICE_GRID_COLUMNS,
-        background: svc.selected ? colors.bg : 'transparent',
-        borderBottom: '1px solid var(--border-subtle)',
-        cursor: locked ? 'default' : 'pointer'
-      }}
     >
-      {/* Checkbox */}
-      <div className="flex justify-center">
-        <div
-          className="flex h-[18px] w-[18px] items-center justify-center rounded"
-          style={{
-            border: `1.5px solid ${svc.selected ? colors.dot : locked ? 'var(--text-faint)' : 'var(--text-muted)'}`,
-            background: svc.selected ? colors.dot : 'transparent',
-            opacity: locked ? 0.72 : 1
-          }}
-        >
-          {svc.selected && <CheckCircle2 className="h-3 w-3 text-white" strokeWidth={3} />}
-        </div>
-      </div>
+      <span className="svc-check">
+        <Checkbox
+          checked={svc.selected}
+          disabled={locked}
+          label={svc.displayName}
+          onChange={() => useServiceStore.getState().toggleService(svc.name)}
+        />
+      </span>
 
-      {/* Name + description */}
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <span
-            className="truncate text-[14px] font-semibold"
-            style={{ color: 'var(--text-primary)' }}
-          >
-            {svc.displayName}
-          </span>
-          {isUnsafe && (
-            <span
-              className="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold"
-              style={{
-                background: 'color-mix(in srgb, var(--danger), transparent 86%)',
-                color: 'var(--danger)'
-              }}
-            >
-              {t('serviceManager.criticalBadge')}
-            </span>
-          )}
-        </div>
-        <div
-          className="mt-0.5 truncate text-[12px] leading-relaxed"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          {svc.description || svc.name}
-        </div>
-      </div>
-
-      {/* Startup type */}
-      <div>
-        <span
-          className="service-start-pill inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold"
-          style={{
-            background:
-              svc.startType === 'Disabled'
-                ? 'color-mix(in srgb, var(--danger), transparent 89%)'
-                : svc.startType === 'Automatic' || svc.startType === 'AutomaticDelayed'
-                  ? 'color-mix(in srgb, var(--info), transparent 89%)'
-                  : 'var(--bg-subtle-2)',
-            color:
-              svc.startType === 'Disabled'
-                ? 'var(--danger)'
-                : svc.startType === 'Automatic' || svc.startType === 'AutomaticDelayed'
-                  ? 'var(--info)'
-                  : 'var(--text-secondary)'
-          }}
-        >
-          {svc.startType === 'AutomaticDelayed'
-            ? t('serviceManager.startTypeAutoDelayed')
-            : t(START_TYPE_KEY_MAP[svc.startType] || 'serviceManager.startTypeUnknown')}
+      <span className="svc-name">
+        <span className="svc-name-line">
+          <span className="svc-title svc-truncate">{svc.displayName}</span>
+          {recommended && <Tag tone="recommended">{t('serviceManager.recommendedTag')}</Tag>}
         </span>
+        <span className="svc-description svc-truncate">{svc.description || svc.name}</span>
+      </span>
+
+      <span className="svc-start">
+        {startType}
         {/* Make it obvious that selecting a disabled service restores it */}
         {isDisabled && svc.selected && (
-          <span className="ml-1 text-[11px] font-semibold" style={{ color: 'var(--success)' }}>
-            → {t(START_TYPE_KEY_MAP[enableStartType])}
-          </span>
+          <span className="svc-start-target"> → {t(START_TYPE_KEY_MAP[enableStartType])}</span>
         )}
-      </div>
+      </span>
 
-      {/* Status */}
-      <div className="flex items-center gap-1.5">
-        <div
-          className="h-1.5 w-1.5 rounded-full"
-          style={{ background: STATUS_COLORS[svc.status] || 'var(--text-muted)' }}
-        />
-        <span
-          className="text-[12px] font-medium"
-          style={{ color: STATUS_COLORS[svc.status] || 'var(--text-muted)' }}
-        >
-          {t(STATUS_KEY_MAP[svc.status] || 'serviceManager.statusUnknown')}
-        </span>
-      </div>
+      <span className="svc-status" data-running={svc.status === 'Running' || undefined}>
+        {t(STATUS_KEY_MAP[svc.status] || 'serviceManager.statusUnknown')}
+      </span>
 
-      {/* Dependencies count */}
-      <div className="flex items-center justify-center gap-1">
+      <span className="svc-deps">
         {svc.dependents.length > 0 && (
-          <span
-            className="flex items-center gap-0.5 text-[11px]"
-            style={{ color: 'var(--text-muted)' }}
-            title={t('serviceManager.dependentsTitle', { count: svc.dependents.length })}
-          >
-            <Link2 className="h-3 w-3" strokeWidth={1.8} />
+          <span title={t('serviceManager.dependentsTitle', { count: svc.dependents.length })}>
+            <Link2 size={12} strokeWidth={1.75} aria-hidden="true" />
             {svc.dependents.length}
           </span>
         )}
-      </div>
-    </button>
+      </span>
+    </label>
   )
 }
 
-function StatCard({
-  label,
-  value,
-  tone,
-  progress
-}: {
-  label: string
-  value: number
-  tone: 'neutral' | 'success' | 'brand' | 'warning'
-  progress: number
-}) {
-  return (
-    <div
-      className="service-stat-card rounded-2xl px-5 py-4"
-      data-tone={tone}
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-medium)' }}
-    >
-      <div
-        className="text-[11px] font-bold uppercase tracking-wider"
-        style={{ color: 'var(--text-secondary)' }}
-      >
-        {label}
-      </div>
-      <div className="service-stat-value mt-1 text-[26px] font-bold">{value}</div>
-      <div className="service-stat-meter" aria-hidden="true">
-        <i style={{ width: `${Math.max(value > 0 ? 7 : 0, Math.min(100, progress))}%` }} />
-      </div>
-    </div>
-  )
-}
-
-function FilterDropdown({
+/** The shared select (controls.css): native semantics, the app's picker styling. */
+function ServiceSelect({
   value,
   ariaLabel,
   options,
@@ -967,29 +744,17 @@ function FilterDropdown({
   onChange: (value: string) => void
 }) {
   return (
-    <div className="relative">
-      <select
-        value={value}
-        aria-label={ariaLabel}
-        onChange={(e) => onChange(e.target.value)}
-        className="appearance-none rounded-xl py-2.5 pl-3.5 pr-9 text-[13px] font-semibold outline-none"
-        style={{
-          background: 'var(--card-bg)',
-          border: '1px solid var(--border-medium)',
-          color: 'var(--text-primary)'
-        }}
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2"
-        style={{ color: 'var(--text-muted)' }}
-        strokeWidth={2}
-      />
-    </div>
+    <select
+      className="svc-select"
+      value={value}
+      aria-label={ariaLabel}
+      onChange={(e) => onChange(e.target.value)}
+    >
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
   )
 }

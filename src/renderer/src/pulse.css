@@ -868,17 +868,6 @@ body {
 .settings-section :where(select) {
   max-width: 100%;
 }
-.service-filter-bar {
-  flex-wrap: wrap;
-}
-.service-search-field {
-  min-width: 200px;
-}
-.service-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
 .app-content[data-route='/services'] .service-groups > *,
 .app-content[data-route='/firewall'] .rounded-2xl {
   border-radius: var(--radius-card);

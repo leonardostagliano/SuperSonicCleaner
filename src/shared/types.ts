@@ -1009,7 +1009,8 @@ export interface ServiceScanProgress {
   phase: 'enumerating' | 'classifying'
   current: number
   total: number
-  currentService: string
+  /** The service being classified (its display name), or a step the renderer translates. */
+  currentService: string | ProgressLabel
 }
 
 // ─── Firewall Audit (Windows-only) ──────────────────────────

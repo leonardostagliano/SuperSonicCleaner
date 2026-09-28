@@ -94,7 +94,7 @@ export async function scanServices(
     phase: 'enumerating',
     current: 0,
     total: 0,
-    currentService: 'Enumerating services...'
+    currentService: { key: 'hardening:serviceManager.progressOneRequest' }
   })
 
   // Single PowerShell call to enumerate all services with details
@@ -154,7 +154,7 @@ export async function scanServices(
     phase: 'classifying',
     current: 0,
     total: rawServices.length,
-    currentService: 'Resolving dependencies...'
+    currentService: { key: 'hardening:serviceManager.progressDependencies' }
   })
 
   // Resolve dependencies in a second PowerShell call
