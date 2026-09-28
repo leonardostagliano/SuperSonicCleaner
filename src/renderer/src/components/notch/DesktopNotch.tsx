@@ -40,6 +40,7 @@ export function DesktopNotch() {
   const initialized = useRef(false)
   const expandedRef = useRef(false)
   const hoverDismissed = useRef(false)
+  const pointerInside = useRef(false)
   const [nativeCompact, setNativeCompact] = useState(true)
   const api = window.kuduNotch
   const expanded = state?.expanded
@@ -146,6 +147,7 @@ export function DesktopNotch() {
   }
   /** Decides on the element under the pointer, so the grip never opens the panel. */
   const hover = (event: PointerEvent<HTMLElement>) => {
+    pointerInside.current = true
     if (
       state &&
       hoverExpands({
@@ -247,12 +249,15 @@ export function DesktopNotch() {
       onPointerOver={hover}
       onPointerMove={hover}
       onPointerLeave={() => {
+        pointerInside.current = false
         hoverDismissed.current = false
         collapse()
       }}
       onFocus={keepOpen}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) collapse()
+        // Expanding makes the compact tab inert and drops its focus; while the pointer
+        // is still over the notch that blur must not close it (pointerleave will).
+        if (!pointerInside.current && !event.currentTarget.contains(event.relatedTarget)) collapse()
       }}
       onKeyDown={(event) => {
         if (event.key === 'Escape') {
