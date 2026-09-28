@@ -1,0 +1,498 @@
+/* Storage tools (Archiviazione): disk analyzer, duplicates, large files, empty folders.
+   Tokens only. Selectors that must beat a legacy rule in pulse.css or globals.css say so
+   with "legacy:"; Task C1 deletes those rules. */
+
+/* ── Page stack ─────────────────────────────────────────────────────────── */
+.storage-stack {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.storage-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+
+/* ── Folder and filters (FolderScope) ───────────────────────────────────── */
+.storage-scope-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+  padding-block: var(--space-2);
+}
+.storage-scope-row + .storage-scope-row {
+  border-top: 1px solid var(--border-default);
+}
+.storage-scope-label {
+  flex: 0 0 88px;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+.storage-scope-value {
+  flex: 1 1 240px;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.storage-scope-value[data-empty] {
+  color: var(--text-secondary);
+}
+.storage-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-4) var(--space-5);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-default);
+}
+.storage-field {
+  min-width: 0;
+}
+.storage-field[data-wide] {
+  grid-column: 1 / -1;
+}
+.storage-field-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  font-weight: 500;
+}
+.storage-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.storage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 26px;
+  padding-inline: var(--space-2) 2px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-control);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+.storage-add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* legacy: pulse.css paints every field with --border-default !important and sets a
+   36 px minimum height on selects; controls need the stronger 3:1 edge. */
+input.storage-input,
+select.storage-input {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-color: var(--border-strong) !important;
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-13);
+  font-variant-numeric: tabular-nums;
+}
+input.storage-input::placeholder {
+  color: var(--text-muted);
+}
+input.storage-input[type='number'] {
+  width: 88px;
+}
+input.storage-input[type='text'] {
+  width: min(100%, 240px);
+}
+select.storage-input {
+  padding-inline-end: var(--space-6);
+  cursor: pointer;
+}
+.storage-input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* A 24 px icon-only action inside a row or a chip (Button starts at 32 px). */
+button.storage-icon-action {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    color var(--duration-feedback) var(--ease-out);
+}
+button.storage-icon-action:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+button.storage-icon-action:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* ── Summary ────────────────────────────────────────────────────────────── */
+.storage-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+}
+.storage-summary-text {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.storage-summary-value {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-20);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.storage-summary-facts {
+  margin: var(--space-1) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.storage-summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* ── Notes and errors ───────────────────────────────────────────────────── */
+.storage-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.storage-note > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--text-muted);
+}
+.storage-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.storage-error > svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--signal-danger);
+}
+.storage-error-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--signal-danger-text);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+
+/* ── Scan progress ──────────────────────────────────────────────────────── */
+.storage-progress {
+  display: grid;
+  gap: var(--space-2);
+}
+.storage-progress-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+.storage-progress-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.storage-progress-path {
+  overflow: hidden;
+  margin: 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.storage-progress-facts {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+.storage-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+.storage-stages li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.storage-stages li[data-state='done'] {
+  color: var(--text-secondary);
+}
+.storage-stages li[aria-current='step'] {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── Result tables ──────────────────────────────────────────────────────── */
+.storage-table-scroll {
+  min-width: 0;
+  overflow-x: auto;
+}
+.ui-table th.storage-col-check,
+.ui-table td.storage-col-check {
+  width: 28px;
+  padding-inline-end: 0;
+}
+.ui-table th.storage-col-action,
+.ui-table td.storage-col-action {
+  width: 36px;
+  padding-inline: var(--space-1);
+  text-align: end;
+}
+/* The path column takes the free width and ends with an ellipsis; the title has it all. */
+.ui-table td.storage-col-path {
+  width: 100%;
+  max-width: 0;
+}
+.storage-path-text {
+  display: block;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.storage-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.storage-name > svg {
+  flex: none;
+  color: var(--text-muted);
+}
+.storage-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.storage-share {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 140px;
+}
+.storage-share-bar {
+  flex: 1;
+  min-width: 0;
+}
+.storage-share-value {
+  flex: none;
+  min-width: 44px;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Disk analyzer ──────────────────────────────────────────────────────── */
+.storage-location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+.storage-location-path {
+  min-width: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  overflow-wrap: anywhere;
+}
+/* A folder name that opens the folder: text, not a button box. */
+button.storage-drill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+button.storage-drill:hover .storage-name-text {
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+button.storage-drill:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.storage-treemap {
+  position: relative;
+  height: 240px;
+}
+.storage-tile {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 2px;
+}
+.storage-tile-fill {
+  height: 100%;
+  overflow: hidden;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--chart-1) 12%, transparent);
+}
+.storage-tile[data-other] .storage-tile-fill {
+  background: var(--bg-subtle);
+}
+.storage-tile-name,
+.storage-tile-size {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.storage-tile-name {
+  color: var(--text-primary);
+  font-size: var(--text-12);
+  font-weight: 600;
+}
+.storage-tile-size {
+  color: var(--text-secondary);
+  font-size: var(--text-11);
+  font-variant-numeric: tabular-nums;
+}
+.storage-tile[data-other] .storage-tile-name {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ── Duplicate groups ───────────────────────────────────────────────────── */
+.storage-groups {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.storage-group + .storage-group {
+  border-top: 1px solid var(--border-default);
+}
+button.storage-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  width: 100%;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-1);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--text-13);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--duration-feedback) var(--ease-out);
+}
+button.storage-group-head:hover {
+  background: var(--bg-hover);
+}
+button.storage-group-head:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+.storage-group-head > svg {
+  flex: none;
+  color: var(--text-muted);
+}
+.storage-group-head > svg:dir(rtl) {
+  transform: scaleX(-1);
+}
+.storage-group-head[aria-expanded='true'] > svg {
+  transform: rotate(90deg);
+}
+.storage-group-title {
+  flex: 1 1 200px;
+  min-width: 0;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.storage-group-meta {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+.storage-group-size {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.storage-group-body {
+  padding: 0 0 var(--space-2) var(--space-5);
+}
+.storage-group-body:dir(rtl) {
+  padding: 0 var(--space-5) var(--space-2) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.storage-icon-action,
+  button.storage-group-head {
+    transition: none;
+  }
+}
