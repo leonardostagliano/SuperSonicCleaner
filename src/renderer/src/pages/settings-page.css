@@ -1,0 +1,174 @@
+/* Settings (/settings): one section per group, rows of label + help + control.
+   Tokens only; the shared primitives draw the controls. */
+.prefs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: calc(-1 * var(--space-2)) 0 var(--space-4);
+}
+.prefs-nav button {
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--text-13);
+  cursor: pointer;
+  transition: color var(--duration-feedback) var(--ease-out);
+}
+.prefs-nav button:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+.prefs-nav button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.prefs-stack {
+  display: grid;
+  gap: var(--space-3);
+}
+.prefs-anchor {
+  scroll-margin-top: var(--space-4);
+}
+.prefs-anchor:focus {
+  outline: none;
+}
+.prefs-anchor:focus-visible > .ui-card {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.prefs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  padding-block: var(--space-3);
+}
+.prefs-row + .prefs-row {
+  border-top: 1px solid var(--border-default);
+}
+.ui-section-head + .prefs-row {
+  padding-top: 0;
+}
+.prefs-row:last-child {
+  padding-bottom: 0;
+}
+.prefs-row-text {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.prefs-row-label {
+  display: block;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.prefs-row-help {
+  max-width: 68ch;
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+.prefs-row-control {
+  display: flex;
+  flex: 0 1 auto;
+  justify-content: flex-end;
+  min-width: 0;
+  max-width: 100%;
+}
+.prefs-row-control select {
+  max-width: 100%;
+}
+.prefs-value {
+  color: var(--text-muted);
+  font-size: var(--text-13);
+}
+.prefs-row-stacked {
+  display: grid;
+  gap: var(--space-3);
+}
+.prefs-folder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.prefs-path {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.prefs-folder-path {
+  flex: 1 1 240px;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+  background: var(--bg-subtle);
+  line-height: 30px;
+}
+.prefs-help {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+.prefs-empty {
+  margin: 0 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+}
+.prefs-exclusions {
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+.prefs-exclusions li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 40px;
+}
+.prefs-exclusions li + li {
+  border-top: 1px solid var(--border-default);
+}
+.prefs-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+/* legacy: globals.css and pulse.css colour every text input with !important;
+   this sets only the size and shape. */
+.prefs-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+.prefs-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
