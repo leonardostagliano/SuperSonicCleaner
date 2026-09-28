@@ -14,13 +14,13 @@
   "runAtStartupDescriptionWindows": "Windows가 시작될 때 SuperSonicCleaner를 실행하여 PC를 자동으로 깨끗하게 유지합니다",
   "runAtStartupDescriptionOther": "시작 시 SuperSonicCleaner를 실행하여 컴퓨터를 자동으로 깨끗하게 유지합니다",
   "minimizeToTrayLabel": "트레이로 최소화",
-  "minimizeToTrayDescription": "SuperSonicCleaner가 백그라운드에서 조용히 실행되도록 합니다",
+  "minimizeToTrayDescription": "SuperSonicCleaner를 백그라운드에서 조용히 계속 실행합니다",
   "weeklyAutoCleanLabel": "주간 자동 정리",
   "weeklyAutoCleanDescription": "매주 월요일 오전 9:00에 정크 파일을 검사하고 정리합니다",
   "back": "뒤로",
   "continue": "계속",
   "allSetTitle": "모든 설정이 완료되었습니다!",
-  "allSetDescription": "SuperSonicCleaner가 백그라운드에서 PC를 원활하게 실행되도록 유지합니다.",
+  "allSetDescription": "SuperSonicCleaner가 백그라운드에서 PC를 원활하게 유지합니다.",
   "firstScanScheduled": "첫 번째 자동 검사는 월요일 오전 9:00에 예약되었습니다.",
   "startCleaning": "정리 시작"
 }
