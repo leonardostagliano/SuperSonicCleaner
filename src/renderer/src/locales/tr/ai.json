@@ -1,0 +1,61 @@
+{
+  "title": "AI analizi",
+  "description": "Bu tarama sonuçları hakkında ikinci bir görüş alın.",
+  "hubDescription": "Codex oturum açma bilginizi kullanarak taramalar ve performans kayıtları hakkında ikinci bir görüş.",
+  "hubPrivacy": "Taramalar yalnızca anonim dosya meta verilerini paylaşır. Kayıtlar, geçici işlem kimlikleriyle birlikte sayısal CPU, bellek ve disk ölçümlerini paylaşır. Adlar, yollar, notlar ve dosya içerikleri bu cihazda kalır.",
+  "connectionTitle": "Codex bağlantısı",
+  "connectionIntro": "Bu bilgisayarda Codex'i kullanın. Bağlantıyı kontrol edin, ardından aşağıdan bir araç seçin.",
+  "connected": "Codex bağlı ve yalnızca meta veri analizi için hazır.",
+  "scanFirst": "Önce bir tarama çalıştırın. Sonuçları hazır olduğunda AI analizi kullanılabilir hale gelir.",
+  "anotherRunning": "Başka bir AI analizi zaten çalışıyor. Onu Tercihler → AI analizi bölümünde bulabilirsiniz.",
+  "continuesInBackground": "Siz başka görünümleri kullanırken analiz devam eder. Sonucu görmek için buraya dönün.",
+  "returnToAnalysis": "Analize dön",
+  "openTool": "Aracı aç",
+  "hubInstructions": "Bir tarama tamamlayın veya bir performans kaydı kaydedin, AI analizini etkinleştirin, ardından özel düğmeyle başlatın. Hiçbir şey otomatik olarak gönderilmez.",
+  "tools": {
+    "cleaner": {
+      "title": "Sistem temizliği",
+      "description": "Anonim dosya meta verilerini kullanarak taranan temizlik adaylarını inceleyin. Gizlilik izleri hariç tutulur."
+    },
+    "largeFiles": {
+      "title": "Büyük dosyalar",
+      "description": "Boyut, kategori ve yaklaşık yaşı kullanarak hangi büyük dosyaların daha yakından incelenmeyi hak ettiğini belirleyin."
+    },
+    "duplicates": {
+      "title": "Yinelenen dosyalar",
+      "description": "İncelenecek yinelenen dosya grupları hakkında öneriler alın. Hangi dosyaların tutulacağına siz karar verirsiniz."
+    },
+    "disk": {
+      "title": "Disk analizi",
+      "description": "Toplam boyut bilgilerini kullanarak en büyük klasörleri inceleyin."
+    },
+    "performance": {
+      "title": "Performans kayıtları",
+      "description": "Bir yavaşlamayı araştırmak için CPU, bellek ve disk etkinliğini, destekleyici ölçümler ve önerilen kontrollerle ilişkilendirin."
+    }
+  },
+  "enable": "Bu görünüm için AI analizini etkinleştir",
+  "privacy": "Yalnızca geçici kimlikler, genel dosya türleri, boyutlar ve yaklaşık dosya yaşları gönderilir. Adlar, yollar, hash değerleri ve dosya içerikleri bu cihazda kalır.",
+  "accessCaveat": "Son erişim, dosya sistemi meta verisidir. Eksik olabilir veya başka bir uygulama tarafından değiştirilmiş olabilir ve dosyayı en son ne zaman açtığınızı kanıtlamaz.",
+  "diskAggregation": "Bir klasör satırı, toplam boyutunu temsil eder. Klasör içinde hangi dosyaların incelenmesi gerektiğini göstermez.",
+  "checking": "AI kullanılabilirliği kontrol ediliyor…",
+  "codexMissing": "AI analizini kullanmak için bu bilgisayara Codex'i yükleyin.",
+  "unsupportedVersion": "Bu Codex sürümü, gereken yalnızca meta veri gizlilik sınırını sağlayamaz. Desteklenen Codex 0.157.1 sürümünü kullanın.",
+  "unsafeConfiguration": "Mevcut Codex yapılandırması, yalnızca meta veri analizini garanti edemez. Yeniden denemeden önce yerel Codex yapılandırmanızı gözden geçirin.",
+  "signIn": "AI analizini kullanmak için bu bilgisayarda Codex'i açın ve oturum açın.",
+  "unavailable": "AI analizi şu anda kullanılamıyor. Bu bilgisayarda Codex'i kontrol edin ve tekrar deneyin.",
+  "retryConnection": "Tekrar kontrol et",
+  "analyze": "Bu sonuçları analiz et",
+  "analyzing": "Analiz ediliyor…",
+  "cancelling": "İptal ediliyor…",
+  "cancel": "İptal",
+  "limit": "En fazla {{count}} öğe",
+  "omitted": "{{count}} öğe daha bu analize dahil edilmedi.",
+  "failed": "Analiz tamamlanamadı. Tekrar deneyin.",
+  "advisory": "Bu önerileri kendiniz değerlendirin. AI analizi dosyaları asla seçmez veya silmez.",
+  "priority": {
+    "low": "Düşük öncelik",
+    "medium": "Orta öncelik",
+    "high": "Yüksek öncelik"
+  }
+}

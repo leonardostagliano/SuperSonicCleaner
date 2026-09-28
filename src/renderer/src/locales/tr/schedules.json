@@ -1,11 +1,17 @@
 {
   "pageTitle": "Zamanlamalar",
+  "pageScope": "Belirlediğiniz koşullar karşılandığında, ayarlanan zamanlarda temizlik, kayıt defteri düzeltmeleri ve güncellemeler çalıştırır. Otomatik uygulama ile eylemler onay istemeden başlar.",
   "pageDescription": "Taramaları, temizlikleri ve güncellemeleri bir zamanlamaya göre otomatikleştirin",
   "dismissNudge": "Bu kartı gizle",
   "newScheduleButton": "Yeni Zamanlama",
-  "createScheduleButton": "Zamanlama Oluştur",
   "emptyStateTitle": "Henüz zamanlama yok",
-  "emptyStateDescription": "Taramaları, temizlikleri ve güncellemeleri otomatik olarak çalıştırmak için bir zamanlama oluşturun.",
+  "emptyStateDescription": "Oluşturduğunuz zamanlamalar, sonraki çalıştırmaları ve son çalıştırmanın sonucuyla birlikte burada görünür.",
+  "upcomingTitle": "Sonraki çalıştırmalar",
+  "enabledCount_one": "{{count}} etkin",
+  "enabledCount_other": "{{count}} etkin",
+  "upcomingNote": "Zamanlanmış saatler: çalıştırma koşulları bir çalıştırmayı erteleyebilir.",
+  "listTitle": "Zamanlamalarınız",
+  "listMeta": "{{max}} üzerinden {{count}}",
   "maxSchedulesReached": "En fazla {{max}} zamanlamaya ulaşıldı.",
   "duplicatedToast": "\"{{name}}\" çoğaltıldı",
   "deletedToast": "\"{{name}}\" silindi",
@@ -13,49 +19,57 @@
   "createdToast": "\"{{name}}\" oluşturuldu",
   "failedEnableStartup": "Başlangıçta çalıştırma etkinleştirilemedi. Zamanlamalar yeniden başlatmadan sonra çalışmayabilir.",
   "failedEnableStartupAction": "Daha fazla bilgi",
-  "deleteConfirmTitle": "Zamanlamayı sil",
-  "deleteConfirmDescription": "Bu zamanlama kalıcı olarak kaldırılacaktır. Bu işlem geri alınamaz.",
+  "deleteConfirmTitle": "\"{{name}}\" silinsin mi?",
+  "deleteConfirmDescription": "Zamanlama silinir ve artık çalışmaz. Bu geri alınamaz: geri getirmek için yeniden oluşturmanız gerekir.",
   "deleteConfirmLabel": "Sil",
   "card": {
     "autoApplyBadge": "Otomatik uygula",
+    "enabled": "Etkin",
+    "disabled": "Etkin değil",
+    "enabledLabel": "{{name}} zamanlaması etkin",
     "editAction": "Düzenle",
     "duplicateAction": "Çoğalt",
     "deleteAction": "Sil",
     "noTasksSelected": "Görev seçilmedi",
     "nextRun": "Sonraki: {{time}}",
     "lastRun": "Son: {{time}}",
-    "neverRun": "Hiç çalıştırılmadı"
+    "neverRun": "Hiç çalıştırılmadı",
+    "statusSuccess": "tamamlandı",
+    "statusPartial": "kısmen tamamlandı",
+    "statusFailed": "başarısız oldu"
   },
   "presets": {
     "dialogTitle": "Bir şablon seçin",
     "weeklyFullCleanLabel": "Haftalık Tam Temizlik",
-    "weeklyFullCleanDescription": "Her Pazartesi saat 09:00'da tüm temizleyici kategorileri",
+    "weeklyFullCleanDescription": "Her Pazartesi saat 9:00'da, onay istemeden tüm temizlik kategorileri",
     "dailyLightSweepLabel": "Günlük Hafif Temizlik",
-    "dailyLightSweepDescription": "Her gün saat 08:00'de sistem, tarayıcılar ve geri dönüşüm kutusu",
+    "dailyLightSweepDescription": "Her gün saat 8:00'de, onay istemeden sistem, tarayıcılar ve Geri Dönüşüm Kutusu",
     "monthlyDeepMaintenanceLabel": "Aylık Derin Bakım",
-    "monthlyDeepMaintenanceDescription": "Her ayın 1'inde saat 10:00'da tam temizlik + kayıt defteri, sürücüler ve yazılımlar",
+    "monthlyDeepMaintenanceDescription": "Ayın 1'inde saat 10:00'da, onay istemeden tam temizlik, kayıt defteri, sürücüler ve yazılım",
     "customLabel": "Özel",
-    "customDescription": "Boş bir zamanlamayla sıfırdan başlayın"
+    "customDescription": "Doldurulacak boş bir zamanlama"
   },
   "dialog": {
     "editTitle": "Zamanlamayı Düzenle",
     "newTitle": "Yeni Zamanlama",
+    "close": "Kapat",
     "nameLabel": "Ad",
-    "namePlaceholder": "Örn. Haftalık Derin Temizlik",
+    "namePlaceholder": "örn. Pazartesi temizliği",
     "frequencyLabel": "Sıklık",
     "frequencyDaily": "Günlük",
     "frequencyWeekly": "Haftalık",
     "frequencyMonthly": "Aylık",
     "dayLabel": "Gün",
     "timeLabel": "Saat",
+    "minuteLabel": "Dakika",
     "tasksLabel": "Görevler",
     "selectAll": "Tümünü seç",
     "deselectAll": "Tüm seçimleri kaldır",
     "cleanerGroup": "Temizleyici",
     "maintenanceGroup": "Bakım",
     "autoApplyLabel": "Otomatik uygula",
-    "autoApplyDescription": "Dosyaları otomatik olarak temizleyin, kayıt defteri sorunlarını düzeltin ve güncellemeleri onay istemeden yükleyin.",
-    "autoApplyWarning": "İşlemler zamanlamaya göre otomatik olarak çalıştırılacaktır. Hariç tutma listenizin güncel olduğundan emin olun.",
+    "autoApplyDescription": "Onay istemeden dosyaları temizler, kayıt defterini düzeltir ve güncellemeleri yükler.",
+    "autoApplyWarning": "Eylemler zamanlanan saatte kendiliğinden başlar. Önce hariç tutma listesini kontrol edin.",
     "cancelButton": "İptal",
     "saveChangesButton": "Değişiklikleri Kaydet",
     "createScheduleButton": "Zamanlama Oluştur"
@@ -83,12 +97,13 @@
   "frequency": {
     "everyDayAt": "Her gün saat {{time}}",
     "everyWeekdayAt": "Her {{day}} saat {{time}}",
-    "monthlyAt": "Her ayın {{ordinalDay}} günü saat {{time}}"
+    "monthlyOn": "Her ayın {{day}}. günü, saat {{time}}"
   },
   "nextRun": {
     "todayAt": "Bugün saat {{time}}",
     "tomorrowAt": "Yarın saat {{time}}",
-    "inDaysAt": "{{count}} gün sonra saat {{time}}",
+    "inDaysAt_one": "{{count}} gün sonra, saat {{time}}",
+    "inDaysAt_other": "{{count}} gün sonra, saat {{time}}",
     "dateAt": "{{date}} saat {{time}}"
   },
   "lastRun": {
@@ -113,7 +128,7 @@
     "skip": "İki dakikalık başlangıç penceresinden sonra atla",
     "once": "Hazır olduğunda bir kez çalıştır; kaçırılan çalıştırmaları birleştir",
     "runNow": "Şimdi çalıştır",
-    "runConfirm": "Bu zamanlama şimdi, kaydedilmiş görevleri ve otomatik uygulama seçimi kullanılarak çalıştırılsın mı? Güç, boşta kalma, Oyun Modu, alan ve bakım penceresi koşulları yine geçerlidir: bunların engellediği bir çalıştırma daha sonraki bir denetimde başlar ve beklerken yeniden Şimdi çalıştır seçilirse iptal edilir.",
+    "runConfirm": "Kaydedilen görevler, zamanlamanın otomatik uygulama seçimiyle çalışır. Güç, boşta kalma, Oyun Modu, alan ve bakım penceresi koşulları geçerliliğini korur: bunlar çalıştırmayı geciktirirse, sonraki kontrolde başlar; beklerken tekrar Şimdi çalıştır seçmek onu iptal eder.",
     "runFailed": "Zamanlama başlatılamadı",
     "running": "Çalışıyor",
     "nextEvaluation": "Sonraki denetim yaklaşık {{time}}",
@@ -122,11 +137,10 @@
     "moveUp": "Yukarı",
     "moveDown": "Aşağı",
     "restrict": "{{name}} için kategorileri seçin",
-    "findCategories": "Kategorileri tara",
-    "scanning": "Taranıyor...",
+    "findCategories": "Kategorileri bul",
     "scopeHint": "Yalnızca işaretlenen kategoriler dahil edilir. Boş seçim, bu görevde hiçbir temizliğin çalıştırılmayacağı anlamına gelir. Tarama yalnızca şu anda mevcut kategorileri bulur; temizlik yapmaz.",
     "waitForScan": "Geçerli taramanın veya temizliğin tamamlanmasını bekleyin.",
-    "noCategories": "Kategori bulunamadı. Uygulama verileri önbelleğe aldıktan sonra yeni bir tarama çalıştırın.",
+    "noCategories": "Kategori bulunamadı. Uygulamada önbelleğe alınmış veri olduğunda yeni bir tarama çalıştırın.",
     "scanFailed": "Kategoriler yüklenemedi.",
     "waiting": {
       "idle": "Boşta kalma süresi bekleniyor",
@@ -142,6 +156,9 @@
       "interrupted": "Çalıştırma penceresini kaybetti ve başarısız olarak kaydedildi; bu olay yeniden oynatılmayacak."
     },
     "saveFailed": "Zamanlama kaydedilemedi. Yeniden deneyin.",
-    "skipped": "Koşullar değiştikten sonra atlandı."
+    "skipped": "Koşullar değiştikten sonra atlandı.",
+    "runTitle": "\"{{name}}\" şimdi çalıştırılsın mı?",
+    "moveUpLabel": "{{name}} öğesini yukarı taşı",
+    "moveDownLabel": "{{name}} öğesini aşağı taşı"
   }
 }
