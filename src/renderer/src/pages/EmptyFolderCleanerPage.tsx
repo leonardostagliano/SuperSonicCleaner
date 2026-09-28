@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { FolderOpen, RotateCcw, X } from 'lucide-react'
 import { icons } from '@/lib/icons'
 import { useEmptyFolderStore } from '@/stores/empty-folder-store'
+import { refreshDrivesAfterDelete } from '@/stores/drives-store'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Receipt } from '@/components/shared/Receipt'
@@ -98,6 +99,8 @@ export function EmptyFolderCleanerPage() {
               folders: formatCount(outcome.deleted)
             })
           )
+          // Only a permanent deletion frees space on the drive: read it again.
+          void refreshDrivesAfterDelete(mode, outcome.deleted)
         }
         if (outcome.failed > 0) {
           toast.error(

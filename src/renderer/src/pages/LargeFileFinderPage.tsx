@@ -5,7 +5,7 @@ import { FolderOpen, RotateCcw, X } from 'lucide-react'
 import { formatBytes, NO_VALUE } from '@/lib/utils'
 import { icons } from '@/lib/icons'
 import { useLargeFileStore } from '@/stores/large-file-store'
-import { useDrivesStore } from '@/stores/drives-store'
+import { refreshDrivesAfterDelete } from '@/stores/drives-store'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Receipt } from '@/components/shared/Receipt'
@@ -119,8 +119,8 @@ export function LargeFileFinderPage() {
               size: formatBytes(outcome.spaceRecovered)
             })
           )
-          // Only a permanent deletion frees space on the drive.
-          if (mode === 'permanent') void useDrivesStore.getState().refresh({ fresh: true })
+          // Only a permanent deletion frees space on the drive: read it again.
+          void refreshDrivesAfterDelete(mode, outcome.deleted)
         }
         if (outcome.failed > 0) {
           toast.error(

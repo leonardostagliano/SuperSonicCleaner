@@ -50,3 +50,15 @@ export const useDrivesStore = create<DrivesState>((set, get) => ({
     return inFlight
   }
 }))
+
+/**
+ * After a deletion from a storage tool: only a permanent deletion frees space on the
+ * drive, so only then are the drives read again, bypassing the cache.
+ */
+export function refreshDrivesAfterDelete(
+  mode: 'recycle' | 'permanent',
+  deleted: number
+): Promise<void> {
+  if (mode !== 'permanent' || deleted <= 0) return Promise.resolve()
+  return useDrivesStore.getState().refresh({ fresh: true })
+}

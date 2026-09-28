@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { DriveInfo } from '@shared/types'
-import { mergeSystemDrive, useDrivesStore } from './drives-store'
+import { mergeSystemDrive, refreshDrivesAfterDelete, useDrivesStore } from './drives-store'
 
 const drive = (letter: string, extra: Partial<DriveInfo> = {}): DriveInfo => ({
   letter,
@@ -109,5 +109,22 @@ describe('useDrivesStore.refresh', () => {
     })
     await useDrivesStore.getState().refresh()
     expect(useDrivesStore.getState().status).toBe('unavailable')
+  })
+})
+
+describe('refreshDrivesAfterDelete', () => {
+  it('re-reads the drives, bypassing the cache, after a permanent deletion', async () => {
+    const diskDrives = vi.fn(async () => [drive('C')])
+    stubKudu({ diskSystemDrive: vi.fn(async () => null), diskDrives })
+    await refreshDrivesAfterDelete('permanent', 3)
+    expect(diskDrives).toHaveBeenCalledWith({ fresh: true })
+  })
+
+  it('leaves the drives alone when nothing was deleted or items went to the Recycle Bin', async () => {
+    const diskDrives = vi.fn(async () => [drive('C')])
+    stubKudu({ diskSystemDrive: vi.fn(async () => null), diskDrives })
+    await refreshDrivesAfterDelete('recycle', 3)
+    await refreshDrivesAfterDelete('permanent', 0)
+    expect(diskDrives).not.toHaveBeenCalled()
   })
 })
