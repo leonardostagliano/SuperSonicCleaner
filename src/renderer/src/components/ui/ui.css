@@ -1,0 +1,724 @@
+/* Report primitives (components/ui) and the shared empty state, dialog and receipt.
+   Tokens only: colours, radii, type sizes, spacing and durations come from design-tokens.css.
+   Imported last in main.tsx so equal-specificity rules in globals.css, pulse.css and
+   controls.css never win. A declaration marked "legacy:" beats an older rule that forces
+   its value (with !important or a stronger selector); Task C1 deletes those rules, then
+   the !important can go. */
+
+/* ── Button ─────────────────────────────────────────────────────────────── */
+.ui-button {
+  --ui-button-bg: var(--surface);
+  --ui-button-fg: var(--text-primary);
+  --ui-button-border: var(--border-strong);
+  --ui-button-hover-bg: var(--surface-hover);
+  --ui-button-active-bg: var(--surface-pressed);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 32px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--ui-button-border);
+  border-radius: var(--radius-control);
+  background: var(--ui-button-bg);
+  /* legacy: .feature-layout button:not(.feature-button) sets the colour at (0,2,1). */
+  color: var(--ui-button-fg) !important;
+  font-family: inherit;
+  font-size: var(--text-13);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    border-color var(--duration-feedback) var(--ease-out),
+    color var(--duration-feedback) var(--ease-out);
+}
+.ui-button[data-size='lg'] {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 var(--space-4);
+}
+.ui-button[data-icon-only] {
+  width: 32px;
+  padding: 0;
+}
+.ui-button[data-icon-only][data-size='lg'] {
+  width: 36px;
+}
+.ui-button[data-variant='primary'] {
+  --ui-button-bg: var(--primary-bg);
+  --ui-button-fg: var(--primary-fg);
+  --ui-button-border: transparent;
+  --ui-button-hover-bg: color-mix(in srgb, var(--primary-bg) 88%, var(--primary-fg));
+  --ui-button-active-bg: color-mix(in srgb, var(--primary-bg) 80%, var(--primary-fg));
+}
+.ui-button[data-variant='ghost'] {
+  --ui-button-bg: transparent;
+  --ui-button-fg: var(--text-secondary);
+  --ui-button-border: var(--border-medium);
+  --ui-button-hover-bg: var(--bg-hover);
+  --ui-button-active-bg: var(--bg-active);
+}
+.ui-button[data-variant='danger'] {
+  --ui-button-bg: var(--danger-button-bg);
+  --ui-button-fg: var(--danger-button-fg);
+  --ui-button-border: transparent;
+  --ui-button-hover-bg: color-mix(in srgb, var(--danger-button-bg) 88%, var(--danger-button-fg));
+  --ui-button-active-bg: color-mix(in srgb, var(--danger-button-bg) 80%, var(--danger-button-fg));
+}
+.ui-button[aria-pressed='true'] {
+  --ui-button-bg: var(--bg-active);
+  --ui-button-border: var(--border-stronger);
+}
+.ui-button:hover:not(:disabled) {
+  background: var(--ui-button-hover-bg);
+}
+.ui-button[data-variant='ghost']:hover:not(:disabled) {
+  --ui-button-fg: var(--text-primary);
+}
+.ui-button:active:not(:disabled) {
+  background: var(--ui-button-active-bg);
+}
+.ui-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* legacy: .app-content :where(button, input, select, textarea):disabled repaints every
+   disabled control grey with !important. Keep the variant and fade it instead. */
+.ui-button:disabled {
+  opacity: 0.5 !important;
+  border-color: var(--ui-button-border) !important;
+  background: var(--ui-button-bg) !important;
+  color: var(--ui-button-fg) !important;
+  cursor: not-allowed !important;
+}
+/* legacy: the same rule dims icons inside disabled controls to 0.72. */
+.ui-button:disabled svg {
+  opacity: 1;
+}
+/* Busy is working, not unavailable: full strength, spinner in place of the icon. */
+.ui-button[aria-busy='true'] {
+  opacity: 1 !important;
+  cursor: progress !important;
+}
+.ui-button-icon {
+  flex: none;
+}
+.ui-button-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ui-button-label-busy {
+  visibility: hidden;
+}
+.ui-button-spinner-overlay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+.ui-spin {
+  animation: ui-spin 900ms linear infinite;
+}
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Card and Section ───────────────────────────────────────────────────── */
+.ui-card {
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-container);
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+.ui-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.ui-section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+.ui-section-aside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-inline-start: auto;
+}
+.ui-section-meta {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+.ui-section-meta[data-tone='recommended'] {
+  color: var(--signal-rec-text);
+  font-weight: 600;
+}
+
+/* ── Tag ────────────────────────────────────────────────────────────────── */
+.ui-tag {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ui-tag[data-tone='recommended'] {
+  color: var(--signal-rec-text);
+  font-weight: 600;
+}
+.ui-tag[data-tone='ok'] {
+  color: var(--signal-ok-text);
+  font-weight: 600;
+}
+.ui-tag[data-tone='danger'] {
+  color: var(--signal-danger-text);
+  font-weight: 600;
+}
+
+/* ── Table and list rows ────────────────────────────────────────────────── */
+.ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-variant-numeric: tabular-nums;
+}
+/* legacy: a bare `thead` rule gives the header a tinted background. */
+.ui-table thead {
+  background: none;
+}
+/* (0,1,2) beats .feature-layout th and .app-content :where(th). */
+.ui-table thead th {
+  padding: 0 var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--border-medium);
+  background: none;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  font-weight: 500;
+  text-align: start;
+  white-space: nowrap;
+}
+/* (0,1,2) beats .feature-layout td and .app-content :where(td). */
+.ui-table tbody td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+.ui-table tbody tr:last-child > td {
+  border-bottom: 0;
+}
+.ui-table :is(th, td)[data-numeric] {
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.ui-table td[data-muted] {
+  color: var(--text-muted);
+}
+.ui-table tr[data-recommended] > :first-child {
+  box-shadow: inset 2px 0 0 var(--signal-rec);
+}
+.ui-table tr[data-recommended] > :first-child:dir(rtl) {
+  box-shadow: inset -2px 0 0 var(--signal-rec);
+}
+.ui-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 40px;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3) 0;
+}
+.ui-list-row + .ui-list-row {
+  border-top: 1px solid var(--border-default);
+}
+.ui-list-row[data-recommended] {
+  box-shadow: inset 2px 0 0 var(--signal-rec);
+}
+.ui-list-row[data-recommended]:dir(rtl) {
+  box-shadow: inset -2px 0 0 var(--signal-rec);
+}
+
+/* ── ProgressBar: scaleX only, never a width transition ─────────────────── */
+.ui-progress {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--track);
+}
+.ui-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--chart-1);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-enter) var(--ease-out);
+}
+.ui-progress-fill:dir(rtl) {
+  transform-origin: right center;
+}
+.ui-progress[data-tone='danger'] .ui-progress-fill {
+  background: var(--signal-danger);
+}
+.ui-progress[data-indeterminate] .ui-progress-fill {
+  inset-inline-end: auto;
+  width: 30%;
+  transform: none;
+  transition: none;
+  animation: ui-progress-slide 1400ms ease-in-out infinite;
+}
+.ui-progress[data-indeterminate] .ui-progress-fill:dir(rtl) {
+  animation-name: ui-progress-slide-rtl;
+}
+/* The segment is 30 % of the track: 100 / 30 = 333.34 % of its own width crosses it. */
+@keyframes ui-progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(333.34%);
+  }
+}
+@keyframes ui-progress-slide-rtl {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-333.34%);
+  }
+}
+
+/* ── Switch ─────────────────────────────────────────────────────────────── */
+.ui-switch {
+  --ui-switch-bg: var(--toggle-off-bg);
+  --ui-switch-border: var(--toggle-off-border);
+  --ui-switch-thumb: var(--toggle-off-thumb);
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 20px;
+  padding: 0;
+  border: 1px solid var(--ui-switch-border);
+  border-radius: var(--radius-pill);
+  background: var(--ui-switch-bg);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    border-color var(--duration-feedback) var(--ease-out);
+}
+.ui-switch[aria-checked='true'] {
+  --ui-switch-bg: var(--primary-bg);
+  --ui-switch-border: var(--primary-bg);
+  --ui-switch-thumb: var(--toggle-on-thumb);
+}
+.ui-switch-thumb {
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ui-switch-thumb);
+  transition:
+    transform var(--duration-feedback) var(--ease-out),
+    background-color var(--duration-feedback) var(--ease-out);
+}
+.ui-switch[aria-checked='true'] .ui-switch-thumb {
+  transform: translateX(16px);
+}
+.ui-switch[aria-checked='true']:dir(rtl) .ui-switch-thumb {
+  transform: translateX(-16px);
+}
+.ui-switch:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* legacy: .app-content :where(button, …):disabled, see Button. */
+.ui-switch:disabled {
+  opacity: 0.5 !important;
+  border-color: var(--ui-switch-border) !important;
+  background: var(--ui-switch-bg) !important;
+  cursor: not-allowed !important;
+}
+
+/* ── Segmented ──────────────────────────────────────────────────────────── */
+.ui-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  padding: 2px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-control);
+  background: var(--bg-subtle);
+}
+.ui-segmented-option {
+  --ui-segmented-fg: var(--text-secondary);
+  height: 28px;
+  /* legacy: .app-content :where(button:not(.toggle-switch), select) sets 36px. */
+  min-height: 28px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  /* legacy: .feature-layout button:not(.feature-button) sets the colour at (0,2,1). */
+  color: var(--ui-segmented-fg) !important;
+  font-family: inherit;
+  font-size: var(--text-13);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    color var(--duration-feedback) var(--ease-out);
+}
+.ui-segmented-option:hover:not([aria-checked='true']) {
+  --ui-segmented-fg: var(--text-primary);
+  background: var(--bg-hover);
+}
+.ui-segmented-option[aria-checked='true'] {
+  --ui-segmented-fg: var(--text-primary);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+  font-weight: 600;
+}
+.ui-segmented-option:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* ── Checkbox: the native input, redrawn ────────────────────────────────── */
+.ui-checkbox {
+  --ui-checkbox-bg: transparent;
+  --ui-checkbox-border: var(--border-strong);
+  appearance: none;
+  display: inline-grid;
+  flex: none;
+  place-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1.5px solid var(--ui-checkbox-border);
+  border-radius: 4px;
+  background: var(--ui-checkbox-bg);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    border-color var(--duration-feedback) var(--ease-out);
+}
+.ui-checkbox::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--primary-fg);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transition: transform var(--duration-feedback) var(--ease-out);
+}
+.ui-checkbox:hover:not(:disabled, :checked, :indeterminate) {
+  --ui-checkbox-border: var(--border-stronger);
+}
+.ui-checkbox:checked,
+.ui-checkbox:indeterminate {
+  --ui-checkbox-bg: var(--primary-bg);
+  --ui-checkbox-border: var(--primary-bg);
+}
+.ui-checkbox:checked::before {
+  transform: scale(1);
+}
+.ui-checkbox:indeterminate::before {
+  clip-path: inset(40% 10%);
+  transform: scale(1);
+}
+.ui-checkbox:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+/* legacy: .app-content :where(button, input, …):disabled, see Button. */
+.ui-checkbox:disabled {
+  opacity: 0.5 !important;
+  border-color: var(--ui-checkbox-border) !important;
+  background: var(--ui-checkbox-bg) !important;
+  cursor: not-allowed !important;
+}
+
+/* ── EmptyState ─────────────────────────────────────────────────────────── */
+.ui-empty {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.ui-empty-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.ui-empty-icon {
+  flex: none;
+  color: var(--text-muted);
+}
+.ui-empty-text {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.ui-empty-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+.ui-empty-description {
+  margin: var(--space-1) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.ui-empty-action {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+/* Older call sites spaced the action below a centred text with a top margin. */
+.ui-empty-action > * {
+  margin: 0;
+}
+.ui-empty-checks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ui-empty-check {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-default);
+}
+.ui-empty-check-title {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
+}
+.ui-empty-check-detail {
+  display: block;
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+@media (min-width: 900px) {
+  .ui-empty-checks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 639.98px) {
+  .ui-empty-status {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ui-empty-text {
+    flex-basis: auto;
+  }
+  .ui-empty-action {
+    margin-inline-start: 0;
+  }
+}
+
+/* ── Dialog (ConfirmDialog) ─────────────────────────────────────────────── */
+.ui-dialog-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  animation: ui-fade-in var(--duration-enter) var(--ease-out);
+}
+.ui-dialog-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--page-bg) 72%, transparent);
+}
+/* The light page colour would wash the page out: dim it with the theme's darkest ink. */
+.light .ui-dialog-scrim {
+  background: color-mix(in srgb, var(--text-primary) 32%, transparent);
+}
+.ui-dialog {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-container);
+  background: var(--flyout-bg);
+  box-shadow: var(--shadow-flyout);
+  color: var(--text-primary);
+}
+.ui-dialog-title {
+  margin: 0 0 var(--space-2);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+.ui-dialog-body {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.ui-dialog-details {
+  max-height: 7.5em;
+  margin: var(--space-3) 0 0;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-control);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.ui-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+@keyframes ui-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Receipt ────────────────────────────────────────────────────────────── */
+.ui-receipt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-4);
+}
+.ui-receipt-title,
+.ui-receipt-value {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-15);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+.ui-receipt-value {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.ui-receipt-facts,
+.ui-receipt-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.ui-receipt-facts {
+  color: var(--text-secondary);
+  font-size: var(--text-13);
+  line-height: 1.5;
+}
+.ui-receipt-note {
+  color: var(--text-muted);
+  font-size: var(--text-12);
+  line-height: 1.5;
+}
+.ui-receipt-links a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+.ui-receipt-links a:hover {
+  color: var(--text-primary);
+  text-decoration-color: currentColor;
+}
+.ui-receipt[data-compact] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+}
+.ui-receipt[data-compact] .ui-receipt-title,
+.ui-receipt[data-compact] .ui-receipt-value {
+  font-family: inherit;
+  font-size: var(--text-13);
+}
+.ui-receipt[data-compact] .ui-receipt-facts {
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--text-12);
+}
+.ui-receipt[data-compact] .ui-receipt-value {
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .ui-spin,
+  .ui-dialog-layer {
+    animation: none;
+  }
+  .ui-progress-fill {
+    transition: none;
+  }
+  /* No moving segment: a steady, faint full track says "working, amount unknown". */
+  .ui-progress[data-indeterminate] .ui-progress-fill {
+    width: 100%;
+    animation: none;
+    opacity: 0.4;
+  }
+}

@@ -6,6 +6,8 @@ import './globals.css'
 import './design-tokens.css'
 import './pulse.css'
 import './controls.css'
+// After the tokens and the legacy sheets, so equal-specificity legacy rules never win.
+import './components/ui/ui.css'
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },

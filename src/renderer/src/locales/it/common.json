@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}} h fa",
   "daysAgo": "{{days}} g fa",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Cosa viene controllato"
 }

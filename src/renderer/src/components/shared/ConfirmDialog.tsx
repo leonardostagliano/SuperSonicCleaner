@@ -1,16 +1,20 @@
-import { useEffect, useRef } from 'react'
-import { cn } from '@/lib/utils'
-import { AlertTriangle } from 'lucide-react'
+import { useEffect, useId, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Button } from '@/components/ui/Button'
 
 interface ConfirmDialogProps {
   open: boolean
   onConfirm: () => void
   onCancel: () => void
+  /** The question with the quantity ("Eliminare 1.512 file (2,34 GB)?"). */
   title: string
+  /** What is affected and the limits ("Non è reversibile: …"). */
   description: string
+  /** Repeats the action ("Elimina 2,34 GB"), never "OK" or "Conferma". */
   confirmLabel?: string
+  /** 'danger' only for irreversible actions. 'warning' is accepted and rendered as 'default'. */
   variant?: 'default' | 'danger' | 'warning'
+  /** A scrollable monospace list (paths, names). */
   details?: string
 }
 
@@ -25,6 +29,8 @@ export function ConfirmDialog({
   details
 }: ConfirmDialogProps) {
   const { t } = useTranslation('common')
+  const titleId = useId()
+  const descriptionId = useId()
   const dialogRef = useRef<HTMLDivElement>(null)
   const onCancelRef = useRef(onCancel)
   onCancelRef.current = onCancel
@@ -72,106 +78,31 @@ export function ConfirmDialog({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      <div
-        className="absolute inset-0"
-        style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)' }}
-        onClick={onCancel}
-        aria-hidden="true"
-      />
-
+    <div className="ui-dialog-layer">
+      <div className="ui-dialog-scrim" onClick={onCancel} aria-hidden="true" />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-desc"
-        className="glass-card relative w-full max-w-md animate-scale-in rounded-2xl p-6"
-        style={{
-          background: 'var(--card-bg)',
-          boxShadow: '0 24px 80px rgba(0,0,0,0.5), inset 0 1px 0 var(--glass-inset)'
-        }}
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        className="ui-dialog"
+        data-variant={variant === 'danger' ? 'danger' : 'default'}
       >
-        <div className="mb-5 flex items-start gap-4">
-          {variant !== 'default' && (
-            <div
-              className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-              style={{
-                background:
-                  variant === 'danger'
-                    ? 'color-mix(in srgb, var(--danger), transparent 88%)'
-                    : 'var(--accent-muted-bg)'
-              }}
-            >
-              <AlertTriangle
-                className="h-5 w-5"
-                style={{ color: variant === 'danger' ? 'var(--danger)' : 'var(--warning)' }}
-                strokeWidth={1.8}
-                aria-hidden="true"
-              />
-            </div>
-          )}
-          <div>
-            <h3 id="confirm-dialog-title" className="text-[16px] font-semibold text-white">
-              {title}
-            </h3>
-            <p
-              id="confirm-dialog-desc"
-              className="mt-1.5 text-[13px] leading-relaxed"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {description}
-            </p>
-            {details && (
-              <p
-                className="mt-3 whitespace-pre-line rounded-xl p-3 font-mono text-[11px] break-all overflow-y-auto"
-                style={{
-                  background: 'var(--bg-subtle)',
-                  color: 'var(--text-muted)',
-                  maxHeight: '4.5rem'
-                }}
-              >
-                {details}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="flex justify-end gap-2.5">
-          <button
-            onClick={onCancel}
-            className="rounded-xl px-5 py-2.5 text-[13px] font-medium transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--bg-subtle-2)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent'
-            }}
-          >
+        <h2 id={titleId} className="ui-dialog-title">
+          {title}
+        </h2>
+        <p id={descriptionId} className="ui-dialog-body">
+          {description}
+        </p>
+        {details && <p className="ui-dialog-details">{details}</p>}
+        <div className="ui-dialog-actions">
+          <Button variant="ghost" onClick={onCancel}>
             {t('cancel')}
-          </button>
-          <button
-            onClick={onConfirm}
-            className="rounded-xl px-5 py-2.5 text-[13px] font-semibold transition duration-200"
-            style={{
-              background:
-                variant === 'danger'
-                  ? 'color-mix(in srgb, var(--danger), transparent 88%)'
-                  : variant === 'warning'
-                    ? 'var(--accent-muted-bg)'
-                    : 'var(--accent)',
-              color:
-                variant === 'danger'
-                  ? 'var(--danger)'
-                  : variant === 'warning'
-                    ? 'var(--warning)'
-                    : 'var(--text-on-accent)',
-              border: `1px solid ${variant === 'danger' ? 'color-mix(in srgb, var(--danger), transparent 68%)' : 'var(--accent-muted-border)'}`
-            }}
-          >
+          </Button>
+          <Button variant={variant === 'danger' ? 'danger' : 'primary'} onClick={onConfirm}>
             {confirmLabel ?? t('confirm')}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

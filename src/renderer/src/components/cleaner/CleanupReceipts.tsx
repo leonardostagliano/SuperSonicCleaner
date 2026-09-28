@@ -7,19 +7,25 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { Link } from 'react-router-dom'
 import type { CleanupReceipt, CleanupReceiptItem } from '@shared/cleanup-receipts'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { Receipt } from '@/components/shared/Receipt'
+import { Button } from '@/components/ui/Button'
+import { Table, TableCell, TableHead, TableHeaderCell, TableRow } from '@/components/ui/Table'
 import { formatBytes } from '@/lib/utils'
 
-type Receipt = CleanupReceipt & { retryable: number }
+type StoredReceipt = CleanupReceipt & { retryable: number }
+const COUNTS = ['selected', 'attempted', 'deleted', 'skipped', 'failed'] as const
+const statusKey = (r: StoredReceipt) =>
+  r.failed || r.skipped ? 'receipts.withIssues' : 'receipts.complete'
 export function CleanupReceipts() {
   const { t } = useTranslation('history')
-  const [receipts, setReceipts] = useState<Receipt[]>([])
+  const [receipts, setReceipts] = useState<StoredReceipt[]>([])
   const [selected, setSelected] = useState<string | null>(null)
   const [page, setPage] = useState(0)
   const [details, setDetails] = useState<{ items: CleanupReceiptItem[]; total: number }>({
     items: [],
     total: 0
   })
-  const [retry, setRetry] = useState<Receipt | null>(null)
+  const [retry, setRetry] = useState<StoredReceipt | null>(null)
   const [clear, setClear] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -64,7 +70,6 @@ export function CleanupReceipts() {
     }
   }, [selected, page, t])
   const receipt = receipts.find((r) => r.id === selected)
-  const button = 'feature-button'
   const run = async (action: () => Promise<unknown>) => {
     setBusy(true)
     try {
@@ -82,17 +87,16 @@ export function CleanupReceipts() {
       aria-label={t('receipts.title')}
     >
       <div className="flex flex-wrap items-center gap-3">
-        <button className={button} disabled={loading || busy} onClick={() => void load()}>
-          <RefreshCw size={14} aria-hidden="true" />
+        <Button icon={RefreshCw} busy={loading} disabled={busy} onClick={() => void load()}>
           {t('receipts.refresh')}
-        </button>
-        <button
-          className={button}
+        </Button>
+        <Button
+          variant="ghost"
           disabled={busy || (!receipts.length && !error)}
           onClick={() => setClear(true)}
         >
           {t('clearButton')}
-        </button>
+        </Button>
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
           {t('receipts.description')}
         </p>
@@ -115,142 +119,137 @@ export function CleanupReceipts() {
           {receipts.map((r) => (
             <button
               key={r.id}
-              className="w-full rounded-xl border bg-[var(--card-bg)] p-4 text-left text-sm transition-colors hover:bg-[var(--bg-hover)]"
+              className="w-full rounded-[var(--radius-container)] border bg-[var(--card-bg)] px-4 py-3 text-start transition-colors hover:bg-[var(--bg-hover)]"
               aria-pressed={selected === r.id}
               onClick={() => {
                 setSelected(r.id)
                 setPage(0)
               }}
             >
-              <b>{new Date(r.startedAt).toLocaleString()}</b>
-              <div>{r.categories.map((c) => c.name).join(', ')}</div>
-              <div>
-                {formatBytes(r.removedBytes)} · {r.origin}
-              </div>
-              <div>{t(r.failed || r.skipped ? 'receipts.withIssues' : 'receipts.complete')}</div>
+              <Receipt
+                compact
+                title={new Date(r.startedAt).toLocaleString()}
+                value={formatBytes(r.removedBytes)}
+                facts={[r.categories.map((c) => c.name).join(', '), r.origin, t(statusKey(r))]}
+              />
             </button>
           ))}
         </div>
         {receipt && (
-          <div className="feature-card min-w-0 space-y-4">
-            <h2 className="text-lg font-semibold">{t('receipts.title')}</h2>
-            <p>
-              {t('receipts.selectionContext', {
-                found: receipt.found ?? '—',
-                unselected: receipt.unselected ?? '—'
-              })}
-            </p>
-            <div className="grid grid-cols-2 gap-3 xl:grid-cols-5">
-              {(['selected', 'attempted', 'deleted', 'skipped', 'failed'] as const).map((key) => (
-                <div key={key} className="feature-metric">
-                  <p className="text-xs text-[var(--text-muted)]">{t('receipts.' + key)}</p>
-                  <b className="text-xl">{receipt[key].toLocaleString()}</b>
-                </div>
-              ))}
-            </div>
-            <p>{t('receipts.bytes', { size: formatBytes(receipt.removedBytes) })}</p>
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-              {t('receipts.units')}
-            </p>
-            {receipt.volumeChanges?.map((volume) => (
-              <p key={volume.volume}>
-                {t('receipts.volumeDelta', {
-                  volume: volume.volume,
-                  size: (volume.delta < 0 ? '−' : '+') + formatBytes(Math.abs(volume.delta))
+          <div className="min-w-0 space-y-4">
+            <Receipt
+              title={t(statusKey(receipt))}
+              value={t('receipts.bytes', { size: formatBytes(receipt.removedBytes) })}
+              facts={[
+                new Date(receipt.startedAt).toLocaleString(),
+                ...COUNTS.map((key) => `${t('receipts.' + key)}: ${receipt[key].toLocaleString()}`)
+              ]}
+              skipped={
+                receipt.reasons
+                  .map((r) => `${r.reason}: ${r.count.toLocaleString()}`)
+                  .join(' · ') || undefined
+              }
+            />
+            <div className="feature-card min-w-0 space-y-4">
+              <p>
+                {t('receipts.selectionContext', {
+                  found: receipt.found ?? '—',
+                  unselected: receipt.unselected ?? '—'
                 })}
               </p>
-            ))}
-            {!!receipt.unknownSizeItems && (
-              <p>{t('receipts.unknownSize', { count: receipt.unknownSizeItems })}</p>
-            )}
-            {receipt.parentId && (
-              <p>
-                {t('receipts.retryOf')}{' '}
-                <button
-                  className="underline"
-                  onClick={() => {
-                    setSelected(receipt.parentId!)
-                    setPage(0)
-                  }}
-                >
-                  {receipt.parentId}
-                </button>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                {t('receipts.units')}
               </p>
-            )}
-            <div className="flex flex-wrap gap-2">
-              <button
-                className={button}
-                disabled={busy}
-                onClick={() => void run(() => window.kudu.cleanupReceiptExport(receipt.id))}
-              >
-                <Download size={14} aria-hidden="true" />
-                {t('receipts.export')}
-              </button>
-              <button
-                className={button}
-                disabled={busy || !receipt.retryable}
-                onClick={() => setRetry(receipt)}
-              >
-                {t('receipts.retry', { count: receipt.retryable })}
-              </button>
-              <Link className={button} to="/cleaner">
-                {t('receipts.rescan')}
-              </Link>
-            </div>
-            <p className="text-sm">{t('receipts.retryLifetime')}</p>
-            {!receipt.pathLogging && <p className="text-sm">{t('receipts.pathsOff')}</p>}
-            <div>
-              {receipt.reasons.map((r) => (
-                <p key={r.reason}>
-                  {r.reason}: {r.count.toLocaleString()}
+              {receipt.volumeChanges?.map((volume) => (
+                <p key={volume.volume}>
+                  {t('receipts.volumeDelta', {
+                    volume: volume.volume,
+                    size: (volume.delta < 0 ? '−' : '+') + formatBytes(Math.abs(volume.delta))
+                  })}
                 </p>
               ))}
+              {!!receipt.unknownSizeItems && (
+                <p>{t('receipts.unknownSize', { count: receipt.unknownSizeItems })}</p>
+              )}
+              {receipt.parentId && (
+                <p>
+                  {t('receipts.retryOf')}{' '}
+                  <button
+                    className="underline"
+                    onClick={() => {
+                      setSelected(receipt.parentId!)
+                      setPage(0)
+                    }}
+                  >
+                    {receipt.parentId}
+                  </button>
+                </p>
+              )}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  icon={Download}
+                  disabled={busy}
+                  onClick={() => void run(() => window.kudu.cleanupReceiptExport(receipt.id))}
+                >
+                  {t('receipts.export')}
+                </Button>
+                <Button disabled={busy || !receipt.retryable} onClick={() => setRetry(receipt)}>
+                  {t('receipts.retry', { count: receipt.retryable })}
+                </Button>
+                <Link className="ui-button" data-variant="secondary" data-size="md" to="/cleaner">
+                  {t('receipts.rescan')}
+                </Link>
+              </div>
+              <p className="text-sm">{t('receipts.retryLifetime')}</p>
+              {!receipt.pathLogging && <p className="text-sm">{t('receipts.pathsOff')}</p>}
+              {detailsLoading && <p role="status">{t('receipts.loading')}</p>}
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHead>
+                    <TableHeaderCell>{t('receipts.item')}</TableHeaderCell>
+                    <TableHeaderCell>{t('receipts.outcome')}</TableHeaderCell>
+                    <TableHeaderCell>{t('receipts.reason')}</TableHeaderCell>
+                    <TableHeaderCell numeric>{t('receipts.removed')}</TableHeaderCell>
+                  </TableHead>
+                  <tbody>
+                    {details.items.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="max-w-xs break-all">
+                          {item.path ?? item.category}
+                        </TableCell>
+                        <TableCell>{t('receipts.' + item.outcome)}</TableCell>
+                        <TableCell muted className="break-all">
+                          {item.reason || '—'}
+                        </TableCell>
+                        <TableCell numeric>{formatBytes(item.removedBytes)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  disabled={detailsLoading || !page}
+                  onClick={() => setPage(page - 1)}
+                >
+                  {t('receipts.previous')}
+                </Button>
+                <span className="tabular-nums">
+                  {page + 1} / {Math.max(1, Math.ceil(details.total / 50))}
+                </span>
+                <Button
+                  variant="ghost"
+                  disabled={detailsLoading || (page + 1) * 50 >= details.total}
+                  onClick={() => setPage(page + 1)}
+                >
+                  {t('receipts.next')}
+                </Button>
+              </div>
+              {!!receipt.detailsTruncated && (
+                <p>{t('receipts.truncated', { count: receipt.detailsTruncated })}</p>
+              )}
             </div>
-            {detailsLoading && <p role="status">{t('receipts.loading')}</p>}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr>
-                    <th>{t('receipts.item')}</th>
-                    <th>{t('receipts.outcome')}</th>
-                    <th>{t('receipts.reason')}</th>
-                    <th>{t('receipts.removed')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {details.items.map((item) => (
-                    <tr key={item.id} className="border-t">
-                      <td className="max-w-xs break-all py-2">{item.path ?? item.category}</td>
-                      <td>{t('receipts.' + item.outcome)}</td>
-                      <td className="break-all">{item.reason || '—'}</td>
-                      <td>{formatBytes(item.removedBytes)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                className={button}
-                disabled={detailsLoading || !page}
-                onClick={() => setPage(page - 1)}
-              >
-                {t('receipts.previous')}
-              </button>
-              <span>
-                {page + 1} / {Math.max(1, Math.ceil(details.total / 50))}
-              </span>
-              <button
-                className={button}
-                disabled={detailsLoading || (page + 1) * 50 >= details.total}
-                onClick={() => setPage(page + 1)}
-              >
-                {t('receipts.next')}
-              </button>
-            </div>
-            {!!receipt.detailsTruncated && (
-              <p>{t('receipts.truncated', { count: receipt.detailsTruncated })}</p>
-            )}
           </div>
         )}
       </div>
