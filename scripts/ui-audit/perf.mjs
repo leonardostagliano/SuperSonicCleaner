@@ -12,9 +12,10 @@ const normalizeRoute = (r) => {
 const args = parseArgs(process.argv.slice(2))
 const rounds = Number(args.rounds ?? 2)
 const routes = args.routes ? String(args.routes).split(',').map(normalizeRoute) : ROUTES
-const s = await connect()
-await s.setViewport(1440, 900)
-await s.evaluate(`(() => {
+/** Themes loop outermost; each switch reloads the renderer. */
+const themes = String(args.themes ?? 'dark').split(',')
+/** Installed again after every theme switch, since the switch reloads the renderer. */
+const observe = `(() => {
   if (window.__uiperf) return true
   const P = (window.__uiperf = { loaf: [], ls: [] })
   new PerformanceObserver((l) => {
@@ -27,7 +28,7 @@ await s.evaluate(`(() => {
     for (const e of l.getEntries()) if (!e.hadRecentInput) P.ls.push({ t: e.startTime, v: e.value })
   }).observe({ type: 'layout-shift' })
   return true
-})()`)
+})()`
 const measure = (route) => `(async () => {
   const P = window.__uiperf
   const route = ${JSON.stringify(route)}
@@ -66,38 +67,53 @@ const timeToValue = (route, probe) => `(async () => {
   }
   return -1
 })()`
-const out = { routes: [], firstValue: {} }
-for (let round = 0; round < rounds; round++) {
-  for (const route of routes) {
-    const res = JSON.parse(await s.evaluate(measure(route)))
-    out.routes.push({ round, ...res })
-    console.log(
-      round,
-      route.padEnd(24),
-      `commit ${res.commitMs}`,
-      `frame ${res.frameMs}`,
-      `LoAF ${res.loafMax}`,
-      `style ${res.styleLayoutMax}`,
-      `CLS ${res.cls}`,
-      `nodes ${res.nodes}`
-    )
-  }
-}
 const hasValue = (selector) =>
   `() => { const v = document.querySelector(${JSON.stringify(selector)})?.textContent?.trim(); return !!v && v !== '\\u2014' }`
-await s.navigate('/about')
-await sleep(1000)
-out.firstValue.homeStorageMs = await s.evaluate(
-  timeToValue('/', hasValue('.pulse-home-storage .pulse-big-value'))
-)
-await s.navigate('/about')
-await sleep(1000)
-out.firstValue.performanceMs = await s.evaluate(
-  timeToValue('/performance', hasValue('.performance-page [data-gauge-value]'))
-)
-console.log('time to first value', out.firstValue)
-await s.clearViewport()
-s.close()
+const s = await connect()
+/** `firstValue` is keyed by theme. */
+const out = { routes: [], firstValue: {} }
+try {
+  for (const theme of themes) {
+    await s.setTheme(theme)
+    await s.setViewport(1440, 900)
+    await s.evaluate(observe)
+    for (let round = 0; round < rounds; round++) {
+      for (const route of routes) {
+        const res = JSON.parse(await s.evaluate(measure(route)))
+        out.routes.push({ theme, round, ...res })
+        console.log(
+          theme.padEnd(5),
+          round,
+          route.padEnd(24),
+          `commit ${res.commitMs}`,
+          `frame ${res.frameMs}`,
+          `LoAF ${res.loafMax}`,
+          `style ${res.styleLayoutMax}`,
+          `CLS ${res.cls}`,
+          `nodes ${res.nodes}`
+        )
+      }
+    }
+    const firstValue = {}
+    await s.navigate('/about')
+    await sleep(1000)
+    firstValue.homeStorageMs = await s.evaluate(
+      timeToValue('/', hasValue('.pulse-home-storage .pulse-big-value'))
+    )
+    await s.navigate('/about')
+    await sleep(1000)
+    firstValue.performanceMs = await s.evaluate(
+      timeToValue('/performance', hasValue('.performance-page [data-gauge-value]'))
+    )
+    out.firstValue[theme] = firstValue
+    console.log(theme.padEnd(5), 'time to first value', firstValue)
+  }
+} finally {
+  await s.clearViewport()
+  // Leave the profile in the dark theme, whatever the run switched to.
+  await s.setTheme('dark')
+  s.close()
+}
 const stamp = new Date().toISOString().replace(/[:.]/g, '-')
 const file = path.join(OUT_DIR, `perf-${stamp}.json`)
 fs.writeFileSync(file, JSON.stringify(out, null, 1))

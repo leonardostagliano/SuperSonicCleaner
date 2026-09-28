@@ -117,6 +117,7 @@ export async function connect(port = process.env.CDP_PORT || 9333) {
     )
     await sleep(2500)
   }
+  const currentTheme = () => evaluate('window.kudu.settingsGet().then((s) => s.theme)')
   /** Poll until `selector` matches (true) or `timeoutMs` passes (false). */
   const waitForSelector = async (selector, timeoutMs = 60000) => {
     const started = Date.now()
@@ -127,7 +128,7 @@ export async function connect(port = process.env.CDP_PORT || 9333) {
     return false
   }
   const navigate = (route) => evaluate(`location.hash = ${JSON.stringify('#' + route)}`)
-  return {
+  const session = {
     send,
     evaluate,
     screenshot,
@@ -135,8 +136,45 @@ export async function connect(port = process.env.CDP_PORT || 9333) {
     clearViewport,
     setLanguage,
     currentLanguage,
+    currentTheme,
+    setTheme: (theme) => setTheme(session, theme),
     waitForSelector,
     navigate,
     close: () => ws.close()
   }
+  return session
+}
+
+/** Poll `expression` until it is truthy; evaluation errors while a reload swaps the document count as false. */
+async function waitUntil(session, expression, timeoutMs) {
+  const started = Date.now()
+  while (Date.now() - started < timeoutMs) {
+    try {
+      if (await session.evaluate(expression)) return true
+    } catch {
+      // The execution context is being replaced by the reload.
+    }
+    await sleep(100)
+  }
+  return false
+}
+
+/**
+ * Switch the isolated profile's theme ('dark' | 'light') and wait until <html>
+ * follows it. The renderer only reads the setting at start-up, so this reloads
+ * (like setLanguage), waits for the new document, then gives the class up to
+ * `timeoutMs`. No-op when the profile already has that theme applied.
+ */
+export async function setTheme(session, theme, timeoutMs = 3000) {
+  const applied = `document.documentElement.classList.contains('light') === ${theme === 'light'}`
+  if ((await session.currentTheme()) === theme && (await session.evaluate(applied))) return
+  // The marker lives on the old document only, so its absence means the reload happened.
+  await session.evaluate(
+    `window.kudu.settingsSet({ theme: ${JSON.stringify(theme)} }).then(() => { window.__sscThemeReload = true; location.reload(); return true })`
+  )
+  const reloaded = `!window.__sscThemeReload && document.readyState === 'complete' && !!document.querySelector('.app-content')`
+  if (!(await waitUntil(session, reloaded, 30000)))
+    throw new Error(`the renderer did not reload within 30 s after switching to ${theme}`)
+  if (!(await waitUntil(session, applied, timeoutMs)))
+    throw new Error(`theme ${theme} was not applied within ${timeoutMs} ms of the reload`)
 }

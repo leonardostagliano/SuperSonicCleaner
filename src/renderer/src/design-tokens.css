@@ -14,7 +14,7 @@
 
   --radius-card: 18px;
   --radius-tile: 14px;
-  --radius-control: 10px;
+  --radius-control: 6px;
   --radius-pill: 999px;
   --space-unit: 4px;
   --duration-fast: 150ms;
@@ -66,7 +66,8 @@
   --border-subtle: #ffffff08;
   --border-default: #ffffff0f;
   --border-medium: #ffffff14;
-  --border-strong: #ffffff24;
+  /* Control edges: at least 3:1 on --card-bg (design-tokens.test.ts). */
+  --border-strong: #ffffff54;
   --border-stronger: #ffffff36;
   --accent: #f5f5f7;
   --accent-hover: #ffffff;
@@ -106,15 +107,6 @@
   --selection-bg: #7aa2f740;
   --glow-amber: transparent;
   --glow-blue: transparent;
-
-  /* Tailwind color utilities follow the same theme as inline and plain CSS. */
-  --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-accent-muted: var(--accent-muted-bg);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-danger: var(--danger);
-  --color-info: var(--info);
 
   /* Report roles: neutral primary, amber only for what the app recommends,
      green only for a verified result, red only for irreversible actions and errors. */
@@ -191,7 +183,7 @@
   --border-subtle: #12121607;
   --border-default: #12121610;
   --border-medium: #12121617;
-  --border-strong: #12121626;
+  --border-strong: #12121673;
   --border-stronger: #12121638;
   --accent: #18181d;
   --accent-hover: #30303a;

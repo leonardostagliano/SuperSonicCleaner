@@ -18,6 +18,8 @@ const widths = String(args.widths ?? '900,1100,1251,1440')
   .split(',')
   .map(Number)
 const langs = String(args.langs ?? 'it,de,ar').split(',')
+/** Themes loop outermost; each switch reloads the renderer. */
+const themes = String(args.themes ?? 'dark').split(',')
 const routes = args.routes ? String(args.routes).split(',').map(normalizeRoute) : ROUTES
 const height = Number(args.height ?? 900)
 const inject = !args['no-inject']
@@ -60,39 +62,47 @@ const originalLanguage = await s.currentLanguage()
 const results = []
 let failures = 0
 try {
-  for (const lang of langs) {
-    await s.setLanguage(lang)
-    for (const width of widths) {
-      await s.setViewport(width, height)
-      for (const route of routes) {
-        await s.navigate(route)
-        await sleep(1500)
-        if (waitFor && !(await s.waitForSelector(waitFor))) {
-          console.log(`       note: ${waitFor} did not appear within 60 s on ${route}`)
+  for (const theme of themes) {
+    await s.setTheme(theme)
+    for (const lang of langs) {
+      await s.setLanguage(lang)
+      for (const width of widths) {
+        await s.setViewport(width, height)
+        for (const route of routes) {
+          await s.navigate(route)
+          await sleep(1500)
+          if (waitFor && !(await s.waitForSelector(waitFor))) {
+            console.log(`       note: ${waitFor} did not appear within 60 s on ${route}`)
+          }
+          const pairs = inject ? INJECTIONS[route] : undefined
+          const injected = pairs ? await s.evaluate(injectScript(pairs)) : 0
+          if (injected) await sleep(100)
+          const res = JSON.parse(await s.evaluate(detect))
+          const blocking =
+            BLOCKING.reduce((n, k) => n + res[k].length, 0) + (res.docOverflowX > 0 ? 1 : 0)
+          failures += blocking
+          results.push({ theme, lang, width, injected, blocking, ...res })
+          const status = blocking ? 'FAIL' : 'ok  '
+          const note = injected ? ` injected=${injected}` : ''
+          console.log(
+            `${status} ${theme.padEnd(5)} ${lang} ${width} ${route.padEnd(24)} blocking=${blocking} ellipsis=${res.ellipsis.length}${note}`
+          )
+          if (res.docOverflowX > 0) console.log(`       docOverflowX: ${res.docOverflowX}`)
+          for (const k of BLOCKING)
+            for (const f of res[k]) console.log(`       ${k}: ${JSON.stringify(f)}`)
+          if (shots) {
+            const page = route === '/' ? 'home' : route.slice(1)
+            await s.screenshot(`${lang}-${width}-${page}${theme === 'dark' ? '' : `-${theme}`}`)
+          }
         }
-        const pairs = inject ? INJECTIONS[route] : undefined
-        const injected = pairs ? await s.evaluate(injectScript(pairs)) : 0
-        if (injected) await sleep(100)
-        const res = JSON.parse(await s.evaluate(detect))
-        const blocking =
-          BLOCKING.reduce((n, k) => n + res[k].length, 0) + (res.docOverflowX > 0 ? 1 : 0)
-        failures += blocking
-        results.push({ lang, width, injected, blocking, ...res })
-        const status = blocking ? 'FAIL' : 'ok  '
-        const note = injected ? ` injected=${injected}` : ''
-        console.log(
-          `${status} ${lang} ${width} ${route.padEnd(24)} blocking=${blocking} ellipsis=${res.ellipsis.length}${note}`
-        )
-        if (res.docOverflowX > 0) console.log(`       docOverflowX: ${res.docOverflowX}`)
-        for (const k of BLOCKING)
-          for (const f of res[k]) console.log(`       ${k}: ${JSON.stringify(f)}`)
-        if (shots) await s.screenshot(`${lang}-${width}-${route === '/' ? 'home' : route.slice(1)}`)
       }
     }
   }
 } finally {
   await s.clearViewport()
   if (originalLanguage) await s.setLanguage(originalLanguage)
+  // Leave the profile in the dark theme, whatever the run switched to.
+  await s.setTheme('dark')
   s.close()
 }
 const stamp = new Date().toISOString().replace(/[:.]/g, '-')
