@@ -10,22 +10,7 @@ import { startCleanerScan } from '@/lib/cleaner-scan'
 import { cleanInBatches } from '@/lib/cleaner-batches'
 import { useScanStore } from '@/stores/scan-store'
 import { useSettingsStore } from '@/stores/settings-store'
-
-/**
- * The categories the Cleaner page analyses, in its order (CleanerPage `categories`,
- * without the AI tools view). Kept here so Home does not load the Cleaner chunk.
- */
-const ANALYSIS_CATEGORIES: readonly { type: CleanerType; labelKey: string }[] = [
-  { type: CleanerType.System, labelKey: 'categorySystem' },
-  { type: CleanerType.Browser, labelKey: 'categoryBrowsers' },
-  { type: CleanerType.App, labelKey: 'categoryApplications' },
-  { type: CleanerType.Gaming, labelKey: 'categoryGaming' },
-  { type: CleanerType.RecycleBin, labelKey: 'categoryRecycleBin' },
-  { type: CleanerType.Shortcut, labelKey: 'categoryShortcuts' },
-  { type: CleanerType.Environment, labelKey: 'categoryEnvironment' },
-  { type: CleanerType.Database, labelKey: 'categoryDatabases' },
-  { type: CleanerType.PrivacyTraces, labelKey: 'categoryPrivacyTraces' }
-]
+import { ANALYSIS_CATEGORIES } from './cleaner-categories'
 
 /** Starts the Cleaner page's analysis (read-only), labelled as the page labels it. */
 export function startCleanerAnalysis(t: TFunction, protectRecycleBin: boolean): void {

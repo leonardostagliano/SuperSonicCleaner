@@ -45,13 +45,26 @@ export function recommendedCount(states: readonly CheckState[]): number {
 
 export type HistoryStamp = Pick<ScanHistoryEntry, 'type' | 'timestamp'>
 
-/** Epoch ms of the newest history entry of a type, or null when there is none. */
-export function latestRun(history: readonly HistoryStamp[], type: HistoryEntryType): number | null {
-  let latest: number | null = null
+/** The newest history entry of a type (unparsable timestamps skipped), or null. */
+export function latestEntry<T extends HistoryStamp>(
+  history: readonly T[],
+  type: HistoryEntryType
+): T | null {
+  let latest: T | null = null
+  let latestTime = -Infinity
   for (const entry of history) {
     if (entry.type !== type) continue
     const time = new Date(entry.timestamp).getTime()
-    if (Number.isFinite(time) && (latest === null || time > latest)) latest = time
+    if (Number.isFinite(time) && time > latestTime) {
+      latest = entry
+      latestTime = time
+    }
   }
   return latest
+}
+
+/** Epoch ms of the newest history entry of a type, or null when there is none. */
+export function latestRun(history: readonly HistoryStamp[], type: HistoryEntryType): number | null {
+  const entry = latestEntry(history, type)
+  return entry ? new Date(entry.timestamp).getTime() : null
 }

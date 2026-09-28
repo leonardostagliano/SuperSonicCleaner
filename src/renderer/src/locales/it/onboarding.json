@@ -26,5 +26,5 @@
   "allSetTitle": "Configurazione completata",
   "allSetDescription": "Le scelte vengono applicate quando apri la Home. Puoi cambiarle in qualsiasi momento in Preferenze.",
   "firstScanScheduled": "Prima pulizia automatica: lunedì alle 9:00.",
-  "startCleaning": "Apri la Home"
+  "openHome": "Apri la Home"
 }

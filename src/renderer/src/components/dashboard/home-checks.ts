@@ -1,8 +1,14 @@
 // The Home checks (Controlli): last result, when, whether the app recommends running it.
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ScanHistoryEntry } from '@shared/types'
-import { checkState, latestRun, type CheckId, type CheckInput, type CheckState } from '@/lib/checks'
+import {
+  checkState,
+  latestEntry,
+  latestRun,
+  type CheckId,
+  type CheckInput,
+  type CheckState
+} from '@/lib/checks'
 import { formatBytes } from '@/lib/utils'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useHistoryStore } from '@/stores/history-store'
@@ -54,13 +60,6 @@ const PATHS: Record<CheckId, string> = {
   drivers: '/drivers',
   privacy: '/privacy'
 }
-
-const latestEntry = (entries: readonly ScanHistoryEntry[], type: ScanHistoryEntry['type']) =>
-  entries.reduce<ScanHistoryEntry | null>(
-    (latest, entry) =>
-      entry.type === type && (!latest || entry.timestamp > latest.timestamp) ? entry : latest,
-    null
-  )
 
 /** Every check the platform supports, in the table's order, with its state and result. */
 export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {

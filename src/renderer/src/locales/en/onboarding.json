@@ -26,5 +26,5 @@
   "allSetTitle": "Setup complete",
   "allSetDescription": "Your choices are applied when you open Home. You can change them at any time in Preferences.",
   "firstScanScheduled": "First automatic cleanup: Monday at 9:00.",
-  "startCleaning": "Open Home"
+  "openHome": "Open Home"
 }

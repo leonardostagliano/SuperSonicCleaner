@@ -147,7 +147,7 @@ export function App() {
             <Onboarding onComplete={handleOnboardingComplete} />
           </Suspense>
         )}
-        <AppShell>
+        <AppShell inert={showOnboarding}>
           <RoutedContent />
         </AppShell>
         <Toaster

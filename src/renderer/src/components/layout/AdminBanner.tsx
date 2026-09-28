@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { icons } from '@/lib/icons'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useSettingsStore } from '@/stores/settings-store'
+import { adminFeatures, joinList } from './admin-features'
 
 // The first elevation check can take seconds (on Windows it starts PowerShell), and
 // the banner sits in the page flow: remember the last answer so a non-elevated launch
@@ -35,7 +36,7 @@ function relaunchElevated(): void {
 }
 
 export function AdminBanner() {
-  const { t } = useTranslation('common')
+  const { t, i18n } = useTranslation('common')
   const { platform } = usePlatform()
   const loaded = useSettingsStore((s) => s.loaded)
   const preferElevatedLaunch = useSettingsStore((s) => s.settings.preferElevatedLaunch ?? false)
@@ -75,8 +76,9 @@ export function AdminBanner() {
       />
       <p className="admin-banner-text">
         {t('adminBannerMessage', {
-          features: t(
-            platform === 'linux' ? 'adminBannerFeaturesLinux' : 'adminBannerFeaturesWindows'
+          features: joinList(
+            adminFeatures(platform).map((feature) => t(`adminBannerFeatures.${feature}`)),
+            i18n.language || 'en'
           )
         })}
       </p>

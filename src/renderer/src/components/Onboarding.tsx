@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import i18next from 'i18next'
@@ -23,12 +23,19 @@ interface OnboardingSettings {
 }
 
 const TOTAL_STEPS = 4
+const FOCUSABLE =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+/** Called by each step once it is on screen, to place the focus in it. */
+const StepFocus = createContext<(root: HTMLElement) => void>(() => {})
 
 export function Onboarding({ onComplete }: OnboardingProps) {
   const { t } = useTranslation('onboarding')
   const { isPortable } = usePlatform()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const moved = useRef(false)
   const [settings, setSettings] = useState<OnboardingSettings>({
     runAtStartup: true,
     minimizeToTray: true,
@@ -61,38 +68,80 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     }
   }
 
+  // A modal: the shell behind is inert (App.tsx), and Tab cycles inside the card.
+  // Escape does nothing, as before: setup ends only through its last step.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const card = cardRef.current
+      if (event.key !== 'Tab' || !card) return
+      const items = [...card.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+        (element) => element.getClientRects().length > 0
+      )
+      if (!items.length) return
+      const active = document.activeElement
+      const index = items.indexOf(active as HTMLElement)
+      const outside = !card.contains(active)
+      if (event.shiftKey) {
+        // From the first control, or the step heading above it, go round to the last.
+        if (index === 0 || outside || active === card.querySelector('h2')) {
+          event.preventDefault()
+          items[items.length - 1].focus()
+        }
+      } else if (index === items.length - 1 || outside) {
+        event.preventDefault()
+        items[0].focus()
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [])
+
+  // The first step focuses its first control; later steps focus their heading, so the
+  // new step is announced and Tab continues from the top of it.
+  const focusStep = useCallback((root: HTMLElement) => {
+    const target = moved.current
+      ? root.querySelector<HTMLElement>('h2')
+      : root.querySelector<HTMLElement>(FOCUSABLE)
+    target?.focus({ preventScroll: true })
+  }, [])
+  const go = (next: number) => {
+    moved.current = true
+    setStep(next)
+  }
+
   return (
     <div className="onboarding-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
+        ref={cardRef}
         className="onboarding-card relative w-full max-w-lg"
         role="dialog"
         aria-modal="true"
         aria-label={t('dialogLabel')}
       >
         <p className="onboarding-step">{t('stepOf', { step: step + 1, total: TOTAL_STEPS })}</p>
-        <AnimatePresence mode="wait">
-          {step === 0 && <LanguageStep key="language" onNext={() => setStep(1)} />}
-          {step === 1 && (
-            <WelcomeStep key="welcome" onBack={() => setStep(0)} onNext={() => setStep(2)} />
-          )}
-          {step === 2 && (
-            <SettingsStep
-              key="settings"
-              settings={settings}
-              onChange={setSettings}
-              onBack={() => setStep(1)}
-              onNext={() => setStep(3)}
-            />
-          )}
-          {step === 3 && (
-            <FinishStep
-              key="finish"
-              scheduledClean={settings.scheduledClean}
-              onBack={() => setStep(2)}
-              onFinish={applyAndFinish}
-            />
-          )}
-        </AnimatePresence>
+        <StepFocus value={focusStep}>
+          <AnimatePresence mode="wait">
+            {step === 0 && <LanguageStep key="language" onNext={() => go(1)} />}
+            {step === 1 && <WelcomeStep key="welcome" onBack={() => go(0)} onNext={() => go(2)} />}
+            {step === 2 && (
+              <SettingsStep
+                key="settings"
+                settings={settings}
+                onChange={setSettings}
+                onBack={() => go(1)}
+                onNext={() => go(3)}
+              />
+            )}
+            {step === 3 && (
+              <FinishStep
+                key="finish"
+                scheduledClean={settings.scheduledClean}
+                onBack={() => go(2)}
+                onFinish={applyAndFinish}
+              />
+            )}
+          </AnimatePresence>
+        </StepFocus>
       </div>
     </div>
   )
@@ -101,8 +150,14 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 /** Steps cross-fade in 200 ms; no movement, and no animation under reduced motion. */
 function StepWrapper({ children }: { children: React.ReactNode }) {
   const reduced = useReducedMotion()
+  const focusStep = useContext(StepFocus)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (ref.current) focusStep(ref.current)
+  }, [focusStep])
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -125,7 +180,9 @@ function LanguageStep({ onNext }: { onNext: () => void }) {
 
   return (
     <StepWrapper>
-      <h2 className="onboarding-title">{t('chooseLanguageTitle')}</h2>
+      <h2 className="onboarding-title" tabIndex={-1}>
+        {t('chooseLanguageTitle')}
+      </h2>
       <p className="onboarding-text">{t('chooseLanguageDescription')}</p>
       <div className="onboarding-languages" role="radiogroup" aria-label={t('chooseLanguageTitle')}>
         {LANGUAGES.map((lang) => {
@@ -166,7 +223,9 @@ function WelcomeStep({ onBack, onNext }: { onBack: () => void; onNext: () => voi
   return (
     <StepWrapper>
       <BrandWordmark size="large" className="mb-6" />
-      <h2 className="onboarding-title">{t('welcomeTitle')}</h2>
+      <h2 className="onboarding-title" tabIndex={-1}>
+        {t('welcomeTitle')}
+      </h2>
       <p className="onboarding-text">
         {platform === 'win32' ? t('welcomeDescriptionWindows') : t('welcomeDescriptionOther')}
       </p>
@@ -208,7 +267,9 @@ function SettingsStep({
   const isWin = platform === 'win32'
   return (
     <StepWrapper>
-      <h2 className="onboarding-title">{t('recommendedSetupTitle')}</h2>
+      <h2 className="onboarding-title" tabIndex={-1}>
+        {t('recommendedSetupTitle')}
+      </h2>
       <p className="onboarding-text">{t('recommendedSetupDescription')}</p>
       <div className="onboarding-settings">
         {!isPortable && (
@@ -278,7 +339,9 @@ function FinishStep({
   const { t } = useTranslation('onboarding')
   return (
     <StepWrapper>
-      <h2 className="onboarding-title">{t('allSetTitle')}</h2>
+      <h2 className="onboarding-title" tabIndex={-1}>
+        {t('allSetTitle')}
+      </h2>
       <p className="onboarding-text">{t('allSetDescription')}</p>
       {scheduledClean && <p className="onboarding-text">{t('firstScanScheduled')}</p>}
       <div className="onboarding-actions">
@@ -286,7 +349,7 @@ function FinishStep({
           {t('back')}
         </Button>
         <Button variant="primary" size="lg" onClick={onFinish}>
-          {t('startCleaning')}
+          {t('openHome')}
         </Button>
       </div>
     </StepWrapper>

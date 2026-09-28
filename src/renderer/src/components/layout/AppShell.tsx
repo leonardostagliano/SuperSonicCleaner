@@ -14,7 +14,8 @@ import logoSrc from '@/assets/logo.png'
 import { BrandWordmark } from '@/components/shared/BrandWordmark'
 import './shell.css'
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+/** `inert` while a modal (onboarding) covers the shell, so neither focus nor clicks reach it. */
+export function AppShell({ children, inert }: { children: React.ReactNode; inert?: boolean }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation('settings')
@@ -36,7 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <div className="app-shell h-screen overflow-hidden" data-platform={platform}>
+    <div className="app-shell h-screen overflow-hidden" data-platform={platform} inert={inert}>
       <a href="#main-content" className="skip-nav" onClick={handleSkip}>
         {t('skipToContent')}
       </a>

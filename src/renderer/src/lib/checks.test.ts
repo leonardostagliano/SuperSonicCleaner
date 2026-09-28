@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   checkState,
+  latestEntry,
   latestRun,
   recommendedCount,
   STALE_AFTER_DAYS,
@@ -106,5 +107,15 @@ describe('latestRun', () => {
     expect(latestRun(history, 'cleaner')).toBe(NOW - 3 * DAY)
     expect(latestRun(history, 'malware')).toBeNull()
     expect(latestRun([{ type: 'cleaner', timestamp: 'not a date' }], 'cleaner')).toBeNull()
+  })
+})
+
+describe('latestEntry', () => {
+  it('returns the whole newest entry, comparing times rather than strings', () => {
+    // 10:00+02:00 is 08:00 UTC: earlier, although its string sorts later.
+    const earlier = { type: 'malware' as const, timestamp: '2026-09-28T10:00:00+02:00', id: 'a' }
+    const later = { type: 'malware' as const, timestamp: '2026-09-28T09:30:00Z', id: 'b' }
+    expect(latestEntry([later, earlier], 'malware')).toBe(later)
+    expect(latestEntry([earlier], 'cleaner')).toBeNull()
   })
 })
