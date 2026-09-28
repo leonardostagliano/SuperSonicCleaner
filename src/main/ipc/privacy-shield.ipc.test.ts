@@ -681,12 +681,14 @@ describe('scanPrivacy', () => {
     expect(progressCalls[0].total).toBe(PRIVACY_SETTINGS.length)
   })
 
-  it('progress includes label and category', async () => {
+  it('progress includes id, label and category', async () => {
     setupExecFileReject()
 
-    const progressCalls: { currentLabel: string; category: string }[] = []
+    const progressCalls: { currentId: string; currentLabel: string; category: string }[] = []
     await scanPrivacy((data) => progressCalls.push(data))
 
+    // The renderer translates the label by id; the English label is only the fallback.
+    expect(progressCalls[0].currentId).toBe(PRIVACY_SETTINGS[0].id)
     expect(progressCalls[0].currentLabel).toBe(PRIVACY_SETTINGS[0].label)
     expect(progressCalls[0].category).toBe(PRIVACY_SETTINGS[0].category)
   })

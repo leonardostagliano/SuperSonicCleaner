@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -24,7 +24,9 @@ import {
   categoryDescriptionKey,
   categoryLabelKey,
   irreversibleCount,
+  localizeSettings,
   presentCategories,
+  settingLabel,
   settingsToApply,
   switchDisabled,
   type PrivacyCategoryId
@@ -180,7 +182,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
         const actuallyChanged = newSetting != null && newSetting.enabled !== wasEnabled
         const failedTitle = t(
           isEnabling ? 'privacy.settingApplyFailed' : 'privacy.settingRevertFailed',
-          { label: setting.label }
+          { label: settingLabel(t, setting) }
         )
         if (result.failed > 0) {
           toast.error(failedTitle, {
@@ -194,7 +196,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
         } else {
           toast.success(
             t(newSetting.enabled ? 'privacy.settingEnabled' : 'privacy.settingDisabled', {
-              label: setting.label
+              label: settingLabel(t, setting)
             })
           )
         }
@@ -211,7 +213,8 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
   const isScanning = status === 'scanning'
   const isApplying = status === 'applying'
   const busy = isScanning || isApplying
-  const settings = state?.settings ?? []
+  // Main sends English copy: show each setting in the UI language, by id.
+  const settings = useMemo(() => localizeSettings(t, state?.settings ?? []), [state, t])
   const pending = settingsToApply(settings)
   const categories = presentCategories(settings)
   const confirmSettings = confirmIds
@@ -274,7 +277,9 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
             />
             {progress?.currentLabel && (
               <p className="mt-2 truncate text-[length:var(--text-12)] text-[var(--text-muted)]">
-                {progress.currentLabel}
+                {progress.currentId
+                  ? settingLabel(t, { id: progress.currentId, label: progress.currentLabel })
+                  : progress.currentLabel}
               </p>
             )}
           </Section>
@@ -316,7 +321,7 @@ export function PrivacyShieldPage({ embedded }: { embedded?: boolean }) {
                   <tbody>
                     {applyResult.errors.map((err, index) => (
                       <TableRow key={`${err.id}-${index}`}>
-                        <TableCell>{err.label}</TableCell>
+                        <TableCell>{err.id ? settingLabel(t, err) : err.label}</TableCell>
                         <TableCell muted>{err.reason}</TableCell>
                       </TableRow>
                     ))}

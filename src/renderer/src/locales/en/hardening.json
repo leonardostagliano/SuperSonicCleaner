@@ -73,7 +73,417 @@
     "confirmDescriptionIrreversible_one": "The settings listed switch to the most private value. {{count}} cannot be set back to the default from this page.",
     "confirmDescriptionIrreversible_other": "The settings listed switch to the most private value. {{count}} cannot be set back to the default from this page.",
     "confirmLabel_one": "Change {{count}} setting",
-    "confirmLabel_other": "Change {{count}} settings"
+    "confirmLabel_other": "Change {{count}} settings",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows telemetry",
+        "description": "Set diagnostic data collection to the minimum (Security level only)"
+      },
+      "activity-history": {
+        "label": "Activity history",
+        "description": "Stop Windows from tracking and syncing your app and file usage"
+      },
+      "publish-activity": {
+        "label": "Publish user activities",
+        "description": "Prevent Windows from publishing your activities to Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Feedback prompts",
+        "description": "Turn off the periodic Microsoft feedback prompts and surveys"
+      },
+      "handwriting-telemetry": {
+        "label": "Handwriting data",
+        "description": "Stop sending handwriting and typing data to Microsoft"
+      },
+      "input-personalization": {
+        "label": "Input personalization",
+        "description": "Stop collecting typing and inking data for personalization"
+      },
+      "tailored-experiences": {
+        "label": "Tailored experiences",
+        "description": "Stop Microsoft from using diagnostic data to personalize tips and ads"
+      },
+      "app-launch-tracking": {
+        "label": "App launch tracking",
+        "description": "Stop Windows from tracking which apps you open to tune the Start menu"
+      },
+      "advertising-id": {
+        "label": "Advertising ID",
+        "description": "Turn off the unique advertising ID that apps use to track you"
+      },
+      "suggested-content": {
+        "label": "Suggested content in Settings",
+        "description": "Stop Microsoft from showing app suggestions and ads in Settings"
+      },
+      "tips-notifications": {
+        "label": "Tips and suggestions",
+        "description": "Turn off Windows tips, tricks and suggestion notifications"
+      },
+      "start-suggestions": {
+        "label": "Start menu suggestions",
+        "description": "Turn off app suggestions (ads) in the Start menu"
+      },
+      "lock-screen-spotlight": {
+        "label": "Lock screen Spotlight",
+        "description": "Turn off Microsoft Spotlight ads and suggestions on the lock screen"
+      },
+      "silently-installed-apps": {
+        "label": "Silently installed apps",
+        "description": "Prevent Windows from installing promoted apps automatically"
+      },
+      "preinstalled-apps": {
+        "label": "Pre-installed app suggestions",
+        "description": "Stop Windows from suggesting pre-installed apps you haven't used"
+      },
+      "bing-start-menu": {
+        "label": "Bing in the Start menu",
+        "description": "Stop search queries typed in the Start menu from being sent to Bing"
+      },
+      "bing-web-search": {
+        "label": "Bing web results",
+        "description": "Turn off web results in Windows Search, so searches stay on this PC"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Turn off Cortana, which runs in the background and collects data"
+      },
+      "search-highlights": {
+        "label": "Search highlights",
+        "description": "Turn off trending search suggestions and web content in the search box"
+      },
+      "store-search-suggestions": {
+        "label": "Store search suggestions",
+        "description": "Turn off Microsoft Store search suggestions, which send your queries to Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Clipboard cloud sync",
+        "description": "Prevent clipboard data from being synced across devices through the cloud"
+      },
+      "clipboard-history": {
+        "label": "Clipboard history",
+        "description": "Turn off the clipboard history that stores copied text and images"
+      },
+      "settings-sync": {
+        "label": "Settings sync",
+        "description": "Stop syncing Windows settings, themes and passwords to your Microsoft account"
+      },
+      "find-my-device": {
+        "label": "Find my device",
+        "description": "Turn off location-based device tracking by Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Turn off the Microsoft Copilot AI assistant across Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Turn off Windows Recall, the AI screenshot history that captures everything on screen"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Turn off Click to Do AI analysis of the text and images on screen"
+      },
+      "ai-service-autostart": {
+        "label": "AI service auto-start",
+        "description": "Prevent AI services from starting automatically in the background"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Turn off the Edge AI text composition and rewriting features"
+      },
+      "paint-ai": {
+        "label": "Paint AI features",
+        "description": "Turn off the AI image generation features in Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Notepad AI features",
+        "description": "Turn off the AI text rewriting features in Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack service",
+        "description": "Disable the Connected User Experiences and Telemetry service"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push service",
+        "description": "Disable the WAP Push message routing service used for telemetry"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Disable peer-to-peer sharing of Windows updates, so this PC does not upload update data to other devices"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Disable the Downloaded Maps Manager, a background service most PCs do not need"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Disable the Microsoft telemetry task that collects compatibility data"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Disable the background task that uploads program telemetry"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Disable the telemetry collection done through the autochk proxy"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Disable the Customer Experience Improvement Program data upload"
+      },
+      "task-usb-ceip": {
+        "label": "USB usage data (CEIP)",
+        "description": "Disable the collection of USB device usage telemetry"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Disable the collection and upload of disk diagnostic data"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Disable the feedback device management telemetry task"
+      },
+      "task-maps-update": {
+        "label": "Maps update task",
+        "description": "Disable automatic map data downloads in the background"
+      },
+      "task-maps-toast": {
+        "label": "Maps notification task",
+        "description": "Disable the Maps notification task"
+      },
+      "edge-metrics": {
+        "label": "Edge metrics reporting",
+        "description": "Stop Edge from sending usage and crash metrics to Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Edge site info collection",
+        "description": "Stop Edge from sending the addresses of the sites you visit to Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Edge personalization reporting",
+        "description": "Stop Edge from sending your browsing history for ad personalization"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge Copilot page access (CDP)",
+        "description": "Prevent Copilot from reading page content through the Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Edge Copilot page context",
+        "description": "Prevent Copilot from using the page context to analyse content"
+      },
+      "edge-discover": {
+        "label": "Edge Discover page scanning",
+        "description": "Stop the Discover feature from scanning page content"
+      },
+      "edge-sidebar": {
+        "label": "Edge sidebar",
+        "description": "Turn off the Edge sidebar and its background data collection"
+      },
+      "edge-shopping": {
+        "label": "Edge shopping assistant",
+        "description": "Turn off the price comparison tracker in Edge"
+      },
+      "chrome-metrics": {
+        "label": "Chrome metrics reporting",
+        "description": "Stop Chrome from sending usage and crash metrics to Google"
+      },
+      "chrome-feedback": {
+        "label": "Chrome user feedback",
+        "description": "Prevent Chrome from collecting and sending user feedback data"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome extended Safe Browsing",
+        "description": "Stop Chrome from sending extended URL and download reports to Google"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox telemetry",
+        "description": "Stop Firefox from collecting telemetry data and uploading it to Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox default browser agent",
+        "description": "Disable the background agent that reports browser usage data to Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnostics and usage data",
+        "description": "Stop sharing diagnostic and usage data with Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri analytics",
+        "description": "Stop Siri analytics and improvement data collection"
+      },
+      "macos-health-data-sharing": {
+        "label": "Health data sharing",
+        "description": "Stop sharing health data with Apple for research"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop discoverability",
+        "description": "Set AirDrop to No One: you cannot receive files through AirDrop until you turn it back on in System Settings"
+      },
+      "macos-crash-reporter": {
+        "label": "Crash reporter",
+        "description": "Stop the crash reporter from sending reports automatically"
+      },
+      "macos-ad-tracking": {
+        "label": "Personalized ads",
+        "description": "Limit ad tracking by Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Siri suggestions in the App Store",
+        "description": "Turn off Siri suggestions in the App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari suggestions",
+        "description": "Turn off the Safari search suggestions sent to Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight suggestions",
+        "description": "Turn off Spotlight web suggestions"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari preload top hit",
+        "description": "Stop Safari from preloading the top search hit, which sends browsing data to sites"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Turn off Handoff and Universal Clipboard: you can no longer continue activities or copy and paste between Apple devices"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud analytics",
+        "description": "Stop sharing iCloud analytics with Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari iCloud tabs",
+        "description": "Turn off Safari iCloud tab syncing: you no longer see the tabs open on your other Apple devices"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Turn off Siri entirely: Hey Siri, voice commands and Siri Shortcuts stop working"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri dictation",
+        "description": "Turn off dictation: the microphone key on your keyboard stops working"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Turn off the Apple Intelligence AI features (macOS 15 Sequoia and later)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "Turn on the Do Not Track header in Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome metrics reporting",
+        "description": "Stop Chrome from sending usage metrics to Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Safe Browsing reports",
+        "description": "Stop Chrome from sending extended URL and download reports to Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox telemetry",
+        "description": "Stop Firefox from collecting telemetry data and uploading it to Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Make sure Gatekeeper is on, so unverified applications are blocked"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote Apple Events",
+        "description": "Turn off remote Apple Events, so your Mac cannot be automated remotely"
+      },
+      "macos-wake-on-network": {
+        "label": "Wake for network access",
+        "description": "Turn off wake for network access, so your Mac cannot be woken remotely"
+      },
+      "macos-guest-account": {
+        "label": "Guest account",
+        "description": "Turn off the guest account to prevent unauthorized local access"
+      },
+      "macos-auto-login": {
+        "label": "Automatic login",
+        "description": "Turn off automatic login, so the Mac asks for authentication at startup"
+      },
+      "macos-firewall": {
+        "label": "Application firewall",
+        "description": "Turn on the macOS application firewall to control incoming connections"
+      },
+      "macos-stealth-mode": {
+        "label": "Stealth mode",
+        "description": "Turn on stealth mode, so your Mac does not answer probe requests (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Disable IP forwarding",
+        "description": "Prevent the system from forwarding packets between network interfaces"
+      },
+      "macos-block-signed-auto": {
+        "label": "Block automatic allowance for signed apps",
+        "description": "Prevent signed applications from bypassing the firewall automatically"
+      },
+      "macos-remote-login": {
+        "label": "Disable remote login (SSH)",
+        "description": "Turn off the SSH server entirely. If you need SSH access, leave this off and harden the SSH settings instead"
+      },
+      "macos-ssh-root-login": {
+        "label": "Disable SSH root login",
+        "description": "Prevent direct root login over SSH; use sudo from a regular account instead"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Disable SSH password authentication",
+        "description": "Allow only key-based SSH authentication. Set up SSH keys first, or you may be locked out"
+      },
+      "macos-core-dumps": {
+        "label": "Disable core dumps",
+        "description": "Prevent core dumps, which can leak sensitive memory contents"
+      },
+      "gnome-usage-stats": {
+        "label": "Usage statistics",
+        "description": "Turn off GNOME usage statistics collection"
+      },
+      "gnome-recent-files": {
+        "label": "Recent files tracking",
+        "description": "Turn off the tracking of recently used files"
+      },
+      "gnome-location": {
+        "label": "Location services",
+        "description": "Turn off GNOME location services"
+      },
+      "gnome-crash-reporting": {
+        "label": "Crash reporting (Apport)",
+        "description": "Turn off automatic crash report submission"
+      },
+      "gnome-connectivity-check": {
+        "label": "Connectivity check",
+        "description": "Turn off the periodic network connectivity checks"
+      },
+      "core-dump-disable": {
+        "label": "Disable core dumps",
+        "description": "Prevent core dumps, which can leak sensitive memory contents"
+      },
+      "ssh-root-login": {
+        "label": "Disable SSH root login",
+        "description": "Prevent direct root login over SSH; use sudo from a regular account instead"
+      },
+      "ssh-password-auth": {
+        "label": "Disable SSH password authentication",
+        "description": "Allow only key-based SSH authentication. Set up SSH keys first, or you may be locked out"
+      },
+      "kde-usage-stats": {
+        "label": "Usage statistics",
+        "description": "Turn off KDE Plasma user feedback"
+      },
+      "kde-recent-files": {
+        "label": "Recent files tracking",
+        "description": "Turn off the KDE activity history of recent files"
+      },
+      "kde-baloo": {
+        "label": "File indexing (Baloo)",
+        "description": "Turn off the Baloo file indexer"
+      },
+      "kde-crash-reporting": {
+        "label": "Crash reporting (DrKonqi)",
+        "description": "Turn off the KDE crash report handler"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetry & Data Collection",

@@ -481,6 +481,9 @@ export interface PrivacyShieldState {
 export interface PrivacyScanProgress {
   current: number
   total: number
+  /** The setting being read: the renderer shows its label in the UI language. */
+  currentId?: string
+  /** Main's English label, shown only for an id the locale files do not know. */
   currentLabel: string
   category: string
 }

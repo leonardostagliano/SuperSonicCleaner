@@ -73,7 +73,417 @@
     "confirmDescriptionIrreversible_one": "Le impostazioni elencate passano al valore più riservato. {{count}} non si può riportare al valore predefinito da questa pagina.",
     "confirmDescriptionIrreversible_other": "Le impostazioni elencate passano al valore più riservato. {{count}} non si possono riportare al valore predefinito da questa pagina.",
     "confirmLabel_one": "Modifica {{count}} impostazione",
-    "confirmLabel_other": "Modifica {{count}} impostazioni"
+    "confirmLabel_other": "Modifica {{count}} impostazioni",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetria di Windows",
+        "description": "Riduce la raccolta dei dati diagnostici al minimo (solo livello Sicurezza)"
+      },
+      "activity-history": {
+        "label": "Cronologia attività",
+        "description": "Impedisce a Windows di registrare e sincronizzare l'uso di app e file"
+      },
+      "publish-activity": {
+        "label": "Pubblicazione delle attività utente",
+        "description": "Impedisce a Windows di pubblicare le tue attività su Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Richieste di feedback",
+        "description": "Disattiva le richieste periodiche di feedback e i sondaggi di Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Dati della scrittura a mano",
+        "description": "Interrompe l'invio a Microsoft dei dati di scrittura a mano e digitazione"
+      },
+      "input-personalization": {
+        "label": "Personalizzazione dell'input",
+        "description": "Interrompe la raccolta dei dati di digitazione e input penna usati per la personalizzazione"
+      },
+      "tailored-experiences": {
+        "label": "Esperienze personalizzate",
+        "description": "Impedisce a Microsoft di usare i dati diagnostici per personalizzare suggerimenti e annunci"
+      },
+      "app-launch-tracking": {
+        "label": "Rilevamento dei programmi avviati",
+        "description": "Impedisce a Windows di registrare quali app apri per adattare il menu Start"
+      },
+      "advertising-id": {
+        "label": "ID pubblicità",
+        "description": "Disattiva l'identificativo pubblicitario univoco che le app usano per seguirti"
+      },
+      "suggested-content": {
+        "label": "Contenuti suggeriti in Impostazioni",
+        "description": "Impedisce a Microsoft di mostrare app suggerite e annunci in Impostazioni"
+      },
+      "tips-notifications": {
+        "label": "Suggerimenti e consigli",
+        "description": "Disattiva le notifiche di Windows con suggerimenti e consigli"
+      },
+      "start-suggestions": {
+        "label": "Suggerimenti nel menu Start",
+        "description": "Disattiva le app suggerite (annunci) nel menu Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight nella schermata di blocco",
+        "description": "Disattiva annunci e suggerimenti di Microsoft Spotlight nella schermata di blocco"
+      },
+      "silently-installed-apps": {
+        "label": "App installate in silenzio",
+        "description": "Impedisce a Windows di installare automaticamente le app promosse"
+      },
+      "preinstalled-apps": {
+        "label": "Suggerimenti di app preinstallate",
+        "description": "Impedisce a Windows di suggerire app preinstallate che non hai mai usato"
+      },
+      "bing-start-menu": {
+        "label": "Bing nel menu Start",
+        "description": "Impedisce l'invio a Bing delle ricerche digitate nel menu Start"
+      },
+      "bing-web-search": {
+        "label": "Risultati Web di Bing",
+        "description": "Disattiva i risultati Web in Windows Search: le ricerche restano su questo PC"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Disattiva Cortana, che resta attiva in background e raccoglie dati"
+      },
+      "search-highlights": {
+        "label": "Contenuti in evidenza nella ricerca",
+        "description": "Disattiva le ricerche di tendenza e i contenuti Web nella casella di ricerca"
+      },
+      "store-search-suggestions": {
+        "label": "Suggerimenti di ricerca dello Store",
+        "description": "Disattiva i suggerimenti di ricerca di Microsoft Store, che inviano le ricerche a Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Sincronizzazione cloud degli appunti",
+        "description": "Impedisce che gli appunti vengano sincronizzati tra dispositivi tramite il cloud"
+      },
+      "clipboard-history": {
+        "label": "Cronologia degli appunti",
+        "description": "Disattiva la cronologia degli appunti, che conserva testo e immagini copiati"
+      },
+      "settings-sync": {
+        "label": "Sincronizzazione delle impostazioni",
+        "description": "Interrompe la sincronizzazione di impostazioni, temi e password di Windows con il tuo account Microsoft"
+      },
+      "find-my-device": {
+        "label": "Trova il mio dispositivo",
+        "description": "Disattiva la localizzazione del dispositivo da parte di Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Disattiva l'assistente AI Microsoft Copilot in tutto Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Disattiva Windows Recall, la cronologia AI di istantanee che registra tutto ciò che appare sullo schermo"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Disattiva l'analisi AI di Click to Do su testo e immagini sullo schermo"
+      },
+      "ai-service-autostart": {
+        "label": "Avvio automatico dei servizi AI",
+        "description": "Impedisce l'avvio automatico dei servizi AI in background"
+      },
+      "edge-ai-features": {
+        "label": "Scrittura AI di Edge",
+        "description": "Disattiva le funzionalità AI di Edge che scrivono e riscrivono testo"
+      },
+      "paint-ai": {
+        "label": "Funzionalità AI di Paint",
+        "description": "Disattiva le funzionalità AI di generazione di immagini in Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Funzionalità AI del Blocco note",
+        "description": "Disattiva le funzionalità AI di riscrittura del testo nel Blocco note"
+      },
+      "service-diagtrack": {
+        "label": "Servizio DiagTrack",
+        "description": "Disattiva il servizio Esperienze utente connesse e telemetria"
+      },
+      "service-dmwappush": {
+        "label": "Servizio WAP Push",
+        "description": "Disattiva il servizio di instradamento dei messaggi WAP Push usato per la telemetria"
+      },
+      "service-delivery-optimization": {
+        "label": "Ottimizzazione recapito",
+        "description": "Disattiva la condivisione peer-to-peer degli aggiornamenti di Windows: questo PC non invia dati di aggiornamento ad altri dispositivi"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Disattiva Gestione mappe scaricate, un servizio in background di cui la maggior parte dei PC non ha bisogno"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Disattiva l'attività di telemetria Microsoft che raccoglie dati di compatibilità"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Disattiva l'attività in background che carica la telemetria dei programmi"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Disattiva la raccolta di telemetria svolta tramite il proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Disattiva il caricamento dei dati del Programma Analisi utilizzo software"
+      },
+      "task-usb-ceip": {
+        "label": "Dati di utilizzo USB (CEIP)",
+        "description": "Disattiva la raccolta di telemetria sull'uso dei dispositivi USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Disattiva la raccolta e il caricamento dei dati diagnostici dei dischi"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Disattiva l'attività di telemetria per la gestione dei dispositivi legata al feedback"
+      },
+      "task-maps-update": {
+        "label": "Aggiornamento delle mappe",
+        "description": "Disattiva il download automatico dei dati delle mappe in background"
+      },
+      "task-maps-toast": {
+        "label": "Notifiche delle mappe",
+        "description": "Disattiva l'attività delle notifiche di Mappe"
+      },
+      "edge-metrics": {
+        "label": "Invio di metriche di Edge",
+        "description": "Impedisce a Edge di inviare a Microsoft dati di utilizzo e di arresto anomalo"
+      },
+      "edge-site-info": {
+        "label": "Raccolta di informazioni sui siti in Edge",
+        "description": "Impedisce a Edge di inviare a Microsoft gli indirizzi dei siti che visiti"
+      },
+      "edge-personalization": {
+        "label": "Dati di personalizzazione di Edge",
+        "description": "Impedisce a Edge di inviare la cronologia di navigazione per personalizzare gli annunci"
+      },
+      "edge-copilot-cdp": {
+        "label": "Accesso di Copilot alle pagine in Edge (CDP)",
+        "description": "Impedisce a Copilot di leggere il contenuto delle pagine tramite il Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Contesto della pagina per Copilot in Edge",
+        "description": "Impedisce a Copilot di usare il contesto della pagina per analizzarne il contenuto"
+      },
+      "edge-discover": {
+        "label": "Analisi delle pagine di Edge Discover",
+        "description": "Impedisce alla funzione Discover di analizzare il contenuto delle pagine"
+      },
+      "edge-sidebar": {
+        "label": "Barra laterale di Edge",
+        "description": "Disattiva la barra laterale di Edge e la raccolta di dati in background"
+      },
+      "edge-shopping": {
+        "label": "Assistente acquisti di Edge",
+        "description": "Disattiva il confronto prezzi di Edge, che segue gli acquisti"
+      },
+      "chrome-metrics": {
+        "label": "Invio di metriche di Chrome",
+        "description": "Impedisce a Chrome di inviare a Google dati di utilizzo e di arresto anomalo"
+      },
+      "chrome-feedback": {
+        "label": "Feedback utente di Chrome",
+        "description": "Impedisce a Chrome di raccogliere e inviare dati di feedback degli utenti"
+      },
+      "chrome-extended-reporting": {
+        "label": "Navigazione sicura estesa di Chrome",
+        "description": "Impedisce a Chrome di inviare a Google rapporti estesi su indirizzi e download"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetria di Firefox",
+        "description": "Impedisce a Firefox di raccogliere dati di telemetria e inviarli a Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Agente browser predefinito di Firefox",
+        "description": "Disattiva l'agente in background che invia a Mozilla i dati sull'uso del browser"
+      },
+      "macos-diagnostics": {
+        "label": "Dati di diagnostica e utilizzo",
+        "description": "Interrompe la condivisione dei dati di diagnostica e utilizzo con Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Analisi di Siri",
+        "description": "Interrompe la raccolta dei dati di analisi e miglioramento di Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Condivisione dei dati sulla salute",
+        "description": "Interrompe la condivisione dei dati sulla salute con Apple a fini di ricerca"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Visibilità AirDrop",
+        "description": "Imposta AirDrop su Nessuno: non potrai ricevere file tramite AirDrop finché non lo riattivi in Impostazioni di Sistema"
+      },
+      "macos-crash-reporter": {
+        "label": "Segnalazione degli arresti anomali",
+        "description": "Impedisce che i rapporti sugli arresti anomali vengano inviati automaticamente"
+      },
+      "macos-ad-tracking": {
+        "label": "Annunci personalizzati",
+        "description": "Limita il tracciamento pubblicitario di Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Suggerimenti di Siri nell'App Store",
+        "description": "Disattiva i suggerimenti di Siri nell'App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Suggerimenti di Safari",
+        "description": "Disattiva i suggerimenti di ricerca di Safari inviati ad Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Suggerimenti di Spotlight",
+        "description": "Disattiva i suggerimenti Web di Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Precaricamento del primo risultato in Safari",
+        "description": "Impedisce a Safari di precaricare il primo risultato di ricerca, che invia dati di navigazione ai siti"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Disattiva Handoff e gli Appunti universali: non potrai più continuare attività o copiare e incollare tra dispositivi Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Analisi di iCloud",
+        "description": "Interrompe la condivisione dei dati di analisi di iCloud con Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Pannelli iCloud di Safari",
+        "description": "Disattiva la sincronizzazione dei pannelli di Safari su iCloud: non vedrai più i pannelli aperti sugli altri dispositivi Apple"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Disattiva Siri del tutto: «Ehi Siri», i comandi vocali e le abbreviazioni di Siri smettono di funzionare"
+      },
+      "macos-siri-dictation": {
+        "label": "Dettatura di Siri",
+        "description": "Disattiva la dettatura: il tasto del microfono sulla tastiera smette di funzionare"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Disattiva le funzionalità AI di Apple Intelligence (macOS 15 Sequoia e successivi)"
+      },
+      "macos-safari-dnt": {
+        "label": "Do Not Track in Safari",
+        "description": "Attiva l'intestazione Do Not Track in Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Invio di metriche di Chrome",
+        "description": "Impedisce a Chrome di inviare a Google dati di utilizzo"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Rapporti di Navigazione sicura di Chrome",
+        "description": "Impedisce a Chrome di inviare a Google rapporti estesi su indirizzi e download"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetria di Firefox",
+        "description": "Impedisce a Firefox di raccogliere dati di telemetria e inviarli a Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Verifica che Gatekeeper sia attivo, così le applicazioni non verificate vengono bloccate"
+      },
+      "macos-remote-apple-events": {
+        "label": "Eventi Apple remoti",
+        "description": "Disattiva gli eventi Apple remoti, così il Mac non può essere automatizzato a distanza"
+      },
+      "macos-wake-on-network": {
+        "label": "Riattivazione per l'accesso alla rete",
+        "description": "Disattiva la riattivazione per l'accesso alla rete, così il Mac non può essere riattivato a distanza"
+      },
+      "macos-guest-account": {
+        "label": "Account ospite",
+        "description": "Disattiva l'account ospite per impedire accessi locali non autorizzati"
+      },
+      "macos-auto-login": {
+        "label": "Login automatico",
+        "description": "Disattiva il login automatico, così il Mac chiede l'autenticazione all'avvio"
+      },
+      "macos-firewall": {
+        "label": "Firewall delle applicazioni",
+        "description": "Attiva il firewall delle applicazioni di macOS per controllare le connessioni in entrata"
+      },
+      "macos-stealth-mode": {
+        "label": "Modalità invisibile",
+        "description": "Attiva la modalità invisibile, così il Mac non risponde alle richieste di sondaggio (ping ICMP)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Disattiva l'inoltro IP",
+        "description": "Impedisce al sistema di inoltrare pacchetti tra un'interfaccia di rete e l'altra"
+      },
+      "macos-block-signed-auto": {
+        "label": "Blocca il consenso automatico alle app firmate",
+        "description": "Impedisce alle applicazioni firmate di superare automaticamente il firewall"
+      },
+      "macos-remote-login": {
+        "label": "Disattiva il login remoto (SSH)",
+        "description": "Disattiva del tutto il server SSH. Se ti serve l'accesso SSH, lascia questa impostazione disattivata e rafforza invece le impostazioni SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Disattiva il login root via SSH",
+        "description": "Impedisce l'accesso diretto come root tramite SSH; usa sudo da un account normale"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Disattiva l'autenticazione SSH con password",
+        "description": "Consente solo l'autenticazione SSH con chiave. Configura prima le chiavi SSH, altrimenti potresti restare senza accesso"
+      },
+      "macos-core-dumps": {
+        "label": "Disattiva i core dump",
+        "description": "Impedisce i core dump, che possono esporre contenuti sensibili della memoria"
+      },
+      "gnome-usage-stats": {
+        "label": "Statistiche d'uso",
+        "description": "Disattiva la raccolta delle statistiche d'uso di GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Registro dei file recenti",
+        "description": "Disattiva la registrazione dei file usati di recente"
+      },
+      "gnome-location": {
+        "label": "Servizi di localizzazione",
+        "description": "Disattiva i servizi di localizzazione di GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Segnalazione degli arresti anomali (Apport)",
+        "description": "Disattiva l'invio automatico dei rapporti sugli arresti anomali"
+      },
+      "gnome-connectivity-check": {
+        "label": "Controllo della connettività",
+        "description": "Disattiva i controlli periodici della connessione di rete"
+      },
+      "core-dump-disable": {
+        "label": "Disattiva i core dump",
+        "description": "Impedisce i core dump, che possono esporre contenuti sensibili della memoria"
+      },
+      "ssh-root-login": {
+        "label": "Disattiva il login root via SSH",
+        "description": "Impedisce l'accesso diretto come root tramite SSH; usa sudo da un account normale"
+      },
+      "ssh-password-auth": {
+        "label": "Disattiva l'autenticazione SSH con password",
+        "description": "Consente solo l'autenticazione SSH con chiave. Configura prima le chiavi SSH, altrimenti potresti restare senza accesso"
+      },
+      "kde-usage-stats": {
+        "label": "Statistiche d'uso",
+        "description": "Disattiva il feedback degli utenti di KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Registro dei file recenti",
+        "description": "Disattiva la cronologia delle attività di KDE per i file recenti"
+      },
+      "kde-baloo": {
+        "label": "Indicizzazione dei file (Baloo)",
+        "description": "Disattiva l'indicizzatore di file Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Segnalazione degli arresti anomali (DrKonqi)",
+        "description": "Disattiva il gestore dei rapporti sugli arresti anomali di KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetria e raccolta dati",

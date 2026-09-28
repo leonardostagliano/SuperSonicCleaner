@@ -69,3 +69,33 @@ export function switchDisabled(
   const dependencyMissing = dependency !== undefined && !dependency.enabled
   return busy || dependencyMissing || (setting.enabled && !setting.reversible)
 }
+
+/** i18next's t, narrowed to what the copy helpers use. */
+type Translate = (key: string, options: { defaultValue: string }) => string
+
+/**
+ * A setting's label in the UI language. Main sends English copy; the renderer looks the
+ * setting up by id in hardening:privacy.settings and keeps main's text for an id the
+ * locale files do not know.
+ */
+export function settingLabel(t: Translate, setting: Pick<PrivacySetting, 'id' | 'label'>): string {
+  return t(`privacy.settings.${setting.id}.label`, { defaultValue: setting.label })
+}
+
+/** The setting with its label and description in the UI language (see settingLabel). */
+export function localizeSetting<T extends PrivacySetting>(t: Translate, setting: T): T {
+  return {
+    ...setting,
+    label: settingLabel(t, setting),
+    description: t(`privacy.settings.${setting.id}.description`, {
+      defaultValue: setting.description
+    })
+  }
+}
+
+export function localizeSettings<T extends PrivacySetting>(
+  t: Translate,
+  settings: readonly T[]
+): T[] {
+  return settings.map((setting) => localizeSetting(t, setting))
+}

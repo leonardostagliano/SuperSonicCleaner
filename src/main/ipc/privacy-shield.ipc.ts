@@ -1464,6 +1464,7 @@ export async function scanPrivacy(
   onProgress?: (data: {
     current: number
     total: number
+    currentId: string
     currentLabel: string
     category: string
   }) => void
@@ -1478,6 +1479,7 @@ export async function scanPrivacy(
     onProgress?.({
       current: i + 1,
       total,
+      currentId: def.id,
       currentLabel: def.label,
       category: def.category
     })
