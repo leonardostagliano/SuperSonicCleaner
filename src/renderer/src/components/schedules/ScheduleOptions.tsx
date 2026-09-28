@@ -1,16 +1,35 @@
-import '@/components/shared/feature-layout.css'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ScheduleConditions } from '@shared/schedule-policy'
-import type { ScheduleEntry, ScheduleTaskType, ScanResult } from '@shared/types'
+import type { ScheduleTaskType, ScanResult } from '@shared/types'
+import { Button, Checkbox } from '@/components/ui'
 import { useScanStore } from '@/stores/scan-store'
 import { ScanStatus } from '@shared/enums'
+import '@/components/cleaner/pulizia.css'
 
 const timeText = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 const timeValue = (text: string) => {
   const [h, m] = text.split(':').map(Number)
   return h * 60 + m
+}
+
+/** A checkbox with its visible label; the label text is also its accessible name. */
+export function CheckField({
+  checked,
+  onChange,
+  children
+}: {
+  checked: boolean
+  onChange: (value: boolean) => void
+  children: string
+}) {
+  return (
+    <label className="pulizia-task">
+      <Checkbox checked={checked} onChange={onChange} label={children} />
+      <span>{children}</span>
+    </label>
+  )
 }
 
 export function ScheduleOptions({
@@ -25,36 +44,37 @@ export function ScheduleOptions({
   onMissedRun: (value: 'skip' | 'once') => void
 }) {
   const { t } = useTranslation('schedules')
+  const idleId = useId()
+  const fromId = useId()
+  const toId = useId()
+  const freeId = useId()
+  const missedId = useId()
   const patch = (value: Partial<ScheduleConditions>) => onChange({ ...conditions, ...value })
-  const input = 'feature-field mt-1 w-full'
   return (
-    <details className="pulse-schedule-options feature-layout mb-5 rounded-xl border border-[var(--border-medium)] bg-[var(--bg-subtle)] p-4">
-      <summary className="cursor-pointer text-[13px] font-semibold">{t('advanced.title')}</summary>
-      <fieldset className="mt-4 space-y-4 text-[13px]">
+    <details className="pulizia-details">
+      <summary>{t('advanced.title')}</summary>
+      <fieldset className="pulizia-details-body pulizia-options">
         <legend className="sr-only">{t('advanced.title')}</legend>
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          {t('advanced.explanation')}
-        </p>
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={conditions.acOnly ?? false}
-            onChange={(e) => patch({ acOnly: e.target.checked })}
-          />
+        <p className="pulizia-app-meta pulizia-options-wide">{t('advanced.explanation')}</p>
+        <CheckField
+          checked={conditions.acOnly ?? false}
+          onChange={(value) => patch({ acOnly: value })}
+        >
           {t('advanced.acOnly')}
-        </label>
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={conditions.pauseForGameMode !== false}
-            onChange={(e) => patch({ pauseForGameMode: e.target.checked })}
-          />
+        </CheckField>
+        <CheckField
+          checked={conditions.pauseForGameMode !== false}
+          onChange={(value) => patch({ pauseForGameMode: value })}
+        >
           {t('advanced.gameMode')}
-        </label>
-        <label className="block text-sm">
-          {t('advanced.idle')}
+        </CheckField>
+        <div className="pulizia-form-field">
+          <label className="pulizia-label" htmlFor={idleId}>
+            {t('advanced.idle')}
+          </label>
           <input
-            className={input}
+            id={idleId}
+            className="pulizia-field"
             type="number"
             min={0}
             max={120}
@@ -62,59 +82,64 @@ export function ScheduleOptions({
             value={conditions.idleMinutes ?? 0}
             onChange={(e) => patch({ idleMinutes: Number(e.target.value) })}
           />
-        </label>
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={conditions.windowStart !== undefined}
-            onChange={(e) =>
-              patch({
-                windowStart: e.target.checked ? 0 : undefined,
-                windowEnd: e.target.checked ? 360 : undefined
-              })
-            }
-          />
+        </div>
+        <CheckField
+          checked={conditions.windowStart !== undefined}
+          onChange={(value) =>
+            patch({
+              windowStart: value ? 0 : undefined,
+              windowEnd: value ? 360 : undefined
+            })
+          }
+        >
           {t('advanced.window')}
-        </label>
+        </CheckField>
         {conditions.windowStart !== undefined && (
-          <div className="grid grid-cols-2 gap-3">
-            <label>
-              {t('advanced.from')}
+          <div className="pulizia-form-row pulizia-options-wide">
+            <div className="pulizia-form-field">
+              <label className="pulizia-label" htmlFor={fromId}>
+                {t('advanced.from')}
+              </label>
               <input
-                className={input}
+                id={fromId}
+                className="pulizia-field"
                 type="time"
                 value={timeText(conditions.windowStart)}
                 onChange={(e) => {
                   if (e.target.value) patch({ windowStart: timeValue(e.target.value) })
                 }}
               />
-            </label>
-            <label>
-              {t('advanced.to')}
+            </div>
+            <div className="pulizia-form-field">
+              <label className="pulizia-label" htmlFor={toId}>
+                {t('advanced.to')}
+              </label>
               <input
-                className={input}
+                id={toId}
+                className="pulizia-field"
                 type="time"
                 value={timeText(conditions.windowEnd ?? 0)}
                 onChange={(e) => {
                   if (e.target.value) patch({ windowEnd: timeValue(e.target.value) })
                 }}
               />
-            </label>
+            </div>
           </div>
         )}
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={conditions.freeBelowPercent !== undefined}
-            onChange={(e) => patch({ freeBelowPercent: e.target.checked ? 15 : undefined })}
-          />
+        <CheckField
+          checked={conditions.freeBelowPercent !== undefined}
+          onChange={(value) => patch({ freeBelowPercent: value ? 15 : undefined })}
+        >
           {t('advanced.disk')}
-        </label>
+        </CheckField>
         {conditions.freeBelowPercent !== undefined && (
-          <label className="block text-sm">
-            {t('advanced.freePercent')}
+          <div className="pulizia-form-field">
+            <label className="pulizia-label" htmlFor={freeId}>
+              {t('advanced.freePercent')}
+            </label>
             <input
-              className={input}
+              id={freeId}
+              className="pulizia-field"
               type="number"
               min={1}
               max={100}
@@ -122,19 +147,22 @@ export function ScheduleOptions({
               value={conditions.freeBelowPercent}
               onChange={(e) => patch({ freeBelowPercent: Number(e.target.value) })}
             />
-          </label>
+          </div>
         )}
-        <label className="block text-sm">
-          {t('advanced.missed')}
+        <div className="pulizia-form-field pulizia-options-wide">
+          <label className="pulizia-label" htmlFor={missedId}>
+            {t('advanced.missed')}
+          </label>
           <select
-            className={input}
+            id={missedId}
+            className="pulizia-field"
             value={missedRun}
             onChange={(e) => onMissedRun(e.target.value as 'skip' | 'once')}
           >
             <option value="skip">{t('advanced.skip')}</option>
             <option value="once">{t('advanced.once')}</option>
           </select>
-        </label>
+        </div>
       </fieldset>
     </details>
   )
@@ -188,44 +216,36 @@ export function ScheduleScope({
     }
   }
   return (
-    <div className="feature-layout rounded-xl border border-[var(--border-medium)] bg-[var(--bg-subtle)] p-3 space-y-3">
-      <label className="flex gap-2 items-center">
-        <input
-          type="checkbox"
-          checked={selected !== undefined}
-          onChange={(e) => onChange(e.target.checked ? [] : undefined)}
-        />
+    <div className="pulizia-scope">
+      <CheckField
+        checked={selected !== undefined}
+        onChange={(value) => onChange(value ? [] : undefined)}
+      >
         {t('advanced.restrict', { name: label })}
-      </label>
+      </CheckField>
       {selected !== undefined && (
         <>
-          <button
-            type="button"
-            className="feature-button"
-            disabled={busy}
-            onClick={() => void scan()}
-          >
-            {busy ? t('advanced.scanning') : t('advanced.findCategories')}
-          </button>
-          <p className="text-xs">{t('advanced.scopeHint')}</p>
+          <div>
+            <Button busy={busy} onClick={() => void scan()}>
+              {t('advanced.findCategories')}
+            </Button>
+          </div>
+          <p className="pulizia-app-meta">{t('advanced.scopeHint')}</p>
           {choices.map((name) => (
-            <label className="flex items-center gap-2 text-sm" key={name}>
-              <input
-                type="checkbox"
-                checked={selected.includes(name)}
-                onChange={(e) =>
-                  onChange(
-                    e.target.checked ? [...selected, name] : selected.filter((n) => n !== name)
-                  )
-                }
-              />
+            <CheckField
+              key={name}
+              checked={selected.includes(name)}
+              onChange={(value) =>
+                onChange(value ? [...selected, name] : selected.filter((n) => n !== name))
+              }
+            >
               {name}
-            </label>
+            </CheckField>
           ))}
         </>
       )}
       {error && (
-        <p role="alert" className="text-sm">
+        <p role="alert" className="pulizia-app-meta">
           {error}
         </p>
       )}

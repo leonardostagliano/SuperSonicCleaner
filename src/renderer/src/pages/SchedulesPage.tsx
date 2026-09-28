@@ -5,35 +5,30 @@ import {
   type ScheduleConditions,
   type ScheduleRuntime
 } from '@shared/schedule-policy'
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  CalendarClock,
-  Plus,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Minus,
-  Pencil,
-  Trash2,
-  Copy,
-  Sparkles,
-  Database,
-  Globe,
   AppWindow,
+  Copy,
+  DatabaseZap,
   Gamepad2,
-  Trash,
+  Globe,
   Monitor,
-  Download,
-  Zap,
-  AlertTriangle,
-  X
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+  type LucideIcon
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { ReportNotice } from '@/components/cleaner/ReportNotice'
+import '@/components/cleaner/pulizia.css'
+import { Button, Checkbox, ListRow, Section, Switch, Tag } from '@/components/ui'
+import { icons } from '@/lib/icons'
+import { formatList } from '@/lib/cleaner-report'
 import { useSettingsStore } from '@/stores/settings-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import type { ScheduleEntry, ScheduleTaskType } from '@shared/types'
@@ -53,10 +48,12 @@ const DAY_NAME_KEYS = [
 
 const MAX_SCHEDULES = 10
 
+type Translate = (key: string, opts?: Record<string, unknown>) => string
+
 interface TaskDef {
   type: ScheduleTaskType
   label: string
-  icon: typeof Sparkles
+  icon: LucideIcon
   group: 'cleaner' | 'maintenance'
   /** Platform feature flag — task is hidden when this feature is false */
   requiresFeature?: 'registry' | 'drivers'
@@ -67,26 +64,26 @@ const ALL_TASKS_BASE: Array<Omit<TaskDef, 'label'> & { labelKey: string }> = [
   { type: 'cleaner:browsers', labelKey: 'tasks.browsers', icon: Globe, group: 'cleaner' },
   { type: 'cleaner:apps', labelKey: 'tasks.applications', icon: AppWindow, group: 'cleaner' },
   { type: 'cleaner:gaming', labelKey: 'tasks.gaming', icon: Gamepad2, group: 'cleaner' },
-  { type: 'cleaner:recycleBin', labelKey: 'tasks.recycleBin', icon: Trash, group: 'cleaner' },
-  { type: 'cleaner:databases', labelKey: 'tasks.databases', icon: Database, group: 'cleaner' },
+  { type: 'cleaner:recycleBin', labelKey: 'tasks.recycleBin', icon: Trash2, group: 'cleaner' },
+  { type: 'cleaner:databases', labelKey: 'tasks.databases', icon: DatabaseZap, group: 'cleaner' },
   {
     type: 'registry',
     labelKey: 'tasks.registryFixes',
-    icon: Zap,
+    icon: icons.registry,
     group: 'maintenance',
     requiresFeature: 'registry'
   },
   {
     type: 'drivers',
     labelKey: 'tasks.driverUpdates',
-    icon: Download,
+    icon: icons.drivers,
     group: 'maintenance',
     requiresFeature: 'drivers'
   },
   {
     type: 'software-update',
     labelKey: 'tasks.softwareUpdates',
-    icon: Sparkles,
+    icon: icons.updates,
     group: 'maintenance'
   }
 ]
@@ -174,11 +171,10 @@ function makeBlankEntry(): Partial<ScheduleEntry> {
 // ─── Main Page ────────────────────────────────────────────
 
 export function SchedulesPage() {
-  const { t } = useTranslation('schedules')
+  const { t, i18n } = useTranslation('schedules')
   const { settings, updateSettings } = useSettingsStore()
   const platformTasks = usePlatformTasks()
   const { isPortable } = usePlatform()
-  const allTasks = useAllTasks()
   const presets = useMemo(() => buildPresets(platformTasks, t), [platformTasks, t])
   const schedules = settings.schedules ?? []
   const [runtime, setRuntime] = useState<ScheduleRuntime[]>([])
@@ -321,7 +317,6 @@ export function SchedulesPage() {
     )
   }
 
-  const { t: tx } = useTranslation('experience')
   const upcoming = schedules
     .flatMap((entry) => {
       const date = getNextRunTime(entry)
@@ -329,90 +324,59 @@ export function SchedulesPage() {
     })
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .slice(0, 3)
+  const enabledCount = schedules.filter((entry) => entry.enabled).length
   const [dialogInitial, setDialogInitial] = useState<Partial<ScheduleEntry>>(makeBlankEntry())
+  const deleteEntry = schedules.find((s) => s.id === deleteId)
+  const runEntry = schedules.find((s) => s.id === runId)
 
   return (
-    <div className="animate-fade-in">
+    <div className="pulizia-page">
       <PageHeader
         title={t('pageTitle')}
-        description={t('pageDescription')}
+        description={t('pageScope')}
         action={
-          <button
-            onClick={handleNew}
-            className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-colors"
-            style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
-          >
-            <Plus className="h-4 w-4" strokeWidth={2.2} />
+          <Button variant="primary" size="lg" icon={Plus} onClick={handleNew}>
             {t('newScheduleButton')}
-          </button>
+          </Button>
         }
       />
 
       {upcoming.length > 0 && (
-        <section className="pulse-upcoming" aria-label={tx('schedules.upcoming')}>
-          <div className="pulse-section-heading">
-            <h2>{tx('schedules.upcoming')}</h2>
-            <span>
-              {tx('schedules.enabled', {
-                count: schedules.filter((entry) => entry.enabled).length
-              })}
-            </span>
-          </div>
-          <p className="mb-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-            {tx('schedules.conditions')}
-          </p>
-          <div className="pulse-upcoming-list">
+        <Section title={t('upcomingTitle')} meta={t('enabledCount', { count: enabledCount })}>
+          <div>
             {upcoming.map(({ entry, date }) => (
-              <article key={entry.id}>
-                <div className="pulse-calendar-date">
-                  <span>{date.toLocaleDateString(undefined, { month: 'short' })}</span>
-                  <strong>{date.getDate()}</strong>
-                </div>
-                <div>
-                  <h3>{entry.name}</h3>
-                  <p>
-                    {date.toLocaleDateString(undefined, { weekday: 'long' })}
-                    {' \u00b7 '}
-                    {date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
-                <CalendarClock size={20} aria-hidden="true" />
-              </article>
+              <ListRow key={entry.id}>
+                <span className="pulizia-when">{formatWhen(date, i18n.language)}</span>
+                <span className="pulizia-app-name">{entry.name}</span>
+              </ListRow>
             ))}
           </div>
-        </section>
+          <p className="pulizia-footnote">{t('upcomingNote')}</p>
+        </Section>
       )}
+
       {schedules.length === 0 ? (
-        <EmptyState
-          icon={CalendarClock}
-          title={t('emptyStateTitle')}
-          description={t('emptyStateDescription')}
-          action={
-            <button
-              onClick={handleNew}
-              className="pulse-primary-action pulse-scan-action flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-colors"
-              style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
-            >
-              <Plus className="h-4 w-4" strokeWidth={2.2} />
-              {t('createScheduleButton')}
-            </button>
-          }
-        />
+        <EmptyState title={t('emptyStateTitle')} description={t('emptyStateDescription')} />
       ) : (
-        <div className="space-y-3">
-          {schedules.map((entry) => (
-            <ScheduleCard
-              key={entry.id}
-              entry={entry}
-              runtime={runtime.find((r) => r.id === entry.id)}
-              onRun={() => setRunId(entry.id)}
-              onToggle={(enabled) => handleToggle(entry.id, enabled)}
-              onEdit={() => handleEdit(entry.id)}
-              onDuplicate={() => handleDuplicate(entry.id)}
-              onDelete={() => setDeleteId(entry.id)}
-            />
-          ))}
-        </div>
+        <Section
+          title={t('listTitle')}
+          meta={t('listMeta', { count: schedules.length, max: MAX_SCHEDULES })}
+        >
+          <div className="pulizia-schedules">
+            {schedules.map((entry) => (
+              <ScheduleRow
+                key={entry.id}
+                entry={entry}
+                runtime={runtime.find((r) => r.id === entry.id)}
+                onRun={() => setRunId(entry.id)}
+                onToggle={(enabled) => handleToggle(entry.id, enabled)}
+                onEdit={() => handleEdit(entry.id)}
+                onDuplicate={() => handleDuplicate(entry.id)}
+                onDelete={() => setDeleteId(entry.id)}
+              />
+            ))}
+          </div>
+        </Section>
       )}
 
       {/* Preset picker */}
@@ -440,7 +404,7 @@ export function SchedulesPage() {
 
       <ConfirmDialog
         open={!!runId}
-        title={t('advanced.runNow')}
+        title={t('advanced.runTitle', { name: runEntry?.name ?? '' })}
         description={t('advanced.runConfirm')}
         confirmLabel={t('advanced.runNow')}
         onCancel={() => setRunId(null)}
@@ -463,7 +427,7 @@ export function SchedulesPage() {
         open={!!deleteId}
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}
-        title={t('deleteConfirmTitle')}
+        title={t('deleteConfirmTitle', { name: deleteEntry?.name ?? '' })}
         description={t('deleteConfirmDescription')}
         confirmLabel={t('deleteConfirmLabel')}
         variant="danger"
@@ -472,9 +436,9 @@ export function SchedulesPage() {
   )
 }
 
-// ─── Schedule Card ────────────────────────────────────────
+// ─── Schedule row ─────────────────────────────────────────
 
-function ScheduleCard({
+function ScheduleRow({
   entry,
   runtime,
   onRun,
@@ -491,161 +455,102 @@ function ScheduleCard({
   onDuplicate: () => void
   onDelete: () => void
 }) {
-  const { t } = useTranslation('schedules')
+  const { t, i18n } = useTranslation('schedules')
   const allTasks = useAllTasks()
   const nextRun = useMemo(() => getNextRunTime(entry), [entry])
   const frequencyText = useMemo(() => formatFrequency(entry, t), [entry, t])
-  const taskCount = entry.tasks.length
+  const taskNames = entry.tasks
+    .map((type) => allTasks.find((d) => d.type === type)?.label)
+    .filter((label): label is string => !!label)
+
+  const lastRun = entry.lastRunAt
+    ? t('card.lastRun', { time: formatLastRun(entry.lastRunAt, t, i18n.language) })
+    : t('card.neverRun')
+  const status =
+    entry.lastRunStatus === 'success' ? (
+      <Tag tone="ok">{t('card.statusSuccess')}</Tag>
+    ) : entry.lastRunStatus === 'partial' ? (
+      <Tag tone="neutral">{t('card.statusPartial')}</Tag>
+    ) : entry.lastRunStatus === 'failed' ? (
+      <Tag tone="danger">{t('card.statusFailed')}</Tag>
+    ) : entry.lastRunStatus === 'skipped' ? (
+      <Tag tone="neutral">{t('advanced.skipped')}</Tag>
+    ) : null
 
   return (
-    <div
-      className={cn('group rounded-2xl p-5 transition')}
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
-    >
-      {/* Top row */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-3">
-            <h3 className="truncate text-[15px] font-semibold text-white">{entry.name}</h3>
-            {entry.autoApply && (
-              <span
-                className="shrink-0 rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-                style={{ background: 'var(--accent-muted-bg)', color: 'var(--accent)' }}
-              >
-                {t('card.autoApplyBadge')}
-              </span>
-            )}
-          </div>
-          <p className="mt-1 text-[13px]" style={{ color: 'var(--text-muted)' }}>
-            {frequencyText}
-          </p>
+    <article className="pulizia-schedule" aria-label={entry.name}>
+      <div className="pulizia-schedule-head">
+        <div className="pulizia-schedule-title">
+          <h3 className="pulizia-app-name">{entry.name}</h3>
+          {entry.autoApply && <Tag tone="neutral">{t('card.autoApplyBadge')}</Tag>}
         </div>
-
-        <div className="flex items-center gap-2">
-          {/* Actions — visible on hover */}
-          <div className="flex items-center gap-1 ">
-            <IconBtn icon={Pencil} title={t('card.editAction')} onClick={onEdit} />
-            <IconBtn icon={Copy} title={t('card.duplicateAction')} onClick={onDuplicate} />
-            <IconBtn
-              icon={Trash2}
-              title={t('card.deleteAction')}
-              onClick={onDelete}
-              color="#ef4444"
-            />
-          </div>
-
-          <Toggle checked={entry.enabled} onChange={onToggle} />
-        </div>
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-        <button
-          className="rounded-lg border px-3 py-1 disabled:opacity-40"
-          disabled={!entry.enabled || runtime?.running}
-          onClick={onRun}
-        >
-          {t('advanced.runNow')}
-        </button>
-        <span role="status">
-          {runtime?.running
-            ? t('advanced.running')
-            : runtime?.reason
-              ? t('advanced.waiting.' + runtime.reason)
-              : ''}
+        <span className="pulizia-switch">
+          <Switch
+            checked={entry.enabled}
+            onChange={onToggle}
+            label={t('card.enabledLabel', { name: entry.name })}
+          />
+          <span>{entry.enabled ? t('card.enabled') : t('card.disabled')}</span>
         </span>
-        {runtime?.reason && (
-          <span className="text-xs">
-            {t('advanced.nextEvaluation', {
-              time: new Date(runtime.nextEvaluationAt).toLocaleTimeString()
-            })}
-          </span>
-        )}
       </div>
-      {/* Task pills */}
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {entry.tasks.map((taskType) => {
-          const def = allTasks.find((d) => d.type === taskType)
-          if (!def) return null
-          return (
-            <span
-              key={taskType}
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-medium"
-              style={{ background: 'var(--bg-subtle-2)', color: 'var(--text-muted)' }}
-            >
-              <def.icon className="h-3 w-3" strokeWidth={1.8} />
-              {def.label}
-            </span>
-          )
-        })}
-        {taskCount === 0 && (
-          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-            {t('card.noTasksSelected')}
-          </span>
-        )}
-      </div>
-
-      {/* Bottom row */}
-      <div
-        className="mt-4 flex items-center gap-5"
-        style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}
-      >
-        {/* Next run */}
+      <p className="pulizia-summary-meta">
+        {frequencyText}
+        {' · '}
+        {taskNames.length > 0 ? formatList(taskNames, i18n.language) : t('card.noTasksSelected')}
+      </p>
+      <p className="pulizia-app-meta">
         {entry.enabled && nextRun && (
-          <div className="flex items-center gap-2">
-            <Clock
-              className="h-3.5 w-3.5 shrink-0"
-              style={{ color: 'var(--accent)' }}
-              strokeWidth={1.8}
-            />
-            <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-              {t('card.nextRun', { time: formatNextRun(nextRun, t) })}
-            </span>
-          </div>
+          <>
+            {t('card.nextRun', { time: formatNextRun(nextRun, t, i18n.language) })}
+            {' · '}
+          </>
         )}
-
-        {/* Last run */}
-        <div className="flex items-center gap-2">
-          {entry.lastRunStatus === 'success' && (
-            <CheckCircle2
-              className="h-3.5 w-3.5 shrink-0"
-              style={{ color: '#22c55e' }}
-              strokeWidth={1.8}
-            />
-          )}
-          {entry.lastRunStatus === 'partial' && (
-            <AlertTriangle
-              className="h-3.5 w-3.5 shrink-0"
-              style={{ color: '#eab308' }}
-              strokeWidth={1.8}
-            />
-          )}
-          {entry.lastRunStatus === 'failed' && (
-            <XCircle
-              className="h-3.5 w-3.5 shrink-0"
-              style={{ color: '#ef4444' }}
-              strokeWidth={1.8}
-            />
-          )}
-          {entry.lastRunStatus === 'never' && (
-            <Minus
-              className="h-3.5 w-3.5 shrink-0"
-              style={{ color: 'var(--text-faint)' }}
-              strokeWidth={1.8}
-            />
-          )}
-          <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-            {entry.lastRunStatus === 'skipped' && <span>{t('advanced.skipped')} </span>}
-            {entry.lastRunAt
-              ? t('card.lastRun', { time: formatLastRun(entry.lastRunAt, t) })
-              : t('card.neverRun')}
-          </span>
-        </div>
+        {lastRun}
+        {status && <> {status}</>}
+      </p>
+      {(runtime?.running || runtime?.reason) && (
+        <p className="pulizia-app-meta" role="status">
+          {runtime.running ? t('advanced.running') : t('advanced.waiting.' + runtime.reason)}
+          {runtime.reason &&
+            ` · ${t('advanced.nextEvaluation', {
+              time: new Date(runtime.nextEvaluationAt).toLocaleTimeString(i18n.language, {
+                hour: '2-digit',
+                minute: '2-digit'
+              })
+            })}`}
+        </p>
+      )}
+      <div className="pulizia-schedule-actions">
+        <Button disabled={!entry.enabled || runtime?.running} onClick={onRun}>
+          {t('advanced.runNow')}
+        </Button>
+        <Button
+          variant="ghost"
+          icon={Pencil}
+          onClick={onEdit}
+          title={t('card.editAction')}
+          aria-label={t('card.editAction')}
+        />
+        <Button
+          variant="ghost"
+          icon={Copy}
+          onClick={onDuplicate}
+          title={t('card.duplicateAction')}
+          aria-label={t('card.duplicateAction')}
+        />
+        <Button
+          variant="ghost"
+          icon={Trash2}
+          onClick={onDelete}
+          title={t('card.deleteAction')}
+          aria-label={t('card.deleteAction')}
+        />
       </div>
-    </div>
+    </article>
   )
 }
 
-// ─── Preset Picker Dialog ─────────────────────────────────
+// ─── Dialog shell ─────────────────────────────────────────
 
 function useScheduleDialogFocus(onClose: () => void) {
   const ref = useRef<HTMLDivElement>(null)
@@ -688,6 +593,53 @@ function useScheduleDialogFocus(onClose: () => void) {
   return ref
 }
 
+function DialogShell({
+  title,
+  onClose,
+  wide,
+  children,
+  footer
+}: {
+  title: string
+  onClose: () => void
+  wide?: boolean
+  children: React.ReactNode
+  footer?: React.ReactNode
+}) {
+  const { t } = useTranslation('schedules')
+  const dialogRef = useScheduleDialogFocus(onClose)
+  const titleId = useId()
+  return (
+    <div className="ui-dialog-layer">
+      <div className="ui-dialog-scrim" onClick={onClose} aria-hidden="true" />
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className={wide ? 'ui-dialog pulizia-dialog-wide' : 'ui-dialog'}
+      >
+        <div className="pulizia-dialog-head">
+          <h2 id={titleId} className="ui-dialog-title">
+            {title}
+          </h2>
+          <Button
+            variant="ghost"
+            icon={X}
+            onClick={onClose}
+            aria-label={t('dialog.close')}
+            title={t('dialog.close')}
+          />
+        </div>
+        {children}
+        {footer && <div className="ui-dialog-actions">{footer}</div>}
+      </div>
+    </div>
+  )
+}
+
+// ─── Preset Picker Dialog ─────────────────────────────────
+
 function PresetPicker({
   presets,
   onSelect,
@@ -698,77 +650,26 @@ function PresetPicker({
   onClose: () => void
 }) {
   const { t } = useTranslation('schedules')
-  const dialogRef = useScheduleDialogFocus(onClose)
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      <div
-        className="absolute inset-0"
-        style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
-        onClick={onClose}
-      />
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={t('presets.dialogTitle')}
-        className="relative w-full max-w-md animate-scale-in rounded-2xl p-6"
-        style={{
-          background: 'var(--card-bg)',
-          border: '1px solid var(--border-medium)',
-          boxShadow: '0 24px 80px rgba(0,0,0,0.5)'
-        }}
-      >
-        <div className="mb-5 flex items-center justify-between">
-          <h3 className="text-[16px] font-semibold text-white">{t('presets.dialogTitle')}</h3>
+    <DialogShell title={t('presets.dialogTitle')} onClose={onClose}>
+      <div className="pulizia-choices">
+        {presets.map((preset) => (
           <button
-            onClick={onClose}
-            aria-label={t('common:close')}
-            className="text-zinc-600 transition-colors hover:text-zinc-400"
+            type="button"
+            key={preset.label}
+            onClick={() => onSelect(preset.entry)}
+            className="pulizia-choice"
           >
-            <X className="h-5 w-5" strokeWidth={1.8} />
+            <span className="pulizia-app-name">{preset.label}</span>
+            <span className="pulizia-app-meta">{preset.description}</span>
           </button>
-        </div>
-
-        <div className="space-y-2.5">
-          {presets.map((preset) => (
-            <button
-              key={preset.label}
-              onClick={() => onSelect(preset.entry)}
-              className="w-full rounded-xl p-4 text-left transition-colors"
-              style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(245,158,11,0.3)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-default)'
-              }}
-            >
-              <p className="text-[14px] font-medium text-zinc-200">{preset.label}</p>
-              <p className="mt-1 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-                {preset.description}
-              </p>
-            </button>
-          ))}
-
-          <button
-            onClick={() => onSelect(null)}
-            className="w-full rounded-xl p-4 text-left transition-colors"
-            style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(245,158,11,0.3)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-default)'
-            }}
-          >
-            <p className="text-[14px] font-medium text-zinc-200">{t('presets.customLabel')}</p>
-            <p className="mt-1 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-              {t('presets.customDescription')}
-            </p>
-          </button>
-        </div>
+        ))}
+        <button type="button" onClick={() => onSelect(null)} className="pulizia-choice">
+          <span className="pulizia-app-name">{t('presets.customLabel')}</span>
+          <span className="pulizia-app-meta">{t('presets.customDescription')}</span>
+        </button>
       </div>
-    </div>
+    </DialogShell>
   )
 }
 
@@ -788,7 +689,10 @@ function ScheduleDialog({
   onClose: () => void
 }) {
   const { t } = useTranslation('schedules')
-  const dialogRef = useScheduleDialogFocus(onClose)
+  const nameId = useId()
+  const frequencyId = useId()
+  const dayId = useId()
+  const hourId = useId()
   const [name, setName] = useState(initial.name ?? '')
   const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'monthly'>(
     initial.frequency ?? 'weekly'
@@ -841,76 +745,50 @@ function ScheduleDialog({
     onSave(entry)
   }
 
-  const selectStyle = 'rounded-lg px-3 py-1.5 text-[13px] text-zinc-400 outline-none'
-  const selectBorder = {
-    background: 'var(--bg-subtle-2)',
-    border: '1px solid var(--border-medium)'
-  }
-
   const cleanerTasks = availableTasks.filter((t) => t.group === 'cleaner')
   const maintTasks = availableTasks.filter((t) => t.group === 'maintenance')
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      <div
-        className="absolute inset-0"
-        style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
-        onClick={onClose}
-      />
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={isEditing ? t('dialog.editTitle') : t('dialog.newTitle')}
-        className="relative max-h-[85vh] w-full max-w-lg animate-scale-in overflow-y-auto rounded-2xl p-6"
-        style={{
-          background: 'var(--card-bg)',
-          border: '1px solid var(--border-medium)',
-          boxShadow: '0 24px 80px rgba(0,0,0,0.5)'
-        }}
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-[16px] font-semibold text-white">
-            {isEditing ? t('dialog.editTitle') : t('dialog.newTitle')}
-          </h3>
-          <button
-            onClick={onClose}
-            aria-label={t('common:close')}
-            className="text-zinc-600 transition-colors hover:text-zinc-400"
-          >
-            <X className="h-5 w-5" strokeWidth={1.8} />
-          </button>
-        </div>
-
+    <DialogShell
+      wide
+      title={isEditing ? t('dialog.editTitle') : t('dialog.newTitle')}
+      onClose={onClose}
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose}>
+            {t('dialog.cancelButton')}
+          </Button>
+          <Button variant="primary" onClick={handleSubmit} disabled={!canSave}>
+            {isEditing ? t('dialog.saveChangesButton') : t('dialog.createScheduleButton')}
+          </Button>
+        </>
+      }
+    >
+      <div className="pulizia-form">
         {/* Name */}
-        <div className="mb-5">
-          <label
-            className="mb-1.5 block text-[12px] font-medium"
-            style={{ color: 'var(--text-muted)' }}
-          >
+        <div className="pulizia-form-field">
+          <label className="pulizia-label" htmlFor={nameId}>
             {t('dialog.nameLabel')}
           </label>
           <input
+            id={nameId}
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t('dialog.namePlaceholder')}
             maxLength={60}
-            className="w-full rounded-xl px-4 py-2.5 text-[13px] text-zinc-300 outline-none placeholder:text-zinc-700"
-            style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-medium)' }}
+            className="pulizia-field"
           />
         </div>
 
         {/* Schedule timing */}
-        <div className="mb-5 grid grid-cols-3 gap-3">
-          <div>
-            <label
-              className="mb-1.5 block text-[12px] font-medium"
-              style={{ color: 'var(--text-muted)' }}
-            >
+        <div className="pulizia-form-row">
+          <div className="pulizia-form-field">
+            <label className="pulizia-label" htmlFor={frequencyId}>
               {t('dialog.frequencyLabel')}
             </label>
             <select
+              id={frequencyId}
               value={frequency}
               onChange={(e) => {
                 const f = e.target.value as 'daily' | 'weekly' | 'monthly'
@@ -919,8 +797,7 @@ function ScheduleDialog({
                 if (f === 'weekly') setDay(1) // Monday
                 if (f === 'monthly') setDay(1) // 1st
               }}
-              className={cn(selectStyle, 'w-full')}
-              style={selectBorder}
+              className="pulizia-field"
             >
               <option value="daily">{t('dialog.frequencyDaily')}</option>
               <option value="weekly">{t('dialog.frequencyWeekly')}</option>
@@ -928,65 +805,42 @@ function ScheduleDialog({
             </select>
           </div>
 
-          {frequency === 'weekly' && (
-            <div>
-              <label
-                className="mb-1.5 block text-[12px] font-medium"
-                style={{ color: 'var(--text-muted)' }}
-              >
+          {frequency !== 'daily' && (
+            <div className="pulizia-form-field">
+              <label className="pulizia-label" htmlFor={dayId}>
                 {t('dialog.dayLabel')}
               </label>
               <select
+                id={dayId}
                 value={day}
                 onChange={(e) => setDay(Number(e.target.value))}
-                className={cn(selectStyle, 'w-full')}
-                style={selectBorder}
+                className="pulizia-field"
               >
-                {DAY_NAME_KEYS.map((key, i) => (
-                  <option key={i} value={i}>
-                    {t(key)}
-                  </option>
-                ))}
+                {frequency === 'weekly'
+                  ? DAY_NAME_KEYS.map((key, i) => (
+                      <option key={i} value={i}>
+                        {t(key)}
+                      </option>
+                    ))
+                  : Array.from({ length: 31 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
               </select>
             </div>
           )}
 
-          {frequency === 'monthly' && (
-            <div>
-              <label
-                className="mb-1.5 block text-[12px] font-medium"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                {t('dialog.dayLabel')}
-              </label>
-              <select
-                value={day}
-                onChange={(e) => setDay(Number(e.target.value))}
-                className={cn(selectStyle, 'w-full')}
-                style={selectBorder}
-              >
-                {Array.from({ length: 31 }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {ordinal(i + 1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <div>
-            <label
-              className="mb-1.5 block text-[12px] font-medium"
-              style={{ color: 'var(--text-muted)' }}
-            >
+          <div className="pulizia-form-field">
+            <label className="pulizia-label" htmlFor={hourId}>
               {t('dialog.timeLabel')}
             </label>
-            <div className="flex gap-1.5">
+            <div className="pulizia-time">
               <select
+                id={hourId}
                 value={hour}
                 onChange={(e) => setHour(Number(e.target.value))}
-                className={cn(selectStyle, 'w-full')}
-                style={selectBorder}
+                className="pulizia-field"
               >
                 {Array.from({ length: 24 }, (_, i) => (
                   <option key={i} value={i}>
@@ -994,12 +848,12 @@ function ScheduleDialog({
                   </option>
                 ))}
               </select>
-              <span className="flex items-center text-[13px] text-zinc-400">:</span>
+              <span aria-hidden="true">:</span>
               <select
                 value={minute}
                 onChange={(e) => setMinute(Number(e.target.value))}
-                className={cn(selectStyle, 'w-full')}
-                style={selectBorder}
+                className="pulizia-field"
+                aria-label={t('dialog.minuteLabel')}
               >
                 {Array.from({ length: 60 }, (_, i) => (
                   <option key={i} value={i}>
@@ -1012,70 +866,41 @@ function ScheduleDialog({
         </div>
 
         {/* Tasks */}
-        <div className="mb-5">
-          <div className="mb-2 flex items-center justify-between">
-            <label className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
-              {t('dialog.tasksLabel')}
-            </label>
-            <div className="flex gap-3">
-              <button
-                onClick={selectAll}
-                className="text-[11px] font-medium"
-                style={{ color: 'var(--accent)' }}
-              >
+        <fieldset className="pulizia-fieldset">
+          <div className="pulizia-fieldset-head">
+            <legend className="pulizia-label">{t('dialog.tasksLabel')}</legend>
+            <span className="pulizia-fieldset-actions">
+              <button type="button" className="pulizia-link" onClick={selectAll}>
                 {t('dialog.selectAll')}
               </button>
-              <button
-                onClick={deselectAll}
-                className="text-[11px] font-medium"
-                style={{ color: 'var(--text-muted)' }}
-              >
+              <button type="button" className="pulizia-link" onClick={deselectAll}>
                 {t('dialog.deselectAll')}
               </button>
-            </div>
+            </span>
           </div>
-
-          <div
-            className="rounded-xl p-4"
-            style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-          >
-            {/* Cleaner group */}
-            <p
-              className="mb-2 text-[10px] font-semibold uppercase tracking-widest"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {t('dialog.cleanerGroup')}
-            </p>
-            <div className="mb-4 grid grid-cols-2 gap-1.5">
-              {cleanerTasks.map((task) => (
-                <TaskCheckbox
-                  key={task.type}
-                  task={task}
-                  checked={tasks.includes(task.type)}
-                  onChange={() => toggleTask(task.type)}
-                />
-              ))}
-            </div>
-
-            {/* Maintenance group */}
-            <p
-              className="mb-2 text-[10px] font-semibold uppercase tracking-widest"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {t('dialog.maintenanceGroup')}
-            </p>
-            <div className="grid grid-cols-2 gap-1.5">
-              {maintTasks.map((task) => (
-                <TaskCheckbox
-                  key={task.type}
-                  task={task}
-                  checked={tasks.includes(task.type)}
-                  onChange={() => toggleTask(task.type)}
-                />
-              ))}
-            </div>
+          <p className="pulizia-app-meta">{t('dialog.cleanerGroup')}</p>
+          <div className="pulizia-task-grid">
+            {cleanerTasks.map((task) => (
+              <TaskCheckbox
+                key={task.type}
+                task={task}
+                checked={tasks.includes(task.type)}
+                onChange={() => toggleTask(task.type)}
+              />
+            ))}
           </div>
-        </div>
+          <p className="pulizia-app-meta">{t('dialog.maintenanceGroup')}</p>
+          <div className="pulizia-task-grid">
+            {maintTasks.map((task) => (
+              <TaskCheckbox
+                key={task.type}
+                task={task}
+                checked={tasks.includes(task.type)}
+                onChange={() => toggleTask(task.type)}
+              />
+            ))}
+          </div>
+        </fieldset>
 
         <ScheduleOptions
           conditions={conditions}
@@ -1083,124 +908,74 @@ function ScheduleDialog({
           missedRun={missedRun}
           onMissedRun={setMissedRun}
         />
-        <details className="feature-layout mb-5 rounded-xl border border-[var(--border-medium)] bg-[var(--bg-subtle)] p-4">
-          <summary className="cursor-pointer text-[13px] font-semibold">
-            {t('advanced.workflow')}
-          </summary>
-          <fieldset className="mt-4 space-y-3">
+        <details className="pulizia-details">
+          <summary>{t('advanced.workflow')}</summary>
+          <fieldset className="pulizia-details-body">
             <legend className="sr-only">{t('advanced.workflow')}</legend>
-            <p className="text-xs">{t('advanced.workflowHint')}</p>
-            {tasks.map((type, index) => (
-              <div key={type} className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="flex-1">
-                    {index + 1}. {availableTasks.find((task) => task.type === type)?.label ?? type}
-                  </span>
-                  <button
-                    type="button"
-                    aria-label={t('advanced.moveUp')}
-                    disabled={index === 0}
-                    className="feature-button"
-                    onClick={() =>
-                      setTasks((previous) => {
-                        const next = [...previous]
-                        ;[next[index - 1], next[index]] = [next[index], next[index - 1]]
-                        return next
-                      })
-                    }
-                  >
-                    {t('advanced.moveUp')}
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={t('advanced.moveDown')}
-                    disabled={index === tasks.length - 1}
-                    className="feature-button"
-                    onClick={() =>
-                      setTasks((previous) => {
-                        const next = [...previous]
-                        ;[next[index + 1], next[index]] = [next[index], next[index + 1]]
-                        return next
-                      })
-                    }
-                  >
-                    {t('advanced.moveDown')}
-                  </button>
+            <p className="pulizia-app-meta">{t('advanced.workflowHint')}</p>
+            {tasks.map((type, index) => {
+              const label = availableTasks.find((task) => task.type === type)?.label ?? type
+              return (
+                <div key={type} className="pulizia-order">
+                  <div className="pulizia-order-row">
+                    <span className="pulizia-order-name">
+                      {index + 1}. {label}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      aria-label={t('advanced.moveUpLabel', { name: label })}
+                      disabled={index === 0}
+                      onClick={() =>
+                        setTasks((previous) => {
+                          const next = [...previous]
+                          ;[next[index - 1], next[index]] = [next[index], next[index - 1]]
+                          return next
+                        })
+                      }
+                    >
+                      {t('advanced.moveUp')}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      aria-label={t('advanced.moveDownLabel', { name: label })}
+                      disabled={index === tasks.length - 1}
+                      onClick={() =>
+                        setTasks((previous) => {
+                          const next = [...previous]
+                          ;[next[index + 1], next[index]] = [next[index], next[index + 1]]
+                          return next
+                        })
+                      }
+                    >
+                      {t('advanced.moveDown')}
+                    </Button>
+                  </div>
+                  {type.startsWith('cleaner:') && type !== 'cleaner:recycleBin' && (
+                    <ScheduleScope
+                      task={type}
+                      label={label}
+                      selected={scope[type]}
+                      onChange={(value) => setScope((previous) => ({ ...previous, [type]: value }))}
+                    />
+                  )}
                 </div>
-                {type.startsWith('cleaner:') && type !== 'cleaner:recycleBin' && (
-                  <ScheduleScope
-                    task={type}
-                    label={availableTasks.find((task) => task.type === type)?.label ?? type}
-                    selected={scope[type]}
-                    onChange={(value) => setScope((previous) => ({ ...previous, [type]: value }))}
-                  />
-                )}
-              </div>
-            ))}
+              )
+            })}
           </fieldset>
         </details>
+
         {/* Auto-apply */}
-        <div
-          className="mb-6 flex items-start gap-4 rounded-xl p-4"
-          style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-        >
-          <div className="flex-1">
-            <p className="text-[13px] font-medium text-zinc-300">{t('dialog.autoApplyLabel')}</p>
-            <p className="mt-1 text-[12px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              {t('dialog.autoApplyDescription')}
-            </p>
+        <div className="pulizia-toggle-row">
+          <div className="pulizia-entry">
+            <span className="pulizia-app-name">{t('dialog.autoApplyLabel')}</span>
+            <span className="pulizia-app-meta">{t('dialog.autoApplyDescription')}</span>
           </div>
-          <Toggle checked={autoApply} onChange={setAutoApply} />
+          <Switch checked={autoApply} onChange={setAutoApply} label={t('dialog.autoApplyLabel')} />
         </div>
 
-        {autoApply && (
-          <div
-            className="mb-6 flex items-start gap-3 rounded-xl p-3"
-            style={{
-              background: 'var(--accent-muted-bg)',
-              border: '1px solid rgba(245,158,11,0.12)'
-            }}
-          >
-            <AlertTriangle
-              className="mt-0.5 h-4 w-4 shrink-0"
-              style={{ color: 'var(--accent)' }}
-              strokeWidth={1.8}
-            />
-            <p className="text-[12px] leading-relaxed" style={{ color: '#d97706' }}>
-              {t('dialog.autoApplyWarning')}
-            </p>
-          </div>
-        )}
-
-        {/* Footer */}
-        <div className="flex justify-end gap-2.5">
-          <button
-            onClick={onClose}
-            className="rounded-xl px-5 py-2.5 text-[13px] font-medium transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--bg-subtle-2)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent'
-            }}
-          >
-            {t('dialog.cancelButton')}
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={!canSave}
-            className={cn(
-              'rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-colors',
-              !canSave && 'cursor-not-allowed opacity-40'
-            )}
-            style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
-          >
-            {isEditing ? t('dialog.saveChangesButton') : t('dialog.createScheduleButton')}
-          </button>
-        </div>
+        {autoApply && <ReportNotice as="div" title={t('dialog.autoApplyWarning')} />}
       </div>
-    </div>
+    </DialogShell>
   )
 }
 
@@ -1216,102 +991,22 @@ function TaskCheckbox({
   onChange: () => void
 }) {
   return (
-    <button
-      onClick={onChange}
-      className={cn(
-        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium transition',
-        checked ? 'text-zinc-200' : 'text-zinc-600'
-      )}
-      style={{
-        background: checked ? 'var(--accent-muted-bg)' : 'transparent',
-        border: checked ? '1px solid var(--accent-muted-border)' : '1px solid transparent'
-      }}
-    >
-      <div
-        className="flex h-4 w-4 shrink-0 items-center justify-center rounded"
-        style={{
-          background: checked ? 'var(--accent)' : 'var(--bg-hover-2)',
-          border: checked ? 'none' : '1px solid var(--border-stronger)'
-        }}
-      >
-        {checked && (
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path
-              d="M2 5L4.2 7.5L8 2.5"
-              stroke="var(--text-on-accent)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-      </div>
-      <task.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
-      {task.label}
-    </button>
-  )
-}
-
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation()
-        onChange(!checked)
-      }}
-      className="toggle-switch relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors"
-      data-checked={checked}
-      style={{ background: checked ? 'var(--accent)' : 'var(--toggle-off-bg)' }}
-    >
-      <div
-        className={cn(
-          'absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-transform',
-          checked ? 'translate-x-[22px]' : 'translate-x-[3px]'
-        )}
-      />
-    </button>
-  )
-}
-
-function IconBtn({
-  icon: Icon,
-  title,
-  onClick,
-  color
-}: {
-  icon: typeof Pencil
-  title: string
-  onClick: () => void
-  color?: string
-}) {
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation()
-        onClick()
-      }}
-      title={title}
-      className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors"
-      style={{ color: color ?? 'var(--text-muted)' }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'var(--bg-hover-2)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'transparent'
-      }}
-    >
-      <Icon className="h-4 w-4" strokeWidth={1.8} />
-    </button>
+    <label className="pulizia-task">
+      <Checkbox checked={checked} onChange={onChange} label={task.label} />
+      <task.icon size={16} strokeWidth={1.75} aria-hidden="true" className="pulizia-task-icon" />
+      <span>{task.label}</span>
+    </label>
   )
 }
 
 // ─── Utilities ────────────────────────────────────────────
 
-function formatFrequency(
-  entry: ScheduleEntry,
-  t: (key: string, opts?: Record<string, unknown>) => string
-): string {
-  const time = `${String(entry.hour).padStart(2, '0')}:${String(entry.minute ?? 0).padStart(2, '0')}`
+function timeOf(hour: number, minute: number): string {
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+}
+
+function formatFrequency(entry: ScheduleEntry, t: Translate): string {
+  const time = timeOf(entry.hour, entry.minute ?? 0)
   switch (entry.frequency) {
     case 'daily':
       return t('frequency.everyDayAt', { time })
@@ -1321,18 +1016,31 @@ function formatFrequency(
         time
       })
     case 'monthly':
-      return t('frequency.monthlyAt', { ordinalDay: ordinal(entry.day), time })
+      return t('frequency.monthlyOn', { day: entry.day, time })
   }
 }
 
-function formatNextRun(
-  date: Date,
-  t: (key: string, opts?: Record<string, unknown>) => string
-): string {
+/** "lun 29 set, 09:00" in the UI language, Latin digits. */
+function formatWhen(date: Date, locale: string): string {
+  try {
+    return date.toLocaleString(locale, {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      numberingSystem: 'latn'
+    } as Intl.DateTimeFormatOptions)
+  } catch {
+    return date.toLocaleString()
+  }
+}
+
+function formatNextRun(date: Date, t: Translate, locale: string): string {
   const now = new Date()
   const diffMs = date.getTime() - now.getTime()
   const diffD = Math.floor(diffMs / 86_400_000)
-  const time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+  const time = timeOf(date.getHours(), date.getMinutes())
 
   if (diffD === 0 && date.getDate() === now.getDate()) return t('nextRun.todayAt', { time })
   const tomorrow = new Date(now)
@@ -1345,15 +1053,12 @@ function formatNextRun(
     return t('nextRun.tomorrowAt', { time })
   if (diffD < 7) return t('nextRun.inDaysAt', { count: diffD, time })
   return t('nextRun.dateAt', {
-    date: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+    date: date.toLocaleDateString(locale, { month: 'short', day: 'numeric' }),
     time
   })
 }
 
-function formatLastRun(
-  iso: string,
-  t: (key: string, opts?: Record<string, unknown>) => string
-): string {
+function formatLastRun(iso: string, t: Translate, locale: string): string {
   const date = new Date(iso)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
@@ -1365,11 +1070,5 @@ function formatLastRun(
   if (diffM < 60) return t('lastRun.minutesAgo', { count: diffM })
   if (diffH < 24) return t('lastRun.hoursAgo', { count: diffH })
   if (diffD < 7) return t('lastRun.daysAgo', { count: diffD })
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-}
-
-function ordinal(n: number): string {
-  const s = ['th', 'st', 'nd', 'rd']
-  const v = n % 100
-  return n + (s[(v - 20) % 10] || s[v] || s[0])
+  return date.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
 }
