@@ -289,22 +289,6 @@ export interface FileTypeInfo {
   fileCount: number
 }
 
-export interface AppStats {
-  totalSpaceSaved: number
-  totalFilesCleaned: number
-  totalScans: number
-  lastScanDate: string | null
-  recentActivity: ActivityEntry[]
-}
-
-export interface ActivityEntry {
-  id: string
-  type: 'clean' | 'registry' | 'startup' | 'scan' | 'drivers' | 'network'
-  message: string
-  timestamp: string
-  spaceSaved?: number
-}
-
 /**
  * Last known main-window geometry, persisted so a resized/moved window comes
  * back the same way on the next launch.  `x`/`y` are omitted when the window

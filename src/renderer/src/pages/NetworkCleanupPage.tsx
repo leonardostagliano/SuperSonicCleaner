@@ -26,7 +26,6 @@ import { formatDateTime, formatList, formatTime, latestEntry } from '@/lib/clean
 import { formatNumber } from '@/lib/utils'
 import type { NetworkItem } from '@shared/types'
 import { useHistoryStore } from '@/stores/history-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { useNetworkStore } from '@/stores/network-store'
 import { usePlatform } from '@/hooks/usePlatform'
 
@@ -80,7 +79,6 @@ export function NetworkCleanupPage() {
   const [scannedAt, setScannedAt] = useState<number | null>(null)
   const addHistoryEntry = useHistoryStore((s) => s.addEntry)
   const historyEntries = useHistoryStore((s) => s.entries)
-  const recomputeStats = useStatsStore((s) => s.recompute)
 
   const handleScan = useCallback(async () => {
     const store = useNetworkStore.getState()
@@ -142,7 +140,6 @@ export function NetworkCleanupPage() {
         })),
         errorCount: result.failed
       })
-      recomputeStats()
 
       useNetworkStore.getState().setStatus('complete')
 
@@ -161,7 +158,7 @@ export function NetworkCleanupPage() {
       toast.error(t('cleanupFailedToast'))
       useNetworkStore.getState().setStatus('idle')
     }
-  }, [addHistoryEntry, recomputeStats])
+  }, [addHistoryEntry])
 
   const isScanning = status === 'scanning'
   const isCleaning = status === 'cleaning'

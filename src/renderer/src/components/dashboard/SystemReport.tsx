@@ -15,7 +15,6 @@ import { useHistoryStore } from '@/stores/history-store'
 import { useScanStore } from '@/stores/scan-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { useStartupStore } from '@/stores/startup-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { ResourcesSection } from './LiveMetricCards'
 import { ActivitySection, ChecksSection, StorageSection } from './ReportSections'
 import { useHomeChecks } from './home-checks'
@@ -34,7 +33,6 @@ export function SystemReport({ onBusyChange }: { onBusyChange: (busy: boolean) =
   const { features } = usePlatform()
   const refreshDrives = useDrivesStore((s) => s.refresh)
   const addHistoryEntry = useHistoryStore((s) => s.addEntry)
-  const recomputeStats = useStatsStore((s) => s.recompute)
   const protectRecycleBin = useSettingsStore((s) => s.settings.cleaner.protectRecycleBin)
   const startupHasLoaded = useStartupStore((s) => s.hasLoaded)
   const startupLoading = useStartupStore((s) => s.loading)
@@ -119,7 +117,6 @@ export function SystemReport({ onBusyChange }: { onBusyChange: (busy: boolean) =
           ],
           errorCount: outcome.failed.length
         })
-        recomputeStats()
       }
     } finally {
       setResult(outcome)

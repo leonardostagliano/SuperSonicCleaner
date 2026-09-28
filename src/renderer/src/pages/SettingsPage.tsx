@@ -109,7 +109,7 @@ export function SettingsPage() {
 
   return (
     <div className="prefs-page">
-      <PageHeader title={t('pageTitle')} />
+      <PageHeader title={t('pageTitle')} description={t('routes.settings', { ns: 'experience' })} />
 
       <nav className="prefs-nav" aria-label={t('sectionsNav')}>
         {SECTIONS.map((key) => (

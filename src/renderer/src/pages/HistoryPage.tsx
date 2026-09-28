@@ -116,6 +116,7 @@ export function HistoryPage() {
     <div className="history-page">
       <PageHeader
         title={t('pageTitle')}
+        description={t('routes.history', { ns: 'experience' })}
         action={
           <>
             <Segmented<View>

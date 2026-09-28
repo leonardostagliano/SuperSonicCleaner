@@ -11,7 +11,6 @@ import { Button, Card, Checkbox, ListRow, Section, Tag } from '@/components/ui'
 import { Disclosure, Note, ProgressCard, SummaryCard } from '@/components/software/SoftwareBlocks'
 import { formatClock, formatDateTime, joinFacts } from '@/components/software/format'
 import { useHistoryStore } from '@/stores/history-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { useDriverStore } from '@/stores/driver-store'
 import { recordCheckRun } from '@/stores/check-runs-store'
 import { icons } from '@/lib/icons'
@@ -51,7 +50,6 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
   const [showIgnored, setShowIgnored] = useState(false)
   const cleanStartRef = useRef<number>(0)
   const historyStore = useHistoryStore()
-  const recomputeStats = useStatsStore((s) => s.recompute)
 
   const isScanning = scanning || updateScanning
   const isBusy = isScanning || applying
@@ -150,7 +148,6 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
         ],
         errorCount: 0
       })
-      recomputeStats()
     }
   }, [])
 
@@ -225,7 +222,6 @@ export function DriverManagerPage({ embedded }: { embedded?: boolean }) {
           })),
           errorCount: result.failed
         })
-        recomputeStats()
       } catch (err) {
         console.error('Driver clean failed:', err)
         toast.error(t('driverManager.cleanFailedToast'), {

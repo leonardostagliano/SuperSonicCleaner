@@ -5,7 +5,6 @@ import { History } from 'lucide-react'
 import { EmptyState } from './EmptyState'
 import { ConfirmDialog } from './ConfirmDialog'
 import { Receipt } from './Receipt'
-import { useAnimatedCounter } from '@/hooks/useAnimatedCounter'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => `t:${key}` })
@@ -160,14 +159,5 @@ describe('Receipt', () => {
         '<span class="ui-receipt-facts">1.402 file · non reversibile</span>' +
         '<span class="ui-receipt-value">2,31 GB</span></span>'
     )
-  })
-})
-
-describe('useAnimatedCounter (pass-through)', () => {
-  it('returns the target on the first render, without counting up', () => {
-    const Probe = ({ value }: { value: number }) =>
-      createElement('span', null, String(useAnimatedCounter(value, 800)))
-    expect(html(createElement(Probe, { value: 1402 }))).toBe('<span>1402</span>')
-    expect(html(createElement(Probe, { value: 2.31 }))).toBe('<span>2.31</span>')
   })
 })

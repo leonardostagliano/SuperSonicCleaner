@@ -16,7 +16,7 @@ export function AboutPage() {
   const { t } = useTranslation('settings')
   return (
     <div className="about-page">
-      <PageHeader title={t('sectionAbout')} />
+      <PageHeader title={t('sectionAbout')} description={t('routes.about', { ns: 'experience' })} />
       <div className="about-stack">
         <Card className="about-product">
           <img src={logoSrc} alt="" className="about-logo" />

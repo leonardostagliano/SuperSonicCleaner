@@ -18,7 +18,6 @@ import {
 } from '@/components/software/SoftwareBlocks'
 import { joinFacts } from '@/components/software/format'
 import { useHistoryStore } from '@/stores/history-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { useUninstallerStore, UNUSED_THRESHOLD_DAYS } from '@/stores/uninstaller-store'
 import { icons } from '@/lib/icons'
 import { formatBytes, NO_VALUE } from '@/lib/utils'
@@ -87,7 +86,6 @@ export function UninstallerPage() {
   const uninstallStartRef = useRef<number>(0)
   const lastFailedProgramRef = useRef<InstalledProgram | null>(null)
   const historyStore = useHistoryStore()
-  const recomputeStats = useStatsStore((s) => s.recompute)
 
   // Auto-load on first visit
   useEffect(() => {
@@ -161,7 +159,6 @@ export function UninstallerPage() {
             ],
             errorCount: 0
           })
-          recomputeStats()
         }
       }
     } catch (err) {
@@ -171,7 +168,7 @@ export function UninstallerPage() {
     } finally {
       useUninstallerStore.getState().setUninstalling(false)
     }
-  }, [confirmProgram, historyStore, recomputeStats])
+  }, [confirmProgram, historyStore])
 
   // ─── Batch uninstall selected programs ─────────────────────
   const handleBatchUninstall = useCallback(async () => {
@@ -263,9 +260,7 @@ export function UninstallerPage() {
         leftoversSize: totalLeftoversSize
       })
     }
-
-    if (successCount > 0) recomputeStats()
-  }, [historyStore, recomputeStats])
+  }, [historyStore])
 
   // ─── Force remove a program ─────────────────────────────
   const handleForceRemove = useCallback(async () => {
@@ -310,7 +305,6 @@ export function UninstallerPage() {
             ],
             errorCount: 0
           })
-          recomputeStats()
         }
       }
     } catch (err) {
@@ -320,7 +314,7 @@ export function UninstallerPage() {
     } finally {
       useUninstallerStore.getState().setUninstalling(false)
     }
-  }, [confirmForceRemove, historyStore, recomputeStats])
+  }, [confirmForceRemove, historyStore])
 
   // ─── Filtered & sorted list ───────────────────────────────
   const filteredPrograms = useMemo(() => {

@@ -6,7 +6,6 @@ import { RTL_LANGUAGES } from './lib/languages'
 import { useScheduledScan } from './hooks/useScheduledScan'
 import { AppShell } from './components/layout/AppShell'
 import { DashboardPage } from './pages/DashboardPage'
-import { useStatsStore } from './stores/stats-store'
 import { useHistoryStore } from './stores/history-store'
 import { useAppUpdateStore } from './stores/app-update-store'
 import { useBackgroundScans } from './hooks/useBackgroundScans'
@@ -26,7 +25,6 @@ export function App() {
   const { i18n } = useTranslation()
   const loadHistory = useHistoryStore((s) => s.load)
   const historyLoaded = useHistoryStore((s) => s.loaded)
-  const recomputeStats = useStatsStore((s) => s.recompute)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [onboardingChecked, setOnboardingChecked] = useState(false)
   const theme = useSettingsStore((s) => s.settings.theme)
@@ -97,10 +95,6 @@ export function App() {
   useEffect(() => {
     if (!historyLoaded) loadHistory()
   }, [historyLoaded, loadHistory])
-
-  useEffect(() => {
-    if (historyLoaded) recomputeStats()
-  }, [historyLoaded, recomputeStats])
 
   const platformInfo = usePlatformLoader()
 

@@ -11,7 +11,6 @@ import { Button, Card, Checkbox, ListRow, Segmented } from '@/components/ui'
 import { Note, ProgressCard, SummaryCard } from '@/components/software/SoftwareBlocks'
 import { formatDateTime, joinFacts } from '@/components/software/format'
 import { useHistoryStore } from '@/stores/history-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { useDebloaterStore } from '@/stores/debloater-store'
 import { icons } from '@/lib/icons'
 import type { BloatwareApp } from '@shared/types'
@@ -53,7 +52,6 @@ export function DebloaterPage({ embedded }: { embedded?: boolean }) {
   const [showConfirm, setShowConfirm] = useState(false)
   const removeStartRef = useRef<number>(0)
   const historyStore = useHistoryStore()
-  const recomputeStats = useStatsStore((s) => s.recompute)
 
   const handleScan = useCallback(async () => {
     store.getState().setScanning(true)
@@ -122,7 +120,6 @@ export function DebloaterPage({ embedded }: { embedded?: boolean }) {
         })),
         errorCount: result.failed
       })
-      recomputeStats()
 
       if (result.removed > 0) {
         const results = await window.kudu.debloaterScan()

@@ -26,7 +26,6 @@ import {
 import { formatDateTime, formatList, formatTime, latestEntry } from '@/lib/cleaner-report'
 import { formatNumber, NO_VALUE } from '@/lib/utils'
 import { useHistoryStore } from '@/stores/history-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { useRegistryStore } from '@/stores/registry-store'
 import { recordCheckRun } from '@/stores/check-runs-store'
 import type { RegistryEntry } from '@shared/types'
@@ -134,7 +133,6 @@ function RegistryPageContent() {
   const fixStartRef = useRef<number>(0)
   const addHistoryEntry = useHistoryStore((s) => s.addEntry)
   const historyEntries = useHistoryStore((s) => s.entries)
-  const recomputeStats = useStatsStore((s) => s.recompute)
 
   const handleScan = useCallback(async () => {
     const store = useRegistryStore.getState()
@@ -226,7 +224,6 @@ function RegistryPageContent() {
         })),
         errorCount: result.failed
       })
-      recomputeStats()
     } catch (err) {
       console.error('Registry fix failed:', err)
       toast.error(t('toastFixFailed'), { description: t('toastFixFailedDescription') })
@@ -234,7 +231,7 @@ function RegistryPageContent() {
     }
     useRegistryStore.getState().setFixing(false)
     useRegistryStore.getState().setFixProgress(null)
-  }, [addHistoryEntry, recomputeStats])
+  }, [addHistoryEntry])
 
   const selected = entries.filter((e) => e.selected)
   const selectedCount = selected.length

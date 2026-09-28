@@ -134,6 +134,7 @@ export function RecoveryPage() {
     <div className="recovery-page">
       <PageHeader
         title={t('recovery.title')}
+        description={t('routes.recovery', { ns: 'experience' })}
         action={
           <>
             {/* While a known result revalidates it stays on screen; this button spins. */}

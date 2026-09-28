@@ -55,7 +55,6 @@ import {
 import { cleanInBatches } from '@/lib/cleaner-batches'
 import { cancelCleanerScan, startCleanerScan } from '@/lib/cleaner-scan'
 import { useScanStore } from '@/stores/scan-store'
-import { useStatsStore } from '@/stores/stats-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { usePlatform } from '@/hooks/usePlatform'
@@ -312,7 +311,6 @@ export function CleanerPage() {
   // Progress arrives frequently; only the progress card needs to render for
   // those events, not every result row and selection aggregate on the page.
   const store = useScanStore(useShallow(({ progress: _progress, ...state }) => state))
-  const recomputeStats = useStatsStore((s) => s.recompute)
   const addHistoryEntry = useHistoryStore((s) => s.addEntry)
   const historyEntries = useHistoryStore((s) => s.entries)
   const createRestorePointEnabled = useSettingsStore((s) => s.settings.cleaner.createRestorePoint)
@@ -617,7 +615,6 @@ export function CleanerPage() {
         })),
         errorCount: allErrors.length
       })
-      recomputeStats()
 
       store.setCleanSummary({
         totalCleaned,
