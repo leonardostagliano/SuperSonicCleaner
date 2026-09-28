@@ -53,7 +53,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => navigate('/about')}
             aria-label={`${t('appVersion', { version: __APP_VERSION__ })} · ${t('sectionAbout')}`}
           >
-            {hasUpdate && <Download size={12} aria-hidden="true" />}
+            {hasUpdate && <Download size={12} strokeWidth={1.75} aria-hidden="true" />}
             <span>v{__APP_VERSION__}</span>
             {hasUpdate && <i aria-hidden="true" />}
           </button>
@@ -174,11 +174,11 @@ function AppearanceMenu() {
         title={t('appearanceCurrent', { theme: active.label })}
         onClick={() => setOpen((value) => !value)}
       >
-        <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.8} />
+        <ActiveIcon className="h-4 w-4" strokeWidth={1.75} />
       </button>
       {open && (
         <div
-          className="appearance-menu animate-scale-in"
+          className="appearance-menu"
           role="menu"
           aria-label={t('appearance')}
           onKeyDown={handleKeyDown}
@@ -197,19 +197,13 @@ function AppearanceMenu() {
                 onClick={() => void selectTheme(option.id)}
               >
                 <span className="appearance-option-icon">
-                  <Icon className="h-4 w-4" strokeWidth={1.8} />
+                  <Icon className="h-4 w-4" strokeWidth={1.75} />
                 </span>
                 <span className="min-w-0 flex-1 text-left">
                   <b>{option.label}</b>
                   <small>{option.description}</small>
                 </span>
-                {selected && (
-                  <Check
-                    className="h-3.5 w-3.5"
-                    style={{ color: 'var(--brand-solid)' }}
-                    strokeWidth={2.4}
-                  />
-                )}
+                {selected && <Check className="appearance-menu-check h-4 w-4" strokeWidth={2} />}
               </button>
             )
           })}

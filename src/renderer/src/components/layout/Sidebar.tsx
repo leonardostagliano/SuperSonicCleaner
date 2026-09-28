@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronRight, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { icons } from '@/lib/icons'
 import { bottomNavItems, navGroups, type NavGroupItem, type NavLeaf } from '@/lib/navigation'
 import { useAppUpdateStore } from '@/stores/app-update-store'
@@ -33,6 +31,10 @@ function useBottomNavItems(): NavItemDef[] {
   }))
 }
 
+/** Pending updates are what the app recommends doing (amber); an active Game Mode is a state. */
+const badgeTone = (path: string) =>
+  path === '/game-mode' || path === '/performance' ? 'neutral' : 'recommended'
+
 // Map nav paths to badge counts from stores
 function useBadgeCounts(): Record<string, number> {
   const softwareUpdaterNotifications = useSettingsStore(
@@ -56,7 +58,6 @@ function useBadgeCounts(): Record<string, number> {
 export function Sidebar() {
   const { t } = useTranslation('sidebar')
   const location = useLocation()
-  const navigate = useNavigate()
   const badgeCounts = useBadgeCounts()
   const { features } = usePlatform()
   const compact = useCompactSidebar()
@@ -65,19 +66,6 @@ export function Sidebar() {
   const [flyout, setFlyout] = useState<string | null>(null)
   const navRef = useRef<HTMLElement>(null)
   const [fade, setFade] = useState('')
-
-  // Schedules promo card: auto-hides once the user has any schedule (even a paused
-  // one — they've found the feature), including the legacy single-schedule setting.
-  const hasAnySchedule = useSettingsStore(
-    (s) => (s.settings.schedules ?? []).length > 0 || Boolean(s.settings.schedule?.enabled)
-  )
-  const scheduleNudgeDismissed = useSettingsStore((s) => s.settings.scheduleNudgeDismissed ?? false)
-  const updateSettings = useSettingsStore((s) => s.updateSettings)
-  const showScheduleNudge = !hasAnySchedule && !scheduleNudgeDismissed
-  const dismissScheduleNudge = useCallback(() => {
-    updateSettings({ scheduleNudgeDismissed: true })
-    window.kudu?.settingsSet?.({ scheduleNudgeDismissed: true }).catch(() => {})
-  }, [updateSettings])
 
   // Filter nav items based on platform features.
   const filteredNavGroups = navGroups.map((group) => ({
@@ -179,13 +167,7 @@ export function Sidebar() {
   }
 
   return (
-    <div
-      className="kudu-sidebar flex h-full w-[214px] shrink-0 flex-col"
-      style={{
-        background: 'var(--sidebar-bg)',
-        borderRight: '1px solid var(--border-medium)'
-      }}
-    >
+    <div className="kudu-sidebar flex h-full w-[214px] shrink-0 flex-col">
       {/* Logo — doubles as drag region */}
       {/* Nav items */}
       <nav
@@ -202,15 +184,11 @@ export function Sidebar() {
             aria-labelledby={group.headingKey || group.heading ? `nav-group-${gi}` : undefined}
           >
             {(group.headingKey || group.heading) && (
-              <div className="mb-2 flex items-center gap-2.5 px-3 pt-0.5">
-                <span
-                  id={`nav-group-${gi}`}
-                  className="text-[10px] font-semibold uppercase tracking-[0.15em]"
-                  style={{ color: 'var(--text-faint)' }}
-                >
+              <div className="sidebar-group-heading mb-2 flex items-center gap-2.5 px-3 pt-0.5">
+                <span id={`nav-group-${gi}`}>
                   {group.heading ?? (group.headingKey ? t(group.headingKey) : '')}
                 </span>
-                <div className="h-px flex-1" style={{ background: 'var(--border-subtle)' }} />
+                <div className="sidebar-group-rule h-px flex-1" />
               </div>
             )}
             <div className="space-y-1">
@@ -229,33 +207,6 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
-
-      {showScheduleNudge && (
-        <div className="automatic-care-card mx-3 mb-2">
-          <button
-            type="button"
-            onClick={() => navigate('/schedules')}
-            className="flex min-w-0 flex-1 items-start gap-[9px] text-left"
-          >
-            <span className="automatic-care-icon">
-              <icons.schedule className="h-3.5 w-3.5" strokeWidth={1.8} />
-            </span>
-            <span className="min-w-0">
-              <b>{t('schedules:pageTitle')}</b>
-              <small>{t('schedules:pageDescription')}</small>
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={dismissScheduleNudge}
-            className="automatic-care-dismiss"
-            aria-label={t('schedules:dismissNudge')}
-            title={t('schedules:dismissNudge')}
-          >
-            <X className="h-3 w-3" strokeWidth={2} />
-          </button>
-        </div>
-      )}
 
       {/* Bottom */}
       <BottomNav
@@ -285,7 +236,7 @@ function BottomNav({
   const bottomNavItems = useBottomNavItems()
 
   return (
-    <div className="px-3 pb-3 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+    <div className="sidebar-bottom px-3 pb-3 pt-2">
       {bottomNavItems.map((item) => (
         <NavItem
           key={item.path}
@@ -356,47 +307,25 @@ function NavItem({
         onFocus={() => !hasChildren && prefetchRoute(item.path)}
         aria-current={isActive && !hasChildren ? 'page' : undefined}
         aria-expanded={hasChildren ? !!submenuOpen : undefined}
-        className={cn(
-          'calm-nav-item group relative flex w-full items-center gap-3 rounded-[14px] px-3.5 py-2.5 text-[12px] font-semibold transition duration-200'
-        )}
-        style={
-          isActive
-            ? {
-                background: 'var(--nav-active-bg)',
-                color: 'var(--nav-active-fg)',
-                boxShadow: 'inset 0 1px var(--border-subtle)'
-              }
-            : { color: 'var(--nav-inactive-fg)' }
-        }
+        className="calm-nav-item relative flex w-full items-center gap-2.5 px-2.5 py-2"
       >
         <item.icon
-          className={cn(
-            'h-[17px] w-[17px] shrink-0 transition-colors duration-200',
-            isActive ? '' : 'group-hover:text-zinc-400'
-          )}
-          style={{ color: isActive ? 'var(--nav-active-fg)' : 'var(--nav-icon-fg)' }}
-          strokeWidth={isActive ? 2 : 1.8}
+          className="calm-nav-icon shrink-0"
+          size={20}
+          strokeWidth={1.75}
           aria-hidden="true"
         />
-        <span className="flex-1 text-left">{itemLabel}</span>
+        <span className="flex-1 text-start">{itemLabel}</span>
         {shownBadge !== null && (
-          <span
-            className="nav-badge flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
-            style={{
-              background: 'var(--warning)',
-              color: 'var(--page-bg)',
-              boxShadow: 'none'
-            }}
-            aria-hidden="true"
-          >
+          <span className="nav-badge" data-tone={badgeTone(item.path)} aria-hidden="true">
             {shownBadge}
           </span>
         )}
         {hasChildren && (
-          <ChevronRight
-            className={cn('h-3.5 w-3.5 transition duration-200', submenuOpen ? 'rotate-90' : '')}
-            style={{ color: isActive ? 'var(--nav-active-fg)' : 'var(--nav-icon-fg)' }}
-            strokeWidth={1.7}
+          <icons.next
+            className="calm-nav-chevron shrink-0"
+            size={16}
+            strokeWidth={1.75}
             aria-hidden="true"
           />
         )}
@@ -426,19 +355,13 @@ function NavItem({
                   aria-current={isChildActive ? 'page' : undefined}
                   title={childLabel}
                   className="sidebar-submenu-item"
-                  style={{
-                    background: isChildActive ? 'var(--brand-surface)' : 'transparent',
-                    color: isChildActive ? 'var(--brand-solid)' : 'var(--text-secondary)'
-                  }}
                 >
-                  <child.icon aria-hidden="true" strokeWidth={isChildActive ? 2.1 : 1.7} />
+                  <child.icon aria-hidden="true" size={16} strokeWidth={1.75} />
                   <span>{childLabel}</span>
                   {(badgeCounts?.[child.path] ?? 0) > 0 && (
-                    <b aria-label={`${badgeCounts![child.path]} items`}>
-                      {badgeCounts![child.path]}
-                    </b>
+                    <b data-tone={badgeTone(child.path)}>{badgeCounts![child.path]}</b>
                   )}
-                  {child.badge && <b>NEW</b>}
+                  {child.badge && <b data-tone="neutral">{t('updateBadge')}</b>}
                 </button>
               )
             })}
@@ -532,18 +455,11 @@ function FlyoutMenu({
   return (
     <div
       ref={popoverRef}
-      className="fixed z-[200] animate-scale-in"
-      style={{ top: pos.top, left: pos.left, transformOrigin: 'left top' }}
+      className="sidebar-flyout fixed z-[200]"
+      style={{ top: pos.top, left: pos.left }}
       onKeyDown={handleKeyDown}
     >
-      <div
-        role="menu"
-        className="glass-card w-56 rounded-xl py-1.5"
-        style={{
-          background: 'var(--flyout-bg)',
-          boxShadow: 'var(--shadow-flyout)'
-        }}
-      >
+      <div role="menu" className="sidebar-flyout-menu w-56 py-1.5">
         {items.map((child) => {
           const isChildActive = location.pathname === child.path
           const childLabel = child.labelKey
@@ -556,45 +472,19 @@ function FlyoutMenu({
               onClick={() => onSelect(child.path)}
               onPointerEnter={() => prefetchRoute(child.path)}
               onFocus={() => prefetchRoute(child.path)}
-              className={cn(
-                'flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-[12.5px] font-medium transition duration-150',
-                'hover:bg-white/[0.04]'
-              )}
-              style={{
-                background: isChildActive ? 'var(--brand-surface)' : undefined,
-                color: isChildActive ? 'var(--brand-solid)' : 'var(--text-secondary)'
-              }}
+              data-current={isChildActive || undefined}
+              className="sidebar-flyout-item flex w-full items-center gap-2.5 px-3.5 py-2 text-start"
             >
-              <child.icon
-                className="h-[14px] w-[14px] shrink-0"
-                style={{ color: isChildActive ? 'var(--brand-solid)' : 'var(--text-muted)' }}
-                strokeWidth={isChildActive ? 2 : 1.7}
-                aria-hidden="true"
-              />
+              <child.icon className="shrink-0" size={16} strokeWidth={1.75} aria-hidden="true" />
               <span className="flex-1">{childLabel}</span>
               {(badgeCounts?.[child.path] ?? 0) > 0 && (
-                <span
-                  className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"
-                  style={{
-                    background: 'var(--warning)',
-                    color: 'var(--page-bg)',
-                    boxShadow: 'none'
-                  }}
-                  aria-hidden="true"
-                >
+                <span className="nav-badge" data-tone={badgeTone(child.path)}>
                   {badgeCounts![child.path]}
                 </span>
               )}
               {child.badge && (
-                <span
-                  className="flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[8px] font-bold leading-none"
-                  style={{
-                    background: 'var(--warning)',
-                    color: 'var(--page-bg)',
-                    boxShadow: 'none'
-                  }}
-                >
-                  NEW
+                <span className="nav-badge" data-tone="neutral">
+                  {t('updateBadge')}
                 </span>
               )}
             </button>

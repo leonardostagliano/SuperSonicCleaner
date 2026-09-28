@@ -21,20 +21,22 @@ class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.error) {
-      // Use hardcoded colors — CSS variables may not be loaded when the
-      // error boundary triggers, which would make the text invisible.
+      // Tokens with system colours as the fallback: the text stays readable
+      // even when the stylesheets are what failed to load.
       return (
         <div
           style={{
             padding: 32,
-            color: '#fafafa',
+            color: 'var(--text-primary, CanvasText)',
             fontFamily: 'system-ui',
-            background: '#09090b',
+            background: 'var(--page-bg, Canvas)',
             minHeight: '100vh'
           }}
         >
           <h1 style={{ fontSize: 20, marginBottom: 8 }}>Something went wrong</h1>
-          <pre style={{ color: '#a1a1aa', fontSize: 13, whiteSpace: 'pre-wrap' }}>
+          <pre
+            style={{ color: 'var(--text-muted, GrayText)', fontSize: 13, whiteSpace: 'pre-wrap' }}
+          >
             {this.state.error.message}
           </pre>
           <button
@@ -42,10 +44,10 @@ class ErrorBoundary extends React.Component<
             style={{
               marginTop: 16,
               padding: '8px 16px',
-              background: '#27272a',
-              color: '#fafafa',
-              border: '1px solid #3f3f46',
-              borderRadius: 6,
+              background: 'var(--surface, ButtonFace)',
+              color: 'var(--text-primary, ButtonText)',
+              border: '1px solid var(--border-strong, ButtonBorder)',
+              borderRadius: 'var(--radius-control, 6px)',
               cursor: 'pointer'
             }}
           >

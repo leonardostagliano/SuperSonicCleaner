@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Activity } from 'lucide-react'
+import { icons } from '@/lib/icons'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -48,7 +48,7 @@ export function NotchToggle() {
       disabled={pending || !window.kuduNotch}
       onClick={() => void toggle()}
     >
-      <Activity className="h-3.5 w-3.5" strokeWidth={1.8} />
+      <icons.performance className="h-4 w-4" strokeWidth={1.75} />
     </button>
   )
 }

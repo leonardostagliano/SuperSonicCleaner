@@ -1,25 +1,16 @@
 {
-  "appName": "SuperSonicCleaner",
-  "subtitle": "SYSTEM CLEANER",
   "dashboard": "Home",
   "securityHeading": "Protection",
-  "malwareScanner": "Malware Scanner",
-  "systemHardening": "System Hardening",
-  "monitoring": "Monitoring",
   "maintainHeading": "Manage",
   "cleaner": "Clean up",
-  "registry": "Registry",
-  "contextMenu": "Context Menu",
-  "startup": "Startup",
-  "network": "Network",
   "software": "Software",
-  "schedules": "Schedules",
-  "toolsHeading": "TOOLS",
   "performance": "Performance",
   "diskTools": "Storage",
   "activityAndRecovery": "Activity & Recovery",
   "history": "Activity",
   "settings": "Preferences",
   "gameMode": "Game Mode",
-  "firewallAudit": "Firewall Audit"
+  "firewallAudit": "Firewall Audit",
+  "updateBadge": "Update",
+  "mainNavigation": "Main navigation"
 }

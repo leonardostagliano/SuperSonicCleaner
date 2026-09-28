@@ -557,7 +557,6 @@ summary,
 }
 .kudu-sidebar [role='group'] > div:first-child span {
   color: var(--nav-section-fg) !important;
-  letter-spacing: 0.13em;
 }
 .calm-nav-item:hover {
   background: var(--bg-hover);
@@ -632,74 +631,6 @@ summary,
   font-size: 10px;
   text-align: center;
 }
-.automatic-care-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 11px;
-  border: 1px solid var(--border-default);
-  border-radius: 13px;
-  background: var(--bg-subtle);
-  color: var(--text-secondary);
-  transition:
-    background-color 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease,
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-.automatic-care-card:hover {
-  border-color: var(--border-strong);
-  background: var(--bg-hover);
-}
-.automatic-care-card b {
-  display: block;
-  color: var(--text-primary);
-  font-size: 9px;
-  line-height: 1.35;
-}
-.automatic-care-card small {
-  display: block;
-  margin-top: 3px;
-  color: var(--text-muted);
-  font-size: 8px;
-  line-height: 1.45;
-}
-.automatic-care-icon {
-  display: grid;
-  width: 26px;
-  height: 26px;
-  flex: 0 0 26px;
-  place-items: center;
-  border-radius: 8px;
-  background: var(--accent-muted-bg);
-  color: var(--accent);
-}
-.automatic-care-dismiss {
-  display: grid;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
-  place-items: center;
-  margin: -3px -3px 0 0;
-  border-radius: 6px;
-  color: var(--text-faint);
-  opacity: 0;
-  transition:
-    background-color 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease,
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-.automatic-care-card:hover .automatic-care-dismiss,
-.automatic-care-dismiss:focus-visible {
-  opacity: 1;
-}
-.automatic-care-dismiss:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
 /* Submenus collapse with a height transition instead of popping in one frame. */
 .sidebar-submenu-collapse {
   display: grid;
@@ -754,20 +685,6 @@ summary,
 /* Scrolling the active item into view stops clear of the faded edges. */
 .kudu-sidebar nav {
   scroll-padding-block: 22px;
-}
-/* Short windows: the schedules card shrinks to one line and gives the nav room.
-   Scoped to the sidebar so it wins over the later readability-pass padding. */
-@media (max-height: 820px) {
-  .kudu-sidebar .automatic-care-card,
-  .kudu-sidebar .automatic-care-card > button {
-    align-items: center;
-  }
-  .kudu-sidebar .automatic-care-card {
-    padding: 8px 11px;
-  }
-  .automatic-care-card small {
-    display: none;
-  }
 }
 
 /* Shared page language: quiet surfaces, generous hierarchy, tactile controls. */
@@ -846,7 +763,6 @@ thead {
   .kudu-sidebar .calm-nav-item > span,
   .kudu-sidebar .calm-nav-item > svg:last-child,
   .kudu-sidebar [role='group'] > div:first-child,
-  .automatic-care-card,
   .sidebar-submenu {
     display: none;
   }
@@ -1802,11 +1718,6 @@ thead {
   font-style: normal;
 }
 /* In the page flow above the content, so it never covers row actions. */
-.admin-banner {
-  margin: 12px 24px 0;
-  border: 1px solid var(--accent-muted-border);
-  background: var(--flyout-bg) !important;
-}
 /* The window itself is transparent (Mica on Windows): paint the page background
    around the banners that sit above the content. */
 .app-shell div:has(> #main-content) {
@@ -2061,16 +1972,6 @@ body {
 }
 .kudu-sidebar [role='group'] > div:first-child span {
   font-size: 12px !important;
-}
-.automatic-care-card {
-  padding: 13px;
-}
-.automatic-care-card b {
-  font-size: 12px;
-}
-.automatic-care-card small {
-  margin-top: 4px;
-  font-size: 12px;
 }
 .appearance-menu b {
   font-size: 12px;

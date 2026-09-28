@@ -4,11 +4,11 @@ html.desktop-notch-surface,
   background: transparent !important;
   overflow: hidden;
 }
+/* Tokens only (spec 3.1): neutral meters, red above 90 %, no per-resource colours. */
 .desktop-notch {
-  --notch-tone: var(--success);
+  --notch-tone: var(--chart-1);
   --notch-panel: var(--page-bg);
   --notch-card: var(--card-bg);
-  --notch-wash: 22%;
   position: absolute;
   left: 0;
   top: 0;
@@ -19,27 +19,6 @@ html.desktop-notch-surface,
   color: var(--text-primary);
   font: 12px/1.3 var(--font-sans);
   user-select: none;
-}
-.light .desktop-notch {
-  --notch-wash: 11%;
-}
-.desktop-notch [data-resource='cpu'] {
-  --resource-color: #cf7155;
-}
-.desktop-notch [data-resource='memory'] {
-  --resource-color: #8172cf;
-}
-.desktop-notch [data-resource='disk'] {
-  --resource-color: #089780;
-}
-.light .desktop-notch [data-resource='cpu'] {
-  --resource-color: #b9583e;
-}
-.light .desktop-notch [data-resource='memory'] {
-  --resource-color: #7060ba;
-}
-.light .desktop-notch [data-resource='disk'] {
-  --resource-color: #087f6a;
 }
 .notch-expanded-content,
 .notch-compact-content {
@@ -98,11 +77,8 @@ html.desktop-notch-surface,
 .desktop-notch *::after {
   box-sizing: border-box;
 }
-.desktop-notch [data-tone='warning'] {
-  --notch-tone: var(--warning);
-}
 .desktop-notch [data-tone='danger'] {
-  --notch-tone: var(--danger);
+  --notch-tone: var(--signal-danger);
 }
 .desktop-notch [data-tone='unknown'] {
   --notch-tone: var(--text-muted);
@@ -179,8 +155,8 @@ html.desktop-notch-surface,
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: var(--resource-color);
-  color: #fff;
+  background: var(--surface);
+  color: var(--text-secondary);
 }
 .notch-compact-metric > small {
   max-width: 100%;
@@ -189,7 +165,6 @@ html.desktop-notch-surface,
   color: var(--text-muted);
   font-size: 9px;
   line-height: 12px;
-  letter-spacing: -0.15px;
 }
 .notch-compact-metric b {
   color: var(--text-primary);
@@ -231,9 +206,9 @@ html.desktop-notch-surface,
   min-width: 0;
   max-width: 103px;
   padding: 3px 8px;
-  border-radius: 11px;
-  background: var(--success-bg);
-  color: var(--success-text);
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle-2);
+  color: var(--text-secondary);
   font-size: 10px;
   line-height: 14px;
   white-space: nowrap;
@@ -266,15 +241,9 @@ html.desktop-notch-surface,
   min-width: 0;
   min-height: 0;
   padding: 13px 16px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  background:
-    radial-gradient(
-      ellipse at 0 0,
-      color-mix(in srgb, var(--resource-color) var(--notch-wash), transparent),
-      transparent 70%
-    ),
-    var(--notch-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-container);
+  background: var(--notch-card);
 }
 .notch-metric-heading {
   display: grid;
@@ -289,9 +258,8 @@ html.desktop-notch-surface,
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  color: #fff;
-  background: var(--resource-color);
-  box-shadow: inset 0 1px 0 #ffffff20;
+  color: var(--text-secondary);
+  background: var(--surface);
 }
 .notch-metric-title {
   min-width: 0;
@@ -299,7 +267,6 @@ html.desktop-notch-surface,
 .notch-metric-title > span {
   display: block;
   font: 600 15px/18px var(--font-display);
-  letter-spacing: -0.2px;
 }
 .notch-metric-title > small,
 .notch-metric-caption {
@@ -307,7 +274,7 @@ html.desktop-notch-surface,
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 10.5px;
+  font-size: var(--text-11);
   line-height: 13px;
   color: var(--text-muted);
 }
@@ -316,7 +283,7 @@ html.desktop-notch-surface,
 }
 .notch-value {
   font: 600 22px/1 var(--font-display);
-  letter-spacing: -0.6px;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 .notch-value > span {
@@ -335,13 +302,12 @@ html.desktop-notch-surface,
 .notch-meter i {
   display: block;
   height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    var(--notch-tone),
-    color-mix(in srgb, var(--notch-tone) 78%, white)
-  );
-  transition: width 400ms var(--ease-out);
+  background: var(--notch-tone);
+  transform-origin: left center;
+  transition: transform 400ms var(--ease-out);
+}
+.notch-meter i:dir(rtl) {
+  transform-origin: right center;
 }
 .notch-metric--hero {
   grid-template-rows: 34px minmax(0, 1fr) 3px;
@@ -360,7 +326,7 @@ html.desktop-notch-surface,
 }
 .notch-metric--hero .notch-value {
   font-size: 42px;
-  letter-spacing: -1.5px;
+  letter-spacing: -0.01em;
 }
 .notch-metric--hero .notch-value > span {
   font-size: 20px;
@@ -378,12 +344,11 @@ html.desktop-notch-surface,
 }
 .notch-sample > span {
   color: var(--text-muted);
-  font-size: 10.5px;
+  font-size: var(--text-11);
   line-height: 13px;
 }
 .notch-sample time {
-  font: 500 12px/16px var(--font-mono);
-  letter-spacing: -0.4px;
+  font: 500 var(--text-12) / 16px var(--font-sans);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }

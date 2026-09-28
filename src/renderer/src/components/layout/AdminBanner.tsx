@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ShieldAlert, X } from 'lucide-react'
+import { X } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { icons } from '@/lib/icons'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useSettingsStore } from '@/stores/settings-store'
 
@@ -64,35 +66,30 @@ export function AdminBanner() {
   if (!visible || !loaded || dismissedVersion === __APP_VERSION__) return null
 
   return (
-    <div
-      role="status"
-      className="admin-banner flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm"
-      style={{
-        background: 'var(--accent-muted-bg)',
-        border: '1px solid var(--accent-muted-border)'
-      }}
-    >
-      <ShieldAlert
-        size={18}
-        className="shrink-0"
-        style={{ color: 'var(--warning)' }}
+    <div role="status" className="admin-banner">
+      <icons.warning
+        className="admin-banner-icon"
+        size={16}
+        strokeWidth={1.75}
         aria-hidden="true"
       />
-      <span className="text-zinc-300">{t('adminBannerMessage')}</span>
-      <button
-        onClick={relaunchElevated}
-        className="ml-1 shrink-0 rounded-lg px-3 py-1 text-xs font-semibold transition-colors"
-        style={{ background: 'var(--accent-muted-bg)', color: 'var(--warning)' }}
-      >
-        {t('relaunchAsAdmin')}
-      </button>
-      <button
-        onClick={dismiss}
-        aria-label={t('dismiss', 'Dismiss')}
-        className="ml-auto shrink-0 text-zinc-600 transition-colors hover:text-zinc-400"
-      >
-        <X size={14} aria-hidden="true" />
-      </button>
+      <p className="admin-banner-text">
+        {t('adminBannerMessage', {
+          features: t(
+            platform === 'linux' ? 'adminBannerFeaturesLinux' : 'adminBannerFeaturesWindows'
+          )
+        })}
+      </p>
+      <div className="admin-banner-actions">
+        <Button onClick={relaunchElevated}>{t('relaunchAsAdmin')}</Button>
+        <Button
+          variant="ghost"
+          icon={X}
+          aria-label={t('dismiss')}
+          title={t('dismiss')}
+          onClick={dismiss}
+        />
+      </div>
     </div>
   )
 }

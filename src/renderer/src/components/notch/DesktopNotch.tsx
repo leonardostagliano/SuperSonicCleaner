@@ -8,7 +8,7 @@ import {
   type KeyboardEvent
 } from 'react'
 import {
-  ArrowUpRight,
+  AppWindow,
   Cpu,
   GripVertical,
   GripHorizontal,
@@ -287,7 +287,7 @@ export function DesktopNotch() {
               title={t('open')}
               onClick={() => run(api?.openApp())}
             >
-              <ArrowUpRight size={15} />
+              <AppWindow size={15} strokeWidth={1.75} />
             </button>
             <button
               type="button"
@@ -360,7 +360,7 @@ export function DesktopNotch() {
                 >
                   <i
                     style={{
-                      width: `${Number.isFinite(value) ? Math.max(0, Math.min(100, value ?? 0)) : 0}%`
+                      transform: `scaleX(${Number.isFinite(value) ? Math.max(0, Math.min(100, value ?? 0)) / 100 : 0})`
                     }}
                   />
                 </div>
@@ -427,14 +427,9 @@ export function DesktopNotch() {
   )
 }
 
+/** Meters are neutral; above 90 % they turn red (spec 3.1). */
 function tone(value: number | undefined): string {
-  return value == null || !Number.isFinite(value)
-    ? 'unknown'
-    : value >= 85
-      ? 'danger'
-      : value >= 65
-        ? 'warning'
-        : 'normal'
+  return value == null || !Number.isFinite(value) ? 'unknown' : value > 90 ? 'danger' : 'normal'
 }
 
 function PercentValue({ value }: { value: number | undefined }) {

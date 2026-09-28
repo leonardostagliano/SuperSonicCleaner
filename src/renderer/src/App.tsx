@@ -129,13 +129,10 @@ export function App() {
 
   if (!onboardingChecked) {
     return (
-      <div
-        className="flex h-screen w-screen items-center justify-center"
-        style={{ background: '#09090b' }}
-      >
+      <div className="flex h-screen w-screen items-center justify-center bg-[var(--page-bg)]">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-16 w-16 rounded-2xl" aria-hidden="true" />
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-700 border-t-amber-500" />
+          <div className="h-16 w-16" aria-hidden="true" />
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--border-strong)] border-t-[var(--text-secondary)]" />
         </div>
       </div>
     )
@@ -159,11 +156,10 @@ export function App() {
           toastOptions={{
             style: {
               background: 'var(--toast-bg)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
               border: '1px solid var(--border-strong)',
+              borderRadius: 'var(--radius-container)',
               color: 'var(--toast-text)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 var(--glass-inset)'
+              boxShadow: 'var(--shadow-flyout)'
             }
           }}
         />
@@ -261,12 +257,13 @@ interface PageErrorBoundaryProps {
   children: ReactNode
 }
 
+// Tokens with system-colour fallbacks: readable even when the stylesheets are what failed.
 const boundaryButtonStyle = {
   padding: '8px 16px',
-  background: '#27272a',
-  color: '#fafafa',
-  border: '1px solid #3f3f46',
-  borderRadius: 6,
+  background: 'var(--surface, ButtonFace)',
+  color: 'var(--text-primary, ButtonText)',
+  border: '1px solid var(--border-strong, ButtonBorder)',
+  borderRadius: 'var(--radius-control, 6px)',
   cursor: 'pointer'
 } as const
 
@@ -308,20 +305,21 @@ class PageErrorBoundary extends Component<PageErrorBoundaryProps, PageErrorBound
     const { error } = this.state
     if (error) {
       const chunkFailure = isChunkLoadError(error)
-      // Same hardcoded colors as the app-wide boundary — CSS variables may not
-      // be loaded when the error boundary triggers, which would make the text
-      // invisible.
+      // Same colours as the app-wide boundary in main.tsx: tokens, with system
+      // colours as the fallback in case the stylesheets did not load.
       return (
         <div
           style={{
             padding: 32,
-            color: '#fafafa',
+            color: 'var(--text-primary, CanvasText)',
             fontFamily: 'system-ui',
-            background: '#09090b'
+            background: 'var(--page-bg, Canvas)'
           }}
         >
           <h1 style={{ fontSize: 20, marginBottom: 8 }}>Something went wrong</h1>
-          <pre style={{ color: '#a1a1aa', fontSize: 13, whiteSpace: 'pre-wrap' }}>
+          <pre
+            style={{ color: 'var(--text-muted, GrayText)', fontSize: 13, whiteSpace: 'pre-wrap' }}
+          >
             {error.message}
           </pre>
           <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>

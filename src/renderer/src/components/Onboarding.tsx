@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import i18next from 'i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Rocket, Check, ChevronRight, ChevronLeft, Globe } from 'lucide-react'
+import { Check, Globe } from 'lucide-react'
 import { LANGUAGES } from '@/lib/languages'
 import { usePlatform } from '@/hooks/usePlatform'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { BrandWordmark } from '@/components/shared/BrandWordmark'
+import { Button } from '@/components/ui/Button'
+import { Switch } from '@/components/ui/Switch'
 
 interface OnboardingProps {
   /** Records that onboarding is done; awaited before anything that can stall. */
@@ -22,6 +25,7 @@ interface OnboardingSettings {
 const TOTAL_STEPS = 4
 
 export function Onboarding({ onComplete }: OnboardingProps) {
+  const { t } = useTranslation('onboarding')
   const { isPortable } = usePlatform()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
@@ -42,7 +46,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     await onComplete()
 
     try {
-      const settingsPayload: Record<string, any> = {
+      const settingsPayload: Record<string, unknown> = {
         ...(!isPortable && { runAtStartup: settings.runAtStartup }),
         minimizeToTray: settings.minimizeToTray
       }
@@ -58,17 +62,14 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.85)' }}
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="relative w-full max-w-lg rounded-2xl p-8"
-        style={{ background: 'var(--card-bg)', border: '1px solid var(--border-medium)' }}
+    <div className="onboarding-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="onboarding-card relative w-full max-w-lg"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('dialogLabel')}
       >
+        <p className="onboarding-step">{t('stepOf', { step: step + 1, total: TOTAL_STEPS })}</p>
         <AnimatePresence mode="wait">
           {step === 0 && <LanguageStep key="language" onNext={() => setStep(1)} />}
           {step === 1 && (
@@ -92,32 +93,20 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             />
           )}
         </AnimatePresence>
-
-        {/* Step dots */}
-        <div className="mt-8 flex justify-center gap-2">
-          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-            <div
-              key={i}
-              className="h-1.5 rounded-full transition-[width,background-color] duration-300"
-              style={{
-                width: i === step ? 24 : 8,
-                background: i === step ? 'var(--accent)' : 'var(--bg-active)'
-              }}
-            />
-          ))}
-        </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
 
+/** Steps cross-fade in 200 ms; no movement, and no animation under reduced motion. */
 function StepWrapper({ children }: { children: React.ReactNode }) {
+  const reduced = useReducedMotion()
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduced ? 0 : 0.2 }}
     >
       {children}
     </motion.div>
@@ -136,50 +125,31 @@ function LanguageStep({ onNext }: { onNext: () => void }) {
 
   return (
     <StepWrapper>
-      <div className="flex flex-col items-center text-center">
-        <div
-          className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
-          style={{ background: 'var(--accent-muted-bg)' }}
-        >
-          <Globe className="h-8 w-8" style={{ color: 'var(--accent)' }} strokeWidth={1.5} />
-        </div>
-        <h2 className="mb-1 text-[18px] font-bold text-zinc-100">{t('chooseLanguageTitle')}</h2>
-        <p className="mb-5 text-[13px] text-zinc-500">{t('chooseLanguageDescription')}</p>
-
-        <div className="mb-6 grid max-h-[240px] w-full grid-cols-2 gap-1.5 overflow-y-auto rounded-xl p-1">
-          {LANGUAGES.map((lang) => (
+      <h2 className="onboarding-title">{t('chooseLanguageTitle')}</h2>
+      <p className="onboarding-text">{t('chooseLanguageDescription')}</p>
+      <div className="onboarding-languages" role="radiogroup" aria-label={t('chooseLanguageTitle')}>
+        {LANGUAGES.map((lang) => {
+          const checked = selected === lang.code
+          return (
             <button
               key={lang.code}
+              type="button"
+              role="radio"
+              aria-checked={checked}
+              lang={lang.code}
               onClick={() => handleSelect(lang.code)}
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] transition-colors"
-              style={{
-                background: selected === lang.code ? 'var(--accent-muted-bg)' : 'var(--bg-subtle)',
-                border:
-                  selected === lang.code
-                    ? '1px solid var(--accent-muted-border)'
-                    : '1px solid transparent',
-                color: selected === lang.code ? 'var(--accent)' : 'var(--text-secondary)'
-              }}
+              className="onboarding-language"
             >
-              <span className="font-medium">{lang.nativeName}</span>
-              {selected === lang.code && (
-                <Check
-                  className="ml-auto h-3.5 w-3.5 shrink-0"
-                  style={{ color: 'var(--accent)' }}
-                  strokeWidth={2.5}
-                />
-              )}
+              <span>{lang.nativeName}</span>
+              {checked && <Check size={16} strokeWidth={1.75} aria-hidden="true" />}
             </button>
-          ))}
-        </div>
-
-        <button
-          onClick={onNext}
-          className="flex items-center gap-2 rounded-xl px-8 py-3 text-[14px] font-semibold text-zinc-900 transition-opacity hover:opacity-90"
-          style={{ background: 'var(--accent)' }}
-        >
-          {t('continue')} <ChevronRight className="h-4 w-4" />
-        </button>
+          )
+        })}
+      </div>
+      <div className="onboarding-actions">
+        <Button variant="primary" size="lg" onClick={onNext}>
+          {t('continue')}
+        </Button>
       </div>
     </StepWrapper>
   )
@@ -187,53 +157,38 @@ function LanguageStep({ onNext }: { onNext: () => void }) {
 
 function WelcomeStep({ onBack, onNext }: { onBack: () => void; onNext: () => void }) {
   const { t } = useTranslation('onboarding')
-  const { platform } = usePlatform()
-  const isWin = platform === 'win32'
+  const { platform, features } = usePlatform()
+  const facts = [
+    t('factPreview'),
+    ...(features.registry ? [t('factRegistryBackup')] : []),
+    t('factAi')
+  ]
   return (
     <StepWrapper>
-      <div className="flex flex-col items-center text-center">
-        <BrandWordmark size="large" className="mb-6" />
-        <h2 className="mb-2 text-[22px] font-bold text-zinc-100">{t('welcomeTitle')}</h2>
-        <p className="mb-2 text-[13px] leading-relaxed text-zinc-400">
-          {isWin ? t('welcomeDescriptionWindows') : t('welcomeDescriptionOther')}
-        </p>
-        <div className="mb-6 mt-4 flex gap-4">
-          <Feature icon={Sparkles} label={t('featureSmartCleaning')} />
-          <Feature icon={Rocket} label={t('featureFasterBoot')} />
-          <Feature icon={Check} label={t('featureSafeSecure')} />
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-500 transition-colors"
-            style={{ border: '1px solid var(--border-medium)' }}
-          >
-            <Globe className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={onNext}
-            className="flex items-center gap-2 rounded-xl px-8 py-3 text-[14px] font-semibold text-zinc-900 transition-opacity hover:opacity-90"
-            style={{ background: 'var(--accent)' }}
-          >
-            {t('getStarted')} <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
+      <BrandWordmark size="large" className="mb-6" />
+      <h2 className="onboarding-title">{t('welcomeTitle')}</h2>
+      <p className="onboarding-text">
+        {platform === 'win32' ? t('welcomeDescriptionWindows') : t('welcomeDescriptionOther')}
+      </p>
+      <ul className="onboarding-facts" aria-label={t('factsLabel')}>
+        {facts.map((fact) => (
+          <li key={fact}>{fact}</li>
+        ))}
+      </ul>
+      <div className="onboarding-actions">
+        <Button
+          variant="ghost"
+          size="lg"
+          icon={Globe}
+          aria-label={t('changeLanguage')}
+          title={t('changeLanguage')}
+          onClick={onBack}
+        />
+        <Button variant="primary" size="lg" onClick={onNext}>
+          {t('getStarted')}
+        </Button>
       </div>
     </StepWrapper>
-  )
-}
-
-function Feature({ icon: Icon, label }: { icon: typeof Sparkles; label: string }) {
-  return (
-    <div className="flex flex-col items-center gap-1.5">
-      <div
-        className="flex h-10 w-10 items-center justify-center rounded-xl"
-        style={{ background: 'var(--accent-muted-bg)' }}
-      >
-        <Icon className="h-4.5 w-4.5" style={{ color: 'var(--accent)' }} strokeWidth={1.8} />
-      </div>
-      <span className="text-[11px] font-medium text-zinc-500">{label}</span>
-    </div>
   )
 }
 
@@ -253,50 +208,37 @@ function SettingsStep({
   const isWin = platform === 'win32'
   return (
     <StepWrapper>
-      <div>
-        <h2 className="mb-1 text-[18px] font-bold text-zinc-100">{t('recommendedSetupTitle')}</h2>
-        <p className="mb-6 text-[13px] text-zinc-500">{t('recommendedSetupDescription')}</p>
-
-        <div className="space-y-1">
-          {!isPortable && (
-            <SettingRow
-              label={t('runAtStartupLabel')}
-              desc={isWin ? t('runAtStartupDescriptionWindows') : t('runAtStartupDescriptionOther')}
-              checked={settings.runAtStartup}
-              onChange={(v) => onChange({ ...settings, runAtStartup: v })}
-            />
-          )}
+      <h2 className="onboarding-title">{t('recommendedSetupTitle')}</h2>
+      <p className="onboarding-text">{t('recommendedSetupDescription')}</p>
+      <div className="onboarding-settings">
+        {!isPortable && (
           <SettingRow
-            label={t('minimizeToTrayLabel')}
-            desc={t('minimizeToTrayDescription')}
-            checked={settings.minimizeToTray}
-            onChange={(v) => onChange({ ...settings, minimizeToTray: v })}
+            label={t('runAtStartupLabel')}
+            desc={isWin ? t('runAtStartupDescriptionWindows') : t('runAtStartupDescriptionOther')}
+            checked={settings.runAtStartup}
+            onChange={(v) => onChange({ ...settings, runAtStartup: v })}
           />
-          <SettingRow
-            label={t('weeklyAutoCleanLabel')}
-            desc={t('weeklyAutoCleanDescription')}
-            checked={settings.scheduledClean}
-            onChange={(v) => onChange({ ...settings, scheduledClean: v })}
-            last
-          />
-        </div>
-
-        <div className="mt-6 flex items-center justify-between">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-500 transition-colors"
-            style={{ border: '1px solid var(--border-medium)' }}
-          >
-            <ChevronLeft className="h-3.5 w-3.5" /> {t('back')}
-          </button>
-          <button
-            onClick={onNext}
-            className="flex items-center gap-2 rounded-xl px-6 py-2.5 text-[14px] font-semibold text-zinc-900 transition-opacity hover:opacity-90"
-            style={{ background: 'var(--accent)' }}
-          >
-            {t('continue')} <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
+        )}
+        <SettingRow
+          label={t('minimizeToTrayLabel')}
+          desc={t('minimizeToTrayDescription')}
+          checked={settings.minimizeToTray}
+          onChange={(v) => onChange({ ...settings, minimizeToTray: v })}
+        />
+        <SettingRow
+          label={t('weeklyAutoCleanLabel')}
+          desc={t('weeklyAutoCleanDescription')}
+          checked={settings.scheduledClean}
+          onChange={(v) => onChange({ ...settings, scheduledClean: v })}
+        />
+      </div>
+      <div className="onboarding-actions">
+        <Button variant="ghost" size="lg" onClick={onBack}>
+          {t('back')}
+        </Button>
+        <Button variant="primary" size="lg" onClick={onNext}>
+          {t('continue')}
+        </Button>
       </div>
     </StepWrapper>
   )
@@ -306,46 +248,21 @@ function SettingRow({
   label,
   desc,
   checked,
-  onChange,
-  last
+  onChange
 }: {
   label: string
   desc: string
   checked: boolean
   onChange: (v: boolean) => void
-  last?: boolean
 }) {
   return (
-    <div
-      className="flex items-center justify-between rounded-xl px-4 py-3.5"
-      style={{
-        background: 'var(--bg-subtle)',
-        ...(last ? {} : { marginBottom: 4 })
-      }}
-    >
-      <div className="mr-4">
-        <p className="text-[13px] font-medium text-zinc-300">{label}</p>
-        <p className="mt-0.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
-          {desc}
-        </p>
+    <div className="onboarding-setting">
+      <div className="min-w-0 flex-1">
+        <p className="onboarding-setting-label">{label}</p>
+        <p className="onboarding-setting-desc">{desc}</p>
       </div>
-      <Toggle checked={checked} onChange={onChange} />
+      <Switch checked={checked} onChange={onChange} label={label} />
     </div>
-  )
-}
-
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      onClick={() => onChange(!checked)}
-      className="toggle-switch relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors"
-      data-checked={checked}
-      style={{ background: checked ? 'var(--accent)' : 'var(--toggle-off-bg)' }}
-    >
-      <div
-        className={`absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-[3px]'}`}
-      />
-    </button>
   )
 }
 
@@ -361,37 +278,16 @@ function FinishStep({
   const { t } = useTranslation('onboarding')
   return (
     <StepWrapper>
-      <div className="flex flex-col items-center text-center">
-        <div
-          className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
-          style={{ background: 'rgba(34,197,94,0.1)' }}
-        >
-          <Check className="h-8 w-8" style={{ color: '#22c55e' }} strokeWidth={1.8} />
-        </div>
-        <h2 className="mb-2 text-[18px] font-bold text-zinc-100">{t('allSetTitle')}</h2>
-        <p className="mb-1 text-[13px] leading-relaxed text-zinc-400">{t('allSetDescription')}</p>
-        {scheduledClean && (
-          <p className="text-[12px]" style={{ color: 'var(--accent)' }}>
-            {t('firstScanScheduled')}
-          </p>
-        )}
-
-        <div className="mt-6 flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-medium text-zinc-500 transition-colors"
-            style={{ border: '1px solid var(--border-medium)' }}
-          >
-            <ChevronLeft className="h-3.5 w-3.5" /> {t('back')}
-          </button>
-          <button
-            onClick={onFinish}
-            className="flex items-center gap-2 rounded-xl px-8 py-3 text-[14px] font-semibold text-zinc-900 transition-opacity hover:opacity-90"
-            style={{ background: 'var(--accent)' }}
-          >
-            {t('startCleaning')} <Rocket className="h-4 w-4" />
-          </button>
-        </div>
+      <h2 className="onboarding-title">{t('allSetTitle')}</h2>
+      <p className="onboarding-text">{t('allSetDescription')}</p>
+      {scheduledClean && <p className="onboarding-text">{t('firstScanScheduled')}</p>}
+      <div className="onboarding-actions">
+        <Button variant="ghost" size="lg" onClick={onBack}>
+          {t('back')}
+        </Button>
+        <Button variant="primary" size="lg" onClick={onFinish}>
+          {t('startCleaning')}
+        </Button>
       </div>
     </StepWrapper>
   )
