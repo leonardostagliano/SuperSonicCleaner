@@ -21,7 +21,7 @@
     "backupDescription": "这些备份文件不包含经过验证的更改后状态信息。请在手动恢复前先在备份文件夹中检查它们；导入这些文件可能会覆盖较新的设置。备份文件不是操作系统还原点。",
     "openBackups": "打开备份文件夹",
     "confirmTitle": "恢复此更改？",
-    "confirmDescription": "SuperSonicCleaner 会在恢复已记录的原始值之前检查当前状态。较新的冲突更改将被保留。可能需要管理员权限。",
+    "confirmDescription": "SuperSonicCleaner 会在恢复已记录的原始值之前检查当前状态。此后发生的冲突更改将会保留。可能需要管理员权限。",
     "status": {
       "pending": "已中断 / 待处理",
       "ready": "可用",
@@ -30,7 +30,7 @@
       "conflict": "检测到较新的更改"
     },
     "remove": "删除条目",
-    "removeDescription": "要从本地历史记录中删除此恢复记录吗？这不会更改您的设置，也不会删除注册表备份。SuperSonicCleaner 将无法再为您恢复此更改。",
+    "removeDescription": "要从本地历史记录中删除此恢复记录吗？此操作不会更改您的设置，也不会删除注册表备份。此后 SuperSonicCleaner 将无法再为您恢复此更改。",
     "unreadable": "无法读取此恢复记录。它可能由其他用户账户写入，或已在磁盘上损坏。",
     "loading": "正在加载恢复历史？",
     "emptyTitle": "您的恢复历史将从这里开始",
@@ -41,14 +41,14 @@
     },
     "registryBackups": {
       "title": "注册表备份",
-      "description": "SuperSonicCleaner 会保存其即将更改的注册表项。可在此还原有针对性的备份。完整分支导出只能在备份文件夹中查看，因为导入它们会回退自那以后所做的无关更改。",
+      "description": "SuperSonicCleaner 会保存即将更改的注册表项。有针对性的备份可以在此处恢复。完整分支导出只能在备份文件夹中查看，因为导入它们会回滚此后所做的无关更改。",
       "empty": "尚无注册表备份。",
       "restore": "还原",
       "showInFolder": "在文件夹中显示",
       "moreKeys": "另外还有 +{{count}} 项",
       "requiresAdmin": "需要管理员权限",
       "confirmTitle": "还原此注册表备份？",
-      "confirmDescription": "SuperSonicCleaner 将导入以下项。备份中的值将替换当前值，并补回缺失的项和值。除以下情况外，不会删除其他任何内容：如果还原的是“还原前备份”，还会移除被该次还原所撤销的操作曾添加的项和值。导入前，SuperSonicCleaner 会将这些项的当前状态保存为“还原前备份”。某些更改仅在注销或重新启动后才会生效。",
+      "confirmDescription": "SuperSonicCleaner 会导入以下项。备份中的值会替换当前值，缺失的项和值会被重新添加。除此之外不会删除任何其他内容，但恢复一个“恢复前备份”时，也会移除该次恢复操作所撤销的恢复所添加的项和值。导入前，SuperSonicCleaner 会先将这些项的当前状态保存为恢复前备份。部分更改只有在注销或重新启动后才会生效。",
       "restored": "已还原。先前状态已保存到 {{file}}。",
       "restoredNoBackup": "已还原。这些注册表项此前均不存在，因此无需先进行备份。",
       "failed": "还原失败：{{error}}",
@@ -61,13 +61,13 @@
       "blocked": {
         "full-export": "完整分支导出。还原它会回退无关更改，因此只能查看。",
         "too-large": "过大，无法作为有针对性的备份。",
-        "format": "不是 SuperSonicCleaner 写入的注册表导出格式。",
-        "deletion": "包含删除项，而 SuperSonicCleaner 备份绝不会包含此类内容。",
-        "forbidden-key": "包含超出 SuperSonicCleaner 更改范围的注册表项。",
+        "format": "不是 SuperSonicCleaner 所写入的注册表导出格式。",
+        "deletion": "包含删除条目，而 SuperSonicCleaner 的备份从不包含此类条目。",
+        "forbidden-key": "包含 SuperSonicCleaner 更改范围之外的项。",
         "empty": "不包含任何注册表项。",
         "unreadable": "无法读取。",
-        "classes-root": "包含 HKEY_CLASSES_ROOT 键，该项合并了计算机范围和每用户的类，因此 SuperSonicCleaner 无法判断应将其还原到哪一处。该项只能查看。",
-        "unverified": "无法验证此备份——自 SuperSonicCleaner 写入后，它可能已被更改，因此只能查看。"
+        "classes-root": "包含 HKEY_CLASSES_ROOT 项，该项合并了计算机类和每个用户的类，因此 SuperSonicCleaner 无法判断应恢复到哪一个。此备份仅可查看。",
+        "unverified": "无法验证此备份 — 它可能在 SuperSonicCleaner 写入后被更改过，因此仅可查看。"
       }
     }
   },

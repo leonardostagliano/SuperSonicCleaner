@@ -1,0 +1,61 @@
+{
+  "title": "AI 分析",
+  "description": "获取有关此次扫描结果的第二意见。",
+  "hubDescription": "使用您已登录的 Codex 账号，获取有关扫描和性能录制的第二意见。",
+  "hubPrivacy": "扫描仅共享匿名的文件元数据。录制会共享 CPU、内存和磁盘的数值测量数据以及临时进程 ID。名称、路径、备注和文件内容都保留在此设备上。",
+  "connectionTitle": "Codex 连接",
+  "connectionIntro": "在此计算机上使用 Codex。请先检查连接状态，然后在下方选择一个工具。",
+  "connected": "Codex 已连接，可以进行仅使用元数据的分析。",
+  "scanFirst": "请先运行一次扫描。扫描结果就绪后即可使用 AI 分析。",
+  "anotherRunning": "已有另一项 AI 分析正在运行。您可以在“偏好设置 → AI 分析”中查看。",
+  "continuesInBackground": "在您使用其他页面时，分析仍会继续进行。返回此处即可查看结果。",
+  "returnToAnalysis": "返回分析",
+  "openTool": "打开工具",
+  "hubInstructions": "完成一次扫描或保存一次性能录制，启用其 AI 分析，然后使用专用按钮开始。不会自动发送任何内容。",
+  "tools": {
+    "cleaner": {
+      "title": "系统清理",
+      "description": "使用匿名文件元数据检查已扫描到的可清理项。隐私痕迹不包含在内。"
+    },
+    "largeFiles": {
+      "title": "大文件",
+      "description": "根据大小、类别和大致存在时长，查看哪些大文件值得进一步关注。"
+    },
+    "duplicates": {
+      "title": "重复文件",
+      "description": "获取需要检查的重复文件组建议。保留哪些文件由您决定。"
+    },
+    "disk": {
+      "title": "磁盘分析",
+      "description": "使用汇总的大小信息查看最大的文件夹。"
+    },
+    "performance": {
+      "title": "性能录制",
+      "description": "关联 CPU、内存和磁盘活动以排查变慢原因，并提供相关测量数据和建议的检查项。"
+    }
+  },
+  "enable": "为此页面启用 AI 分析",
+  "privacy": "仅会发送临时 ID、通用文件类型、大小和文件的大致存在时长。名称、路径、哈希值和文件内容都保留在此设备上。",
+  "accessCaveat": "最后访问时间是文件系统元数据。该值可能缺失，或已被其他应用更改，并不能证明您最后一次打开文件的实际时间。",
+  "diskAggregation": "文件夹行表示其总大小，并不会显示文件夹内哪些文件需要检查。",
+  "checking": "正在检查 AI 是否可用…",
+  "codexMissing": "请在此计算机上安装 Codex 以使用 AI 分析。",
+  "unsupportedVersion": "此 Codex 版本无法提供所需的仅元数据隐私边界。请使用受支持的 Codex 0.157.1 版本。",
+  "unsafeConfiguration": "当前的 Codex 配置无法保证仅使用元数据进行分析。请在重试前检查本地 Codex 配置。",
+  "signIn": "请在此计算机上打开 Codex 并登录，以使用 AI 分析。",
+  "unavailable": "AI 分析目前不可用。请检查此计算机上的 Codex，然后重试。",
+  "retryConnection": "重新检查",
+  "analyze": "分析这些结果",
+  "analyzing": "正在分析…",
+  "cancelling": "正在取消…",
+  "cancel": "取消",
+  "limit": "最多 {{count}} 项",
+  "omitted": "另有 {{count}} 项未包含在此次分析中。",
+  "failed": "无法完成分析。请重试。",
+  "advisory": "请自行检查这些建议。AI 分析不会选择或删除任何文件。",
+  "priority": {
+    "low": "低优先级",
+    "medium": "中优先级",
+    "high": "高优先级"
+  }
+}
