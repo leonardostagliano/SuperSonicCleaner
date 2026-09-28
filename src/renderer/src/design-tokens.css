@@ -141,6 +141,16 @@
   --space-7: 48px;
   --duration-feedback: 120ms;
   --duration-enter: 200ms;
+
+  /* Desktop notch, direction A "Strumento nero": a near-black instrument surface. */
+  --notch-bg: #0a0a0c;
+  --notch-border: #ffffff17;
+  --notch-highlight: #ffffff12;
+  --notch-hairline: #ffffff12;
+  --notch-track: #ffffff14;
+  --notch-tick: #ffffff33;
+  --notch-grip: #ffffff40;
+  --notch-live: #86efac;
 }
 
 .light {
@@ -229,4 +239,14 @@
   --chart-1: #494953;
   --chart-2: #315eaf;
   --track: #1212160f;
+
+  /* Desktop notch, direction A "Strumento nero". */
+  --notch-bg: #fbfbfc;
+  --notch-border: #1212161f;
+  --notch-highlight: #ffffff;
+  --notch-hairline: #1212161a;
+  --notch-track: #1212160f;
+  --notch-tick: #12121640;
+  --notch-grip: #12121640;
+  --notch-live: #16a34a;
 }

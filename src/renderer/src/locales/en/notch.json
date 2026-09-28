@@ -15,6 +15,7 @@
   "cpuDetail": "Current processor usage",
   "sample": "Last sample",
   "used": "{{used}} of {{total}} GB used",
+  "free": "{{free}} GB free",
   "waiting": "Waiting for live data",
   "unavailable": "Disk data unavailable",
   "live": "Live system metrics",

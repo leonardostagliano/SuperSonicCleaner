@@ -8,29 +8,27 @@ import {
   type KeyboardEvent,
   type PointerEvent
 } from 'react'
-import {
-  AppWindow,
-  Cpu,
-  GripVertical,
-  GripHorizontal,
-  HardDrive,
-  MemoryStick,
-  Pin,
-  PinOff,
-  X
-} from 'lucide-react'
+import { AppWindow, Cpu, HardDrive, MemoryStick, Pin, PinOff, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NOTCH_MOTION_MS, type NotchState } from '@shared/desktop-notch'
 import { BrandWordmark } from '../shared/BrandWordmark'
 import { hoverExpands, notchHoverZone } from './notch-hover'
 import './desktop-notch.css'
 
-const percent = (value: number | undefined) =>
-  value == null || !Number.isFinite(value)
-    ? '—'
-    : `${Math.round(Math.max(0, Math.min(100, value)))}%`
+const known = (value: number | undefined): value is number =>
+  value != null && Number.isFinite(value)
+const clampPercent = (value: number) => Math.round(Math.max(0, Math.min(100, value)))
+const percent = (value: number | undefined) => (known(value) ? `${clampPercent(value)}%` : '—')
+/** Share of a meter to fill, 0…1; unknown values leave it empty. */
+const fill = (value: number | undefined) =>
+  ({
+    '--notch-fill': known(value) ? Math.max(0, Math.min(100, value)) / 100 : 0
+  }) as CSSProperties
 const gigabytes = (value: number) =>
   (value / 1024 ** 3).toLocaleString(undefined, { maximumFractionDigits: 1 })
+/** `C:\` reads as `C:` next to the word for disk; other volumes stay as reported. */
+const volumeName = (volume: string) => (/^[a-z]:\\?$/i.test(volume) ? volume.slice(0, 2) : volume)
+const TICKS = Array.from({ length: 11 }, (_, index) => index * 10)
 
 export function DesktopNotch() {
   const { t, i18n } = useTranslation('notch')
@@ -174,7 +172,9 @@ export function DesktopNotch() {
     run(api?.move(direction[0] * step, direction[1] * step))
   }
   const metrics = state?.metrics
+  const disk = metrics?.disk
   const stale = !metrics || now - metrics.timestamp > 10000
+  const status = error ? 'failed' : stale ? 'waiting' : 'live'
   const sampleTime = metrics
     ? new Date(metrics.timestamp).toLocaleTimeString(i18n.language, {
         hour: '2-digit',
@@ -182,20 +182,11 @@ export function DesktopNotch() {
         second: '2-digit'
       })
     : '—'
-  const items = [
-    {
-      id: 'cpu',
-      name: 'CPU',
-      compactName: 'CPU',
-      icon: Cpu,
-      value: metrics?.cpu,
-      caption: t('cpuDetail'),
-      detail: ''
-    },
+  const cpu = { id: 'cpu', name: 'CPU', icon: Cpu, value: metrics?.cpu }
+  const rows = [
     {
       id: 'memory',
       name: t('memory'),
-      compactName: 'RAM',
       icon: MemoryStick,
       value: metrics?.memory.percent,
       caption: t('memoryDetail'),
@@ -208,30 +199,33 @@ export function DesktopNotch() {
     },
     {
       id: 'disk',
-      name: t('disk'),
-      compactName: t('disk'),
+      name: disk ? `${t('disk')} ${volumeName(disk.volume)}` : t('disk'),
       icon: HardDrive,
-      value: metrics?.disk?.percent,
-      caption: metrics?.disk ? t('diskDetail', { volume: metrics.disk.volume }) : t('unavailable'),
-      detail: metrics?.disk
-        ? t('used', { used: gigabytes(metrics.disk.used), total: gigabytes(metrics.disk.total) })
+      value: disk?.percent,
+      caption: disk ? t('diskDetail', { volume: disk.volume }) : t('unavailable'),
+      detail: disk
+        ? `${t('used', { used: gigabytes(disk.used), total: gigabytes(disk.total) })} · ${t(
+            'free',
+            { free: gigabytes(Math.max(0, disk.total - disk.used)) }
+          )}`
         : t('unavailable')
     }
   ]
-  const handle = (
+  const readouts = [cpu, ...rows]
+  const grip = (layout: 'compact' | 'header') => (
     <button
-      className="notch-drag"
+      className={`notch-drag notch-drag--${layout}`}
       type="button"
       aria-label={t('move')}
       title={t('moveHint')}
       onKeyDown={move}
       onFocus={keepOpen}
     >
-      {state?.expanded ? (
-        <GripVertical size={16} aria-hidden="true" />
-      ) : (
-        <GripHorizontal size={16} aria-hidden="true" />
-      )}
+      <span className="notch-grip" aria-hidden="true">
+        {Array.from({ length: 6 }, (_, index) => (
+          <i key={index} />
+        ))}
+      </span>
     </button>
   )
 
@@ -268,30 +262,27 @@ export function DesktopNotch() {
         }
       }}
     >
-      {state && (
-        <div
-          className="notch-expanded-content"
-          aria-hidden={!state.expanded}
-          inert={!state.expanded}
-          onTransitionEnd={(event) => {
-            if (
-              event.target === event.currentTarget &&
-              event.propertyName === 'transform' &&
-              !state.expanded
-            )
-              void finishCollapse()
-          }}
-        >
-          <header className="notch-header">
-            {handle}
-            <BrandWordmark size="compact" className="notch-brand" />
-            <span
-              className={`notch-status ${stale || error ? 'is-stale' : ''}`}
-              title={t(error ? 'failed' : stale ? 'waiting' : 'live')}
-            >
-              <i />
-              <span>{t(error ? 'failedShort' : stale ? 'waitingShort' : 'liveShort')}</span>
-            </span>
+      <div
+        className="notch-expanded-content"
+        aria-hidden={!state.expanded}
+        inert={!state.expanded}
+        onTransitionEnd={(event) => {
+          if (
+            event.target === event.currentTarget &&
+            event.propertyName === 'transform' &&
+            !state.expanded
+          )
+            void finishCollapse()
+        }}
+      >
+        <header className="notch-header">
+          {grip('header')}
+          <BrandWordmark size="compact" className="notch-brand" />
+          <span className="notch-status" data-status={status} title={t(status)}>
+            <i />
+            <span>{t(`${status}Short`)}</span>
+          </span>
+          <span className="notch-tools">
             <button
               type="button"
               className="notch-icon"
@@ -299,7 +290,7 @@ export function DesktopNotch() {
               title={t('open')}
               onClick={() => run(api?.openApp())}
             >
-              <AppWindow size={15} strokeWidth={1.75} />
+              <AppWindow size={16} strokeWidth={1.75} />
             </button>
             <button
               type="button"
@@ -309,7 +300,11 @@ export function DesktopNotch() {
               aria-pressed={state.pinned}
               onClick={() => run(api?.setPinned(!state.pinned))}
             >
-              {state.pinned ? <PinOff size={14} /> : <Pin size={14} />}
+              {state.pinned ? (
+                <PinOff size={16} strokeWidth={1.75} />
+              ) : (
+                <Pin size={16} strokeWidth={1.75} />
+              )}
             </button>
             <button
               type="button"
@@ -318,89 +313,77 @@ export function DesktopNotch() {
               title={t('hide')}
               onClick={() => run(api?.setVisible(false))}
             >
-              <X size={15} />
+              <X size={16} strokeWidth={1.75} />
             </button>
-          </header>
-          <div className="notch-metrics">
-            {items.map(({ id, name, icon: Icon, value, caption, detail }) => (
-              <article
-                className={`notch-metric ${id === 'cpu' ? 'notch-metric--hero' : ''}`}
-                data-resource={id}
-                data-tone={tone(value)}
-                key={id}
-              >
-                <div className="notch-metric-heading">
-                  <span className="notch-metric-icon">
-                    <Icon size={18} aria-hidden="true" />
-                  </span>
-                  <div className="notch-metric-title">
-                    <span>{name}</span>
-                    <small title={id === 'cpu' ? caption : detail}>
-                      {id === 'cpu' ? caption : detail}
-                    </small>
-                  </div>
-                  {id !== 'cpu' && (
-                    <strong className="notch-value">
-                      <PercentValue value={value} />
-                    </strong>
-                  )}
-                </div>
-                {id === 'cpu' && (
-                  <div className="notch-reading">
-                    <strong className="notch-value">
-                      <PercentValue value={value} />
-                    </strong>
-                    <div className="notch-sample">
-                      <span>{t('sample')}</span>
-                      <time
-                        dateTime={metrics ? new Date(metrics.timestamp).toISOString() : undefined}
-                      >
-                        {sampleTime}
-                      </time>
-                    </div>
-                  </div>
-                )}
-                <div
-                  className="notch-meter"
-                  role={Number.isFinite(value) ? 'meter' : undefined}
-                  aria-label={name}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={
-                    value == null || !Number.isFinite(value) ? undefined : Math.round(value)
-                  }
-                >
-                  <i
-                    style={{
-                      transform: `scaleX(${Number.isFinite(value) ? Math.max(0, Math.min(100, value ?? 0)) / 100 : 0})`
-                    }}
-                  />
-                </div>
-                {id !== 'cpu' && (
-                  <small className="notch-metric-caption" title={caption}>
-                    {caption}
-                  </small>
-                )}
-              </article>
-            ))}
+          </span>
+        </header>
+        <div className="notch-hero" data-resource="cpu" data-tone={tone(cpu.value)}>
+          <div className="notch-hero-label" title={t('cpuDetail')}>
+            <Cpu size={16} strokeWidth={1.75} aria-hidden="true" />
+            <span>CPU · {t('cpuDetail')}</span>
+          </div>
+          <strong className="notch-hero-value">
+            <PercentValue value={cpu.value} />
+          </strong>
+          <div className="notch-scale">
+            <span className="notch-ticks" aria-hidden="true">
+              {TICKS.map((tick) => (
+                <i key={tick} />
+              ))}
+            </span>
+            <Meter className="notch-scale-track" label={t('cpuDetail')} value={cpu.value} />
+          </div>
+          <div className="notch-scale-meta">
+            <span>0</span>
+            <span>
+              {t('sample')}{' '}
+              <time dateTime={metrics ? new Date(metrics.timestamp).toISOString() : undefined}>
+                {sampleTime}
+              </time>
+            </span>
+            <span>100</span>
           </div>
         </div>
-      )}
+        <div className="notch-rows">
+          {rows.map(({ id, name, icon: Icon, value, caption, detail }) => (
+            <article className="notch-row" data-resource={id} data-tone={tone(value)} key={id}>
+              <div className="notch-row-top">
+                <span className="notch-row-name" title={caption}>
+                  <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                  <span>{name}</span>
+                </span>
+                <strong className="notch-row-value">
+                  <PercentValue value={value} />
+                </strong>
+              </div>
+              <small className="notch-row-detail" title={detail}>
+                {detail}
+              </small>
+              <Meter className="notch-row-bar" label={caption} value={value} />
+            </article>
+          ))}
+        </div>
+        <footer className="notch-footer">
+          <button type="button" className="notch-open" onClick={() => run(api?.openApp())}>
+            {t('open')}
+          </button>
+        </footer>
+      </div>
       <div
         className="notch-compact-content"
-        aria-hidden={!!state?.expanded}
-        inert={!!state?.expanded}
+        aria-hidden={!!state.expanded}
+        inert={!!state.expanded}
       >
-        {handle}
+        {grip('compact')}
         <button
           className="notch-compact-values"
           type="button"
           onFocus={expand}
           onClick={expand}
-          aria-label={`${t('expand')}. ${items.map(({ name, value }) => `${name} ${percent(value)}`).join(', ')}`}
+          aria-label={`${t('expand')}. ${readouts.map(({ name, value }) => `${name} ${percent(value)}`).join(', ')}`}
           aria-expanded={false}
         >
-          {items.map(({ id, name, compactName, value, icon: Icon }) => (
+          {readouts.map(({ id, name, value, icon: Icon }) => (
             <span
               className="notch-compact-metric"
               data-tone={tone(value)}
@@ -408,28 +391,13 @@ export function DesktopNotch() {
               key={id}
               title={`${name} · ${percent(value)}`}
             >
-              <span className="notch-ring">
-                <svg viewBox="0 0 40 40" aria-hidden="true">
-                  <circle className="notch-ring-track" cx="20" cy="20" r="17" />
-                  {value != null && Number.isFinite(value) && (
-                    <circle
-                      className="notch-ring-value"
-                      cx="20"
-                      cy="20"
-                      r="17"
-                      pathLength="100"
-                      strokeDasharray="100"
-                      strokeDashoffset={100 - Math.max(0, Math.min(100, value))}
-                    />
-                  )}
-                </svg>
-                <span className="notch-ring-icon">
-                  <Icon size={15} aria-hidden="true" />
-                </span>
+              <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+              <b>
+                <PercentValue value={value} />
+              </b>
+              <span className="notch-mini" aria-hidden="true">
+                <i style={fill(value)} />
               </span>
-              <small>
-                {compactName} <b>{percent(value)}</b>
-              </small>
             </span>
           ))}
         </button>
@@ -440,15 +408,38 @@ export function DesktopNotch() {
 
 /** Meters are neutral; above 90 % they turn red (spec 3.1). */
 function tone(value: number | undefined): string {
-  return value == null || !Number.isFinite(value) ? 'unknown' : value > 90 ? 'danger' : 'normal'
+  return !known(value) ? 'unknown' : value > 90 ? 'danger' : 'normal'
+}
+
+function Meter({
+  className,
+  label,
+  value
+}: {
+  className: string
+  label: string
+  value: number | undefined
+}) {
+  return (
+    <div
+      className={`notch-meter ${className}`}
+      role={known(value) ? 'meter' : undefined}
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={known(value) ? Math.round(value) : undefined}
+    >
+      <i style={fill(value)} />
+    </div>
+  )
 }
 
 function PercentValue({ value }: { value: number | undefined }) {
-  if (value == null || !Number.isFinite(value)) return <>—</>
+  if (!known(value)) return <>—</>
   return (
     <>
-      {Math.round(Math.max(0, Math.min(100, value)))}
-      <span>%</span>
+      {clampPercent(value)}
+      <small>%</small>
     </>
   )
 }
