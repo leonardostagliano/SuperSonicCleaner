@@ -1,0 +1,61 @@
+{
+  "title": "AI 分析",
+  "description": "取得關於此次掃描結果的第二意見。",
+  "hubDescription": "使用您已登入的 Codex 帳戶，取得關於掃描與效能記錄的第二意見。",
+  "hubPrivacy": "掃描僅會共用匿名的檔案中繼資料。記錄會共用 CPU、記憶體與磁碟的數值測量資料，以及暫時性的處理程序 ID。名稱、路徑、備註與檔案內容都會保留在此裝置上。",
+  "connectionTitle": "Codex 連線",
+  "connectionIntro": "在此電腦上使用 Codex。請先檢查連線狀態，再於下方選擇工具。",
+  "connected": "Codex 已連線，可以進行僅使用中繼資料的分析。",
+  "scanFirst": "請先執行掃描。掃描結果就緒後，即可使用 AI 分析。",
+  "anotherRunning": "已有另一項 AI 分析正在執行中。您可以在「偏好設定 → AI 分析」中找到它。",
+  "continuesInBackground": "當您使用其他畫面時，分析仍會繼續進行。返回此處即可查看結果。",
+  "returnToAnalysis": "返回分析",
+  "openTool": "開啟工具",
+  "hubInstructions": "完成一次掃描或儲存一次效能記錄，啟用其 AI 分析，然後使用專用按鈕開始。不會自動傳送任何內容。",
+  "tools": {
+    "cleaner": {
+      "title": "系統清理",
+      "description": "使用匿名檔案中繼資料檢視已掃描到的可清理項目。隱私痕跡不包含在內。"
+    },
+    "largeFiles": {
+      "title": "大型檔案",
+      "description": "根據大小、類別與大致存在時間，檢視哪些大型檔案值得進一步查看。"
+    },
+    "duplicates": {
+      "title": "重複檔案",
+      "description": "取得需要檢視的重複檔案群組建議。要保留哪些檔案由您決定。"
+    },
+    "disk": {
+      "title": "磁碟分析",
+      "description": "使用彙總的大小資訊檢視最大的資料夾。"
+    },
+    "performance": {
+      "title": "效能記錄",
+      "description": "關聯 CPU、記憶體與磁碟活動以調查變慢的原因，並提供相關測量資料與建議的檢查項目。"
+    }
+  },
+  "enable": "為此畫面啟用 AI 分析",
+  "privacy": "僅會傳送暫時性 ID、一般檔案類型、大小以及檔案的大致存在時間。名稱、路徑、雜湊值與檔案內容都會保留在此裝置上。",
+  "accessCaveat": "最後存取時間是檔案系統中繼資料。此值可能缺漏，或已被其他應用程式變更，並不能證明您最後一次開啟檔案的實際時間。",
+  "diskAggregation": "資料夾列代表其總大小，並不會顯示資料夾內哪些檔案需要檢視。",
+  "checking": "正在檢查 AI 是否可用…",
+  "codexMissing": "請在此電腦上安裝 Codex 以使用 AI 分析。",
+  "unsupportedVersion": "此 Codex 版本無法提供所需的僅中繼資料隱私邊界。請使用受支援的 Codex 0.157.1 版本。",
+  "unsafeConfiguration": "目前的 Codex 設定無法保證僅使用中繼資料進行分析。請在重試前檢查本機 Codex 設定。",
+  "signIn": "請在此電腦上開啟 Codex 並登入，以使用 AI 分析。",
+  "unavailable": "AI 分析目前無法使用。請檢查此電腦上的 Codex，然後再試一次。",
+  "retryConnection": "重新檢查",
+  "analyze": "分析這些結果",
+  "analyzing": "正在分析…",
+  "cancelling": "正在取消…",
+  "cancel": "取消",
+  "limit": "最多 {{count}} 項",
+  "omitted": "另有 {{count}} 項未包含在此次分析中。",
+  "failed": "無法完成分析。請再試一次。",
+  "advisory": "請自行檢視這些建議。AI 分析不會選取或刪除任何檔案。",
+  "priority": {
+    "low": "低優先順序",
+    "medium": "中優先順序",
+    "high": "高優先順序"
+  }
+}
