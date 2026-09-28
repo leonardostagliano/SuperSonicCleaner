@@ -2,9 +2,9 @@
   "trayTooltip": "SuperSonicCleaner",
   "openKudu": "Otwórz SuperSonicCleaner",
   "quit": "Zakończ",
-  "scheduledTaskNotificationTitle": "SuperSonicCleaner - Zaplanowane zadanie",
+  "scheduledTaskNotificationTitle": "SuperSonicCleaner – zaplanowane zadanie",
   "scheduledTaskNotificationBody": "Uruchamianie „{{name}}”...",
-  "scanCompleteNotificationTitle": "SuperSonicCleaner - Skanowanie zakończone",
+  "scanCompleteNotificationTitle": "SuperSonicCleaner – skanowanie zakończone",
   "scanCompleteNotificationBody": "Znaleziono {{itemCount}} elementów ({{sizeMB}} MB), które można wyczyścić.",
   "scheduledScanName": "Zaplanowane skanowanie"
 }

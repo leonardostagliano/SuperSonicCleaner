@@ -1,0 +1,61 @@
+{
+  "title": "Analiza AI",
+  "description": "Poproś o dodatkową ocenę tych wyników skanowania.",
+  "hubDescription": "Dodatkowa ocena skanów i nagrań wydajności przy użyciu Twojego logowania Codex.",
+  "hubPrivacy": "Skany udostępniają tylko anonimowe metadane plików. Nagrania udostępniają liczbowe pomiary CPU, pamięci i dysku z tymczasowymi identyfikatorami procesów. Nazwy, ścieżki, notatki i zawartość plików pozostają na tym urządzeniu.",
+  "connectionTitle": "Połączenie z Codex",
+  "connectionIntro": "Użyj Codex na tym komputerze. Sprawdź połączenie, a następnie wybierz narzędzie poniżej.",
+  "connected": "Codex jest połączony i gotowy do analizy opartej wyłącznie na metadanych.",
+  "scanFirst": "Najpierw uruchom skanowanie. Analiza AI stanie się dostępna, gdy wyniki będą gotowe.",
+  "anotherRunning": "Inna analiza AI jest już uruchomiona. Znajdziesz ją w Preferencjach → Analiza AI.",
+  "continuesInBackground": "Analiza trwa nadal, gdy korzystasz z innych widoków. Wróć tutaj, aby zobaczyć wynik.",
+  "returnToAnalysis": "Wróć do analizy",
+  "openTool": "Otwórz narzędzie",
+  "hubInstructions": "Ukończ skanowanie lub zapisz nagranie wydajności, włącz dla niego analizę AI, a następnie uruchom ją odpowiednim przyciskiem. Nic nie jest wysyłane automatycznie.",
+  "tools": {
+    "cleaner": {
+      "title": "Oczyszczanie systemu",
+      "description": "Przejrzyj zeskanowane kandydatury do czyszczenia przy użyciu anonimowych metadanych plików. Ślady prywatności są wykluczone."
+    },
+    "largeFiles": {
+      "title": "Duże pliki",
+      "description": "Sprawdź, które duże pliki warto przejrzeć bliżej, na podstawie rozmiaru, kategorii i przybliżonego wieku."
+    },
+    "duplicates": {
+      "title": "Zduplikowane pliki",
+      "description": "Otrzymaj sugestie dotyczące grup duplikatów do przejrzenia. Sam wybierasz, które pliki zachować."
+    },
+    "disk": {
+      "title": "Analiza dysku",
+      "description": "Przejrzyj największe foldery przy użyciu zagregowanych informacji o rozmiarze."
+    },
+    "performance": {
+      "title": "Nagrania wydajności",
+      "description": "Powiąż aktywność CPU, pamięci i dysku, aby zbadać spowolnienie, wraz z pomiarami pomocniczymi i sugerowanymi kontrolami."
+    }
+  },
+  "enable": "Włącz analizę AI dla tego widoku",
+  "privacy": "Wysyłane są tylko tymczasowe identyfikatory, ogólne typy plików, rozmiary i przybliżony wiek plików. Nazwy, ścieżki, skróty i zawartość plików pozostają na tym urządzeniu.",
+  "accessCaveat": "Ostatni dostęp to metadane systemu plików. Mogą one brakować lub zostać zmienione przez inną aplikację i nie dowodzą, kiedy ostatnio otworzono plik.",
+  "diskAggregation": "Wiersz folderu reprezentuje jego całkowity rozmiar. Nie ujawnia, które pliki w folderze warto przejrzeć.",
+  "checking": "Sprawdzanie dostępności AI…",
+  "codexMissing": "Zainstaluj Codex na tym komputerze, aby korzystać z analizy AI.",
+  "unsupportedVersion": "Ta wersja Codex nie może zapewnić wymaganej granicy prywatności opartej wyłącznie na metadanych. Użyj obsługiwanej wersji Codex 0.157.1.",
+  "unsafeConfiguration": "Bieżąca konfiguracja Codex nie może zagwarantować analizy opartej wyłącznie na metadanych. Sprawdź lokalną konfigurację Codex przed ponowną próbą.",
+  "signIn": "Otwórz Codex na tym komputerze i zaloguj się, aby korzystać z analizy AI.",
+  "unavailable": "Analiza AI jest obecnie niedostępna. Sprawdź Codex na tym komputerze i spróbuj ponownie.",
+  "retryConnection": "Sprawdź ponownie",
+  "analyze": "Analizuj te wyniki",
+  "analyzing": "Analizowanie…",
+  "cancelling": "Anulowanie…",
+  "cancel": "Anuluj",
+  "limit": "Do {{count}} elementów",
+  "omitted": "{{count}} kolejnych elementów pominięto w tej analizie.",
+  "failed": "Nie udało się ukończyć analizy. Spróbuj ponownie.",
+  "advisory": "Sam oceń te sugestie. Analiza AI nigdy nie wybiera ani nie usuwa plików.",
+  "priority": {
+    "low": "Niski priorytet",
+    "medium": "Średni priorytet",
+    "high": "Wysoki priorytet"
+  }
+}

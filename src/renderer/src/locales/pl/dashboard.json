@@ -104,7 +104,7 @@
   "briefingDescThreats": "{{count}} aktywne zagrożenie wymaga uwagi.",
   "briefingDescThreatsPlural": "{{count}} aktywne zagrożenia wymagają uwagi.",
   "briefingDescThreatsLastScan": " Ostatnie skanowanie malware wykonano {{date}}.",
-  "briefingDescClean": "W ostatnim skanowaniu malware z {{date}} nie znaleziono aktywnych zagrożeń. SuperSonicCleaner odzyskał łącznie {{size}}.",
+  "briefingDescClean": "W ostatnim skanowaniu w poszukiwaniu złośliwego oprogramowania z {{date}} nie znaleziono aktywnych zagrożeń. SuperSonicCleaner odzyskał łącznie {{size}} od początku działania.",
   "briefingDescBaseline": "Uruchom pełne skanowanie, aby ustalić bazowy poziom ochrony i wykryć bezpieczne możliwości oczyszczania.",
   "recommendedHeading": "Polecane dla Ciebie",
   "safeActionsOnly": "Tylko bezpieczne działania",

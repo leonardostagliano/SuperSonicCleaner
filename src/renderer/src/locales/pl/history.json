@@ -21,7 +21,7 @@
     "backupDescription": "Te pliki kopii zapasowych nie zawierają zweryfikowanych informacji o stanie po zmianie. Przed ręcznym przywróceniem sprawdź je w folderze kopii zapasowych; ich zaimportowanie może nadpisać nowsze ustawienia. Plik kopii zapasowej nie jest punktem przywracania systemu.",
     "openBackups": "Otwórz folder kopii zapasowych",
     "confirmTitle": "Przywrócić tę zmianę?",
-    "confirmDescription": "SuperSonicCleaner sprawdzi bieżący stan przed przywróceniem zapisanej wartości pierwotnej. Nowsze konfliktujące zmiany zostaną zachowane. Mogą być wymagane uprawnienia administratora.",
+    "confirmDescription": "SuperSonicCleaner sprawdzi bieżący stan przed przywróceniem zapisanej pierwotnej wartości. Nowsze, sprzeczne zmiany zostaną zachowane. Mogą być wymagane uprawnienia administratora.",
     "status": {
       "pending": "Przerwane / oczekujące",
       "ready": "Dostępne",
@@ -30,7 +30,7 @@
       "conflict": "Wykryto nowszą zmianę"
     },
     "remove": "Usuń wpis",
-    "removeDescription": "Usunąć ten rekord odzyskiwania z historii lokalnej? Nie zmieni to ustawień ani nie usunie kopii zapasowych rejestru. SuperSonicCleaner nie będzie już mógł przywrócić tej zmiany.",
+    "removeDescription": "Usunąć ten wpis odzyskiwania z lokalnej historii? Nie zmienia to Twoich ustawień ani nie usuwa kopii zapasowych rejestru. SuperSonicCleaner nie będzie już mógł przywrócić tej zmiany.",
     "unreadable": "Nie można było odczytać tego rekordu odzyskiwania. Mógł zostać zapisany przez inne konto użytkownika lub uszkodzony na dysku.",
     "loading": "Wczytywanie historii odzyskiwania?",
     "emptyTitle": "Tutaj zaczyna się historia odzyskiwania",
@@ -41,14 +41,14 @@
     },
     "registryBackups": {
       "title": "Kopie zapasowe rejestru",
-      "description": "SuperSonicCleaner zapisuje klucze rejestru, które ma zamiar zmienić. W tym miejscu można przywrócić ukierunkowane kopie zapasowe. Pełne eksporty gałęzi można tylko przeglądać w folderze kopii zapasowych, ponieważ ich zaimportowanie cofnęłoby także niezwiązane zmiany wprowadzone od tego czasu.",
+      "description": "SuperSonicCleaner zapisuje klucze rejestru, które ma zamiar zmienić. Ukierunkowane kopie zapasowe można przywrócić tutaj. Eksporty całych gałęzi można przeglądać wyłącznie w folderze kopii zapasowych, ponieważ ich zaimportowanie cofnęłoby niepowiązane zmiany wprowadzone od tego czasu.",
       "empty": "Brak kopii zapasowych rejestru.",
       "restore": "Przywróć",
       "showInFolder": "Pokaż w folderze",
       "moreKeys": "+{{count}} więcej",
       "requiresAdmin": "Wymaga uprawnień administratora",
       "confirmTitle": "Przywrócić tę kopię zapasową rejestru?",
-      "confirmDescription": "SuperSonicCleaner zaimportuje poniższe klucze. Wartości z kopii zapasowej zastąpią bieżące, a brakujące klucze i wartości zostaną przywrócone. Nic innego nie zostanie usunięte, z wyjątkiem sytuacji, gdy przywracanie kopii zapasowej sprzed przywrócenia usuwa również klucze i wartości dodane przez przywracanie, które jest cofane. Przed importem SuperSonicCleaner zapisze bieżący stan tych kluczy jako kopię zapasową sprzed przywrócenia. Niektóre zmiany zaczną obowiązywać dopiero po wylogowaniu lub ponownym uruchomieniu komputera.",
+      "confirmDescription": "SuperSonicCleaner zaimportuje poniższe klucze. Wartości z kopii zapasowej zastąpią bieżące, a brakujące klucze i wartości zostaną przywrócone. Nic innego nie zostanie usunięte, poza tym, że przywrócenie kopii zapasowej sprzed przywracania usuwa również klucze i wartości dodane przez przywracanie, które ta kopia cofa. Przed importem SuperSonicCleaner zapisuje bieżący stan tych kluczy jako kopię zapasową sprzed przywracania. Niektóre zmiany zaczynają obowiązywać dopiero po wylogowaniu lub ponownym uruchomieniu.",
       "restored": "Przywrócono. Poprzedni stan zapisano w pliku {{file}}.",
       "restoredNoBackup": "Przywrócono. Żaden z tych kluczy wcześniej nie istniał, więc nie było czego wcześniej archiwizować.",
       "failed": "Przywracanie nie powiodło się: {{error}}",
@@ -61,13 +61,13 @@
       "blocked": {
         "full-export": "Pełny eksport gałęzi. Jego przywrócenie cofnęłoby niezwiązane zmiany, dlatego można go tylko przeglądać.",
         "too-large": "Zbyt duży, aby był ukierunkowaną kopią zapasową.",
-        "format": "Nie jest w formacie eksportu rejestru zapisywanym przez SuperSonicCleaner.",
-        "deletion": "Zawiera wpisy usuwania, których kopie zapasowe SuperSonicCleaner nigdy nie zawierają.",
-        "forbidden-key": "Zawiera klucze spoza obszarów modyfikowanych przez SuperSonicCleaner.",
+        "format": "Nie jest w formacie eksportu rejestru, który zapisuje SuperSonicCleaner.",
+        "deletion": "Zawiera wpisy usunięcia, których kopie zapasowe SuperSonicCleaner nigdy nie zawierają.",
+        "forbidden-key": "Zawiera klucze spoza obszarów zmienianych przez SuperSonicCleaner.",
         "empty": "Nie zawiera żadnych kluczy rejestru.",
         "unreadable": "Nie można odczytać.",
-        "classes-root": "Zawiera klucze HKEY_CLASSES_ROOT, które łączą klasy komputera i poszczególnych użytkowników, więc SuperSonicCleaner nie może określić, do którego miejsca je przywrócić. Można je tylko sprawdzić.",
-        "unverified": "Nie można zweryfikować tej kopii zapasowej — mogła zostać zmieniona od czasu jej zapisania przez SuperSonicCleaner, dlatego można ją tylko przejrzeć."
+        "classes-root": "Zawiera klucze HKEY_CLASSES_ROOT, które łączą klasy maszynowe i użytkownika, więc SuperSonicCleaner nie może określić, do której z nich je przywrócić. Można je jedynie przeglądać.",
+        "unverified": "Tej kopii zapasowej nie można zweryfikować — mogła zostać zmieniona po jej zapisaniu przez SuperSonicCleaner, więc można ją jedynie przeglądać."
       }
     }
   },
