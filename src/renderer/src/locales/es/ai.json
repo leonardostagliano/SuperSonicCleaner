@@ -1,0 +1,61 @@
+{
+  "title": "Análisis de IA",
+  "description": "Obtenga una segunda opinión sobre estos resultados del análisis.",
+  "hubDescription": "Una segunda opinión sobre análisis y grabaciones de rendimiento, mediante su inicio de sesión de Codex.",
+  "hubPrivacy": "Los análisis solo comparten metadatos de archivo anónimos. Las grabaciones comparten mediciones numéricas de CPU, memoria y disco con ID de proceso temporales. Los nombres, rutas, notas y contenidos de los archivos permanecen en este dispositivo.",
+  "connectionTitle": "Conexión con Codex",
+  "connectionIntro": "Use Codex en este equipo. Compruebe la conexión y luego elija una herramienta a continuación.",
+  "connected": "Codex está conectado y listo para el análisis limitado a metadatos.",
+  "scanFirst": "Ejecute primero un análisis. El análisis de IA estará disponible cuando los resultados estén listos.",
+  "anotherRunning": "Ya hay otro análisis de IA en curso. Puede encontrarlo en Preferencias → Análisis de IA.",
+  "continuesInBackground": "El análisis continúa mientras usa otras vistas. Vuelva aquí para ver el resultado.",
+  "returnToAnalysis": "Volver al análisis",
+  "openTool": "Abrir herramienta",
+  "hubInstructions": "Complete un análisis o guarde una grabación de rendimiento, active su análisis de IA y luego iníciela con el botón correspondiente. No se envía nada automáticamente.",
+  "tools": {
+    "cleaner": {
+      "title": "Limpieza del sistema",
+      "description": "Revise los candidatos de limpieza detectados mediante metadatos de archivo anónimos. Se excluyen los rastros de privacidad."
+    },
+    "largeFiles": {
+      "title": "Archivos grandes",
+      "description": "Revise qué archivos grandes merecen un examen más detenido, según el tamaño, la categoría y la antigüedad aproximada."
+    },
+    "duplicates": {
+      "title": "Archivos duplicados",
+      "description": "Obtenga sugerencias sobre grupos de duplicados que revisar. Usted elige qué archivos conservar."
+    },
+    "disk": {
+      "title": "Análisis de disco",
+      "description": "Revise las carpetas más grandes mediante información de tamaño agregada."
+    },
+    "performance": {
+      "title": "Grabaciones de rendimiento",
+      "description": "Relacione la actividad de CPU, memoria y disco para investigar una ralentización, con mediciones de apoyo y comprobaciones sugeridas."
+    }
+  },
+  "enable": "Activar el análisis de IA para esta vista",
+  "privacy": "Solo se envían ID temporales, tipos de archivo genéricos, tamaños y antigüedades aproximadas de los archivos. Los nombres, rutas, hashes y contenidos de los archivos permanecen en este dispositivo.",
+  "accessCaveat": "El último acceso es un metadato del sistema de archivos. Puede faltar o haber sido modificado por otra aplicación, y no demuestra cuándo abrió un archivo por última vez.",
+  "diskAggregation": "Una fila de carpeta representa su tamaño total. No indica qué archivos dentro de la carpeta deben revisarse.",
+  "checking": "Comprobando la disponibilidad de la IA…",
+  "codexMissing": "Instale Codex en este equipo para usar el análisis de IA.",
+  "unsupportedVersion": "Esta versión de Codex no puede garantizar el límite de privacidad requerido, limitado a metadatos. Use la versión compatible, Codex 0.157.1.",
+  "unsafeConfiguration": "La configuración actual de Codex no puede garantizar un análisis limitado a metadatos. Revise su configuración local de Codex antes de volver a intentarlo.",
+  "signIn": "Abra Codex en este equipo e inicie sesión para usar el análisis de IA.",
+  "unavailable": "El análisis de IA no está disponible en este momento. Compruebe Codex en este equipo e inténtelo de nuevo.",
+  "retryConnection": "Comprobar de nuevo",
+  "analyze": "Analizar estos resultados",
+  "analyzing": "Analizando…",
+  "cancelling": "Cancelando…",
+  "cancel": "Cancelar",
+  "limit": "Hasta {{count}} elementos",
+  "omitted": "Se excluyeron {{count}} elementos adicionales de este análisis.",
+  "failed": "No se pudo completar el análisis. Inténtelo de nuevo.",
+  "advisory": "Revise usted mismo estas sugerencias. El análisis de IA nunca selecciona ni elimina archivos.",
+  "priority": {
+    "low": "Prioridad baja",
+    "medium": "Prioridad media",
+    "high": "Prioridad alta"
+  }
+}

@@ -14,5 +14,6 @@
   "hoursAgo": "hace {{hours}} h",
   "daysAgo": "hace {{days}} d",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Qué se comprueba"
 }
