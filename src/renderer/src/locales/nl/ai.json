@@ -1,0 +1,61 @@
+{
+  "title": "AI-analyse",
+  "description": "Vraag een tweede mening over deze scanresultaten.",
+  "hubDescription": "Een tweede mening over scans en prestatieopnames, via uw Codex-aanmelding.",
+  "hubPrivacy": "Scans delen alleen anonieme bestandsmetadata. Opnames delen numerieke CPU-, geheugen- en schijfmetingen met tijdelijke proces-ID's. Namen, paden, notities en bestandsinhoud blijven op dit apparaat.",
+  "connectionTitle": "Codex-verbinding",
+  "connectionIntro": "Gebruik Codex op deze computer. Controleer de verbinding en kies vervolgens hieronder een hulpmiddel.",
+  "connected": "Codex is verbonden en klaar voor analyse die uitsluitend metadata gebruikt.",
+  "scanFirst": "Voer eerst een scan uit. AI-analyse wordt beschikbaar zodra de resultaten klaar zijn.",
+  "anotherRunning": "Er wordt al een andere AI-analyse uitgevoerd. U vindt deze in Voorkeuren → AI-analyse.",
+  "continuesInBackground": "De analyse gaat door terwijl u andere weergaven gebruikt. Kom hier terug om het resultaat te zien.",
+  "returnToAnalysis": "Terug naar analyse",
+  "openTool": "Hulpmiddel openen",
+  "hubInstructions": "Voltooi een scan of sla een prestatieopname op, schakel de AI-analyse ervan in en start deze vervolgens met de bijbehorende knop. Er wordt niets automatisch verzonden.",
+  "tools": {
+    "cleaner": {
+      "title": "Systeemopschoning",
+      "description": "Bekijk gescande opschoningskandidaten met anonieme bestandsmetadata. Privacysporen zijn uitgesloten."
+    },
+    "largeFiles": {
+      "title": "Grote bestanden",
+      "description": "Bekijk welke grote bestanden een nadere blik verdienen, op basis van grootte, categorie en geschatte ouderdom."
+    },
+    "duplicates": {
+      "title": "Dubbele bestanden",
+      "description": "Ontvang suggesties over te controleren groepen dubbele bestanden. U kiest welke bestanden u wilt behouden."
+    },
+    "disk": {
+      "title": "Schijfanalyse",
+      "description": "Bekijk de grootste mappen aan de hand van geaggregeerde groottegegevens."
+    },
+    "performance": {
+      "title": "Prestatieopnames",
+      "description": "Breng CPU-, geheugen- en schijfactiviteit met elkaar in verband om een vertraging te onderzoeken, met ondersteunende metingen en voorgestelde controles."
+    }
+  },
+  "enable": "AI-analyse voor deze weergave inschakelen",
+  "privacy": "Alleen tijdelijke ID's, algemene bestandstypen, groottes en geschatte bestandsleeftijden worden verzonden. Namen, paden, hashes en bestandsinhoud blijven op dit apparaat.",
+  "accessCaveat": "De laatste toegang is bestandssysteemmetadata. Deze kan ontbreken of door een andere app zijn gewijzigd, en bewijst niet wanneer u een bestand voor het laatst hebt geopend.",
+  "diskAggregation": "Een maprij vertegenwoordigt de totale grootte ervan. Dit laat niet zien welke bestanden in de map moeten worden bekeken.",
+  "checking": "AI-beschikbaarheid wordt gecontroleerd…",
+  "codexMissing": "Installeer Codex op deze computer om AI-analyse te gebruiken.",
+  "unsupportedVersion": "Deze Codex-versie kan de vereiste, tot metadata beperkte privacygrens niet garanderen. Gebruik de ondersteunde versie, Codex 0.157.1.",
+  "unsafeConfiguration": "De huidige Codex-configuratie kan geen analyse garanderen die uitsluitend metadata gebruikt. Controleer uw lokale Codex-configuratie voordat u het opnieuw probeert.",
+  "signIn": "Open Codex op deze computer en meld u aan om AI-analyse te gebruiken.",
+  "unavailable": "AI-analyse is momenteel niet beschikbaar. Controleer Codex op deze computer en probeer het opnieuw.",
+  "retryConnection": "Opnieuw controleren",
+  "analyze": "Deze resultaten analyseren",
+  "analyzing": "Bezig met analyseren…",
+  "cancelling": "Bezig met annuleren…",
+  "cancel": "Annuleren",
+  "limit": "Tot {{count}} items",
+  "omitted": "{{count}} extra items zijn buiten deze analyse gelaten.",
+  "failed": "De analyse kon niet worden voltooid. Probeer het opnieuw.",
+  "advisory": "Bekijk deze suggesties zelf. AI-analyse selecteert of verwijdert nooit bestanden.",
+  "priority": {
+    "low": "Lage prioriteit",
+    "medium": "Gemiddelde prioriteit",
+    "high": "Hoge prioriteit"
+  }
+}
