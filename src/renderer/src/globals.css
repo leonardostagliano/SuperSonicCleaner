@@ -2387,11 +2387,6 @@ body {
   color: var(--brand-solid) !important;
   filter: drop-shadow(0 12px 24px color-mix(in srgb, var(--brand-solid), transparent 84%));
 }
-.utility-empty-stage-danger > svg {
-  border-color: rgba(201, 80, 73, 0.18);
-  color: #c95049 !important;
-  filter: drop-shadow(0 12px 24px rgba(201, 80, 73, 0.14));
-}
 .utility-empty-stage h3 {
   font-size: 18px !important;
   letter-spacing: -0.015em;
