@@ -68,7 +68,7 @@
   --border-medium: #ffffff14;
   /* Control edges: at least 3:1 on --card-bg (design-tokens.test.ts). */
   --border-strong: #ffffff54;
-  --border-stronger: #ffffff36;
+  --border-stronger: #ffffff66;
   --accent: #f5f5f7;
   --accent-hover: #ffffff;
   --accent-muted-bg: #ffffff0a;
@@ -184,7 +184,7 @@
   --border-default: #12121610;
   --border-medium: #12121617;
   --border-strong: #12121673;
-  --border-stronger: #12121638;
+  --border-stronger: #12121685;
   --accent: #18181d;
   --accent-hover: #30303a;
   --accent-muted-bg: #18181d07;
