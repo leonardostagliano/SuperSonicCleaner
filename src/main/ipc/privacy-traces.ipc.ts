@@ -54,9 +54,11 @@ export function registerPrivacyTracesIpc(getWindow: WindowGetter): void {
   }
 
   ipcMain.handle(IPC.PRIVACY_TRACES_SCAN, async (): Promise<ScanResult[]> => {
+    // No status text: the renderer shows its own translated category label when
+    // currentPath is empty; during cleaning currentPath carries real paths only.
     sendProgress({
       phase: 'scanning',
-      currentPath: 'Scanning privacy traces...',
+      currentPath: '',
       progress: 0,
       itemsFound: 0,
       sizeFound: 0
@@ -73,7 +75,7 @@ export function registerPrivacyTracesIpc(getWindow: WindowGetter): void {
     )
     sendProgress({
       phase: 'scanning',
-      currentPath: 'Privacy traces scan complete',
+      currentPath: '',
       progress: 100,
       itemsFound: results.reduce((sum, r) => sum + r.itemCount, 0),
       sizeFound: results.reduce((sum, r) => sum + r.totalSize, 0)
