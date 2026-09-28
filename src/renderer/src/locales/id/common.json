@@ -14,5 +14,6 @@
   "hoursAgo": "{{hours}}j yang lalu",
   "daysAgo": "{{days}}h yang lalu",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "Apa yang diperiksa"
 }

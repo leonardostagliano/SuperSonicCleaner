@@ -1,11 +1,17 @@
 {
   "pageTitle": "Jadwal",
+  "pageScope": "Menjalankan pembersihan, perbaikan registry, dan pembaruan pada waktu yang ditentukan, saat kondisi yang Anda pilih terpenuhi. Dengan penerapan otomatis, tindakan dimulai tanpa konfirmasi.",
   "pageDescription": "Otomatiskan pemindaian, pembersihan, dan pembaruan sesuai jadwal",
   "dismissNudge": "Sembunyikan kartu ini",
   "newScheduleButton": "Jadwal Baru",
-  "createScheduleButton": "Buat Jadwal",
   "emptyStateTitle": "Belum ada jadwal",
-  "emptyStateDescription": "Buat jadwal untuk menjalankan pemindaian, pembersihan, dan pembaruan secara otomatis.",
+  "emptyStateDescription": "Jadwal yang Anda buat akan muncul di sini, beserta eksekusi berikutnya dan hasil eksekusi terakhir.",
+  "upcomingTitle": "Eksekusi berikutnya",
+  "enabledCount_one": "{{count}} aktif",
+  "enabledCount_other": "{{count}} aktif",
+  "upcomingNote": "Waktu terjadwal: kondisi eksekusi dapat menunda eksekusi.",
+  "listTitle": "Jadwal Anda",
+  "listMeta": "{{count}} dari {{max}}",
   "maxSchedulesReached": "Maksimum {{max}} jadwal telah tercapai.",
   "duplicatedToast": "\"{{name}}\" diduplikasi",
   "deletedToast": "\"{{name}}\" dihapus",
@@ -13,49 +19,57 @@
   "createdToast": "\"{{name}}\" dibuat",
   "failedEnableStartup": "Gagal mengaktifkan startup. Jadwal mungkin tidak berjalan setelah reboot.",
   "failedEnableStartupAction": "Pelajari lebih lanjut",
-  "deleteConfirmTitle": "Hapus jadwal",
-  "deleteConfirmDescription": "Jadwal ini akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.",
+  "deleteConfirmTitle": "Hapus \"{{name}}\"?",
+  "deleteConfirmDescription": "Jadwal akan dihapus dan tidak akan berjalan lagi. Ini tidak dapat diurungkan: untuk mendapatkannya kembali, buat lagi.",
   "deleteConfirmLabel": "Hapus",
   "card": {
     "autoApplyBadge": "Terapkan otomatis",
+    "enabled": "Aktif",
+    "disabled": "Tidak aktif",
+    "enabledLabel": "Jadwal {{name}} aktif",
     "editAction": "Edit",
     "duplicateAction": "Duplikasi",
     "deleteAction": "Hapus",
     "noTasksSelected": "Tidak ada tugas yang dipilih",
     "nextRun": "Berikutnya: {{time}}",
     "lastRun": "Terakhir: {{time}}",
-    "neverRun": "Belum pernah dijalankan"
+    "neverRun": "Belum pernah dijalankan",
+    "statusSuccess": "selesai",
+    "statusPartial": "selesai sebagian",
+    "statusFailed": "gagal"
   },
   "presets": {
     "dialogTitle": "Pilih templat",
     "weeklyFullCleanLabel": "Pembersihan Penuh Mingguan",
-    "weeklyFullCleanDescription": "Semua kategori pembersih setiap Senin pukul 09.00",
+    "weeklyFullCleanDescription": "Semua kategori pembersihan setiap hari Senin pukul 9:00, tanpa konfirmasi",
     "dailyLightSweepLabel": "Pembersihan Ringan Harian",
-    "dailyLightSweepDescription": "Sistem, browser & recycle bin setiap hari pukul 08.00",
+    "dailyLightSweepDescription": "Sistem, browser, dan Recycle Bin setiap hari pukul 8:00, tanpa konfirmasi",
     "monthlyDeepMaintenanceLabel": "Pemeliharaan Mendalam Bulanan",
-    "monthlyDeepMaintenanceDescription": "Pembersihan penuh + registry, driver & perangkat lunak setiap tanggal 1 pukul 10.00",
+    "monthlyDeepMaintenanceDescription": "Pembersihan lengkap, registry, driver, dan perangkat lunak pada tanggal 1 pukul 10:00, tanpa konfirmasi",
     "customLabel": "Kustom",
-    "customDescription": "Mulai dari awal dengan jadwal kosong"
+    "customDescription": "Jadwal kosong untuk diisi"
   },
   "dialog": {
     "editTitle": "Edit Jadwal",
     "newTitle": "Jadwal Baru",
+    "close": "Tutup",
     "nameLabel": "Nama",
-    "namePlaceholder": "mis. Pembersihan Mendalam Mingguan",
+    "namePlaceholder": "mis. Pembersihan Senin",
     "frequencyLabel": "Frekuensi",
     "frequencyDaily": "Harian",
     "frequencyWeekly": "Mingguan",
     "frequencyMonthly": "Bulanan",
     "dayLabel": "Hari",
     "timeLabel": "Waktu",
+    "minuteLabel": "Menit",
     "tasksLabel": "Tugas",
     "selectAll": "Pilih semua",
     "deselectAll": "Batalkan pilih semua",
     "cleanerGroup": "Pembersih",
     "maintenanceGroup": "Pemeliharaan",
     "autoApplyLabel": "Terapkan otomatis",
-    "autoApplyDescription": "Bersihkan file, perbaiki masalah registry, dan instal pembaruan secara otomatis tanpa konfirmasi.",
-    "autoApplyWarning": "Tindakan akan dijalankan secara otomatis sesuai jadwal. Pastikan daftar pengecualian Anda sudah diperbarui.",
+    "autoApplyDescription": "Membersihkan file, memperbaiki registry, dan menginstal pembaruan tanpa meminta konfirmasi.",
+    "autoApplyWarning": "Tindakan dimulai sendiri pada waktu yang dijadwalkan. Periksa dahulu daftar pengecualian.",
     "cancelButton": "Batal",
     "saveChangesButton": "Simpan Perubahan",
     "createScheduleButton": "Buat Jadwal"
@@ -83,12 +97,13 @@
   "frequency": {
     "everyDayAt": "Setiap hari pukul {{time}}",
     "everyWeekdayAt": "Setiap {{day}} pukul {{time}}",
-    "monthlyAt": "Tanggal {{ordinalDay}} setiap bulan pukul {{time}}"
+    "monthlyOn": "Tanggal {{day}} setiap bulan pukul {{time}}"
   },
   "nextRun": {
     "todayAt": "Hari ini pukul {{time}}",
     "tomorrowAt": "Besok pukul {{time}}",
-    "inDaysAt": "Dalam {{count}} hari pukul {{time}}",
+    "inDaysAt_one": "dalam {{count}} hari pukul {{time}}",
+    "inDaysAt_other": "dalam {{count}} hari pukul {{time}}",
     "dateAt": "{{date}} pukul {{time}}"
   },
   "lastRun": {
@@ -113,7 +128,7 @@
     "skip": "Lewati setelah jendela mulai dua menit",
     "once": "Jalankan sekali saat siap; gabungkan jadwal yang terlewat",
     "runNow": "Jalankan sekarang",
-    "runConfirm": "Jalankan jadwal ini sekarang menggunakan tugas tersimpan dan pilihan terapkan otomatisnya? Kondisi daya, idle, Game Mode, ruang, dan jendela pemeliharaannya tetap berlaku: proses yang tertahan oleh kondisi tersebut akan dimulai pada pemeriksaan berikutnya, dan memilih Jalankan sekarang lagi saat masih menunggu akan membatalkannya.",
+    "runConfirm": "Tugas yang tersimpan berjalan, dengan pilihan penerapan otomatis jadwal. Kondisi daya, idle, Mode Game, ruang, dan jendela pemeliharaan tetap berlaku: jika kondisi tersebut menunda eksekusi, eksekusi akan dimulai pada pemeriksaan berikutnya; memilih Jalankan sekarang lagi saat menunggu akan membatalkannya.",
     "runFailed": "Tidak dapat memulai jadwal",
     "running": "Sedang berjalan",
     "nextEvaluation": "Pemeriksaan berikutnya sekitar {{time}}",
@@ -122,11 +137,10 @@
     "moveUp": "Naik",
     "moveDown": "Turun",
     "restrict": "Pilih kategori untuk {{name}}",
-    "findCategories": "Pindai kategori",
-    "scanning": "Memindai...",
+    "findCategories": "Temukan kategori",
     "scopeHint": "Hanya kategori yang dicentang yang akan disertakan. Pilihan kosong tidak akan menjalankan pembersihan pada tugas ini. Pemindaian menemukan kategori yang saat ini ada; pemindaian tidak melakukan pembersihan.",
     "waitForScan": "Tunggu hingga pemindaian atau pembersihan saat ini selesai.",
-    "noCategories": "Tidak ada kategori yang ditemukan. Jalankan pemindaian baru saat aplikasi telah menyimpan data cache.",
+    "noCategories": "Tidak ada kategori yang ditemukan. Jalankan pemindaian baru saat aplikasi memiliki data yang di-cache.",
     "scanFailed": "Tidak dapat memuat kategori.",
     "waiting": {
       "idle": "Menunggu waktu idle",
@@ -142,6 +156,9 @@
       "interrupted": "Proses kehilangan jendelanya dan dicatat sebagai gagal; kejadian ini tidak akan diputar ulang."
     },
     "saveFailed": "Jadwal tidak dapat disimpan. Coba lagi.",
-    "skipped": "Dilewati setelah kondisi berubah."
+    "skipped": "Dilewati setelah kondisi berubah.",
+    "runTitle": "Jalankan \"{{name}}\" sekarang?",
+    "moveUpLabel": "Pindahkan {{name}} ke atas",
+    "moveDownLabel": "Pindahkan {{name}} ke bawah"
   }
 }

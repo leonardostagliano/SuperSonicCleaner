@@ -1,0 +1,61 @@
+{
+  "title": "Analisis AI",
+  "description": "Dapatkan opini kedua tentang hasil pemindaian ini.",
+  "hubDescription": "Opini kedua tentang pemindaian dan rekaman performa, menggunakan info masuk Codex Anda.",
+  "hubPrivacy": "Pemindaian hanya membagikan metadata file anonim. Rekaman membagikan pengukuran numerik CPU, memori, dan disk dengan ID proses sementara. Nama, jalur, catatan, dan konten file tetap berada di perangkat ini.",
+  "connectionTitle": "Koneksi Codex",
+  "connectionIntro": "Gunakan Codex di komputer ini. Periksa koneksinya, lalu pilih alat di bawah.",
+  "connected": "Codex terhubung dan siap untuk analisis khusus metadata.",
+  "scanFirst": "Jalankan pemindaian terlebih dahulu. Analisis AI tersedia setelah hasilnya siap.",
+  "anotherRunning": "Analisis AI lain sedang berjalan. Anda dapat menemukannya di Preferensi → Analisis AI.",
+  "continuesInBackground": "Analisis berlanjut selagi Anda menggunakan tampilan lain. Kembali ke sini untuk melihat hasilnya.",
+  "returnToAnalysis": "Kembali ke analisis",
+  "openTool": "Buka alat",
+  "hubInstructions": "Selesaikan pemindaian atau simpan rekaman performa, aktifkan analisis AI-nya, lalu mulai dengan tombol khusus. Tidak ada yang dikirim secara otomatis.",
+  "tools": {
+    "cleaner": {
+      "title": "Pembersihan sistem",
+      "description": "Tinjau kandidat pembersihan yang dipindai menggunakan metadata file anonim. Jejak privasi dikecualikan."
+    },
+    "largeFiles": {
+      "title": "File besar",
+      "description": "Tentukan file besar mana yang layak diperiksa lebih lanjut, berdasarkan ukuran, kategori, dan perkiraan usia."
+    },
+    "duplicates": {
+      "title": "File duplikat",
+      "description": "Dapatkan saran tentang grup duplikat untuk ditinjau. Anda yang memilih file mana yang akan disimpan."
+    },
+    "disk": {
+      "title": "Analisis disk",
+      "description": "Tinjau folder terbesar menggunakan informasi ukuran gabungan."
+    },
+    "performance": {
+      "title": "Rekaman performa",
+      "description": "Hubungkan aktivitas CPU, memori, dan disk untuk menyelidiki perlambatan, dengan pengukuran pendukung dan pemeriksaan yang disarankan."
+    }
+  },
+  "enable": "Aktifkan analisis AI untuk tampilan ini",
+  "privacy": "Hanya ID sementara, jenis file umum, ukuran, dan perkiraan usia file yang dikirim. Nama, jalur, hash, dan konten file tetap berada di perangkat ini.",
+  "accessCaveat": "Akses terakhir adalah metadata sistem file. Datanya mungkin hilang atau diubah oleh aplikasi lain, dan tidak membuktikan kapan Anda terakhir membuka file tersebut.",
+  "diskAggregation": "Baris folder mewakili ukuran totalnya. Baris ini tidak menunjukkan file mana di dalam folder yang perlu ditinjau.",
+  "checking": "Memeriksa ketersediaan AI…",
+  "codexMissing": "Instal Codex di komputer ini untuk menggunakan analisis AI.",
+  "unsupportedVersion": "Versi Codex ini tidak dapat menyediakan batas privasi khusus metadata yang diperlukan. Gunakan versi Codex 0.157.1 yang didukung.",
+  "unsafeConfiguration": "Konfigurasi Codex saat ini tidak dapat menjamin analisis khusus metadata. Tinjau konfigurasi Codex lokal Anda sebelum mencoba lagi.",
+  "signIn": "Buka Codex di komputer ini dan masuk untuk menggunakan analisis AI.",
+  "unavailable": "Analisis AI tidak tersedia saat ini. Periksa Codex di komputer ini dan coba lagi.",
+  "retryConnection": "Periksa lagi",
+  "analyze": "Analisis hasil ini",
+  "analyzing": "Menganalisis…",
+  "cancelling": "Membatalkan…",
+  "cancel": "Batal",
+  "limit": "Hingga {{count}} item",
+  "omitted": "{{count}} item lainnya tidak disertakan dalam analisis ini.",
+  "failed": "Analisis tidak dapat diselesaikan. Coba lagi.",
+  "advisory": "Tinjau saran ini sendiri. Analisis AI tidak pernah memilih atau menghapus file.",
+  "priority": {
+    "low": "Prioritas rendah",
+    "medium": "Prioritas sedang",
+    "high": "Prioritas tinggi"
+  }
+}
