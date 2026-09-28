@@ -1,43 +1,66 @@
 {
   "recovery": {
     "title": "Recovery Centre",
-    "description": "Review and restore supported changes made by SuperSonicCleaner",
-    "limits": "Recovery covers recorded Windows DWORD privacy/registry values, scheduled tasks and service configuration. Permanent file deletion cannot be undone. Older or unsupported changes may have only a manual backup. Some restored settings require a restart.",
+    "limits": "Recovery covers the registry DWORD values written for privacy and system settings, scheduled tasks and service configuration. Older or unsupported changes may have only a manual backup. Some restored settings take effect after a restart.",
     "refresh": "Refresh",
     "export": "Export recovery history",
     "loadError": "Recovery history could not be read.",
     "failed": "Recovery failed.",
-    "empty": "No recorded changes on this page. New supported changes will appear here.",
+    "loading": "Reading recovery history…",
+    "emptyTitle": "No restorable changes",
+    "empty": "Changes made by Privacy Shield, Service Manager and Registry Cleaner appear here with their original and later state.",
+    "summary": {
+      "recorded": "Recorded changes",
+      "registryBackups": "Registry backups",
+      "backupFiles": "Backup files"
+    },
+    "changesTitle": "Recorded changes",
+    "range": "{{from}}–{{to}} of {{total}}",
     "gameMode": "Game Mode recovery",
     "gameModeDescription": "Game Mode has an active or pending recovery snapshot.",
-    "openGameMode": "Open Game Mode recovery",
+    "openGameMode": "Open Game Mode",
     "before": "Original state",
     "after": "State after SuperSonicCleaner",
-    "absent": "Value did not exist",
     "restore": "Restore original state",
     "previous": "Previous",
     "next": "Next",
     "backups": "Registry and context-menu backups",
-    "backupDescription": "These backup files do not contain verified after-state information. Inspect them in the backup folder before restoring manually; importing them can overwrite newer settings. A backup file is not an OS restore point.",
+    "backupDescription": "These backup files do not contain a verified later state. Inspect them in the backup folder before restoring by hand: importing them can overwrite newer settings. A backup file is not an operating system restore point.",
     "openBackups": "Open backup folder",
     "confirmTitle": "Restore this change?",
-    "confirmDescription": "SuperSonicCleaner will check the current state before restoring the recorded original value. Newer conflicting changes will be preserved. Administrator privileges may be required.",
+    "confirmDescription": "SuperSonicCleaner checks the current state before writing back the recorded original value. If the value was changed again in the meantime, the newer change is kept. Administrator rights may be needed.",
     "status": {
-      "pending": "Interrupted / pending",
-      "ready": "Available",
+      "pending": "Interrupted or pending",
+      "ready": "Restorable",
       "restored": "Restored",
-      "failed": "Needs attention",
+      "failed": "Restore failed",
       "conflict": "Newer change detected"
     },
     "remove": "Remove entry",
-    "removeDescription": "Remove this recovery record from local history? This does not change your settings or delete registry backups. SuperSonicCleaner will no longer be able to restore this change for you.",
-    "unreadable": "This recovery record could not be read. It may have been written by another user account or damaged on disk.",
-    "loading": "Loading recovery history?",
-    "emptyTitle": "Your recovery history starts here",
+    "removeTitle": "Remove this recovery entry?",
+    "removeDescription": "The entry leaves the local history and SuperSonicCleaner can no longer undo this change. Settings and registry backups are not changed. This cannot be undone.",
+    "unreadable": "This recovery entry could not be read: it may have been written by another user account or be damaged on disk.",
     "source": {
       "privacy": "Privacy Shield",
       "services": "Service Manager",
       "registry": "Registry Cleaner"
+    },
+    "value": {
+      "absent": "The value did not exist",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Task enabled",
+      "taskDisabled": "Task disabled",
+      "start": {
+        "boot": "Boot start",
+        "system": "System start",
+        "automatic": "Automatic start",
+        "manual": "Manual start",
+        "disabled": "Disabled"
+      },
+      "delayed": "delayed",
+      "running": "running",
+      "stopped": "stopped",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Registry backups",
@@ -45,8 +68,7 @@
       "empty": "No registry backups yet.",
       "restore": "Restore",
       "showInFolder": "Show in folder",
-      "moreKeys": "+{{count}} more",
-      "requiresAdmin": "Requires administrator",
+      "requiresAdmin": "Requires administrator rights",
       "confirmTitle": "Restore this registry backup?",
       "confirmDescription": "SuperSonicCleaner will import the keys below. Values from the backup replace the current ones and missing keys and values are added back. Nothing else is deleted, except that restoring a pre-restore backup also removes the keys and values that the restore it undoes had added. Before importing, SuperSonicCleaner saves the current state of these keys as a pre-restore backup. Some changes take effect only after signing out or restarting.",
       "restored": "Restored. The previous state was saved to {{file}}.",
@@ -68,7 +90,11 @@
         "unreadable": "Could not be read.",
         "classes-root": "Contains HKEY_CLASSES_ROOT keys, which merge the machine and per-user classes, so SuperSonicCleaner can't tell which one to restore them to. It can only be inspected.",
         "unverified": "This backup cannot be verified: it may have been changed since SuperSonicCleaner wrote it, so it can only be inspected."
-      }
+      },
+      "moreKeys_one": "+1 more key",
+      "moreKeys_other": "+{{formatted}} more keys",
+      "confirmLabel_one": "Import 1 key",
+      "confirmLabel_other": "Import {{formatted}} keys"
     }
   },
   "receipts": {

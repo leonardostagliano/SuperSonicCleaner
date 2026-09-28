@@ -29,7 +29,7 @@
     "schedules": "Una buona cura, secondo i tuoi tempi. Scegli le attività, gli orari e la frequenza più adatti a questo computer.",
     "drivers": "Rivedi gli aggiornamenti dei driver e i pacchetti meno recenti in un unico posto. Controlla le modifiche proposte prima di applicarle.",
     "storageHistory": "Scopri cosa sta crescendo. Salva istantanee locali delle cartelle e confronta dove lo spazio di archiviazione è cambiato.",
-    "recovery": "Un modo chiaro per tornare indietro. Rivedi le modifiche supportate e i dettagli del ripristino prima di annullare qualsiasi operazione.",
+    "recovery": "Modifiche a registro, servizi e attività pianificate fatte da SuperSonicCleaner, con i backup per annullarle. I file eliminati non sono recuperabili.",
     "diagnostics": "Registra un rallentamento, arresta e salva, poi analizza le misurazioni su questo dispositivo."
   },
   "home": {

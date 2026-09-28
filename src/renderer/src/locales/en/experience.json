@@ -29,7 +29,7 @@
     "schedules": "Good care, on your schedule. Choose the tasks, timing, and frequency that suit this computer.",
     "drivers": "Review driver updates and older packages in one place. Check the proposed changes before applying them.",
     "storageHistory": "See what is growing. Save local folder snapshots and compare where storage has changed.",
-    "recovery": "A clear way back. Review supported changes and the restore details before undoing anything.",
+    "recovery": "Changes to the registry, services and scheduled tasks made by SuperSonicCleaner, with the backups to undo them. Deleted files cannot be recovered.",
     "diagnostics": "Record a slowdown, stop and save, then analyze the measurements on this device."
   },
   "home": {
