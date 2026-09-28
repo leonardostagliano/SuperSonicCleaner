@@ -381,7 +381,8 @@ export interface MalwareCategoryProgress {
 export interface MalwareScanProgress {
   phase: 'scanning' | 'quarantining' | 'deleting'
   step: MalwareScanStep
-  stepLabel: string
+  /** Translated by the renderer (keys under malware:progress.*). */
+  stepLabel: ProgressLabel
   currentPath: string
   progress: number
   threatsFound: number
