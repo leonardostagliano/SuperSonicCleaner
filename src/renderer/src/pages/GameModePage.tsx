@@ -350,7 +350,7 @@ export function GameModePage() {
                   onChange={(value) => store().setAutoDeactivate(value)}
                 />
               </ListRow>
-              <ListRow className="flex-col items-stretch">
+              <div className="flex flex-col gap-2 border-t border-[var(--border-default)] py-3 ps-3">
                 <div>
                   <label htmlFor={gameInputId} className="text-[length:var(--text-13)] font-medium">
                     {t('customGameProcessesLabel')}
@@ -380,7 +380,7 @@ export function GameModePage() {
                     store().setCustomGameProcesses(gameProcesses.filter((n) => n !== name))
                   }
                 />
-              </ListRow>
+              </div>
             </div>
           )}
         </Section>
@@ -438,7 +438,7 @@ export function GameModePage() {
                   ))}
 
                   {category.id === 'processes' && (
-                    <ListRow className="flex-col items-stretch">
+                    <div className="flex flex-col gap-2 border-t border-[var(--border-default)] py-3 ps-3">
                       <label htmlFor={customInputId} className="sr-only">
                         {t('customProcessAddLabel')}
                       </label>
@@ -478,7 +478,7 @@ export function GameModePage() {
                             {t('warningProcesses')}
                           </p>
                         )}
-                    </ListRow>
+                    </div>
                   )}
                 </div>
               )}
