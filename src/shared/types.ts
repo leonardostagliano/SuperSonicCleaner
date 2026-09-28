@@ -1205,14 +1205,16 @@ export interface DiskRepairProgress {
   tool: 'sfc' | 'dism' | 'chkdsk'
   phase: 'running' | 'done' | 'failed'
   percent: number
-  message: string
+  /** disk:repairProgress.* or disk:repairResult.*, translated by the renderer. */
+  message: ProgressLabel
 }
 
 export interface DiskRepairResult {
   tool: 'sfc' | 'dism' | 'chkdsk'
   success: boolean
   exitCode: number | null
-  summary: string
+  /** disk:repairResult.*, translated by the renderer; the raw tool output is in `log`. */
+  summary: ProgressLabel
   log: string
   requiresReboot: boolean
   needsAdmin: boolean

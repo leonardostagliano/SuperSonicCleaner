@@ -11,7 +11,8 @@ import type {
   DriveInfo,
   FileTypeInfo,
   DiskRepairResult,
-  DiskRepairProgress
+  DiskRepairProgress,
+  ProgressLabel
 } from '../../shared/types'
 import type { WindowGetter } from './index'
 import { psUtf8, ConsoleOutputDecoder } from '../services/exec-utf8'
@@ -256,6 +257,18 @@ export async function getFileTypes(drive: string): Promise<FileTypeInfo[]> {
 
 // ── Disk Repair helpers (Windows SFC / DISM) ──
 
+type RepairToolName = 'SFC' | 'DISM' | 'CHKDSK'
+
+/** A result line for the renderer to translate (disk:repairResult.*). */
+function repairLabel(key: string, params?: Record<string, string | number>): ProgressLabel {
+  return params ? { key: `disk:repairResult.${key}`, params } : { key: `disk:repairResult.${key}` }
+}
+
+/** "SFC: 42 %" for the progress stream (disk:repairProgress.running). */
+function repairRunning(tool: RepairToolName, percent: number): ProgressLabel {
+  return { key: 'disk:repairProgress.running', params: { tool, percent } }
+}
+
 function sendRepairProgress(win: BrowserWindow | null, data: DiskRepairProgress): void {
   if (win && !win.isDestroyed()) {
     win.webContents.send(IPC.DISK_REPAIR_PROGRESS, data)
@@ -272,7 +285,7 @@ async function runSfc(drive: string, getWindow: WindowGetter): Promise<DiskRepai
       tool: 'sfc',
       success: false,
       exitCode: null,
-      summary: 'SFC is only available on Windows',
+      summary: repairLabel('notWindows', { tool: 'SFC' }),
       log: '',
       requiresReboot: false,
       needsAdmin: false
@@ -283,7 +296,7 @@ async function runSfc(drive: string, getWindow: WindowGetter): Promise<DiskRepai
       tool: 'sfc',
       success: false,
       exitCode: null,
-      summary: 'Administrator privileges required to run SFC',
+      summary: repairLabel('needsAdmin', { tool: 'SFC' }),
       log: '',
       requiresReboot: false,
       needsAdmin: true
@@ -320,7 +333,7 @@ async function runSfc(drive: string, getWindow: WindowGetter): Promise<DiskRepai
             tool: 'sfc',
             phase: 'running',
             percent: pct,
-            message: `System File Checker: ${pct}% complete`
+            message: repairRunning('SFC', pct)
           })
         }
       }
@@ -335,13 +348,13 @@ async function runSfc(drive: string, getWindow: WindowGetter): Promise<DiskRepai
         tool: 'sfc',
         phase: 'failed',
         percent: 0,
-        message: `SFC failed to start: ${err.message}`
+        message: repairLabel('startFailed', { tool: 'SFC', error: err.message })
       })
       resolve({
         tool: 'sfc',
         success: false,
         exitCode: null,
-        summary: `Failed to start SFC: ${err.message}`,
+        summary: repairLabel('startFailed', { tool: 'SFC', error: err.message }),
         log: stdout,
         requiresReboot: false,
         needsAdmin: false
@@ -351,18 +364,17 @@ async function runSfc(drive: string, getWindow: WindowGetter): Promise<DiskRepai
     child.on('close', (code) => {
       stdout += decoder.end() + stderrDecoder.end()
       const success = code === 0
-      let summary: string
+      let summary: ProgressLabel
       if (stdout.includes('did not find any integrity violations')) {
-        summary = 'No integrity violations found — your system files are healthy.'
+        summary = repairLabel('sfcClean')
       } else if (stdout.includes('successfully repaired')) {
-        summary = 'Windows found and repaired corrupted system files.'
+        summary = repairLabel('sfcRepaired')
       } else if (stdout.includes('found corrupt files but was unable to fix')) {
-        summary =
-          'Corrupted files were found but could not be repaired. Try running DISM first, then SFC again.'
+        summary = repairLabel('sfcUnrepairable')
       } else if (success) {
-        summary = 'SFC completed successfully.'
+        summary = repairLabel('completed', { tool: 'SFC' })
       } else {
-        summary = `SFC exited with code ${code}.`
+        summary = repairLabel('exitCode', { tool: 'SFC', code: String(code) })
       }
 
       // Check for reboot indicators — use specific phrases, not generic words
@@ -398,7 +410,7 @@ async function runDism(getWindow: WindowGetter): Promise<DiskRepairResult> {
       tool: 'dism',
       success: false,
       exitCode: null,
-      summary: 'DISM is only available on Windows',
+      summary: repairLabel('notWindows', { tool: 'DISM' }),
       log: '',
       requiresReboot: false,
       needsAdmin: false
@@ -409,7 +421,7 @@ async function runDism(getWindow: WindowGetter): Promise<DiskRepairResult> {
       tool: 'dism',
       success: false,
       exitCode: null,
-      summary: 'Administrator privileges required to run DISM',
+      summary: repairLabel('needsAdmin', { tool: 'DISM' }),
       log: '',
       requiresReboot: false,
       needsAdmin: true
@@ -439,7 +451,7 @@ async function runDism(getWindow: WindowGetter): Promise<DiskRepairResult> {
             tool: 'dism',
             phase: 'running',
             percent: pct,
-            message: `DISM RestoreHealth: ${pct}% complete`
+            message: repairRunning('DISM', pct)
           })
         }
       }
@@ -454,13 +466,13 @@ async function runDism(getWindow: WindowGetter): Promise<DiskRepairResult> {
         tool: 'dism',
         phase: 'failed',
         percent: 0,
-        message: `DISM failed to start: ${err.message}`
+        message: repairLabel('startFailed', { tool: 'DISM', error: err.message })
       })
       resolve({
         tool: 'dism',
         success: false,
         exitCode: null,
-        summary: `Failed to start DISM: ${err.message}`,
+        summary: repairLabel('startFailed', { tool: 'DISM', error: err.message }),
         log: stdout,
         requiresReboot: false,
         needsAdmin: false
@@ -470,15 +482,15 @@ async function runDism(getWindow: WindowGetter): Promise<DiskRepairResult> {
     child.on('close', (code) => {
       stdout += dismDecoder.end() + dismStderrDecoder.end()
       const success = code === 0
-      let summary: string
+      let summary: ProgressLabel
       if (stdout.includes('The restore operation completed successfully')) {
-        summary = 'DISM successfully repaired the Windows component store.'
+        summary = repairLabel('dismRepaired')
       } else if (stdout.includes('No component store corruption detected')) {
-        summary = 'No component store corruption detected — image is healthy.'
+        summary = repairLabel('dismClean')
       } else if (success) {
-        summary = 'DISM completed successfully.'
+        summary = repairLabel('completed', { tool: 'DISM' })
       } else {
-        summary = `DISM exited with code ${code}. Check the log for details.`
+        summary = repairLabel('exitCode', { tool: 'DISM', code: String(code) })
       }
 
       // Check for reboot indicators — use specific phrases to avoid false positives
@@ -512,7 +524,7 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
       tool: 'chkdsk',
       success: false,
       exitCode: null,
-      summary: 'CHKDSK is only available on Windows',
+      summary: repairLabel('notWindows', { tool: 'CHKDSK' }),
       log: '',
       requiresReboot: false,
       needsAdmin: false
@@ -523,7 +535,7 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
       tool: 'chkdsk',
       success: false,
       exitCode: null,
-      summary: 'Administrator privileges required to run CHKDSK',
+      summary: repairLabel('needsAdmin', { tool: 'CHKDSK' }),
       log: '',
       requiresReboot: false,
       needsAdmin: true
@@ -553,7 +565,7 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
             tool: 'chkdsk',
             phase: 'running',
             percent: pct,
-            message: `CHKDSK: ${pct}% complete`
+            message: repairRunning('CHKDSK', pct)
           })
         }
       }
@@ -568,13 +580,13 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
         tool: 'chkdsk',
         phase: 'failed',
         percent: 0,
-        message: `CHKDSK failed to start: ${err.message}`
+        message: repairLabel('startFailed', { tool: 'CHKDSK', error: err.message })
       })
       resolve({
         tool: 'chkdsk',
         success: false,
         exitCode: null,
-        summary: `Failed to start CHKDSK: ${err.message}`,
+        summary: repairLabel('startFailed', { tool: 'CHKDSK', error: err.message }),
         log: stdout,
         requiresReboot: false,
         needsAdmin: false
@@ -587,21 +599,21 @@ async function runChkdsk(drive: string, getWindow: WindowGetter): Promise<DiskRe
       // 2 = cleanup performed, 3 = could not check the disk.
       // Codes 0–2 are successful completions.
       const success = code !== null && code <= 2
-      let summary: string
+      let summary: ProgressLabel
       if (stdout.includes('Windows has scanned the file system and found no problems')) {
-        summary = 'No file system errors found — disk is healthy.'
+        summary = repairLabel('chkdskClean')
       } else if (stdout.includes('Windows has made corrections to the file system')) {
-        summary = 'File system errors were found and repaired.'
+        summary = repairLabel('chkdskCorrected')
       } else if (stdout.includes('no further action is required')) {
-        summary = 'CHKDSK completed — no further action required.'
+        summary = repairLabel('chkdskNoAction')
       } else if (code === 1) {
-        summary = 'Errors were found and fixed successfully.'
+        summary = repairLabel('chkdskFixed')
       } else if (code === 2) {
-        summary = 'CHKDSK completed disk cleanup.'
+        summary = repairLabel('chkdskCleanup')
       } else if (code === 0) {
-        summary = 'CHKDSK completed successfully.'
+        summary = repairLabel('completed', { tool: 'CHKDSK' })
       } else {
-        summary = `CHKDSK exited with code ${code}. Check the log for details.`
+        summary = repairLabel('exitCode', { tool: 'CHKDSK', code: String(code) })
       }
 
       const requiresReboot =

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { join, sep } from 'path'
 
 // ── Mocks ──
@@ -188,7 +188,10 @@ describe('DISK_REPAIR_SFC handler', () => {
     expect(result.tool).toBe('sfc')
     if (process.platform !== 'win32') {
       expect(result.success).toBe(false)
-      expect(result.summary).toContain('only available on Windows')
+      expect(result.summary).toEqual({
+        key: 'disk:repairResult.notWindows',
+        params: { tool: 'SFC' }
+      })
     }
   })
 
@@ -219,7 +222,10 @@ describe('DISK_REPAIR_DISM handler', () => {
     if (process.platform !== 'win32') {
       expect(result.tool).toBe('dism')
       expect(result.success).toBe(false)
-      expect(result.summary).toContain('only available on Windows')
+      expect(result.summary).toEqual({
+        key: 'disk:repairResult.notWindows',
+        params: { tool: 'DISM' }
+      })
     }
   })
 })
@@ -335,5 +341,86 @@ describe('drive input validation', () => {
     // Should be accepted and attempt to analyze
     expect(result).toBeDefined()
     expect(result.path).toBe('/')
+  })
+})
+
+// ── Repair results travel as translation labels ──
+
+describe('repair results and progress are translation labels', () => {
+  const realPlatform = process.platform
+  const onWindows = () => Object.defineProperty(process, 'platform', { value: 'win32' })
+
+  /** A spawned tool that prints `output`, then exits with `code`. */
+  function fakeTool(output: string, code: number) {
+    const listeners: Record<string, ((arg: unknown) => void)[]> = {}
+    const stream = (name: string) => ({
+      on: (event: string, fn: (arg: unknown) => void) => {
+        ;(listeners[`${name}:${event}`] ??= []).push(fn)
+      }
+    })
+    const child = {
+      stdout: stream('stdout'),
+      stderr: stream('stderr'),
+      on: (event: string, fn: (arg: unknown) => void) => {
+        ;(listeners[event] ??= []).push(fn)
+      }
+    }
+    setTimeout(() => {
+      for (const fn of listeners['stdout:data'] ?? []) fn(Buffer.from(output, 'utf8'))
+      for (const fn of listeners.close ?? []) fn(code)
+    }, 0)
+    return child
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    Object.defineProperty(process, 'platform', { value: realPlatform })
+  })
+
+  it('names the tool when administrator rights are missing', async () => {
+    onWindows()
+    mockIsAdmin.mockReturnValue(false)
+    registerDiskAnalyzerIpc(() => null)
+    const result = await getHandler('disk:repair:chkdsk')({}, 'C')
+    expect(result).toMatchObject({
+      needsAdmin: true,
+      summary: { key: 'disk:repairResult.needsAdmin', params: { tool: 'CHKDSK' } }
+    })
+  })
+
+  it('reports a clean SFC run and its progress without English text', async () => {
+    onWindows()
+    mockIsAdmin.mockReturnValue(true)
+    mockSpawn.mockImplementation(() =>
+      fakeTool(
+        'Verification 42% complete.\r\nWindows Resource Protection did not find any integrity violations.\r\n',
+        0
+      )
+    )
+    registerDiskAnalyzerIpc(() => mockWindow() as never)
+    const result = await getHandler('disk:repair:sfc')({}, 'C')
+    expect(result).toMatchObject({ success: true, summary: { key: 'disk:repairResult.sfcClean' } })
+    expect(mockSend).toHaveBeenCalledWith('disk:repair:progress', {
+      tool: 'sfc',
+      phase: 'running',
+      percent: 42,
+      message: { key: 'disk:repairProgress.running', params: { tool: 'SFC', percent: 42 } }
+    })
+  })
+
+  it('keeps the exit code of a failed DISM run as a parameter', async () => {
+    onWindows()
+    mockIsAdmin.mockReturnValue(true)
+    mockSpawn.mockImplementation(() => fakeTool('Error: 87\r\n', 87))
+    registerDiskAnalyzerIpc(() => null)
+    const result = await getHandler('disk:repair:dism')({})
+    expect(result).toMatchObject({
+      success: false,
+      exitCode: 87,
+      summary: { key: 'disk:repairResult.exitCode', params: { tool: 'DISM', code: '87' } }
+    })
   })
 })
