@@ -494,7 +494,11 @@ export function FirewallAuditPage() {
             ? t('confirmDeleteTitle', { count: selectedCount })
             : t('confirmDisableTitle', { count: selectedCount })
         }
-        description={pendingAction === 'delete' ? t('confirmDeleteDesc') : t('confirmDisableDesc')}
+        description={
+          pendingAction === 'delete'
+            ? t('confirmDeleteDesc', { count: selectedCount })
+            : t('confirmDisableDesc', { count: selectedCount })
+        }
         details={selectedRules.map((r) => r.displayName || r.name).join('\n')}
         variant={pendingAction === 'delete' ? 'danger' : 'default'}
         confirmLabel={
