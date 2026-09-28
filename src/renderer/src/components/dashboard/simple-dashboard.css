@@ -1,557 +1,157 @@
-.dashboard-view {
-  min-width: 0;
-}
+/* Simple Home: a question, three goals and the chosen goal's path (spec 5.3). Tokens only.
+   Selectors start at .dashboard-view to outrank the equal-specificity global rules that
+   load after this sheet. */
 
-.dashboard-view-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.dashboard-view-toolbar > span {
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.dashboard-view-switch {
-  display: inline-flex;
-  gap: 3px;
-  padding: 4px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-pill, 999px);
-  background: var(--bg-subtle);
-}
-
-.dashboard-view-switch button {
-  min-height: 32px;
-  padding: 7px 16px;
-  border-radius: var(--radius-pill, 999px);
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 600;
-  transition:
-    background var(--duration-fast, 150ms) var(--ease-out, ease),
-    color var(--duration-fast, 150ms) var(--ease-out, ease);
-}
-
-.dashboard-view-switch button[aria-pressed='false']:hover:not(:disabled) {
-  color: var(--text-primary);
-}
-
-.dashboard-view-switch button[aria-pressed='true'] {
-  background: var(--brand-solid);
-  color: var(--brand-ink);
-  box-shadow: var(--card-shadow, 0 2px 8px #00000012);
-}
-
-.dashboard-view-switch button:disabled {
-  cursor: wait;
-  opacity: 0.55;
-}
-
-.simple-dashboard {
-  min-width: 0;
-  padding-top: 12px;
-  font-family: var(--font-sans, 'Segoe UI Variable Text', 'Segoe UI', sans-serif);
-}
-
-.simple-dashboard-heading {
-  position: relative;
-  margin-bottom: 44px;
-  padding-block: 8px 5px;
-}
-
-.simple-dashboard-heading::before {
-  position: absolute;
-  z-index: -1;
-  top: -68px;
-  left: -48px;
-  width: min(630px, 85vw);
-  height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse,
-    color-mix(in srgb, var(--text-primary) 4%, transparent),
-    transparent 72%
-  );
-  content: '';
-  pointer-events: none;
-}
-
-.simple-dashboard-heading .pulse-eyebrow,
-.simple-tool-heading .pulse-eyebrow {
-  color: var(--text-secondary);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-}
-
-.simple-dashboard-heading h1 {
-  max-width: 760px;
-  margin-top: 15px;
-  color: var(--text-primary);
-  font-family: var(--font-display, 'Segoe UI Variable Display', 'Segoe UI', sans-serif);
-  font-size: clamp(36px, 4.1vw, 56px);
-  font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: 1.08;
-  text-wrap: balance;
-}
-
-.simple-dashboard-heading > p {
-  max-width: 650px;
-  margin-top: 16px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.simple-goals-heading {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 17px;
-}
-
-.simple-goals-heading h2 {
-  flex: none;
-  color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.simple-goals-heading > span {
-  height: 1px;
-  flex: 1;
-  background: var(--border-default);
-}
-
-.simple-goals {
+.dashboard-view .simple-home {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.simple-goal {
-  display: flex;
+  gap: var(--space-4);
   min-width: 0;
-  min-height: 258px;
-  flex-direction: column;
-  padding: 24px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-card, 18px);
-  background: var(--card-bg);
-  box-shadow: var(--card-highlight, none), var(--card-shadow, none);
-  color: var(--text-secondary);
-  text-align: start;
-  transition:
-    transform var(--duration-normal, 200ms) var(--ease-out, ease),
-    border-color var(--duration-normal, 200ms) var(--ease-out, ease),
-    background var(--duration-normal, 200ms) var(--ease-out, ease);
+}
+.dashboard-view .simple-home > .page-header {
+  margin-bottom: 0;
 }
 
-.simple-goal:hover {
-  transform: translateY(-3px);
-  border-color: var(--border-strong);
-  background: color-mix(in srgb, var(--card-bg) 91%, var(--text-primary));
-}
-
-.simple-goal[aria-expanded='true'] {
-  border-color: color-mix(in srgb, var(--text-primary) 47%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--text-primary) 12%, transparent),
-    var(--card-shadow, none);
-}
-
-.simple-goal-top {
+/* Goal pickers: a radio group of three labelled buttons */
+.dashboard-view .simple-goals {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 39px;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
-
-.simple-goal-icon,
-.simple-goal-arrow {
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border-default);
-  background: var(--bg-subtle-2);
-  color: var(--text-primary);
-}
-
-.simple-goal-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: var(--radius-tile, 14px);
-}
-
-.simple-goal-arrow {
-  width: 31px;
-  height: 31px;
-  border-radius: var(--radius-pill, 999px);
-  color: var(--text-muted);
-  transition:
-    transform var(--duration-fast, 150ms) var(--ease-out, ease),
-    color var(--duration-fast, 150ms) var(--ease-out, ease);
-}
-
-.simple-goal:hover .simple-goal-arrow,
-.simple-goal[aria-expanded='true'] .simple-goal-arrow {
-  transform: translate(2px, -2px);
-  color: var(--text-primary);
-}
-
-.simple-goal-title {
-  display: block;
-  color: var(--text-primary);
-  font-family: var(--font-display, 'Segoe UI Variable Display', 'Segoe UI', sans-serif);
-  font-size: clamp(19px, 1.7vw, 24px);
-  font-weight: 650;
-  letter-spacing: -0.035em;
-  line-height: 1.25;
-}
-
-.simple-goal p {
-  max-width: 31ch;
-  margin-top: 9px;
-  color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.simple-goal-count {
-  align-self: flex-start;
-  margin-top: auto;
-  padding: 15px 0 0;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.simple-support {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 22px;
-}
-
-.simple-support-link {
-  display: flex;
-  width: 100%;
-  min-height: 84px;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-tile, 14px);
-  background: var(--bg-subtle);
-  color: var(--text-secondary);
-  text-align: start;
-  transition:
-    border-color var(--duration-fast, 150ms) var(--ease-out, ease),
-    background var(--duration-fast, 150ms) var(--ease-out, ease);
-}
-
-.simple-support-link:hover {
-  border-color: var(--border-strong);
-  background: var(--bg-hover);
-}
-
-.simple-support-link > span {
-  min-width: 0;
-  flex: 1;
-}
-
-.simple-support-link > svg:first-child {
-  color: var(--text-primary);
-}
-
-.simple-support-link > svg:last-child {
-  color: var(--text-muted);
-}
-
-.simple-support strong {
-  display: block;
-  color: var(--text-primary);
-  font-size: 13px;
-  font-weight: 650;
-}
-
-.simple-support small {
-  display: block;
-  margin-top: 5px;
-  color: var(--text-muted);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.simple-dashboard-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 33px;
-  padding: 20px 0;
-  border-top: 1px solid var(--border-default);
-  color: var(--text-muted);
-  font-size: 11px;
-}
-
-.simple-dashboard-footer > span,
-.simple-dashboard-footer > button {
+.dashboard-view .simple-goal {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  text-align: start;
-}
-
-.simple-dashboard-footer > button {
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
-.simple-dashboard-footer > button:hover {
-  color: var(--text-primary);
-}
-
-.simple-dashboard-footer svg,
-.simple-support svg {
-  flex-shrink: 0;
-}
-
-.simple-tool-panel {
-  margin-top: 22px;
-  padding: 26px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-card, 18px);
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-control);
   background: var(--card-bg);
-  box-shadow: var(--card-highlight, none), var(--card-shadow, none);
-}
-
-.simple-tool-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 25px;
-  padding-bottom: 24px;
-}
-
-.simple-tool-heading h2 {
-  margin-top: 10px;
-  color: var(--text-primary);
-  font-family: var(--font-display, 'Segoe UI Variable Display', 'Segoe UI', sans-serif);
-  font-size: clamp(23px, 2vw, 28px);
-  font-weight: 650;
-  letter-spacing: -0.04em;
+  color: var(--text-secondary);
+  /* legacy: a global `button` rule sets 12px with !important. */
+  font-size: var(--text-13) !important;
+  font-weight: 600;
   line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-feedback) var(--ease-out),
+    border-color var(--duration-feedback) var(--ease-out),
+    color var(--duration-feedback) var(--ease-out);
 }
-
-.simple-tool-heading p {
-  max-width: 700px;
-  margin-top: 9px;
-  color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1.65;
-}
-
-.simple-tool-heading > span {
-  flex-shrink: 0;
-  color: var(--text-muted);
-  font-size: 11px;
-}
-
-.simple-tool-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 22px;
-}
-
-.simple-tool {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 15px;
-  padding: 18px 6px;
-  border-top: 1px solid var(--border-default);
-  color: var(--text-muted);
-  text-align: start;
-  transition: color var(--duration-fast, 150ms) var(--ease-out, ease);
-}
-
-.simple-tool:hover {
-  color: var(--text-primary);
-}
-
-.simple-tool.suggested {
-  grid-column: 1 / -1;
-  margin-bottom: 14px;
-  padding: 20px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-tile, 14px);
-  background: var(--bg-subtle-2);
-}
-
-.simple-tool.suggested:hover {
-  border-color: var(--border-strong);
+.dashboard-view .simple-goal:hover {
   background: var(--bg-hover);
-}
-
-.simple-tool.suggested > svg:last-child {
-  width: 31px;
-  height: 31px;
-  padding: 7px;
-  border-radius: var(--radius-pill, 999px);
-  background: var(--brand-solid);
-  color: var(--brand-ink);
-}
-
-.simple-tool-copy {
-  min-width: 0;
-  flex: 1;
-}
-
-.simple-tool-copy strong {
-  display: block;
   color: var(--text-primary);
-  font-size: 13px;
-  font-weight: 650;
+}
+.dashboard-view .simple-goal[aria-checked='true'] {
+  border-color: var(--text-secondary);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.dashboard-view .simple-goal:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
-.simple-tool-copy > span {
-  display: block;
-  max-width: 680px;
-  margin-top: 5px;
-  color: var(--text-muted);
-  font-size: 11px;
-  line-height: 1.6;
+/* The path */
+.dashboard-view .simple-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-
-.simple-start-label {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--text-secondary);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.simple-tool-icon {
+.dashboard-view .simple-step {
   display: grid;
-  width: 38px;
-  height: 38px;
-  flex-shrink: 0;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+.dashboard-view .simple-step:first-child {
+  padding-top: 0;
+}
+.dashboard-view .simple-step:last-child {
+  padding-bottom: 0;
+}
+.dashboard-view .simple-step + .simple-step {
+  border-top: 1px solid var(--border-default);
+}
+.dashboard-view .simple-step-dot {
+  display: grid;
   place-items: center;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-control, 10px);
-  background: var(--bg-subtle);
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: var(--text-11);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-view .simple-step-dot[data-status='recommended'] {
+  border-color: var(--signal-rec);
+  color: var(--signal-rec-text);
+}
+.dashboard-view .simple-step-dot[data-status='done'] {
+  border-color: var(--signal-ok-text);
+  color: var(--signal-ok-text);
+}
+.dashboard-view .simple-step-text {
+  min-width: 0;
+}
+.dashboard-view .simple-step-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  margin: 0;
   color: var(--text-primary);
+  font-size: var(--text-13);
+  font-weight: 600;
 }
-
-.simple-tool.suggested .simple-tool-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: var(--radius-tile, 14px);
+.dashboard-view .simple-step-detail {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
 }
-
-.simple-dashboard button:focus-visible,
-.dashboard-view-switch button:focus-visible {
-  outline: 2px solid var(--focus, var(--info));
-  outline-offset: 3px;
-}
-
-@media (max-width: 1100px) {
-  .simple-goal {
-    min-height: 250px;
-    padding: 21px;
+@container (width < 520px) {
+  .dashboard-view .simple-step {
+    grid-template-columns: 22px minmax(0, 1fr);
   }
-
-  .simple-goals {
-    gap: 12px;
+  .dashboard-view .simple-step > .ui-button {
+    grid-column: 2;
+    justify-self: start;
   }
 }
-
-@media (max-width: 850px) {
-  .simple-goals,
-  .simple-support,
-  .simple-tool-list {
-    grid-template-columns: 1fr;
-  }
-
-  .simple-goal {
-    min-height: 0;
-    padding: 22px 24px;
-  }
-
-  .simple-goal-top {
-    margin-bottom: 18px;
-  }
-
-  .simple-goal-count {
-    margin-top: 18px;
-    padding-top: 0;
-  }
-
-  .simple-dashboard-heading {
-    margin-bottom: 34px;
-  }
-
-  .simple-tool.suggested {
-    grid-column: auto;
-  }
+.dashboard-view .simple-path {
+  container-type: inline-size;
 }
 
-@media (max-width: 500px) {
-  .dashboard-view-toolbar {
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 22px;
-  }
-
-  .dashboard-view-toolbar > span {
-    padding-top: 10px;
-  }
-
-  .dashboard-view-switch button {
-    padding-inline: 11px;
-  }
-
-  .simple-dashboard-heading h1 {
-    font-size: 34px;
-  }
-
-  .simple-goal {
-    padding: 20px;
-  }
-
-  .simple-tool-panel {
-    padding: 20px;
-  }
-
-  .simple-tool-heading > span {
-    display: none;
-  }
-
-  .simple-tool.suggested {
-    padding: 16px;
-  }
-
-  .simple-dashboard-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+/* Footer links */
+.dashboard-view .simple-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  color: var(--text-muted);
+  font-size: var(--text-12);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .simple-dashboard *,
-  .dashboard-view-switch button {
-    transition: none;
-  }
+.dashboard-view .simple-link {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  /* legacy: a global `button` rule sets 12px with !important; keep the text size. */
+  font-size: inherit !important;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.dashboard-view .simple-link:hover:not(:disabled) {
+  color: var(--text-primary);
+  text-decoration-color: currentColor;
+}
+.dashboard-view .simple-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
