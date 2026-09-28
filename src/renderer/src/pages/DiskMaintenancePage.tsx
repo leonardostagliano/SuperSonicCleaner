@@ -1,79 +1,59 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  RefreshCw,
-  ShieldCheck,
-  ShieldAlert,
-  CheckCircle2,
-  XCircle,
-  HardDrive,
-  Cpu,
-  Database,
-  Eraser,
-  Lock
-} from 'lucide-react'
+import { AlertTriangle, Lock, RefreshCw, X } from 'lucide-react'
 import { toast } from 'sonner'
+import type { TrimDriveInfo, TrimRunResult } from '@shared/types'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { EmptyState } from '@/components/shared/EmptyState'
-import { ErrorAlert } from '@/components/shared/ErrorAlert'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { Receipt } from '@/components/shared/Receipt'
+import {
+  Button,
+  Card,
+  Checkbox,
+  ProgressBar,
+  Section,
+  Segmented,
+  Table,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Tag
+} from '@/components/ui'
 import {
   useDiskMaintenanceStore,
   isSelectable,
   applyFilter,
-  type DriveFilter
+  type DriveFilter,
+  type RunState
 } from '@/stores/disk-maintenance-store'
-import { formatBytes } from '@/lib/utils'
-import type { TrimDriveInfo, TrimMediaType, TrimStatus } from '@shared/types'
+import { formatBytes, formatDate } from '@/lib/utils'
+import { formatDateTime, formatDay } from '@/lib/storage-tools-format'
+import {
+  recommendedDriveIds,
+  summariseTrimRuns,
+  trimReason,
+  trimRunState,
+  type TrimRunSummary
+} from '@/lib/trim-view'
 
-function formatRelativeTime(ts: number | null, never: string): string {
-  if (!ts) return never
-  const diff = Date.now() - ts
-  const days = Math.floor(diff / (24 * 60 * 60 * 1000))
-  if (days <= 0) {
-    const hours = Math.floor(diff / (60 * 60 * 1000))
-    if (hours <= 0) return 'Just now'
-    return `${hours} hour${hours === 1 ? '' : 's'} ago`
-  }
-  if (days === 1) return 'Yesterday'
-  if (days < 30) return `${days} days ago`
-  if (days < 365) return `${Math.round(days / 30)} months ago`
-  return `${Math.round(days / 365)} years ago`
+const WEEK = 7 * 24 * 60 * 60 * 1000
+
+/** "3 g fa" within a week, the day after that. */
+function lastTrimText(at: number, locale: string): string {
+  return Date.now() - at < WEEK ? formatDate(new Date(at)) : formatDay(at, locale)
 }
 
-function MediaIcon({ type }: { type: TrimMediaType }) {
-  if (type === 'NVMe') return <Cpu className="h-5 w-5 text-amber-400" strokeWidth={1.8} />
-  if (type === 'SSD') return <Database className="h-5 w-5 text-amber-400" strokeWidth={1.8} />
-  return <HardDrive className="h-5 w-5" strokeWidth={1.8} style={{ color: 'var(--text-muted)' }} />
-}
-
-function StatusPill({ status, reason }: { status: TrimStatus; reason: string }) {
-  const styles: Record<TrimStatus, { bg: string; color: string; label: string }> = {
-    'recently-trimmed': { bg: 'rgba(34,197,94,0.12)', color: '#22c55e', label: 'Recently trimmed' },
-    ok: { bg: 'rgba(63,63,70,0.4)', color: 'var(--text-muted)', label: 'OK' },
-    recommended: { bg: 'rgba(245,158,11,0.12)', color: '#f59e0b', label: 'Recommended' },
-    'not-applicable': {
-      bg: 'rgba(63,63,70,0.4)',
-      color: 'var(--text-muted)',
-      label: 'Not applicable'
-    },
-    disabled: { bg: 'rgba(239,68,68,0.12)', color: '#ef4444', label: 'Disabled' },
-    unknown: { bg: 'rgba(63,63,70,0.4)', color: 'var(--text-muted)', label: 'Unknown' }
-  }
-  const s = styles[status]
-  return (
-    <span
-      title={reason}
-      className="rounded-full px-2.5 py-1 text-[11px] font-medium"
-      style={{ background: s.bg, color: s.color as string }}
-    >
-      {s.label}
-    </span>
-  )
+/** "C: Windows" when the volume has a label, "C:" otherwise. */
+function driveName(drive: TrimDriveInfo): string {
+  if (!drive.letter) return drive.label
+  const letter = `${drive.letter}:`
+  return drive.label && drive.label !== letter ? `${letter} ${drive.label}` : letter
 }
 
 export function DiskMaintenancePage() {
-  const { t } = useTranslation('disk')
+  const { t, i18n } = useTranslation('disk')
   const drives = useDiskMaintenanceStore((s) => s.drives)
   const loading = useDiskMaintenanceStore((s) => s.loading)
   const error = useDiskMaintenanceStore((s) => s.error)
@@ -81,24 +61,25 @@ export function DiskMaintenancePage() {
   const filter = useDiskMaintenanceStore((s) => s.filter)
   const runStates = useDiskMaintenanceStore((s) => s.runStates)
   const results = useDiskMaintenanceStore((s) => s.results)
-  const progress = useDiskMaintenanceStore((s) => s.progress)
   const batchRunning = useDiskMaintenanceStore((s) => s.batchRunning)
   const store = useDiskMaintenanceStore()
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [showLog, setShowLog] = useState<string | null>(null)
 
-  // Initial load
+  // Initial load; the drives the app recommends start selected
   useEffect(() => {
-    refresh()
+    void refresh(true)
   }, [])
 
-  async function refresh(): Promise<void> {
+  async function refresh(preselect = false): Promise<void> {
     store.setLoading(true)
     store.setError(null)
     try {
       const list = await window.kudu.diskTrimList()
       store.setDrives(list)
+      if (preselect && useDiskMaintenanceStore.getState().selected.size === 0)
+        store.setSelected(recommendedDriveIds(list))
     } catch (err) {
       console.error('Failed to list trim drives:', err)
       store.setError(err instanceof Error ? err.message : t('trimListFailed'))
@@ -117,6 +98,9 @@ export function DiskMaintenancePage() {
       }),
     [selected, drives]
   )
+  const recommendedCount = drives.filter((d) => d.status === 'recommended').length
+  const runResults = Object.values(results)
+  const runSummary = useMemo(() => summariseTrimRuns(Object.values(results)), [results])
 
   async function handleRun(): Promise<void> {
     if (selectableSelected.length === 0) return
@@ -126,30 +110,19 @@ export function DiskMaintenancePage() {
       store.setRunState(id, 'running')
     }
     try {
-      const results = await window.kudu.diskTrimRun(selectableSelected)
-      let needsAdmin = false
-      let throttled = 0
-      let success = 0
-      let failed = 0
-      for (const r of results) {
+      const outcome = await window.kudu.diskTrimRun(selectableSelected)
+      for (const r of outcome) {
         store.setResult(r.driveId, r)
         store.setRunState(r.driveId, r.success ? 'done' : 'failed')
-        if (r.needsAdmin) needsAdmin = true
-        if (r.throttled) throttled++
-        if (r.success) success++
-        else if (!r.throttled && !r.needsAdmin) failed++
       }
-      if (needsAdmin) {
-        toast.error(t('adminRequiredToast'), { description: t('adminRequiredTrimDesc') })
-      } else if (success > 0) {
-        toast.success(t('trimCompletedToast', { count: success }))
+      const summary = summariseTrimRuns(outcome)
+      if (summary.blocked > 0) {
+        toast.error(t('adminRequiredToast'), { description: t('trimRunDetail.blocked') })
+      } else if (summary.done > 0) {
+        toast.success(t('trimCompletedToast', { count: summary.done }))
       }
-      if (throttled > 0) {
-        toast.message(t('trimThrottledToast', { count: throttled }))
-      }
-      if (failed > 0) {
-        toast.error(t('trimFailedToast', { count: failed }))
-      }
+      if (summary.skipped > 0) toast.message(t('trimThrottledToast', { count: summary.skipped }))
+      if (summary.failed > 0) toast.error(t('trimFailedToast', { count: summary.failed }))
       await refresh()
     } catch (err) {
       console.error('Trim batch failed:', err)
@@ -163,276 +136,326 @@ export function DiskMaintenancePage() {
     }
   }
 
-  const filterPills: { key: DriveFilter; label: string }[] = [
-    { key: 'all', label: t('trimFilterAll') },
-    { key: 'ssd', label: t('trimFilterSsd') },
-    { key: 'needs-trim', label: t('trimFilterNeeds') }
+  const filterOptions: { value: DriveFilter; label: string }[] = [
+    { value: 'all', label: t('trimFilterAll') },
+    { value: 'ssd', label: t('trimFilterSsd') },
+    { value: 'needs-trim', label: t('trimFilterNeeds') }
   ]
 
   return (
-    <div className="animate-fade-in">
+    <div className="flex flex-col gap-3">
       <PageHeader
         title={t('maintenanceTitle')}
         description={t('maintenanceDescription')}
         action={
-          <button
-            onClick={refresh}
-            disabled={loading || batchRunning}
-            className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-[13px] font-medium transition-colors disabled:opacity-40"
-            style={{
-              background: 'var(--bg-subtle)',
-              color: 'var(--text-secondary)',
-              border: '1px solid var(--border-default)'
-            }}
+          <Button
+            size="lg"
+            icon={RefreshCw}
+            busy={loading}
+            disabled={batchRunning}
+            onClick={() => void refresh()}
           >
-            <RefreshCw className={loading ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} strokeWidth={2} />
             {t('refresh')}
-          </button>
+          </Button>
         }
       />
 
-      {/* Info banner */}
-      <div
-        className="mb-5 rounded-2xl px-5 py-4"
-        style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-      >
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" strokeWidth={1.8} />
-          <div>
-            <p className="text-[13px] font-medium text-zinc-200">{t('trimInfoTitle')}</p>
-            <p className="mt-1 text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-              {t('trimInfoBody')}
-            </p>
-          </div>
-        </div>
-      </div>
+      {error && drives.length > 0 && (
+        <Card role="alert" className="flex items-center gap-3">
+          <AlertTriangle
+            className="shrink-0 text-[var(--signal-danger-text)]"
+            size={16}
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <p className="m-0 flex-1 text-[length:var(--text-13)]">
+            {t('trimListFailed')}. {t('trimListFailedDescription')}
+          </p>
+          <Button
+            variant="ghost"
+            icon={X}
+            aria-label={t('trimDismissError')}
+            title={t('trimDismissError')}
+            onClick={() => store.setError(null)}
+          />
+        </Card>
+      )}
 
-      {error && <ErrorAlert message={error} onDismiss={() => store.setError(null)} />}
+      {runResults.length > 0 && !batchRunning && (
+        <TrimReceipt summary={runSummary} locale={i18n.language} />
+      )}
 
-      {/* Filter pills + run button */}
-      <div className="mb-4 flex items-center gap-2">
-        <div
-          className="flex gap-1 rounded-xl p-1"
-          style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border-default)' }}
-        >
-          {filterPills.map((p) => (
-            <button
-              key={p.key}
-              onClick={() => store.setFilter(p.key)}
-              className="rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors"
-              style={{
-                background: filter === p.key ? 'var(--bg-subtle-2)' : 'transparent',
-                color: filter === p.key ? 'var(--text-primary)' : 'var(--text-muted)'
-              }}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-            {t('trimSelectedCount', { count: selectableSelected.length })}
-          </span>
-          <button
-            onClick={() => setConfirmOpen(true)}
-            disabled={selectableSelected.length === 0 || batchRunning}
-            className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-semibold transition disabled:opacity-40"
-            style={{
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-              color: 'var(--text-on-accent)'
-            }}
-          >
-            {batchRunning ? (
-              <>
-                <RefreshCw className="h-4 w-4 animate-spin" /> {t('trimRunning')}
-              </>
-            ) : (
-              <>
-                <Eraser className="h-4 w-4" strokeWidth={2} />{' '}
-                {t('trimRunSelected', { count: selectableSelected.length })}
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {loading && drives.length === 0 ? (
-        <div
-          className="rounded-2xl px-5 py-8 text-center text-[13px]"
-          style={{ background: 'var(--card-bg)', color: 'var(--text-muted)' }}
-        >
-          {t('trimLoading')}
-        </div>
-      ) : filtered.length === 0 ? (
-        <EmptyState
-          icon={HardDrive}
-          title={t('trimEmptyTitle')}
-          description={drives.length === 0 ? t('trimEmptyNoDrives') : t('trimEmptyFiltered')}
-        />
+      {drives.length === 0 ? (
+        loading ? (
+          <EmptyState title={t('trimLoadingTitle')} description={t('trimLoadingDescription')} />
+        ) : error ? (
+          <EmptyState title={t('trimListFailed')} description={t('trimListFailedDescription')} />
+        ) : (
+          <EmptyState title={t('trimEmptyTitle')} description={t('trimEmptyNoDrives')} />
+        )
       ) : (
-        <div className="flex flex-col gap-2">
-          {filtered.map((drive) => (
-            <DriveRow
-              key={drive.id}
-              drive={drive}
-              selected={selected.has(drive.id)}
-              runState={runStates[drive.id] ?? 'idle'}
-              progressMessage={progress[drive.id]?.message}
-              onToggle={() => store.toggleSelect(drive.id)}
-              showLog={showLog === drive.id}
-              onToggleLog={() => setShowLog(showLog === drive.id ? null : drive.id)}
-              result={results[drive.id]}
-            />
-          ))}
-        </div>
+        <>
+          <Card className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+            <div className="min-w-0">
+              <p className="m-0 font-[family-name:var(--font-display)] text-[length:var(--text-20)] leading-tight font-semibold tracking-[-0.01em] tabular-nums">
+                {t('trimSummarySelected', { count: selectableSelected.length })}
+              </p>
+              <p className="m-0 mt-1 text-[length:var(--text-13)] text-[var(--text-secondary)] tabular-nums">
+                {t('trimSummaryFound', { count: drives.length })}
+                {recommendedCount > 0 && (
+                  <>
+                    {' · '}
+                    <Tag tone="recommended">
+                      {t('trimSummaryRecommended', { count: recommendedCount })}
+                    </Tag>
+                  </>
+                )}
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              busy={batchRunning}
+              disabled={selectableSelected.length === 0}
+              onClick={() => setConfirmOpen(true)}
+            >
+              {t('trimRunSelected', { count: selectableSelected.length })}
+            </Button>
+          </Card>
+
+          <Section
+            title={t('trimDrivesTitle')}
+            actions={
+              <Segmented
+                label={t('trimFilterLabel')}
+                options={filterOptions}
+                value={filter}
+                onChange={(value) => store.setFilter(value)}
+              />
+            }
+          >
+            {filtered.length === 0 ? (
+              <p className="m-0 text-[length:var(--text-13)] text-[var(--text-muted)]">
+                {t('trimEmptyFiltered')}
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHead>
+                    <TableHeaderCell>
+                      <span className="sr-only">{t('trimColSelect')}</span>
+                    </TableHeaderCell>
+                    <TableHeaderCell>{t('trimColDrive')}</TableHeaderCell>
+                    <TableHeaderCell>{t('trimColType')}</TableHeaderCell>
+                    <TableHeaderCell>{t('trimLastTrimmed')}</TableHeaderCell>
+                    <TableHeaderCell>{t('trimColState')}</TableHeaderCell>
+                  </TableHead>
+                  <tbody>
+                    {filtered.map((drive) => (
+                      <DriveRow
+                        key={drive.id}
+                        drive={drive}
+                        locale={i18n.language}
+                        selected={selected.has(drive.id)}
+                        runState={runStates[drive.id] ?? 'idle'}
+                        result={results[drive.id]}
+                        busy={batchRunning}
+                        onToggle={() => store.toggleSelect(drive.id)}
+                        showLog={showLog === drive.id}
+                        onToggleLog={() => setShowLog(showLog === drive.id ? null : drive.id)}
+                      />
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            )}
+          </Section>
+        </>
       )}
 
       <ConfirmDialog
         open={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={handleRun}
-        title={t('trimConfirmTitle')}
-        description={t('trimConfirmDescription', { count: selectableSelected.length })}
+        title={t('trimConfirmTitle', { count: selectableSelected.length })}
+        description={t('trimConfirmBody')}
         details={selectableSelected
-          .map((id) => drives.find((d) => d.id === id)?.label ?? id)
-          .join(', ')}
-        confirmLabel={t('trimConfirmButton')}
-        variant="warning"
+          .map((id) => {
+            const d = drives.find((x) => x.id === id)
+            return d ? driveName(d) : id
+          })
+          .join('\n')}
+        confirmLabel={t('trimRunSelected', { count: selectableSelected.length })}
       />
     </div>
   )
 }
 
+function TrimReceipt({ summary, locale }: { summary: TrimRunSummary; locale: string }) {
+  const { t } = useTranslation('disk')
+  const problems = summary.failed + summary.blocked
+  const title =
+    summary.done === 0
+      ? t('trimReceiptNone')
+      : problems > 0
+        ? t('trimReceiptPartial')
+        : t('trimReceiptDone')
+  return (
+    <Receipt
+      title={title}
+      value={summary.done > 0 ? t('trimReceiptValue', { count: summary.done }) : undefined}
+      facts={[
+        summary.skipped > 0 ? t('trimReceiptSkipped', { count: summary.skipped }) : '',
+        summary.blocked > 0 ? t('trimReceiptBlocked', { count: summary.blocked }) : '',
+        summary.failed > 0 ? t('trimReceiptFailed', { count: summary.failed }) : '',
+        summary.at ? formatDateTime(summary.at, locale) : '',
+        t('trimReceiptNoChange')
+      ]}
+    />
+  )
+}
+
 interface DriveRowProps {
   drive: TrimDriveInfo
+  locale: string
   selected: boolean
-  runState: 'idle' | 'running' | 'done' | 'failed'
-  progressMessage?: string
+  runState: RunState
+  result?: TrimRunResult
+  busy: boolean
   onToggle: () => void
   showLog: boolean
   onToggleLog: () => void
-  result?: import('@shared/types').TrimRunResult
 }
 
 function DriveRow({
   drive,
+  locale,
   selected,
   runState,
-  progressMessage,
+  result,
+  busy,
   onToggle,
   showLog,
-  onToggleLog,
-  result
+  onToggleLog
 }: DriveRowProps) {
   const { t } = useTranslation('disk')
-  const selectable = isSelectable(drive)
+  const name = driveName(drive)
+  const recommended = drive.status === 'recommended'
+  const media = drive.mediaType === 'Unknown' ? t('trimMediaUnknown') : drive.mediaType
+  const details = result ? [result.summary, result.log].filter(Boolean).join('\n\n') : ''
   return (
-    <div
-      className="rounded-2xl p-4"
-      style={{ background: 'var(--card-bg)', border: '1px solid var(--border-default)' }}
-    >
-      <div className="flex items-center gap-4">
-        <input
-          type="checkbox"
-          checked={selected}
-          onChange={onToggle}
-          disabled={!selectable || runState === 'running'}
-          aria-label={`Select ${drive.label}`}
-          className="h-4 w-4 shrink-0 cursor-pointer accent-amber-500 disabled:cursor-not-allowed disabled:opacity-30"
-        />
-        <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-          style={{ background: 'rgba(245,158,11,0.1)' }}
-        >
-          <MediaIcon type={drive.mediaType} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <p className="truncate text-[13px] font-medium text-zinc-200">{drive.label}</p>
-            <span
-              className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-              style={{ background: 'var(--bg-subtle-2)', color: 'var(--text-muted)' }}
-            >
-              {drive.mediaType}
-            </span>
-            {drive.busType && drive.busType !== drive.mediaType && (
-              <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                {drive.busType}
-              </span>
-            )}
+    <>
+      <TableRow recommended={recommended} selected={selected}>
+        <TableCell className="w-8">
+          <Checkbox
+            checked={selected}
+            onChange={onToggle}
+            label={t('trimSelectDrive', { drive: name })}
+            disabled={!isSelectable(drive) || runState === 'running' || busy}
+          />
+        </TableCell>
+        <TableCell>
+          <span className="flex items-center gap-1.5 font-medium">
+            {name}
             {drive.isEncrypted && (
               <Lock
-                className="h-3 w-3"
-                strokeWidth={2}
-                style={{ color: 'var(--text-muted)' }}
-                aria-label="Encrypted"
+                className="shrink-0 text-[var(--text-muted)]"
+                size={12}
+                strokeWidth={1.75}
+                role="img"
+                aria-label={t('trimEncrypted')}
               />
             )}
-          </div>
-          <div
-            className="mt-0.5 flex items-center gap-2 text-[11px]"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            <span>{drive.filesystem ?? '—'}</span>
-            <span>·</span>
-            <span>{formatBytes(drive.totalSize)} total</span>
-            <span>·</span>
-            <span>
-              {t('trimLastTrimmed')}: {formatRelativeTime(drive.lastTrimAt, t('trimNeverRecorded'))}
+          </span>
+          <span className="block text-[length:var(--text-12)] text-[var(--text-muted)] tabular-nums">
+            {[drive.filesystem, formatBytes(drive.totalSize)].filter(Boolean).join(' · ')}
+          </span>
+        </TableCell>
+        <TableCell muted className="whitespace-nowrap">
+          {[media, drive.busType && drive.busType !== drive.mediaType ? drive.busType : null]
+            .filter(Boolean)
+            .join(' · ')}
+        </TableCell>
+        <TableCell muted className="whitespace-nowrap">
+          {drive.lastTrimAt ? lastTrimText(drive.lastTrimAt, locale) : t('trimNeverRecorded')}
+        </TableCell>
+        <TableCell className="min-w-56">
+          {runState === 'running' ? (
+            <span className="flex flex-col gap-1.5">
+              <span className="text-[length:var(--text-13)]">{t('trimRun.running')}</span>
+              <span className="block w-40 max-w-full">
+                <ProgressBar indeterminate label={t('trimProgressLabel', { drive: name })} />
+              </span>
             </span>
-          </div>
-        </div>
-        <StatusPill status={drive.status} reason={drive.statusReason} />
-      </div>
-
-      {runState === 'running' && (
-        <div
-          className="mt-3 flex items-center gap-3 rounded-xl px-3 py-2"
-          style={{ background: 'var(--bg-subtle)' }}
-        >
-          <RefreshCw className="h-3.5 w-3.5 animate-spin text-amber-400" strokeWidth={2} />
-          <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-            {progressMessage ?? t('trimRunningMessage')}
-          </p>
-        </div>
-      )}
-
-      {result && runState !== 'running' && (
-        <div
-          className="mt-3 rounded-xl px-3 py-2"
-          style={{
-            background: result.success ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)',
-            border: `1px solid ${result.success ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)'}`
-          }}
-        >
-          <div className="flex items-center gap-2">
-            {result.success ? (
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" strokeWidth={1.8} />
-            ) : result.needsAdmin ? (
-              <ShieldAlert className="h-4 w-4 shrink-0 text-amber-400" strokeWidth={1.8} />
-            ) : (
-              <XCircle className="h-4 w-4 shrink-0 text-red-400" strokeWidth={1.8} />
-            )}
-            <p className="text-[12px] text-zinc-300">{result.summary}</p>
-          </div>
-          {result.log && (
-            <button
-              onClick={onToggleLog}
-              className="mt-2 text-[11px] font-medium text-amber-500 hover:text-amber-400"
-            >
-              {showLog ? t('hideLog') : t('showLog')}
-            </button>
+          ) : result ? (
+            <RunResultCell
+              result={result}
+              hasDetails={details !== ''}
+              showLog={showLog}
+              onToggleLog={onToggleLog}
+            />
+          ) : (
+            <StatusCell drive={drive} />
           )}
-          {showLog && result.log && (
-            <pre
-              className="mt-2 max-h-40 overflow-auto rounded-lg p-3 font-mono text-[11px]"
-              style={{ background: 'var(--bg-subtle-2)', color: 'var(--text-muted)' }}
-            >
-              {result.log}
+        </TableCell>
+      </TableRow>
+      {showLog && details && (
+        <tr>
+          <td colSpan={5} className="pb-3">
+            <pre className="m-0 max-h-40 overflow-auto rounded-[var(--radius-control)] border border-[var(--border-default)] bg-[var(--bg-subtle)] p-3 font-mono text-[length:var(--text-12)] whitespace-pre-wrap text-[var(--text-muted)]">
+              {details}
             </pre>
-          )}
-        </div>
+          </td>
+        </tr>
       )}
-    </div>
+    </>
+  )
+}
+
+function StatusCell({ drive }: { drive: TrimDriveInfo }) {
+  const { t } = useTranslation('disk')
+  const reason = trimReason(drive)
+  const text =
+    reason.key === 'discard'
+      ? t('trimReason.discard', { size: formatBytes(reason.bytes) })
+      : t(`trimReason.${reason.key}`)
+  return (
+    <span className="flex flex-col gap-0.5">
+      <Tag tone={drive.status === 'recommended' ? 'recommended' : 'neutral'}>
+        {t(`trimStatus.${drive.status}`)}
+      </Tag>
+      <span className="text-[length:var(--text-12)] text-[var(--text-muted)]">{text}</span>
+    </span>
+  )
+}
+
+function RunResultCell({
+  result,
+  hasDetails,
+  showLog,
+  onToggleLog
+}: {
+  result: TrimRunResult
+  hasDetails: boolean
+  showLog: boolean
+  onToggleLog: () => void
+}) {
+  const { t } = useTranslation('disk')
+  const state = trimRunState(result)
+  const tone = state === 'done' ? 'ok' : state === 'failed' ? 'danger' : 'neutral'
+  const detail =
+    state === 'failed' && result.exitCode !== null
+      ? t('trimRunDetail.failedCode', { code: result.exitCode })
+      : t(`trimRunDetail.${state}`)
+  return (
+    <span className="flex flex-col items-start gap-0.5">
+      <Tag tone={tone}>{t(`trimRun.${state}`)}</Tag>
+      <span className="text-[length:var(--text-12)] text-[var(--text-muted)]">{detail}</span>
+      {state === 'failed' && hasDetails && (
+        <Button variant="ghost" className="mt-1" onClick={onToggleLog} aria-expanded={showLog}>
+          {showLog ? t('hideLog') : t('showLog')}
+        </Button>
+      )}
+    </span>
   )
 }

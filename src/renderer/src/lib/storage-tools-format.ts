@@ -18,6 +18,17 @@ export function formatCount(value: number, locale: string): string {
   }
 }
 
+/** A day as "12 set 2026" (it) or "Sep 12, 2026" (en). */
+export function formatDay(value: number | string | Date, locale: string): string {
+  const date = value instanceof Date ? value : new Date(value)
+  const options: Intl.DateTimeFormatOptions = { dateStyle: 'medium', numberingSystem: 'latn' }
+  try {
+    return new Intl.DateTimeFormat(locale, options).format(date)
+  } catch {
+    return new Intl.DateTimeFormat('en', options).format(date)
+  }
+}
+
 /** 0.349 → "35%" with the language's own percent pattern. */
 export function formatPercent(fraction: number, locale: string): string {
   const options: Intl.NumberFormatOptions = {
