@@ -1,11 +1,17 @@
 {
   "pageTitle": "الجداول",
+  "pageScope": "يشغّل التنظيف وإصلاحات السجل والتحديثات في أوقات محددة، عند استيفاء الشروط التي تختارها. مع التطبيق التلقائي، تبدأ الإجراءات دون تأكيد.",
   "pageDescription": "أتمتة الفحوصات وعمليات التنظيف والتحديثات وفق جدول زمني",
   "dismissNudge": "إخفاء هذه البطاقة",
   "newScheduleButton": "جدول جديد",
-  "createScheduleButton": "إنشاء جدول",
   "emptyStateTitle": "لا توجد جداول بعد",
-  "emptyStateDescription": "أنشئ جدولًا لتشغيل الفحوصات وعمليات التنظيف والتحديثات تلقائيًا.",
+  "emptyStateDescription": "تظهر هنا الجداول التي تنشئها، مع موعد تشغيلها التالي ونتيجة آخر تشغيل.",
+  "upcomingTitle": "عمليات التشغيل القادمة",
+  "enabledCount_one": "{{count}} نشط",
+  "enabledCount_other": "{{count}} نشطة",
+  "upcomingNote": "الأوقات المجدولة: يمكن لشروط التشغيل تأجيل التشغيل.",
+  "listTitle": "جداولك",
+  "listMeta": "{{count}} من {{max}}",
   "maxSchedulesReached": "تم الوصول إلى الحد الأقصى وهو {{max}} من الجداول.",
   "duplicatedToast": "تمت مضاعفة \"{{name}}\"",
   "deletedToast": "تم حذف \"{{name}}\"",
@@ -13,49 +19,57 @@
   "createdToast": "تم إنشاء \"{{name}}\"",
   "failedEnableStartup": "فشل تمكين بدء التشغيل. قد لا تعمل الجداول بعد إعادة التشغيل.",
   "failedEnableStartupAction": "معرفة المزيد",
-  "deleteConfirmTitle": "حذف الجدول",
-  "deleteConfirmDescription": "ستتم إزالة هذا الجدول نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+  "deleteConfirmTitle": "هل تريد حذف \"{{name}}\"؟",
+  "deleteConfirmDescription": "سيُحذف الجدول ولن يعمل بعد الآن. لا يمكن التراجع عن هذا: لاستعادته، أنشئه مرة أخرى.",
   "deleteConfirmLabel": "حذف",
   "card": {
     "autoApplyBadge": "تطبيق تلقائي",
+    "enabled": "نشط",
+    "disabled": "غير نشط",
+    "enabledLabel": "الجدول {{name}} نشط",
     "editAction": "تحرير",
     "duplicateAction": "مضاعفة",
     "deleteAction": "حذف",
     "noTasksSelected": "لم يتم تحديد أي مهام",
     "nextRun": "التالي: {{time}}",
     "lastRun": "الأخير: {{time}}",
-    "neverRun": "لم يتم التشغيل مطلقًا"
+    "neverRun": "لم يتم التشغيل مطلقًا",
+    "statusSuccess": "اكتمل",
+    "statusPartial": "اكتمل جزئيًا",
+    "statusFailed": "فشل"
   },
   "presets": {
     "dialogTitle": "اختر قالبًا",
     "weeklyFullCleanLabel": "تنظيف كامل أسبوعي",
-    "weeklyFullCleanDescription": "جميع فئات المنظف كل يوم اثنين الساعة 9 صباحًا",
+    "weeklyFullCleanDescription": "جميع فئات التنظيف كل يوم اثنين الساعة 9:00، دون تأكيد",
     "dailyLightSweepLabel": "تنظيف خفيف يومي",
-    "dailyLightSweepDescription": "النظام والمتصفحات وسلة المحذوفات يوميًا الساعة 8 صباحًا",
+    "dailyLightSweepDescription": "النظام والمتصفحات وسلة المحذوفات كل يوم الساعة 8:00، دون تأكيد",
     "monthlyDeepMaintenanceLabel": "صيانة عميقة شهرية",
-    "monthlyDeepMaintenanceDescription": "تنظيف كامل + السجل وبرامج التشغيل والبرامج في اليوم الأول الساعة 10 صباحًا",
+    "monthlyDeepMaintenanceDescription": "تنظيف كامل، والسجل، وبرامج التشغيل، والبرامج في اليوم الأول الساعة 10:00، دون تأكيد",
     "customLabel": "مخصص",
-    "customDescription": "ابدأ من الصفر بجدول فارغ"
+    "customDescription": "جدول فارغ لملئه"
   },
   "dialog": {
     "editTitle": "تحرير الجدول",
     "newTitle": "جدول جديد",
+    "close": "إغلاق",
     "nameLabel": "الاسم",
-    "namePlaceholder": "مثال: تنظيف عميق أسبوعي",
+    "namePlaceholder": "مثال: تنظيف الاثنين",
     "frequencyLabel": "التكرار",
     "frequencyDaily": "يوميًا",
     "frequencyWeekly": "أسبوعيًا",
     "frequencyMonthly": "شهريًا",
     "dayLabel": "اليوم",
     "timeLabel": "الوقت",
+    "minuteLabel": "الدقائق",
     "tasksLabel": "المهام",
     "selectAll": "تحديد الكل",
     "deselectAll": "إلغاء تحديد الكل",
     "cleanerGroup": "المنظف",
     "maintenanceGroup": "الصيانة",
     "autoApplyLabel": "تطبيق تلقائي",
-    "autoApplyDescription": "تنظيف الملفات تلقائيًا، وإصلاح مشكلات السجل، وتثبيت التحديثات دون تأكيد.",
-    "autoApplyWarning": "سيتم تنفيذ الإجراءات تلقائيًا وفق الجدول الزمني. تأكد من أن قائمة الاستثناءات لديك محدثة.",
+    "autoApplyDescription": "ينظّف الملفات، ويصلح السجل، ويثبّت التحديثات دون طلب تأكيد.",
+    "autoApplyWarning": "تبدأ الإجراءات من تلقاء نفسها في الوقت المحدد. تحقق أولاً من قائمة الاستثناءات.",
     "cancelButton": "إلغاء",
     "saveChangesButton": "حفظ التغييرات",
     "createScheduleButton": "إنشاء جدول"
@@ -83,12 +97,13 @@
   "frequency": {
     "everyDayAt": "كل يوم في {{time}}",
     "everyWeekdayAt": "كل {{day}} في {{time}}",
-    "monthlyAt": "{{ordinalDay}} من كل شهر في {{time}}"
+    "monthlyOn": "اليوم {{day}} من كل شهر في {{time}}"
   },
   "nextRun": {
     "todayAt": "اليوم في {{time}}",
     "tomorrowAt": "غدًا في {{time}}",
-    "inDaysAt": "بعد {{count}} يومًا في {{time}}",
+    "inDaysAt_one": "خلال {{count}} يوم الساعة {{time}}",
+    "inDaysAt_other": "خلال {{count}} أيام الساعة {{time}}",
     "dateAt": "{{date}} في {{time}}"
   },
   "lastRun": {
@@ -113,7 +128,7 @@
     "skip": "تخطي بعد نافذة البدء التي مدتها دقيقتان",
     "once": "التشغيل مرة واحدة عند الجاهزية؛ دمج مرات التشغيل الفائتة",
     "runNow": "تشغيل الآن",
-    "runConfirm": "هل تريد تشغيل هذا الجدول الآن باستخدام مهامه المحفوظة وخيار التطبيق التلقائي؟ ستظل شروط الطاقة والخمول ووضع اللعب والمساحة ونافذة الصيانة سارية: إذا منعت هذه الشروط التشغيل فسيبدأ عند تحققها لاحقًا، كما أن اختيار \"تشغيل الآن\" مرة أخرى أثناء الانتظار سيؤدي إلى إلغائه.",
+    "runConfirm": "تعمل المهام المحفوظة، وفقًا لاختيار التطبيق التلقائي للجدول. لا تزال شروط الطاقة والخمول ووضع الألعاب والمساحة ونافذة الصيانة سارية: إذا أخّرت التشغيل، فسيبدأ عند الفحص التالي؛ واختيار «التشغيل الآن» مرة أخرى أثناء الانتظار يلغيه.",
     "runFailed": "تعذر بدء الجدول",
     "running": "قيد التشغيل",
     "nextEvaluation": "التحقق التالي تقريبًا عند {{time}}",
@@ -122,11 +137,10 @@
     "moveUp": "أعلى",
     "moveDown": "أسفل",
     "restrict": "اختر الفئات لـ {{name}}",
-    "findCategories": "فحص الفئات",
-    "scanning": "جارٍ الفحص...",
+    "findCategories": "العثور على الفئات",
     "scopeHint": "سيتم تضمين الفئات المحددة فقط. إذا كان التحديد فارغًا فلن يتم تنفيذ أي تنظيف في هذه المهمة. يكتشف الفحص الفئات الموجودة حاليًا؛ ولا ينفذ تنظيفًا.",
     "waitForScan": "انتظر حتى ينتهي الفحص الحالي أو التنظيف الحالي.",
-    "noCategories": "لم يتم العثور على فئات. شغّل فحصًا جديدًا عندما تكون لدى التطبيق بيانات مخزنة مؤقتًا.",
+    "noCategories": "لم يتم العثور على فئات. شغّل فحصًا جديدًا عندما تتوفر بيانات مخزَّنة مؤقتًا لدى التطبيق.",
     "scanFailed": "تعذر تحميل الفئات.",
     "waiting": {
       "idle": "في انتظار وقت الخمول",
@@ -142,6 +156,9 @@
       "interrupted": "فقد التشغيل نافذته وتم تسجيله كفشل؛ لن تتم إعادة هذه المرة."
     },
     "saveFailed": "تعذر حفظ الجدول. حاول مرة أخرى.",
-    "skipped": "تم التخطي بعد تغيّر الشروط."
+    "skipped": "تم التخطي بعد تغيّر الشروط.",
+    "runTitle": "هل تريد تشغيل \"{{name}}\" الآن؟",
+    "moveUpLabel": "نقل {{name}} لأعلى",
+    "moveDownLabel": "نقل {{name}} لأسفل"
   }
 }

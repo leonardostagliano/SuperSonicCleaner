@@ -14,5 +14,6 @@
   "hoursAgo": "منذ {{hours}} س",
   "daysAgo": "منذ {{days}} ي",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s"
+  "zeroSpeed": "0 B/s",
+  "whatIsChecked": "ما الذي يتم فحصه"
 }
