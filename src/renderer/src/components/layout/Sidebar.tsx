@@ -1,42 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import {
-  LayoutDashboard,
-  Sparkles,
-  Database,
-  Zap,
-  HardDrive,
-  Settings,
-  Wifi,
-  History,
-  Info,
-  ShieldAlert,
-  Shield,
-  Activity,
-  Trash2,
-  Download,
-  CalendarClock,
-  Gamepad2,
-  RotateCcw,
-  ChevronRight,
-  CopyCheck,
-  FileUp,
-  FolderX,
-  ShieldAlert as ShieldAlertIcon,
-  Wrench,
-  Eraser,
-  Cpu,
-  Package,
-  Eye,
-  Server,
-  Flame,
-  PackageMinus,
-  MousePointerClick,
-  X
-} from 'lucide-react'
+import { ChevronRight, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { LucideIcon } from 'lucide-react'
+import { icons } from '@/lib/icons'
+import { bottomNavItems, navGroups, type NavGroupItem, type NavLeaf } from '@/lib/navigation'
 import { useAppUpdateStore } from '@/stores/app-update-store'
 import { useUpdaterStore } from '@/stores/updater-store'
 import { useDriverStore } from '@/stores/driver-store'
@@ -47,239 +15,22 @@ import { activeGroupFor, toggleGroup, withActiveGroup } from '@/lib/sidebar-grou
 import { useCompactSidebar } from '@/hooks/useCompactSidebar'
 import { prefetchRoute } from '@/routes'
 
-interface SubItemDef {
-  icon: LucideIcon
-  label?: string
-  labelKey?: string
-  path: string
-  badge?: boolean
-}
+type SubItemDef = NavLeaf & { badge?: boolean }
 
-interface NavItemDef {
-  icon: LucideIcon
-  labelKey?: string
-  label?: string
-  path: string
+interface NavItemDef extends NavGroupItem {
   children?: SubItemDef[]
 }
-
-interface NavGroup {
-  headingKey?: string
-  heading?: string
-  items: NavItemDef[]
-}
-
-const navGroups: NavGroup[] = [
-  {
-    items: [
-      { icon: LayoutDashboard, labelKey: 'dashboard', label: 'Home', path: '/' },
-      {
-        icon: Sparkles,
-        labelKey: 'cleaner',
-        label: 'Clean up',
-        path: '/cleaner',
-        children: [
-          {
-            icon: Sparkles,
-            labelKey: 'cleaner:pageTitle',
-            label: 'System Cleaner',
-            path: '/cleaner'
-          },
-          { icon: Database, labelKey: 'registry:pageTitle', label: 'Registry', path: '/registry' },
-          { icon: Zap, labelKey: 'startup:pageTitle', label: 'Startup', path: '/startup' },
-          { icon: Wifi, labelKey: 'network:pageTitle', label: 'Network', path: '/network' },
-          {
-            icon: CalendarClock,
-            labelKey: 'schedules:pageTitle',
-            label: 'Automatic Care',
-            path: '/schedules'
-          }
-        ]
-      },
-      {
-        icon: Shield,
-        labelKey: 'securityHeading',
-        label: 'Protection',
-        path: '/malware',
-        children: [
-          {
-            icon: ShieldAlert,
-            labelKey: 'malware:pageTitle',
-            label: 'Malware Scanner',
-            path: '/malware'
-          },
-          {
-            icon: Eye,
-            labelKey: 'hardening:privacy.pageTitle',
-            label: 'Privacy',
-            path: '/privacy'
-          },
-          { icon: Flame, labelKey: 'firewallAudit', label: 'Firewall Audit', path: '/firewall' }
-        ]
-      },
-      {
-        icon: Activity,
-        labelKey: 'performance',
-        label: 'Performance',
-        path: '/performance',
-        children: [
-          {
-            icon: Activity,
-            labelKey: 'performance:pageTitle',
-            label: 'Live Performance',
-            path: '/performance'
-          },
-          {
-            icon: Activity,
-            labelKey: 'diagnostics:title',
-            label: 'Diagnostics',
-            path: '/performance-diagnostics'
-          },
-          {
-            icon: Server,
-            labelKey: 'hardening:serviceManager.pageTitle',
-            label: 'Services',
-            path: '/services'
-          },
-          { icon: Gamepad2, labelKey: 'gameMode', label: 'Game Mode', path: '/game-mode' }
-        ]
-      }
-    ]
-  },
-  {
-    headingKey: 'maintainHeading',
-    items: [
-      {
-        icon: Package,
-        labelKey: 'software',
-        label: 'Software',
-        path: '/software',
-        children: [
-          {
-            icon: Download,
-            labelKey: 'updates:softwareUpdater.pageTitle',
-            label: 'Software Updates',
-            path: '/updates'
-          },
-          {
-            icon: Cpu,
-            labelKey: 'updates:driverManager.pageTitle',
-            label: 'Driver Updates',
-            path: '/drivers'
-          },
-          {
-            icon: Trash2,
-            labelKey: 'uninstaller:pageTitle',
-            label: 'Uninstaller',
-            path: '/uninstaller'
-          },
-          {
-            icon: PackageMinus,
-            labelKey: 'hardening:debloater.pageTitle',
-            label: 'Bloatware Remover',
-            path: '/debloater'
-          },
-          {
-            icon: MousePointerClick,
-            labelKey: 'contextMenu:pageTitle',
-            label: 'Context Menu',
-            path: '/context-menu'
-          }
-        ]
-      },
-      {
-        icon: HardDrive,
-        labelKey: 'diskTools',
-        label: 'Storage',
-        path: '/disk',
-        children: [
-          { icon: HardDrive, labelKey: 'disk:pageTitle', label: 'Storage Overview', path: '/disk' },
-          {
-            icon: CopyCheck,
-            labelKey: 'duplicates:pageTitle',
-            label: 'Duplicate Finder',
-            path: '/duplicates'
-          },
-          {
-            icon: FileUp,
-            labelKey: 'largeFiles:pageTitle',
-            label: 'Large File Finder',
-            path: '/large-files'
-          },
-          {
-            icon: FolderX,
-            labelKey: 'emptyFolders:pageTitle',
-            label: 'Empty Folder Cleaner',
-            path: '/empty-folders'
-          },
-          {
-            icon: ShieldAlertIcon,
-            labelKey: 'fileShredder:pageTitle',
-            label: 'File Shredder',
-            path: '/file-shredder'
-          },
-          {
-            icon: Wrench,
-            labelKey: 'disk:repairTitle',
-            label: 'Windows Repair',
-            path: '/disk-repair'
-          },
-          {
-            icon: Eraser,
-            labelKey: 'disk:maintenanceTitle',
-            label: 'Disk Maintenance',
-            path: '/disk-maintenance'
-          },
-          {
-            icon: History,
-            labelKey: 'disk:storage.title',
-            label: 'Storage History',
-            path: '/storage-history'
-          }
-        ]
-      },
-      {
-        icon: History,
-        labelKey: 'activityAndRecovery',
-        label: 'Activity & Recovery',
-        path: '/history',
-        children: [
-          { icon: History, labelKey: 'history', label: 'Activity', path: '/history' },
-          {
-            icon: RotateCcw,
-            labelKey: 'history:recovery.title',
-            label: 'Recovery Centre',
-            path: '/recovery'
-          }
-        ]
-      }
-    ]
-  }
-]
 
 function useBottomNavItems(): NavItemDef[] {
   const updateState = useAppUpdateStore((s) => s.status.state)
   const showUpdateBadge = updateState === 'available' || updateState === 'downloaded'
 
-  return [
-    {
-      icon: Settings,
-      labelKey: 'settings',
-      label: 'Preferences',
-      path: '/settings',
-      children: [
-        { icon: Settings, labelKey: 'settings:pageTitle', label: 'Preferences', path: '/settings' },
-        { icon: Sparkles, labelKey: 'ai:title', label: 'AI analysis', path: '/ai' },
-        {
-          icon: Info,
-          labelKey: 'settings:sectionAbout',
-          label: 'About & Updates',
-          path: '/about',
-          badge: showUpdateBadge
-        }
-      ]
-    }
-  ]
+  return bottomNavItems.map((item) => ({
+    ...item,
+    children: item.children?.map((child) =>
+      child.path === '/about' ? { ...child, badge: showUpdateBadge } : child
+    )
+  }))
 }
 
 // Map nav paths to badge counts from stores
@@ -487,7 +238,7 @@ export function Sidebar() {
             className="flex min-w-0 flex-1 items-start gap-[9px] text-left"
           >
             <span className="automatic-care-icon">
-              <CalendarClock className="h-3.5 w-3.5" strokeWidth={1.8} />
+              <icons.schedule className="h-3.5 w-3.5" strokeWidth={1.8} />
             </span>
             <span className="min-w-0">
               <b>{t('schedules:pageTitle')}</b>

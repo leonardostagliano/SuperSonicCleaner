@@ -12,6 +12,8 @@ import {
 } from 'lucide-react'
 import { usePlatform } from '@/hooks/usePlatform'
 import { pageExperiences } from '@/components/layout/page-experiences'
+import { icons } from '@/lib/icons'
+import { navLeafFor } from '@/lib/navigation'
 import { getGoalTools, type DashboardGoal } from './simple-dashboard-tools'
 import './simple-dashboard.css'
 
@@ -94,7 +96,7 @@ export function SimpleDashboard({
           <div className="simple-tool-list">
             {selectedTools.map((tool, index) => {
               const experience = pageExperiences[tool.path]
-              const Icon = experience.icon
+              const Icon = navLeafFor(tool.path)?.icon ?? icons.next
               return (
                 <button
                   key={tool.path}

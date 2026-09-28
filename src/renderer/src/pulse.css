@@ -118,87 +118,6 @@ body {
   min-height: 40px;
   border-radius: var(--radius-control);
 }
-.pulse-page-header {
-  margin-bottom: 24px;
-  border-bottom: 0;
-  padding-bottom: 0;
-  min-height: auto;
-}
-.pulse-page-header .page-header-main {
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.pulse-page-heading {
-  flex: 1 1 360px;
-  min-width: 0;
-}
-.pulse-page-header h1 {
-  font-size: var(--text-title);
-  line-height: 1.25;
-  letter-spacing: -1px;
-  font-weight: 600;
-  margin: 8px 0 10px;
-}
-.pulse-page-header p {
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--text-muted);
-  max-width: 760px;
-  margin-top: 0 !important;
-}
-.pulse-page-kicker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.3px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-.pulse-page-kicker svg {
-  color: var(--accent);
-}
-.pulse-page-header[data-family='protection'] .pulse-page-kicker svg {
-  color: var(--success);
-}
-.pulse-page-header[data-family='storage'] .pulse-page-kicker svg {
-  color: var(--info);
-}
-.page-header-actions,
-.page-header-actions > div {
-  flex-wrap: wrap;
-}
-.pulse-workflow {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  list-style: none;
-  margin: 23px 0 0;
-  padding: 15px 18px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-tile);
-  background: var(--card-bg);
-}
-.pulse-workflow li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-.pulse-workflow li > span {
-  color: var(--accent);
-  font-size: 10px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 1px;
-}
-.pulse-workflow li + li {
-  border-left: 1px solid var(--border-medium);
-  padding-inline-start: 18px;
-}
 .pulse-button {
   display: inline-flex;
   align-items: center;
@@ -946,9 +865,6 @@ body {
 .app-content[data-route='/empty-folders'] .utility-empty-stage > svg {
   color: var(--success) !important;
 }
-.app-content[data-route='/file-shredder'] .pulse-workflow li:last-child {
-  color: var(--danger);
-}
 .app-content[data-route='/file-shredder'] .utility-empty-stage > svg {
   color: var(--danger) !important;
 }
@@ -1133,17 +1049,6 @@ body {
     font-size: 11px;
     padding-inline: 10px;
   }
-  .pulse-workflow {
-    gap: 8px;
-    padding: 13px;
-  }
-  .pulse-workflow li {
-    font-size: 11px;
-    gap: 7px;
-  }
-  .pulse-workflow li + li {
-    padding-inline-start: 9px;
-  }
   .settings-grid {
     grid-template-columns: 1fr;
   }
@@ -1225,27 +1130,6 @@ body {
   }
   .pulse-section-heading > span {
     display: none;
-  }
-  .pulse-workflow {
-    grid-template-columns: 1fr;
-  }
-  .pulse-workflow li + li {
-    padding-inline-start: 0;
-    border-left: 0;
-    border-top: 1px solid var(--border-default);
-    padding-top: 8px;
-  }
-  .pulse-page-header .page-header-main {
-    gap: 17px;
-  }
-  .pulse-page-heading {
-    flex-basis: auto;
-  }
-  .pulse-page-header h1 {
-    font-size: 27px;
-  }
-  .pulse-page-header p {
-    font-size: 12px;
   }
   .cleaner-workspace {
     flex-direction: column;

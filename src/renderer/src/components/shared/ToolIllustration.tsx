@@ -1,19 +1,29 @@
 import { useLocation } from 'react-router-dom'
-import { File, Folder, ShieldCheck, Cpu, Sparkles } from 'lucide-react'
+import { File, Folder, ShieldCheck, Cpu } from 'lucide-react'
 import { pageExperiences } from '@/components/layout/page-experiences'
+import { icons } from '@/lib/icons'
+import { crumbFor, navLeafFor } from '@/lib/navigation'
+
+/** Artwork family by sidebar group (the kickers that used to carry it are gone). */
+const familyByGroup: Record<string, string> = {
+  '/disk': 'storage',
+  '/malware': 'protection',
+  '/performance': 'performance'
+}
 
 /** Decorative, code-native artwork. It never represents file counts, scan findings, or telemetry. */
 export function ToolIllustration() {
   const { pathname } = useLocation()
   const experience = pageExperiences[pathname]
-  const Icon = experience?.icon ?? Sparkles
-  const storage = experience?.family === 'storage'
-  const protection = experience?.family === 'protection'
+  const Icon = navLeafFor(pathname)?.icon ?? icons.clean
+  const family = familyByGroup[crumbFor(pathname)?.group.path ?? '']
+  const storage = family === 'storage'
+  const protection = family === 'protection'
   const Satellite = protection ? ShieldCheck : storage ? File : Cpu
   return (
     <div
       className="pulse-tool-art"
-      data-family={experience?.family}
+      data-family={family}
       data-tool={experience?.key}
       aria-hidden="true"
     >

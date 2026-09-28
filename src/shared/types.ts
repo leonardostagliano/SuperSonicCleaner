@@ -163,6 +163,15 @@ export interface CleanerBlocker {
   isBrowser: boolean
 }
 
+/**
+ * A progress line the main process sends for the renderer to translate: an i18n key
+ * with its namespace (e.g. `firewall:progress.rules`) and the values it interpolates.
+ */
+export interface ProgressLabel {
+  key: string
+  params?: Record<string, string | number>
+}
+
 export interface ProgressData {
   phase: 'scanning' | 'cleaning'
   category: string

@@ -1,0 +1,57 @@
+/* Page header (spec 5.4): crumb from the sidebar group, title, scope sentence, actions. */
+.page-header {
+  container-type: inline-size;
+  margin-bottom: var(--space-5);
+}
+.page-header-crumb {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-12);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.page-header-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+}
+.page-header-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.page-header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-26);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.page-header-scope {
+  max-width: 68ch;
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-13);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.page-header-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.page-header-actions > div {
+  flex-wrap: wrap;
+}
+/* Narrow content: the actions move under the scope sentence. */
+@container (width < 760px) {
+  .page-header-main {
+    flex-direction: column;
+  }
+  .page-header-actions {
+    flex: 0 1 auto;
+    max-width: 100%;
+  }
+}

@@ -1072,23 +1072,6 @@ summary,
 .glass-card-hover:hover {
   transform: translateY(-1px);
 }
-.page-header {
-  margin-bottom: 24px;
-}
-.page-header-main {
-  width: 100%;
-}
-.page-header h1 {
-  color: var(--text-primary);
-  font-size: 26px;
-  font-weight: 750;
-  letter-spacing: -0.035em;
-}
-.page-header p {
-  max-width: 680px;
-  color: var(--text-muted);
-  line-height: 1.65;
-}
 
 input:not([type='checkbox']):not([type='radio']),
 select,
@@ -2216,29 +2199,6 @@ thead {
 .app-content:not([data-route='/']) > div > .empty-state {
   flex: 1 1 auto;
 }
-.page-header {
-  min-height: 88px;
-  align-items: center !important;
-  margin-bottom: 22px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-.page-header-eyebrow {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--brand-solid);
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-}
-.page-header h1 {
-  font-size: 28px;
-  line-height: 1.05;
-}
-.page-header p {
-  margin-top: 7px !important;
-  font-size: 11px;
-}
 .empty-state {
   min-height: 410px;
   padding: 50px 28px;
@@ -2388,10 +2348,6 @@ thead {
   }
 }
 @media (max-width: 720px) {
-  .page-header {
-    align-items: flex-start !important;
-    flex-direction: column;
-  }
   .cleaner-workspace {
     flex-direction: column;
   }
@@ -2452,24 +2408,6 @@ body {
 }
 .appearance-menu small {
   font-size: 12px;
-}
-
-.page-header {
-  min-height: 98px;
-  margin-bottom: 26px;
-  padding-bottom: 21px;
-}
-.page-header-eyebrow {
-  margin-bottom: 7px;
-  font-size: 12px;
-}
-.page-header h1 {
-  font-size: 32px;
-}
-.page-header p {
-  max-width: 760px;
-  font-size: 14px;
-  line-height: 1.55;
 }
 
 /* Lift undersized legacy utility text across every tool without changing structure. */
@@ -3065,12 +3003,6 @@ body {
   }
   .kudu-sidebar {
     width: 82px !important;
-  }
-}
-@media (max-width: 760px) {
-  .page-header-main {
-    align-items: flex-start !important;
-    flex-direction: column;
   }
 }
 @media (max-width: 920px) {
