@@ -10,28 +10,22 @@
   "anotherRunning": "En annan AI-analys pågår redan. Du hittar den under Inställningar → AI-analys.",
   "continuesInBackground": "Analysen fortsätter medan du använder andra vyer. Kom tillbaka hit för att se resultatet.",
   "returnToAnalysis": "Återgå till analysen",
-  "openTool": "Öppna verktyg",
   "hubInstructions": "Slutför en skanning eller spara en prestandainspelning, aktivera dess AI-analys och starta den sedan med den avsedda knappen. Ingenting skickas automatiskt.",
   "tools": {
     "cleaner": {
-      "title": "Systemrensning",
-      "description": "Granska skannade rensningskandidater med hjälp av anonym filmetadata. Sekretesspår är exkluderade."
+      "title": "Systemrensning"
     },
     "largeFiles": {
-      "title": "Stora filer",
-      "description": "Granska vilka stora filer som förtjänar en närmare titt, utifrån storlek, kategori och ungefärlig ålder."
+      "title": "Stora filer"
     },
     "duplicates": {
-      "title": "Dubblettfiler",
-      "description": "Få förslag på dubblettgrupper att granska. Du väljer vilka filer som ska behållas."
+      "title": "Dubblettfiler"
     },
     "disk": {
-      "title": "Diskanalys",
-      "description": "Granska de största mapparna med hjälp av aggregerad storleksinformation."
+      "title": "Diskanalys"
     },
     "performance": {
-      "title": "Prestandainspelningar",
-      "description": "Koppla ihop processor-, minnes- och diskaktivitet för att undersöka en avmattning, med stödjande mätvärden och föreslagna kontroller."
+      "title": "Prestandainspelningar"
     }
   },
   "enable": "Aktivera AI-analys för den här vyn",

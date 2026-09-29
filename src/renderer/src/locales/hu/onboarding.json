@@ -4,9 +4,6 @@
   "welcomeTitle": "Üdvözli a SuperSonicCleaner",
   "welcomeDescriptionWindows": "Az Ön mindenre kiterjedő Windows-rendszertisztítója. A SuperSonicCleaner eltávolítja a felesleges fájlokat, javítja a beállításjegyzék problémáit, kezeli az automatikusan induló programokat, és gyorsan tartja a számítógépét.",
   "welcomeDescriptionOther": "Az Ön mindenre kiterjedő rendszertisztítója. A SuperSonicCleaner eltávolítja a felesleges fájlokat, kezeli az automatikusan induló programokat, és gyorsan tartja a számítógépét.",
-  "featureSmartCleaning": "Intelligens tisztítás",
-  "featureFasterBoot": "Gyorsabb indítás",
-  "featureSafeSecure": "Biztonságos és védett",
   "getStarted": "Kezdés",
   "recommendedSetupTitle": "Ajánlott beállítások",
   "recommendedSetupDescription": "A legjobb élmény érdekében ezeket a beállításokat javasoljuk. Ezeket később a Beállításokban módosíthatja.",
@@ -21,6 +18,5 @@
   "continue": "Folytatás",
   "allSetTitle": "Minden készen áll!",
   "allSetDescription": "A SuperSonicCleaner a háttérben zökkenőmentesen tartja a számítógépét.",
-  "firstScanScheduled": "Az első automatikus vizsgálat hétfőre 9:00-ra van ütemezve.",
-  "startCleaning": "Tisztítás indítása"
+  "firstScanScheduled": "Az első automatikus vizsgálat hétfőre 9:00-ra van ütemezve."
 }

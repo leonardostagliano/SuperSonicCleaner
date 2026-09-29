@@ -1,8 +1,6 @@
 {
   "pageTitle": "Scheman",
   "pageScope": "Kör rensningar, registeråtgärder och uppdateringar vid fasta tider, när de villkor du väljer är uppfyllda. Med automatisk tillämpning startar åtgärder utan bekräftelse.",
-  "pageDescription": "Automatisera genomsökningar, rensningar och uppdateringar enligt ett schema",
-  "dismissNudge": "Dölj det här kortet",
   "newScheduleButton": "Nytt schema",
   "emptyStateTitle": "Inga scheman",
   "emptyStateDescription": "Scheman du skapar visas här, med nästa körning och resultatet av den senaste.",

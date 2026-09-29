@@ -2,9 +2,7 @@
   "scanning": "Probíhá kontrola...",
   "cleaning": "Probíhá čištění...",
   "foundLabel": "Nalezeno:",
-  "itemsUnit": "položek",
   "sizeLabel": "Velikost:",
-  "health": "Stav",
   "cancel": "Zrušit",
   "confirm": "Potvrdit",
   "adminBannerMessage": "Některé funkce vyžadují oprávnění správce.",
@@ -14,6 +12,5 @@
   "hoursAgo": "před {{hours}} h",
   "daysAgo": "před {{days}} d",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Co se kontroluje"
 }

@@ -10,28 +10,22 @@
   "anotherRunning": "Már fut egy másik AI-elemzés. Megtalálja a Beállítások → AI-elemzés menüpontban.",
   "continuesInBackground": "Az elemzés más nézetek használata közben is folytatódik. Térjen vissza ide az eredmény megtekintéséhez.",
   "returnToAnalysis": "Vissza az elemzéshez",
-  "openTool": "Eszköz megnyitása",
   "hubInstructions": "Fejezzen be egy vizsgálatot vagy mentsen el egy teljesítményrögzítést, kapcsolja be hozzá az AI-elemzést, majd indítsa el a megfelelő gombbal. Semmi sem kerül automatikusan elküldésre.",
   "tools": {
     "cleaner": {
-      "title": "Rendszertisztítás",
-      "description": "Tekintse át a megvizsgált tisztítási jelölteket névtelen fájlmetaadatok segítségével. Az adatvédelmi nyomok ki vannak zárva."
+      "title": "Rendszertisztítás"
     },
     "largeFiles": {
-      "title": "Nagy fájlok",
-      "description": "Tekintse át, mely nagy fájlok érdemelnek közelebbi vizsgálatot méret, kategória és becsült kor alapján."
+      "title": "Nagy fájlok"
     },
     "duplicates": {
-      "title": "Duplikált fájlok",
-      "description": "Kapjon javaslatokat, mely duplikátumcsoportokat érdemes áttekinteni. Ön választja ki, mely fájlokat tartja meg."
+      "title": "Duplikált fájlok"
     },
     "disk": {
-      "title": "Lemezelemzés",
-      "description": "Tekintse át a legnagyobb mappákat összesített méretinformációk segítségével."
+      "title": "Lemezelemzés"
     },
     "performance": {
-      "title": "Teljesítményrögzítések",
-      "description": "Kapcsolja össze a CPU-, memória- és lemezaktivitást egy lassulás kivizsgálásához, alátámasztó mérésekkel és javasolt ellenőrzésekkel."
+      "title": "Teljesítményrögzítések"
     }
   },
   "enable": "AI-elemzés bekapcsolása ehhez a nézethez",

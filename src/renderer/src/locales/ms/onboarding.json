@@ -4,9 +4,6 @@
   "welcomeTitle": "Selamat datang ke SuperSonicCleaner",
   "welcomeDescriptionWindows": "Pembersih sistem Windows serba lengkap anda. SuperSonicCleaner mengalih keluar fail sampah, membaiki isu registry, menguruskan program permulaan dan memastikan PC anda kekal pantas.",
   "welcomeDescriptionOther": "Pembersih sistem serba lengkap anda. SuperSonicCleaner mengalih keluar fail sampah, menguruskan program permulaan dan memastikan komputer anda kekal pantas.",
-  "featureSmartCleaning": "Pembersihan Pintar",
-  "featureFasterBoot": "Permulaan Lebih Pantas",
-  "featureSafeSecure": "Selamat & Terjamin",
   "getStarted": "Mulakan",
   "recommendedSetupTitle": "Persediaan Disyorkan",
   "recommendedSetupDescription": "Kami mengesyorkan tetapan ini untuk pengalaman terbaik. Anda boleh mengubahnya kemudian dalam Tetapan.",
@@ -21,6 +18,5 @@
   "continue": "Teruskan",
   "allSetTitle": "Semuanya Sudah Sedia!",
   "allSetDescription": "SuperSonicCleaner akan mengekalkan PC anda berjalan lancar di latar belakang.",
-  "firstScanScheduled": "Imbasan automatik pertama anda dijadualkan pada hari Isnin pukul 9:00 AM.",
-  "startCleaning": "Mulakan Pembersihan"
+  "firstScanScheduled": "Imbasan automatik pertama anda dijadualkan pada hari Isnin pukul 9:00 AM."
 }

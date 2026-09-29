@@ -2,9 +2,7 @@
   "scanning": "검사 중...",
   "cleaning": "정리 중...",
   "foundLabel": "발견됨:",
-  "itemsUnit": "개 항목",
   "sizeLabel": "크기:",
-  "health": "상태",
   "cancel": "취소",
   "confirm": "확인",
   "adminBannerMessage": "일부 기능은 관리자 권한이 필요합니다.",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}}시간 전",
   "daysAgo": "{{days}}일 전",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "확인 항목"
 }

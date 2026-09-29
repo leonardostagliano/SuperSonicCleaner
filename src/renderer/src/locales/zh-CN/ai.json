@@ -10,28 +10,22 @@
   "anotherRunning": "已有另一项 AI 分析正在运行。您可以在“偏好设置 → AI 分析”中查看。",
   "continuesInBackground": "在您使用其他页面时，分析仍会继续进行。返回此处即可查看结果。",
   "returnToAnalysis": "返回分析",
-  "openTool": "打开工具",
   "hubInstructions": "完成一次扫描或保存一次性能录制，启用其 AI 分析，然后使用专用按钮开始。不会自动发送任何内容。",
   "tools": {
     "cleaner": {
-      "title": "系统清理",
-      "description": "使用匿名文件元数据检查已扫描到的可清理项。隐私痕迹不包含在内。"
+      "title": "系统清理"
     },
     "largeFiles": {
-      "title": "大文件",
-      "description": "根据大小、类别和大致存在时长，查看哪些大文件值得进一步关注。"
+      "title": "大文件"
     },
     "duplicates": {
-      "title": "重复文件",
-      "description": "获取需要检查的重复文件组建议。保留哪些文件由您决定。"
+      "title": "重复文件"
     },
     "disk": {
-      "title": "磁盘分析",
-      "description": "使用汇总的大小信息查看最大的文件夹。"
+      "title": "磁盘分析"
     },
     "performance": {
-      "title": "性能录制",
-      "description": "关联 CPU、内存和磁盘活动以排查变慢原因，并提供相关测量数据和建议的检查项。"
+      "title": "性能录制"
     }
   },
   "enable": "为此页面启用 AI 分析",

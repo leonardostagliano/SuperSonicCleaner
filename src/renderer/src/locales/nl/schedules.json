@@ -1,8 +1,6 @@
 {
   "pageTitle": "Schema's",
   "pageScope": "Voert opschoningen, registeroplossingen en updates uit op vaste tijden, wanneer aan de door u gekozen voorwaarden wordt voldaan. Bij automatisch toepassen starten acties zonder bevestiging.",
-  "pageDescription": "Automatiseer scans, opschoonacties en updates volgens een schema",
-  "dismissNudge": "Deze kaart verbergen",
   "newScheduleButton": "Nieuw schema",
   "emptyStateTitle": "Geen schema's",
   "emptyStateDescription": "De schema's die u maakt, verschijnen hier, met hun volgende uitvoering en het resultaat van de laatste.",

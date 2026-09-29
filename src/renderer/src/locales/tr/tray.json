@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - Zamanlanmış Görev",
   "scheduledTaskNotificationBody": "\"{{name}}\" çalıştırılıyor...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - Tarama Tamamlandı",
-  "scanCompleteNotificationBody": "Temizlenebilecek {{itemCount}} öğe ({{sizeMB}} MB) bulundu.",
-  "scheduledScanName": "Zamanlanmış Tarama"
+  "scanCompleteNotificationBody": "Temizlenebilecek {{itemCount}} öğe ({{sizeMB}} MB) bulundu."
 }

@@ -4,9 +4,6 @@
   "welcomeTitle": "Bienvenido a SuperSonicCleaner",
   "welcomeDescriptionWindows": "Su limpiador de sistema todo en uno para Windows. SuperSonicCleaner elimina archivos innecesarios, corrige problemas del registro, administra los programas de inicio y mantiene su PC funcionando con rapidez.",
   "welcomeDescriptionOther": "Su limpiador de sistema todo en uno. SuperSonicCleaner elimina archivos innecesarios, administra los programas de inicio y mantiene su equipo funcionando con rapidez.",
-  "featureSmartCleaning": "Limpieza inteligente",
-  "featureFasterBoot": "Inicio más rápido",
-  "featureSafeSecure": "Seguro y protegido",
   "getStarted": "Comenzar",
   "recommendedSetupTitle": "Configuración recomendada",
   "recommendedSetupDescription": "Recomendamos estos ajustes para obtener la mejor experiencia. Puede cambiarlos más tarde en Configuración.",
@@ -21,6 +18,5 @@
   "continue": "Continuar",
   "allSetTitle": "¡Todo está listo!",
   "allSetDescription": "SuperSonicCleaner mantendrá su PC funcionando sin problemas en segundo plano.",
-  "firstScanScheduled": "Su primer análisis automático está programado para el lunes a las 9:00 a. m.",
-  "startCleaning": "Iniciar limpieza"
+  "firstScanScheduled": "Su primer análisis automático está programado para el lunes a las 9:00 a. m."
 }

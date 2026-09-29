@@ -10,28 +10,22 @@
   "anotherRunning": "Já está em curso outra análise de IA. Pode encontrá-la em Preferências → Análise de IA.",
   "continuesInBackground": "A análise continua enquanto utiliza outras vistas. Volte aqui para ver o resultado.",
   "returnToAnalysis": "Voltar à análise",
-  "openTool": "Abrir ferramenta",
   "hubInstructions": "Conclua uma análise ou guarde uma gravação de desempenho, ative a respetiva análise de IA e, em seguida, inicie-a com o botão dedicado. Nada é enviado automaticamente.",
   "tools": {
     "cleaner": {
-      "title": "Limpeza do sistema",
-      "description": "Reveja os candidatos de limpeza detetados através de metadados de ficheiro anónimos. Os rastros de privacidade são excluídos."
+      "title": "Limpeza do sistema"
     },
     "largeFiles": {
-      "title": "Ficheiros grandes",
-      "description": "Reveja quais os ficheiros grandes que merecem uma análise mais atenta, com base no tamanho, na categoria e na antiguidade aproximada."
+      "title": "Ficheiros grandes"
     },
     "duplicates": {
-      "title": "Ficheiros duplicados",
-      "description": "Obtenha sugestões sobre grupos de duplicados a rever. Escolha que ficheiros manter."
+      "title": "Ficheiros duplicados"
     },
     "disk": {
-      "title": "Análise de disco",
-      "description": "Reveja as pastas maiores com base em informações de tamanho agregadas."
+      "title": "Análise de disco"
     },
     "performance": {
-      "title": "Gravações de desempenho",
-      "description": "Relacione a atividade de CPU, memória e disco para investigar uma lentidão, com medições de apoio e verificações sugeridas."
+      "title": "Gravações de desempenho"
     }
   },
   "enable": "Ativar a análise de IA para esta vista",

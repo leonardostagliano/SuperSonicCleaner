@@ -1,8 +1,6 @@
 {
   "pageTitle": "일정",
   "pageScope": "선택한 조건이 충족되면 정해진 시간에 정리, 레지스트리 수정, 업데이트를 실행합니다. 자동 적용을 켜면 확인 없이 작업이 시작됩니다.",
-  "pageDescription": "일정에 따라 검사, 정리 및 업데이트를 자동화합니다",
-  "dismissNudge": "이 카드 숨기기",
   "newScheduleButton": "새 일정",
   "emptyStateTitle": "일정 없음",
   "emptyStateDescription": "만든 일정은 다음 실행 예정 시간과 최근 결과와 함께 여기에 표시됩니다.",

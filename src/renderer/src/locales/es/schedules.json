@@ -1,8 +1,6 @@
 {
   "pageTitle": "Programaciones",
   "pageScope": "Ejecuta limpiezas, correcciones del registro y actualizaciones en horarios establecidos, cuando se cumplen las condiciones que elija. Con la aplicación automática, las acciones se inician sin confirmación.",
-  "pageDescription": "Automatice análisis, limpiezas y actualizaciones según una programación",
-  "dismissNudge": "Ocultar esta tarjeta",
   "newScheduleButton": "Nueva programación",
   "emptyStateTitle": "Sin programaciones",
   "emptyStateDescription": "Las programaciones que cree aparecerán aquí, con su próxima ejecución y el resultado de la última.",

@@ -1,8 +1,6 @@
 {
   "pageTitle": "Plány",
   "pageScope": "Spouští čištění, opravy registru a aktualizace v nastavených časech, když jsou splněny vámi vybrané podmínky. S automatickým použitím se akce spustí bez potvrzení.",
-  "pageDescription": "Automatizujte kontroly, čištění a aktualizace podle plánu",
-  "dismissNudge": "Skrýt tuto kartu",
   "newScheduleButton": "Nový plán",
   "emptyStateTitle": "Žádné plány",
   "emptyStateDescription": "Vámi vytvořené plány se zobrazí zde spolu s dalším spuštěním a výsledkem posledního.",

@@ -2,9 +2,7 @@
   "scanning": "Сканування...",
   "cleaning": "Очищення...",
   "foundLabel": "Знайдено:",
-  "itemsUnit": "елементів",
   "sizeLabel": "Розмір:",
-  "health": "Стан",
   "cancel": "Скасувати",
   "confirm": "Підтвердити",
   "adminBannerMessage": "Для деяких функцій потрібні права адміністратора.",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}} год тому",
   "daysAgo": "{{days}} дн тому",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Що перевіряється"
 }

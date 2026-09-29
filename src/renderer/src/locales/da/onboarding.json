@@ -4,9 +4,6 @@
   "welcomeTitle": "Velkommen til SuperSonicCleaner",
   "welcomeDescriptionWindows": "Din alt-i-en systemrenser til Windows. SuperSonicCleaner fjerner junkfiler, løser problemer i registreringsdatabasen, administrerer opstartsprogrammer og holder din PC kørende hurtigt.",
   "welcomeDescriptionOther": "Din alt-i-en systemrenser. SuperSonicCleaner fjerner junkfiler, administrerer opstartsprogrammer og holder din computer kørende hurtigt.",
-  "featureSmartCleaning": "Smart rengøring",
-  "featureFasterBoot": "Hurtigere opstart",
-  "featureSafeSecure": "Sikker og tryg",
   "getStarted": "Kom i gang",
   "recommendedSetupTitle": "Anbefalet opsætning",
   "recommendedSetupDescription": "Vi anbefaler disse indstillinger for at give dig den bedste oplevelse. Du kan ændre dem senere i Indstillinger.",
@@ -21,6 +18,5 @@
   "continue": "Fortsæt",
   "allSetTitle": "Du er klar!",
   "allSetDescription": "SuperSonicCleaner holder din PC kørende problemfrit i baggrunden.",
-  "firstScanScheduled": "Din første automatiske scanning er planlagt til mandag kl. 09.00.",
-  "startCleaning": "Start rengøring"
+  "firstScanScheduled": "Din første automatiske scanning er planlagt til mandag kl. 09.00."
 }

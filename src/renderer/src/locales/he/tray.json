@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - משימה מתוזמנת",
   "scheduledTaskNotificationBody": "מפעיל את \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - הסריקה הושלמה",
-  "scanCompleteNotificationBody": "נמצאו {{itemCount}} פריטים ({{sizeMB}} MB) שניתן לנקות.",
-  "scheduledScanName": "סריקה מתוזמנת"
+  "scanCompleteNotificationBody": "נמצאו {{itemCount}} פריטים ({{sizeMB}} MB) שניתן לנקות."
 }

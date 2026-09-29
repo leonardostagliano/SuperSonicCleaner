@@ -10,28 +10,22 @@
   "anotherRunning": "En annen AI-analyse kjører allerede. Du finner den under Innstillinger → AI-analyse.",
   "continuesInBackground": "Analysen fortsetter mens du bruker andre visninger. Kom tilbake hit for å se resultatet.",
   "returnToAnalysis": "Gå tilbake til analysen",
-  "openTool": "Åpne verktøy",
   "hubInstructions": "Fullfør en skanning eller lagre et ytelsesopptak, aktiver AI-analyse for det, og start den deretter med den egne knappen. Ingenting sendes automatisk.",
   "tools": {
     "cleaner": {
-      "title": "Systemopprydding",
-      "description": "Se gjennom skannede oppryddingskandidater ved hjelp av anonyme filmetadata. Personvernspor er utelatt."
+      "title": "Systemopprydding"
     },
     "largeFiles": {
-      "title": "Store filer",
-      "description": "Se gjennom hvilke store filer som fortjener en nærmere titt, basert på størrelse, kategori og omtrentlig alder."
+      "title": "Store filer"
     },
     "duplicates": {
-      "title": "Dupliserte filer",
-      "description": "Få forslag om hvilke duplikatgrupper som bør vurderes. Du velger selv hvilke filer som skal beholdes."
+      "title": "Dupliserte filer"
     },
     "disk": {
-      "title": "Diskanalyse",
-      "description": "Se gjennom de største mappene ved hjelp av aggregert størrelsesinformasjon."
+      "title": "Diskanalyse"
     },
     "performance": {
-      "title": "Ytelsesopptak",
-      "description": "Sett CPU-, minne- og diskaktivitet i sammenheng for å undersøke en treghet, med støttende målinger og forslag til hva som bør kontrolleres."
+      "title": "Ytelsesopptak"
     }
   },
   "enable": "Aktiver AI-analyse for denne visningen",

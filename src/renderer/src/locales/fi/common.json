@@ -2,9 +2,7 @@
   "scanning": "Skannataan...",
   "cleaning": "Puhdistetaan...",
   "foundLabel": "Löydetty:",
-  "itemsUnit": "kohdetta",
   "sizeLabel": "Koko:",
-  "health": "Kunto",
   "cancel": "Peruuta",
   "confirm": "Vahvista",
   "adminBannerMessage": "Jotkin ominaisuudet edellyttävät järjestelmänvalvojan oikeuksia.",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}} h sitten",
   "daysAgo": "{{days}} pv sitten",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Mitä tarkistetaan"
 }

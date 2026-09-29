@@ -1,8 +1,6 @@
 {
   "pageTitle": "计划任务",
   "pageScope": "在满足您所选条件时，于设定的时间运行清理、注册表修复和更新。启用自动应用后，操作将无需确认即可开始。",
-  "pageDescription": "按计划自动执行扫描、清理和更新",
-  "dismissNudge": "隐藏此卡片",
   "newScheduleButton": "新建计划任务",
   "emptyStateTitle": "暂无计划任务",
   "emptyStateDescription": "您创建的计划任务会显示在此处，并附带下次运行时间和上次运行结果。",

@@ -4,9 +4,6 @@
   "welcomeTitle": "SuperSonicCleaner'ya Hoş Geldiniz",
   "welcomeDescriptionWindows": "Hepsi bir arada Windows sistem temizleyiciniz. SuperSonicCleaner gereksiz dosyaları kaldırır, kayıt defteri sorunlarını düzeltir, başlangıç programlarını yönetir ve bilgisayarınızın hızlı çalışmasını sağlar.",
   "welcomeDescriptionOther": "Hepsi bir arada sistem temizleyiciniz. SuperSonicCleaner gereksiz dosyaları kaldırır, başlangıç programlarını yönetir ve bilgisayarınızın hızlı çalışmasını sağlar.",
-  "featureSmartCleaning": "Akıllı Temizlik",
-  "featureFasterBoot": "Daha Hızlı Açılış",
-  "featureSafeSecure": "Güvenli ve Emniyetli",
   "getStarted": "Hemen Başlayın",
   "recommendedSetupTitle": "Önerilen Kurulum",
   "recommendedSetupDescription": "En iyi deneyim için bu ayarları öneriyoruz. Bunları daha sonra Ayarlar bölümünden değiştirebilirsiniz.",
@@ -21,6 +18,5 @@
   "continue": "Devam Et",
   "allSetTitle": "Her Şey Hazır!",
   "allSetDescription": "SuperSonicCleaner, bilgisayarınızın arka planda sorunsuz ve hızlı çalışmasını sağlayacak.",
-  "firstScanScheduled": "İlk otomatik taramanız Pazartesi saat 09:00 için planlandı.",
-  "startCleaning": "Temizliği Başlat"
+  "firstScanScheduled": "İlk otomatik taramanız Pazartesi saat 09:00 için planlandı."
 }

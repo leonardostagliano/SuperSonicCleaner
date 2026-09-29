@@ -1,8 +1,6 @@
 {
   "pageTitle": "Aikataulut",
   "pageScope": "Suorittaa puhdistuksia, rekisterikorjauksia ja päivityksiä asetettuina aikoina, kun valitsemasi ehdot täyttyvät. Automaattisella käytöllä toiminnot alkavat ilman vahvistusta.",
-  "pageDescription": "Automatisoi tarkistukset, puhdistukset ja päivitykset aikataulun mukaan",
-  "dismissNudge": "Piilota tämä kortti",
   "newScheduleButton": "Uusi aikataulu",
   "emptyStateTitle": "Ei aikatauluja",
   "emptyStateDescription": "Luomasi aikataulut näkyvät täällä seuraavan suorituksen ja edellisen tuloksen kanssa.",

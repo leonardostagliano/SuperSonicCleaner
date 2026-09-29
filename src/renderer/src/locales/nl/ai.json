@@ -10,28 +10,22 @@
   "anotherRunning": "Er wordt al een andere AI-analyse uitgevoerd. U vindt deze in Voorkeuren → AI-analyse.",
   "continuesInBackground": "De analyse gaat door terwijl u andere weergaven gebruikt. Kom hier terug om het resultaat te zien.",
   "returnToAnalysis": "Terug naar analyse",
-  "openTool": "Hulpmiddel openen",
   "hubInstructions": "Voltooi een scan of sla een prestatieopname op, schakel de AI-analyse ervan in en start deze vervolgens met de bijbehorende knop. Er wordt niets automatisch verzonden.",
   "tools": {
     "cleaner": {
-      "title": "Systeemopschoning",
-      "description": "Bekijk gescande opschoningskandidaten met anonieme bestandsmetadata. Privacysporen zijn uitgesloten."
+      "title": "Systeemopschoning"
     },
     "largeFiles": {
-      "title": "Grote bestanden",
-      "description": "Bekijk welke grote bestanden een nadere blik verdienen, op basis van grootte, categorie en geschatte ouderdom."
+      "title": "Grote bestanden"
     },
     "duplicates": {
-      "title": "Dubbele bestanden",
-      "description": "Ontvang suggesties over te controleren groepen dubbele bestanden. U kiest welke bestanden u wilt behouden."
+      "title": "Dubbele bestanden"
     },
     "disk": {
-      "title": "Schijfanalyse",
-      "description": "Bekijk de grootste mappen aan de hand van geaggregeerde groottegegevens."
+      "title": "Schijfanalyse"
     },
     "performance": {
-      "title": "Prestatieopnames",
-      "description": "Breng CPU-, geheugen- en schijfactiviteit met elkaar in verband om een vertraging te onderzoeken, met ondersteunende metingen en voorgestelde controles."
+      "title": "Prestatieopnames"
     }
   },
   "enable": "AI-analyse voor deze weergave inschakelen",

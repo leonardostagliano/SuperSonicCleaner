@@ -4,9 +4,6 @@
   "welcomeTitle": "Tervetuloa SuperSonicCleaneriin",
   "welcomeDescriptionWindows": "Windows-järjestelmän monipuolinen puhdistustyökalu. SuperSonicCleaner poistaa turhat tiedostot, korjaa rekisteriongelmia, hallitsee käynnistysohjelmia ja pitää tietokoneesi nopeana.",
   "welcomeDescriptionOther": "Monipuolinen järjestelmän puhdistustyökalu. SuperSonicCleaner poistaa turhat tiedostot, hallitsee käynnistysohjelmia ja pitää tietokoneesi nopeana.",
-  "featureSmartCleaning": "Älykäs puhdistus",
-  "featureFasterBoot": "Nopeampi käynnistys",
-  "featureSafeSecure": "Turvallinen ja suojattu",
   "getStarted": "Aloita",
   "recommendedSetupTitle": "Suositellut asetukset",
   "recommendedSetupDescription": "Suosittelemme näitä asetuksia parhaan käyttökokemuksen varmistamiseksi. Voit muuttaa niitä myöhemmin Asetuksissa.",
@@ -21,6 +18,5 @@
   "continue": "Jatka",
   "allSetTitle": "Kaikki on valmista!",
   "allSetDescription": "SuperSonicCleaner pitää tietokoneesi toimimassa sujuvasti taustalla.",
-  "firstScanScheduled": "Ensimmäinen automaattinen tarkistus on ajoitettu maanantaille klo 9.00.",
-  "startCleaning": "Aloita puhdistus"
+  "firstScanScheduled": "Ensimmäinen automaattinen tarkistus on ajoitettu maanantaille klo 9.00."
 }

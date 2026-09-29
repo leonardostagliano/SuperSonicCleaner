@@ -10,28 +10,22 @@
   "anotherRunning": "Başka bir AI analizi zaten çalışıyor. Onu Tercihler → AI analizi bölümünde bulabilirsiniz.",
   "continuesInBackground": "Siz başka görünümleri kullanırken analiz devam eder. Sonucu görmek için buraya dönün.",
   "returnToAnalysis": "Analize dön",
-  "openTool": "Aracı aç",
   "hubInstructions": "Bir tarama tamamlayın veya bir performans kaydı kaydedin, AI analizini etkinleştirin, ardından özel düğmeyle başlatın. Hiçbir şey otomatik olarak gönderilmez.",
   "tools": {
     "cleaner": {
-      "title": "Sistem temizliği",
-      "description": "Anonim dosya meta verilerini kullanarak taranan temizlik adaylarını inceleyin. Gizlilik izleri hariç tutulur."
+      "title": "Sistem temizliği"
     },
     "largeFiles": {
-      "title": "Büyük dosyalar",
-      "description": "Boyut, kategori ve yaklaşık yaşı kullanarak hangi büyük dosyaların daha yakından incelenmeyi hak ettiğini belirleyin."
+      "title": "Büyük dosyalar"
     },
     "duplicates": {
-      "title": "Yinelenen dosyalar",
-      "description": "İncelenecek yinelenen dosya grupları hakkında öneriler alın. Hangi dosyaların tutulacağına siz karar verirsiniz."
+      "title": "Yinelenen dosyalar"
     },
     "disk": {
-      "title": "Disk analizi",
-      "description": "Toplam boyut bilgilerini kullanarak en büyük klasörleri inceleyin."
+      "title": "Disk analizi"
     },
     "performance": {
-      "title": "Performans kayıtları",
-      "description": "Bir yavaşlamayı araştırmak için CPU, bellek ve disk etkinliğini, destekleyici ölçümler ve önerilen kontrollerle ilişkilendirin."
+      "title": "Performans kayıtları"
     }
   },
   "enable": "Bu görünüm için AI analizini etkinleştir",

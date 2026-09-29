@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - مهمة مجدولة",
   "scheduledTaskNotificationBody": "جارٍ تشغيل \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - اكتمل الفحص",
-  "scanCompleteNotificationBody": "تم العثور على {{itemCount}} عنصرًا ({{sizeMB}} ميجابايت) يمكن تنظيفها.",
-  "scheduledScanName": "فحص مجدول"
+  "scanCompleteNotificationBody": "تم العثور على {{itemCount}} عنصرًا ({{sizeMB}} ميجابايت) يمكن تنظيفها."
 }

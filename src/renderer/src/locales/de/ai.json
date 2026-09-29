@@ -10,28 +10,22 @@
   "anotherRunning": "Eine andere AI-Analyse läuft bereits. Sie finden sie unter Einstellungen → AI-Analyse.",
   "continuesInBackground": "Die Analyse läuft weiter, während Sie andere Ansichten verwenden. Kehren Sie hierher zurück, um das Ergebnis zu sehen.",
   "returnToAnalysis": "Zur Analyse zurückkehren",
-  "openTool": "Werkzeug öffnen",
   "hubInstructions": "Schließen Sie einen Scan ab, oder speichern Sie eine Leistungsaufzeichnung, aktivieren Sie deren AI-Analyse, und starten Sie sie dann über die entsprechende Schaltfläche. Es wird nichts automatisch gesendet.",
   "tools": {
     "cleaner": {
-      "title": "Systembereinigung",
-      "description": "Prüfen Sie gescannte Bereinigungskandidaten anhand anonymer Dateimetadaten. Datenschutzspuren sind ausgeschlossen."
+      "title": "Systembereinigung"
     },
     "largeFiles": {
-      "title": "Große Dateien",
-      "description": "Prüfen Sie anhand von Größe, Kategorie und ungefährem Alter, welche großen Dateien eine genauere Betrachtung verdienen."
+      "title": "Große Dateien"
     },
     "duplicates": {
-      "title": "Duplikate",
-      "description": "Erhalten Sie Vorschläge zu Duplikatgruppen, die geprüft werden sollten. Sie entscheiden, welche Dateien behalten werden."
+      "title": "Duplikate"
     },
     "disk": {
-      "title": "Datenträgeranalyse",
-      "description": "Prüfen Sie die größten Ordner anhand aggregierter Größenangaben."
+      "title": "Datenträgeranalyse"
     },
     "performance": {
-      "title": "Leistungsaufzeichnungen",
-      "description": "Verknüpfen Sie CPU-, Arbeitsspeicher- und Datenträgeraktivität, um eine Verlangsamung zu untersuchen, mit unterstützenden Messwerten und vorgeschlagenen Prüfungen."
+      "title": "Leistungsaufzeichnungen"
     }
   },
   "enable": "AI-Analyse für diese Ansicht aktivieren",

@@ -1,8 +1,6 @@
 {
   "pageTitle": "Planifications",
   "pageScope": "Exécute des nettoyages, des corrections du registre et des mises à jour à des heures définies, lorsque les conditions que vous choisissez sont remplies. Avec l’application automatique, les actions démarrent sans confirmation.",
-  "pageDescription": "Automatisez les analyses, nettoyages et mises à jour selon une planification",
-  "dismissNudge": "Masquer cette carte",
   "newScheduleButton": "Nouvelle planification",
   "emptyStateTitle": "Aucune planification",
   "emptyStateDescription": "Les planifications que vous créez apparaissent ici, avec leur prochaine exécution et le résultat de la dernière.",

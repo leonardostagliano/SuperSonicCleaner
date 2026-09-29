@@ -4,9 +4,6 @@
   "welcomeTitle": "Chào mừng đến với SuperSonicCleaner",
   "welcomeDescriptionWindows": "Trình dọn dẹp hệ thống Windows tất cả trong một của bạn. SuperSonicCleaner xóa các tệp rác, khắc phục sự cố registry, quản lý chương trình khởi động và giúp PC của bạn luôn chạy nhanh.",
   "welcomeDescriptionOther": "Trình dọn dẹp hệ thống tất cả trong một của bạn. SuperSonicCleaner xóa các tệp rác, quản lý chương trình khởi động và giúp máy tính của bạn luôn chạy nhanh.",
-  "featureSmartCleaning": "Dọn dẹp thông minh",
-  "featureFasterBoot": "Khởi động nhanh hơn",
-  "featureSafeSecure": "An toàn & Bảo mật",
   "getStarted": "Bắt đầu",
   "recommendedSetupTitle": "Thiết lập được đề xuất",
   "recommendedSetupDescription": "Chúng tôi đề xuất các cài đặt này để có trải nghiệm tốt nhất. Bạn có thể thay đổi sau trong Cài đặt.",
@@ -21,6 +18,5 @@
   "continue": "Tiếp tục",
   "allSetTitle": "Mọi thứ đã sẵn sàng!",
   "allSetDescription": "SuperSonicCleaner sẽ giúp PC của bạn luôn chạy trơn tru trong nền.",
-  "firstScanScheduled": "Lần quét tự động đầu tiên của bạn được lên lịch vào Thứ Hai lúc 9:00 SA.",
-  "startCleaning": "Bắt đầu dọn dẹp"
+  "firstScanScheduled": "Lần quét tự động đầu tiên của bạn được lên lịch vào Thứ Hai lúc 9:00 SA."
 }

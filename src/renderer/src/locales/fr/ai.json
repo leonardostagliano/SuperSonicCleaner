@@ -10,28 +10,22 @@
   "anotherRunning": "Une autre analyse IA est déjà en cours. Vous la trouverez dans Préférences → Analyse IA.",
   "continuesInBackground": "L’analyse continue pendant que vous utilisez d’autres vues. Revenez ici pour voir le résultat.",
   "returnToAnalysis": "Revenir à l’analyse",
-  "openTool": "Ouvrir l’outil",
   "hubInstructions": "Terminez une analyse ou enregistrez un enregistrement de performances, activez son analyse IA, puis démarrez-la avec le bouton dédié. Rien n’est envoyé automatiquement.",
   "tools": {
     "cleaner": {
-      "title": "Nettoyage du système",
-      "description": "Examinez les éléments de nettoyage analysés à l’aide de métadonnées de fichiers anonymes. Les traces de confidentialité sont exclues."
+      "title": "Nettoyage du système"
     },
     "largeFiles": {
-      "title": "Fichiers volumineux",
-      "description": "Déterminez quels fichiers volumineux méritent un examen plus approfondi, à l’aide de la taille, de la catégorie et de l’ancienneté approximative."
+      "title": "Fichiers volumineux"
     },
     "duplicates": {
-      "title": "Fichiers en double",
-      "description": "Obtenez des suggestions sur les groupes de doublons à examiner. Vous choisissez les fichiers à conserver."
+      "title": "Fichiers en double"
     },
     "disk": {
-      "title": "Analyse de disque",
-      "description": "Examinez les dossiers les plus volumineux à l’aide d’informations de taille agrégées."
+      "title": "Analyse de disque"
     },
     "performance": {
-      "title": "Enregistrements de performances",
-      "description": "Mettez en relation l’activité du CPU, de la mémoire et du disque pour étudier un ralentissement, avec des mesures à l’appui et des vérifications suggérées."
+      "title": "Enregistrements de performances"
     }
   },
   "enable": "Activer l’analyse IA pour cette vue",

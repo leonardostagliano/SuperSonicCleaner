@@ -1,8 +1,6 @@
 {
   "pageTitle": "Agendamentos",
   "pageScope": "Executa limpezas, correções de registro e atualizações em horários definidos, quando as condições que você escolher forem atendidas. Com a aplicação automática, as ações começam sem confirmação.",
-  "pageDescription": "Automatize verificações, limpezas e atualizações em um agendamento",
-  "dismissNudge": "Ocultar este cartão",
   "newScheduleButton": "Novo agendamento",
   "emptyStateTitle": "Sem agendamentos",
   "emptyStateDescription": "Os agendamentos que você criar aparecem aqui, com sua próxima execução e o resultado da última.",

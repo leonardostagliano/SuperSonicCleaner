@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner – activitate programată",
   "scheduledTaskNotificationBody": "Se rulează „{{name}}”...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner – scanare finalizată",
-  "scanCompleteNotificationBody": "Au fost găsite {{itemCount}} elemente ({{sizeMB}} MB) care pot fi curățate.",
-  "scheduledScanName": "Scanare programată"
+  "scanCompleteNotificationBody": "Au fost găsite {{itemCount}} elemente ({{sizeMB}} MB) care pot fi curățate."
 }

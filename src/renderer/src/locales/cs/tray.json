@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner – naplánovaná úloha",
   "scheduledTaskNotificationBody": "Spouští se „{{name}}“…",
   "scanCompleteNotificationTitle": "SuperSonicCleaner – kontrola dokončena",
-  "scanCompleteNotificationBody": "Bylo nalezeno {{itemCount}} položek ({{sizeMB}} MB), které lze vyčistit.",
-  "scheduledScanName": "Naplánovaná kontrola"
+  "scanCompleteNotificationBody": "Bylo nalezeno {{itemCount}} položek ({{sizeMB}} MB), které lze vyčistit."
 }

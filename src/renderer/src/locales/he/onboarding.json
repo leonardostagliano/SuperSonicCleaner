@@ -4,9 +4,6 @@
   "welcomeTitle": "ברוך הבא ל-SuperSonicCleaner",
   "welcomeDescriptionWindows": "מנקה המערכת הכול-באחד שלך עבור Windows. ‏SuperSonicCleaner מסיר קבצי זבל, מתקן בעיות ברישום, מנהל תוכניות אתחול ושומר על המחשב שלך מהיר.",
   "welcomeDescriptionOther": "מנקה המערכת הכול-באחד שלך. ‏SuperSonicCleaner מסיר קבצי זבל, מנהל תוכניות אתחול ושומר על המחשב שלך מהיר.",
-  "featureSmartCleaning": "ניקוי חכם",
-  "featureFasterBoot": "אתחול מהיר יותר",
-  "featureSafeSecure": "בטוח ומאובטח",
   "getStarted": "התחל",
   "recommendedSetupTitle": "הגדרה מומלצת",
   "recommendedSetupDescription": "אנו ממליצים על הגדרות אלה לקבלת החוויה הטובה ביותר. תוכל לשנות אותן מאוחר יותר בהגדרות.",
@@ -21,6 +18,5 @@
   "continue": "המשך",
   "allSetTitle": "הכול מוכן!",
   "allSetDescription": "SuperSonicCleaner ישמור על פעולת המחשב שלך בצורה חלקה ברקע.",
-  "firstScanScheduled": "הסריקה האוטומטית הראשונה שלך מתוזמנת ליום שני בשעה 9:00.",
-  "startCleaning": "התחל בניקוי"
+  "firstScanScheduled": "הסריקה האוטומטית הראשונה שלך מתוזמנת ליום שני בשעה 9:00."
 }

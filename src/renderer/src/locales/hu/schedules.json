@@ -1,8 +1,6 @@
 {
   "pageTitle": "Ütemezések",
   "pageScope": "Beállított időpontokban futtat tisztításokat, rendszerleíró adatbázis-javításokat és frissítéseket, amikor az Ön által választott feltételek teljesülnek. Automatikus alkalmazás esetén a műveletek megerősítés nélkül indulnak.",
-  "pageDescription": "Vizsgálatok, tisztítások és frissítések automatizálása ütemezés szerint",
-  "dismissNudge": "Kártya elrejtése",
   "newScheduleButton": "Új ütemezés",
   "emptyStateTitle": "Nincsenek ütemezések",
   "emptyStateDescription": "Az Ön által létrehozott ütemezések itt jelennek meg, a következő futtatással és az utolsó eredményével együtt.",

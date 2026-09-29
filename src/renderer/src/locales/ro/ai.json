@@ -10,28 +10,22 @@
   "anotherRunning": "O altă analiză AI rulează deja. O găsiți în Preferințe → Analiză AI.",
   "continuesInBackground": "Analiza continuă cât timp folosiți alte ecrane. Reveniți aici pentru a vedea rezultatul.",
   "returnToAnalysis": "Reveniți la analiză",
-  "openTool": "Deschideți instrumentul",
   "hubInstructions": "Finalizați o scanare sau salvați o înregistrare de performanță, activați analiza AI pentru aceasta, apoi porniți-o cu butonul dedicat. Nimic nu este trimis automat.",
   "tools": {
     "cleaner": {
-      "title": "Curățarea sistemului",
-      "description": "Revizuiți candidații de curățare scanați folosind metadate anonime ale fișierelor. Urmele de confidențialitate sunt excluse."
+      "title": "Curățarea sistemului"
     },
     "largeFiles": {
-      "title": "Fișiere mari",
-      "description": "Revizuiți care fișiere mari merită o privire mai atentă, în funcție de dimensiune, categorie și vechime aproximativă."
+      "title": "Fișiere mari"
     },
     "duplicates": {
-      "title": "Fișiere duplicate",
-      "description": "Primiți sugestii despre ce grupuri de duplicate să revizuiți. Alegeți dvs. ce fișiere să păstrați."
+      "title": "Fișiere duplicate"
     },
     "disk": {
-      "title": "Analiza discului",
-      "description": "Revizuiți cele mai mari foldere folosind informații agregate despre dimensiune."
+      "title": "Analiza discului"
     },
     "performance": {
-      "title": "Înregistrări de performanță",
-      "description": "Corelați activitatea CPU, memoriei și discului pentru a investiga o încetinire, cu măsurători justificative și verificări sugerate."
+      "title": "Înregistrări de performanță"
     }
   },
   "enable": "Activați analiza AI pentru acest ecran",

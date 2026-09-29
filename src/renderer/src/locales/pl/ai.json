@@ -10,28 +10,22 @@
   "anotherRunning": "Inna analiza AI jest już uruchomiona. Znajdziesz ją w Preferencjach → Analiza AI.",
   "continuesInBackground": "Analiza trwa nadal, gdy korzystasz z innych widoków. Wróć tutaj, aby zobaczyć wynik.",
   "returnToAnalysis": "Wróć do analizy",
-  "openTool": "Otwórz narzędzie",
   "hubInstructions": "Ukończ skanowanie lub zapisz nagranie wydajności, włącz dla niego analizę AI, a następnie uruchom ją odpowiednim przyciskiem. Nic nie jest wysyłane automatycznie.",
   "tools": {
     "cleaner": {
-      "title": "Oczyszczanie systemu",
-      "description": "Przejrzyj zeskanowane kandydatury do czyszczenia przy użyciu anonimowych metadanych plików. Ślady prywatności są wykluczone."
+      "title": "Oczyszczanie systemu"
     },
     "largeFiles": {
-      "title": "Duże pliki",
-      "description": "Sprawdź, które duże pliki warto przejrzeć bliżej, na podstawie rozmiaru, kategorii i przybliżonego wieku."
+      "title": "Duże pliki"
     },
     "duplicates": {
-      "title": "Zduplikowane pliki",
-      "description": "Otrzymaj sugestie dotyczące grup duplikatów do przejrzenia. Sam wybierasz, które pliki zachować."
+      "title": "Zduplikowane pliki"
     },
     "disk": {
-      "title": "Analiza dysku",
-      "description": "Przejrzyj największe foldery przy użyciu zagregowanych informacji o rozmiarze."
+      "title": "Analiza dysku"
     },
     "performance": {
-      "title": "Nagrania wydajności",
-      "description": "Powiąż aktywność CPU, pamięci i dysku, aby zbadać spowolnienie, wraz z pomiarami pomocniczymi i sugerowanymi kontrolami."
+      "title": "Nagrania wydajności"
     }
   },
   "enable": "Włącz analizę AI dla tego widoku",

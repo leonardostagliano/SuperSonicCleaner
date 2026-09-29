@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - निर्धारित कार्य",
   "scheduledTaskNotificationBody": "\"{{name}}\" चल रहा है...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - स्कैन पूर्ण",
-  "scanCompleteNotificationBody": "साफ़ किए जा सकने वाले {{itemCount}} आइटम ({{sizeMB}} MB) मिले।",
-  "scheduledScanName": "निर्धारित स्कैन"
+  "scanCompleteNotificationBody": "साफ़ किए जा सकने वाले {{itemCount}} आइटम ({{sizeMB}} MB) मिले।"
 }

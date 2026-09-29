@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - 排程工作",
   "scheduledTaskNotificationBody": "正在執行「{{name}}」...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - 掃描完成",
-  "scanCompleteNotificationBody": "找到 {{itemCount}} 個可清理的項目（{{sizeMB}} MB）。",
-  "scheduledScanName": "排程掃描"
+  "scanCompleteNotificationBody": "找到 {{itemCount}} 個可清理的項目（{{sizeMB}} MB）。"
 }

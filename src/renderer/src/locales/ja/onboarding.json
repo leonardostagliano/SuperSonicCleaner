@@ -4,9 +4,6 @@
   "welcomeTitle": "SuperSonicCleaner へようこそ",
   "welcomeDescriptionWindows": "Windows 向けのオールインワン システムクリーナーです。SuperSonicCleaner はジャンク ファイルを削除し、レジストリの問題を修復し、スタートアップ プログラムを管理して、PC を快適に保ちます。",
   "welcomeDescriptionOther": "オールインワンのシステムクリーナーです。SuperSonicCleaner はジャンク ファイルを削除し、スタートアップ プログラムを管理して、コンピューターを快適に保ちます。",
-  "featureSmartCleaning": "スマート クリーニング",
-  "featureFasterBoot": "起動を高速化",
-  "featureSafeSecure": "安全・安心",
   "getStarted": "開始",
   "recommendedSetupTitle": "推奨設定",
   "recommendedSetupDescription": "最適にご利用いただくため、これらの設定をおすすめします。これは後で設定から変更できます。",
@@ -21,6 +18,5 @@
   "continue": "続行",
   "allSetTitle": "準備完了です！",
   "allSetDescription": "SuperSonicCleaner がバックグラウンドで PC を快適に動作させ続けます。",
-  "firstScanScheduled": "最初の自動スキャンは月曜日の午前 9:00 に予定されています。",
-  "startCleaning": "クリーニングを開始"
+  "firstScanScheduled": "最初の自動スキャンは月曜日の午前 9:00 に予定されています。"
 }

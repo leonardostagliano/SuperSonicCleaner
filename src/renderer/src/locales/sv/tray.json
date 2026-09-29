@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - Schemalagd aktivitet",
   "scheduledTaskNotificationBody": "Kör \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - Genomsökning slutförd",
-  "scanCompleteNotificationBody": "Hittade {{itemCount}} objekt ({{sizeMB}} MB) som kan rensas.",
-  "scheduledScanName": "Schemalagd genomsökning"
+  "scanCompleteNotificationBody": "Hittade {{itemCount}} objekt ({{sizeMB}} MB) som kan rensas."
 }

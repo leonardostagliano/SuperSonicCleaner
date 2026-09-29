@@ -10,28 +10,22 @@
   "anotherRunning": "Jiná analýza AI již probíhá. Najdete ji v Předvolby → Analýza AI.",
   "continuesInBackground": "Analýza pokračuje, i když používáte jiná zobrazení. Vraťte se sem a zobrazte výsledek.",
   "returnToAnalysis": "Vrátit se k analýze",
-  "openTool": "Otevřít nástroj",
   "hubInstructions": "Dokončete kontrolu nebo uložte záznam výkonu, zapněte pro něj analýzu AI a poté ji spusťte příslušným tlačítkem. Nic se neodesílá automaticky.",
   "tools": {
     "cleaner": {
-      "title": "Vyčištění systému",
-      "description": "Projděte zkontrolované kandidáty k vyčištění pomocí anonymních metadat souborů. Stopy soukromí jsou vyloučeny."
+      "title": "Vyčištění systému"
     },
     "largeFiles": {
-      "title": "Velké soubory",
-      "description": "Projděte, které velké soubory stojí za bližší pohled, podle velikosti, kategorie a přibližného stáří."
+      "title": "Velké soubory"
     },
     "duplicates": {
-      "title": "Duplicitní soubory",
-      "description": "Získejte návrhy, které skupiny duplicit projít. Sami vybíráte, které soubory zachovat."
+      "title": "Duplicitní soubory"
     },
     "disk": {
-      "title": "Analýza disku",
-      "description": "Projděte největší složky pomocí agregovaných informací o velikosti."
+      "title": "Analýza disku"
     },
     "performance": {
-      "title": "Záznamy výkonu",
-      "description": "Propojte aktivitu CPU, paměti a disku k prošetření zpomalení, s podpůrnými měřeními a navrhovanými kontrolami."
+      "title": "Záznamy výkonu"
     }
   },
   "enable": "Zapnout analýzu AI pro toto zobrazení",

@@ -10,28 +10,22 @@
   "anotherRunning": "已有另一項 AI 分析正在執行中。您可以在「偏好設定 → AI 分析」中找到它。",
   "continuesInBackground": "當您使用其他畫面時，分析仍會繼續進行。返回此處即可查看結果。",
   "returnToAnalysis": "返回分析",
-  "openTool": "開啟工具",
   "hubInstructions": "完成一次掃描或儲存一次效能記錄，啟用其 AI 分析，然後使用專用按鈕開始。不會自動傳送任何內容。",
   "tools": {
     "cleaner": {
-      "title": "系統清理",
-      "description": "使用匿名檔案中繼資料檢視已掃描到的可清理項目。隱私痕跡不包含在內。"
+      "title": "系統清理"
     },
     "largeFiles": {
-      "title": "大型檔案",
-      "description": "根據大小、類別與大致存在時間，檢視哪些大型檔案值得進一步查看。"
+      "title": "大型檔案"
     },
     "duplicates": {
-      "title": "重複檔案",
-      "description": "取得需要檢視的重複檔案群組建議。要保留哪些檔案由您決定。"
+      "title": "重複檔案"
     },
     "disk": {
-      "title": "磁碟分析",
-      "description": "使用彙總的大小資訊檢視最大的資料夾。"
+      "title": "磁碟分析"
     },
     "performance": {
-      "title": "效能記錄",
-      "description": "關聯 CPU、記憶體與磁碟活動以調查變慢的原因，並提供相關測量資料與建議的檢查項目。"
+      "title": "效能記錄"
     }
   },
   "enable": "為此畫面啟用 AI 分析",

@@ -1,8 +1,6 @@
 {
   "pageTitle": "排程",
   "pageScope": "在您所選條件符合時，於設定的時間執行清理、登錄檔修復與更新。啟用自動套用後，操作將不需確認即可開始。",
-  "pageDescription": "依排程自動執行掃描、清理與更新",
-  "dismissNudge": "隱藏此卡片",
   "newScheduleButton": "新增排程",
   "emptyStateTitle": "尚無排程",
   "emptyStateDescription": "您建立的排程會顯示在此處，並附上下次執行時間與上次執行結果。",

@@ -4,9 +4,6 @@
   "welcomeTitle": "欢迎使用 SuperSonicCleaner",
   "welcomeDescriptionWindows": "一站式 Windows 系统清理工具。SuperSonicCleaner 可清理垃圾文件、修复注册表问题、管理启动程序，并让您的 PC 保持快速运行。",
   "welcomeDescriptionOther": "一站式系统清理工具。SuperSonicCleaner 可清理垃圾文件、管理启动程序，并让您的计算机保持快速运行。",
-  "featureSmartCleaning": "智能清理",
-  "featureFasterBoot": "更快启动",
-  "featureSafeSecure": "安全可靠",
   "getStarted": "开始使用",
   "recommendedSetupTitle": "推荐设置",
   "recommendedSetupDescription": "我们建议启用以下设置，以获得最佳体验。您稍后可以在“设置”中更改它们。",
@@ -21,6 +18,5 @@
   "continue": "继续",
   "allSetTitle": "一切就绪！",
   "allSetDescription": "SuperSonicCleaner 会在后台让您的 PC 保持顺畅运行。",
-  "firstScanScheduled": "您的首次自动扫描已安排在周一上午 9:00。",
-  "startCleaning": "开始清理"
+  "firstScanScheduled": "您的首次自动扫描已安排在周一上午 9:00。"
 }

@@ -1,8 +1,6 @@
 {
   "pageTitle": "Lịch",
   "pageScope": "Chạy dọn dẹp, sửa registry và cập nhật vào thời điểm đã đặt, khi các điều kiện bạn chọn được đáp ứng. Khi bật tự động áp dụng, các thao tác sẽ bắt đầu mà không cần xác nhận.",
-  "pageDescription": "Tự động hóa quét, dọn dẹp và cập nhật theo lịch",
-  "dismissNudge": "Ẩn thẻ này",
   "newScheduleButton": "Lịch mới",
   "emptyStateTitle": "Không có lịch nào",
   "emptyStateDescription": "Các lịch bạn tạo sẽ xuất hiện tại đây, cùng lượt chạy tiếp theo và kết quả của lượt gần nhất.",

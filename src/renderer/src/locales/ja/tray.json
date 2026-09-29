@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - スケジュールされたタスク",
   "scheduledTaskNotificationBody": "\"{{name}}\" を実行しています...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - スキャン完了",
-  "scanCompleteNotificationBody": "クリーンアップ可能な項目が {{itemCount}} 件（{{sizeMB}} MB）見つかりました。",
-  "scheduledScanName": "スケジュールされたスキャン"
+  "scanCompleteNotificationBody": "クリーンアップ可能な項目が {{itemCount}} 件（{{sizeMB}} MB）見つかりました。"
 }

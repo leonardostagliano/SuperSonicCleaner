@@ -10,28 +10,22 @@
   "anotherRunning": "Một phân tích AI khác đang chạy. Bạn có thể tìm thấy nó trong Tùy chọn → Phân tích AI.",
   "continuesInBackground": "Quá trình phân tích tiếp tục khi bạn sử dụng các trang khác. Quay lại đây để xem kết quả.",
   "returnToAnalysis": "Quay lại phân tích",
-  "openTool": "Mở công cụ",
   "hubInstructions": "Hoàn tất một lượt quét hoặc lưu một bản ghi hiệu năng, bật phân tích AI cho nó, rồi bắt đầu bằng nút riêng. Không có gì được gửi đi tự động.",
   "tools": {
     "cleaner": {
-      "title": "Dọn dẹp hệ thống",
-      "description": "Xem lại các mục có thể dọn dẹp đã quét được bằng siêu dữ liệu tệp ẩn danh. Dấu vết quyền riêng tư không được đưa vào."
+      "title": "Dọn dẹp hệ thống"
     },
     "largeFiles": {
-      "title": "Tệp lớn",
-      "description": "Xem lại những tệp lớn nào đáng để kiểm tra kỹ hơn, dựa trên kích thước, danh mục và tuổi tệp gần đúng."
+      "title": "Tệp lớn"
     },
     "duplicates": {
-      "title": "Tệp trùng lặp",
-      "description": "Nhận gợi ý về các nhóm tệp trùng lặp cần xem lại. Bạn là người chọn tệp nào sẽ giữ lại."
+      "title": "Tệp trùng lặp"
     },
     "disk": {
-      "title": "Phân tích ổ đĩa",
-      "description": "Xem lại các thư mục lớn nhất bằng thông tin kích thước tổng hợp."
+      "title": "Phân tích ổ đĩa"
     },
     "performance": {
-      "title": "Bản ghi hiệu năng",
-      "description": "Kết nối hoạt động CPU, bộ nhớ và ổ đĩa để tìm hiểu nguyên nhân chậm máy, cùng với số liệu hỗ trợ và các bước kiểm tra được gợi ý."
+      "title": "Bản ghi hiệu năng"
     }
   },
   "enable": "Bật phân tích AI cho trang này",

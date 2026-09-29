@@ -1,8 +1,6 @@
 {
   "pageTitle": "Zeitpläne",
   "pageScope": "Führt Bereinigungen, Registrierungskorrekturen und Updates zu festgelegten Zeiten aus, wenn die von Ihnen gewählten Bedingungen erfüllt sind. Bei aktivierter automatischer Anwendung starten Aktionen ohne Bestätigung.",
-  "pageDescription": "Scans, Bereinigungen und Updates nach Zeitplan automatisieren",
-  "dismissNudge": "Diese Karte ausblenden",
   "newScheduleButton": "Neuer Zeitplan",
   "emptyStateTitle": "Keine Zeitpläne",
   "emptyStateDescription": "Die von Ihnen erstellten Zeitpläne erscheinen hier, mit ihrer nächsten Ausführung und dem Ergebnis der letzten.",

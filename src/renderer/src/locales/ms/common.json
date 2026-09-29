@@ -2,9 +2,7 @@
   "scanning": "Mengimbas...",
   "cleaning": "Membersihkan...",
   "foundLabel": "Ditemui:",
-  "itemsUnit": "item",
   "sizeLabel": "Saiz:",
-  "health": "Kesihatan",
   "cancel": "Batal",
   "confirm": "Sahkan",
   "adminBannerMessage": "Sesetengah ciri memerlukan keistimewaan pentadbir.",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}}j lalu",
   "daysAgo": "{{days}}h lalu",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Apa yang disemak"
 }

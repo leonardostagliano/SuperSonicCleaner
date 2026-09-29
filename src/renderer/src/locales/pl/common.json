@@ -2,9 +2,7 @@
   "scanning": "Skanowanie...",
   "cleaning": "Czyszczenie...",
   "foundLabel": "Znaleziono:",
-  "itemsUnit": "elementów",
   "sizeLabel": "Rozmiar:",
-  "health": "Stan",
   "cancel": "Anuluj",
   "confirm": "Potwierdź",
   "adminBannerMessage": "Niektóre funkcje wymagają uprawnień administratora.",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}} godz. temu",
   "daysAgo": "{{days}} dni temu",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Co jest sprawdzane"
 }

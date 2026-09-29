@@ -1,8 +1,6 @@
 {
   "pageTitle": "Harmonogramy",
   "pageScope": "Uruchamia czyszczenia, naprawy rejestru i aktualizacje o ustalonych porach, gdy spełnione są wybrane przez Ciebie warunki. Przy automatycznym stosowaniu działania rozpoczynają się bez potwierdzenia.",
-  "pageDescription": "Automatyzuj skanowania, czyszczenie i aktualizacje według harmonogramu",
-  "dismissNudge": "Ukryj tę kartę",
   "newScheduleButton": "Nowy harmonogram",
   "emptyStateTitle": "Brak harmonogramów",
   "emptyStateDescription": "Tworzone przez Ciebie harmonogramy pojawią się tutaj wraz z kolejnym uruchomieniem i wynikiem ostatniego.",

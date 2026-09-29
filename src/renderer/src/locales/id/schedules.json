@@ -1,8 +1,6 @@
 {
   "pageTitle": "Jadwal",
   "pageScope": "Menjalankan pembersihan, perbaikan registry, dan pembaruan pada waktu yang ditentukan, saat kondisi yang Anda pilih terpenuhi. Dengan penerapan otomatis, tindakan dimulai tanpa konfirmasi.",
-  "pageDescription": "Otomatiskan pemindaian, pembersihan, dan pembaruan sesuai jadwal",
-  "dismissNudge": "Sembunyikan kartu ini",
   "newScheduleButton": "Jadwal Baru",
   "emptyStateTitle": "Belum ada jadwal",
   "emptyStateDescription": "Jadwal yang Anda buat akan muncul di sini, beserta eksekusi berikutnya dan hasil eksekusi terakhir.",

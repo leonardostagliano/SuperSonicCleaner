@@ -4,9 +4,6 @@
   "welcomeTitle": "مرحبًا بك في SuperSonicCleaner",
   "welcomeDescriptionWindows": "منظف نظام Windows المتكامل لديك. يزيل SuperSonicCleaner الملفات غير المرغوب فيها، ويصلح مشكلات السجل، ويدير برامج بدء التشغيل، ويحافظ على سرعة عمل جهاز الكمبيوتر لديك.",
   "welcomeDescriptionOther": "منظف النظام المتكامل لديك. يزيل SuperSonicCleaner الملفات غير المرغوب فيها، ويدير برامج بدء التشغيل، ويحافظ على سرعة عمل جهاز الكمبيوتر لديك.",
-  "featureSmartCleaning": "تنظيف ذكي",
-  "featureFasterBoot": "بدء تشغيل أسرع",
-  "featureSafeSecure": "آمن ومحمي",
   "getStarted": "ابدأ",
   "recommendedSetupTitle": "الإعداد الموصى به",
   "recommendedSetupDescription": "نوصي بهذه الإعدادات للحصول على أفضل تجربة. يمكنك تغييرها لاحقًا من الإعدادات.",
@@ -21,6 +18,5 @@
   "continue": "متابعة",
   "allSetTitle": "أنت جاهز الآن!",
   "allSetDescription": "سيحافظ SuperSonicCleaner على سلاسة عمل جهاز الكمبيوتر لديك في الخلفية.",
-  "firstScanScheduled": "تمت جدولة أول فحص تلقائي ليوم الاثنين الساعة 9:00 صباحًا.",
-  "startCleaning": "ابدأ التنظيف"
+  "firstScanScheduled": "تمت جدولة أول فحص تلقائي ليوم الاثنين الساعة 9:00 صباحًا."
 }

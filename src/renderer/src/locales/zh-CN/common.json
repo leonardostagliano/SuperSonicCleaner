@@ -2,9 +2,7 @@
   "scanning": "正在扫描...",
   "cleaning": "正在清理...",
   "foundLabel": "发现：",
-  "itemsUnit": "项",
   "sizeLabel": "大小：",
-  "health": "健康",
   "cancel": "取消",
   "confirm": "确认",
   "adminBannerMessage": "某些功能需要管理员权限。",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}} 小时前",
   "daysAgo": "{{days}} 天前",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "检查内容"
 }

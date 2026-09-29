@@ -1,8 +1,6 @@
 {
   "pageTitle": "Tidsplaner",
   "pageScope": "Kjører oppryddinger, registerreparasjoner og oppdateringer til fastsatte tider, når betingelsene du velger, er oppfylt. Med automatisk bruk starter handlinger uten bekreftelse.",
-  "pageDescription": "Automatiser skanninger, oppryddinger og oppdateringer etter en tidsplan",
-  "dismissNudge": "Skjul dette kortet",
   "newScheduleButton": "Ny tidsplan",
   "emptyStateTitle": "Ingen tidsplaner",
   "emptyStateDescription": "Tidsplanene du oppretter, vises her, med neste kjøring og resultatet av den forrige.",

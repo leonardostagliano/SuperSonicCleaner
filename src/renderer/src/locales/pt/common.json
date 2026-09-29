@@ -2,9 +2,7 @@
   "scanning": "A analisar...",
   "cleaning": "A limpar...",
   "foundLabel": "Encontrado:",
-  "itemsUnit": "itens",
   "sizeLabel": "Tamanho:",
-  "health": "Estado",
   "cancel": "Cancelar",
   "confirm": "Confirmar",
   "adminBannerMessage": "Algumas funcionalidades requerem privilégios de administrador.",
@@ -14,6 +12,5 @@
   "hoursAgo": "há {{hours}} h",
   "daysAgo": "há {{days}} d",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "O que é verificado"
 }

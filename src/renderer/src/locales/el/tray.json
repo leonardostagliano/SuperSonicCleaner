@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner – Προγραμματισμένη εργασία",
   "scheduledTaskNotificationBody": "Εκτέλεση του \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner – Η σάρωση ολοκληρώθηκε",
-  "scanCompleteNotificationBody": "Βρέθηκαν {{itemCount}} στοιχεία ({{sizeMB}} MB) που μπορούν να καθαριστούν.",
-  "scheduledScanName": "Προγραμματισμένη σάρωση"
+  "scanCompleteNotificationBody": "Βρέθηκαν {{itemCount}} στοιχεία ({{sizeMB}} MB) που μπορούν να καθαριστούν."
 }

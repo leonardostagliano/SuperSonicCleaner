@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - Tugas Terjadwal",
   "scheduledTaskNotificationBody": "Menjalankan \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - Pemindaian Selesai",
-  "scanCompleteNotificationBody": "Ditemukan {{itemCount}} item ({{sizeMB}} MB) yang dapat dibersihkan.",
-  "scheduledScanName": "Pemindaian Terjadwal"
+  "scanCompleteNotificationBody": "Ditemukan {{itemCount}} item ({{sizeMB}} MB) yang dapat dibersihkan."
 }

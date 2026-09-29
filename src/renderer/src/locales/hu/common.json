@@ -2,9 +2,7 @@
   "scanning": "Vizsgálat...",
   "cleaning": "Tisztítás...",
   "foundLabel": "Találatok:",
-  "itemsUnit": "elem",
   "sizeLabel": "Méret:",
-  "health": "Állapot",
   "cancel": "Mégse",
   "confirm": "Megerősítés",
   "adminBannerMessage": "Egyes funkciók használatához rendszergazdai jogosultság szükséges.",
@@ -14,6 +12,5 @@
   "hoursAgo": "{{hours}} órája",
   "daysAgo": "{{days}} napja",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Mi kerül ellenőrzésre"
 }

@@ -10,28 +10,22 @@
   "anotherRunning": "Toinen AI-analyysi on jo käynnissä. Löydät sen kohdasta Asetukset → AI-analyysi.",
   "continuesInBackground": "Analyysi jatkuu, vaikka käytät muita näkymiä. Palaa tänne nähdäksesi tuloksen.",
   "returnToAnalysis": "Palaa analyysiin",
-  "openTool": "Avaa työkalu",
   "hubInstructions": "Suorita tarkistus tai tallenna suorituskykytallenne, ota sen AI-analyysi käyttöön ja käynnistä se sitten omalla painikkeellaan. Mitään ei lähetetä automaattisesti.",
   "tools": {
     "cleaner": {
-      "title": "Järjestelmän puhdistus",
-      "description": "Tarkastele tarkistettuja puhdistusehdokkaita anonyymien tiedostojen metatietojen avulla. Yksityisyysjäljet on jätetty pois."
+      "title": "Järjestelmän puhdistus"
     },
     "largeFiles": {
-      "title": "Suuret tiedostot",
-      "description": "Tarkastele, mitkä suuret tiedostot kannattaa tarkistaa lähemmin koon, luokan ja arvioidun iän perusteella."
+      "title": "Suuret tiedostot"
     },
     "duplicates": {
-      "title": "Kaksoiskappaleet",
-      "description": "Saat ehdotuksia siitä, mitä kaksoiskappaleryhmiä kannattaa tarkastella. Valitset itse, mitkä tiedostot säilytetään."
+      "title": "Kaksoiskappaleet"
     },
     "disk": {
-      "title": "Levyanalyysi",
-      "description": "Tarkastele suurimpia kansioita koostettujen kokotietojen avulla."
+      "title": "Levyanalyysi"
     },
     "performance": {
-      "title": "Suorituskykytallenteet",
-      "description": "Yhdistä CPU-, muisti- ja levyaktiivisuutta hitauden tutkimiseksi tukevien mittausten ja ehdotettujen tarkistusten avulla."
+      "title": "Suorituskykytallenteet"
     }
   },
   "enable": "Ota AI-analyysi käyttöön tälle näkymälle",

@@ -1,8 +1,6 @@
 {
   "pageTitle": "Programări",
   "pageScope": "Rulează curățări, reparații de registry și actualizări la momente stabilite, când sunt îndeplinite condițiile pe care le alegeți. Cu aplicare automată, acțiunile pornesc fără confirmare.",
-  "pageDescription": "Automatizați scanările, curățările și actualizările după un program",
-  "dismissNudge": "Ascundeți acest card",
   "newScheduleButton": "Programare nouă",
   "emptyStateTitle": "Nicio programare",
   "emptyStateDescription": "Programările pe care le creați apar aici, cu următoarea rulare și rezultatul ultimei.",

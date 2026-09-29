@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - Tâche planifiée",
   "scheduledTaskNotificationBody": "Exécution de \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - Analyse terminée",
-  "scanCompleteNotificationBody": "{{itemCount}} éléments trouvés ({{sizeMB}} Mo) pouvant être nettoyés.",
-  "scheduledScanName": "Analyse planifiée"
+  "scanCompleteNotificationBody": "{{itemCount}} éléments trouvés ({{sizeMB}} Mo) pouvant être nettoyés."
 }

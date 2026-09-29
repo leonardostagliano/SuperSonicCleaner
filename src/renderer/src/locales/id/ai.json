@@ -10,28 +10,22 @@
   "anotherRunning": "Analisis AI lain sedang berjalan. Anda dapat menemukannya di Preferensi → Analisis AI.",
   "continuesInBackground": "Analisis berlanjut selagi Anda menggunakan tampilan lain. Kembali ke sini untuk melihat hasilnya.",
   "returnToAnalysis": "Kembali ke analisis",
-  "openTool": "Buka alat",
   "hubInstructions": "Selesaikan pemindaian atau simpan rekaman performa, aktifkan analisis AI-nya, lalu mulai dengan tombol khusus. Tidak ada yang dikirim secara otomatis.",
   "tools": {
     "cleaner": {
-      "title": "Pembersihan sistem",
-      "description": "Tinjau kandidat pembersihan yang dipindai menggunakan metadata file anonim. Jejak privasi dikecualikan."
+      "title": "Pembersihan sistem"
     },
     "largeFiles": {
-      "title": "File besar",
-      "description": "Tentukan file besar mana yang layak diperiksa lebih lanjut, berdasarkan ukuran, kategori, dan perkiraan usia."
+      "title": "File besar"
     },
     "duplicates": {
-      "title": "File duplikat",
-      "description": "Dapatkan saran tentang grup duplikat untuk ditinjau. Anda yang memilih file mana yang akan disimpan."
+      "title": "File duplikat"
     },
     "disk": {
-      "title": "Analisis disk",
-      "description": "Tinjau folder terbesar menggunakan informasi ukuran gabungan."
+      "title": "Analisis disk"
     },
     "performance": {
-      "title": "Rekaman performa",
-      "description": "Hubungkan aktivitas CPU, memori, dan disk untuk menyelidiki perlambatan, dengan pengukuran pendukung dan pemeriksaan yang disarankan."
+      "title": "Rekaman performa"
     }
   },
   "enable": "Aktifkan analisis AI untuk tampilan ini",

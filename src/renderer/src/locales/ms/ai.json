@@ -10,28 +10,22 @@
   "anotherRunning": "Analisis AI lain sedang berjalan. Anda boleh mencarinya dalam Keutamaan → Analisis AI.",
   "continuesInBackground": "Analisis diteruskan semasa anda menggunakan paparan lain. Kembali ke sini untuk melihat hasilnya.",
   "returnToAnalysis": "Kembali ke analisis",
-  "openTool": "Buka alat",
   "hubInstructions": "Lengkapkan imbasan atau simpan rakaman prestasi, dayakan analisis AI untuknya, kemudian mulakan dengan butang khusus. Tiada apa-apa dihantar secara automatik.",
   "tools": {
     "cleaner": {
-      "title": "Pembersihan sistem",
-      "description": "Semak calon pembersihan yang diimbas menggunakan metadata fail tanpa nama. Jejak privasi tidak disertakan."
+      "title": "Pembersihan sistem"
     },
     "largeFiles": {
-      "title": "Fail besar",
-      "description": "Semak fail besar yang wajar diteliti, menggunakan saiz, kategori dan anggaran umur."
+      "title": "Fail besar"
     },
     "duplicates": {
-      "title": "Fail pendua",
-      "description": "Dapatkan cadangan tentang kumpulan pendua untuk disemak. Anda memilih fail yang hendak disimpan."
+      "title": "Fail pendua"
     },
     "disk": {
-      "title": "Analisis cakera",
-      "description": "Semak folder terbesar menggunakan maklumat saiz teragregat."
+      "title": "Analisis cakera"
     },
     "performance": {
-      "title": "Rakaman prestasi",
-      "description": "Hubungkan aktiviti CPU, memori dan cakera untuk menyiasat kelembapan, berserta ukuran sokongan dan semakan yang dicadangkan."
+      "title": "Rakaman prestasi"
     }
   },
   "enable": "Dayakan analisis AI untuk paparan ini",

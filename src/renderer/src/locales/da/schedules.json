@@ -1,8 +1,6 @@
 {
   "pageTitle": "Tidsplaner",
   "pageScope": "Kører oprydninger, rettelser i registreringsdatabasen og opdateringer på faste tidspunkter, når de betingelser, du vælger, er opfyldt. Med automatisk anvendelse starter handlinger uden bekræftelse.",
-  "pageDescription": "Automatiser scanninger, oprydninger og opdateringer efter en tidsplan",
-  "dismissNudge": "Skjul dette kort",
   "newScheduleButton": "Ny tidsplan",
   "emptyStateTitle": "Ingen tidsplaner",
   "emptyStateDescription": "De tidsplaner, du opretter, vises her med deres næste kørsel og resultatet af den seneste.",

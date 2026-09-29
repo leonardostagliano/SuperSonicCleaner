@@ -1,8 +1,6 @@
 {
   "pageTitle": "Jadual",
   "pageScope": "Menjalankan pembersihan, pembaikan registry dan kemas kini pada waktu yang ditetapkan, apabila syarat yang anda pilih dipenuhi. Dengan guna secara automatik, tindakan bermula tanpa pengesahan.",
-  "pageDescription": "Automatikkan imbasan, pembersihan dan kemas kini mengikut jadual",
-  "dismissNudge": "Sembunyikan kad ini",
   "newScheduleButton": "Jadual baharu",
   "emptyStateTitle": "Tiada jadual",
   "emptyStateDescription": "Jadual yang anda cipta dipaparkan di sini, berserta jalanan seterusnya dan hasil jalanan terakhir.",

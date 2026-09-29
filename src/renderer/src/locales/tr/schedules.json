@@ -1,8 +1,6 @@
 {
   "pageTitle": "Zamanlamalar",
   "pageScope": "Belirlediğiniz koşullar karşılandığında, ayarlanan zamanlarda temizlik, kayıt defteri düzeltmeleri ve güncellemeler çalıştırır. Otomatik uygulama ile eylemler onay istemeden başlar.",
-  "pageDescription": "Taramaları, temizlikleri ve güncellemeleri bir zamanlamaya göre otomatikleştirin",
-  "dismissNudge": "Bu kartı gizle",
   "newScheduleButton": "Yeni Zamanlama",
   "emptyStateTitle": "Henüz zamanlama yok",
   "emptyStateDescription": "Oluşturduğunuz zamanlamalar, sonraki çalıştırmaları ve son çalıştırmanın sonucuyla birlikte burada görünür.",

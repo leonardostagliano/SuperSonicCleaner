@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner – ütemezett feladat",
   "scheduledTaskNotificationBody": "\"{{name}}\" futtatása...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner – vizsgálat kész",
-  "scanCompleteNotificationBody": "{{itemCount}} tisztítható elem található ({{sizeMB}} MB).",
-  "scheduledScanName": "Ütemezett vizsgálat"
+  "scanCompleteNotificationBody": "{{itemCount}} tisztítható elem található ({{sizeMB}} MB)."
 }

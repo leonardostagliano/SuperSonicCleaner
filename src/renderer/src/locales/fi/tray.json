@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner – ajoitettu tehtävä",
   "scheduledTaskNotificationBody": "Suoritetaan \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner – tarkistus valmis",
-  "scanCompleteNotificationBody": "Löytyi {{itemCount}} kohdetta ({{sizeMB}} MB), jotka voidaan puhdistaa.",
-  "scheduledScanName": "Ajastettu tarkistus"
+  "scanCompleteNotificationBody": "Löytyi {{itemCount}} kohdetta ({{sizeMB}} MB), jotka voidaan puhdistaa."
 }

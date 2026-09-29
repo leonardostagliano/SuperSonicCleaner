@@ -5,6 +5,5 @@
   "scheduledTaskNotificationTitle": "SuperSonicCleaner - งานที่กำหนดเวลาไว้",
   "scheduledTaskNotificationBody": "กำลังเรียกใช้ \"{{name}}\"...",
   "scanCompleteNotificationTitle": "SuperSonicCleaner - การสแกนเสร็จสมบูรณ์",
-  "scanCompleteNotificationBody": "พบ {{itemCount}} รายการ ({{sizeMB}} MB) ที่สามารถล้างได้",
-  "scheduledScanName": "การสแกนตามกำหนดเวลา"
+  "scanCompleteNotificationBody": "พบ {{itemCount}} รายการ ({{sizeMB}} MB) ที่สามารถล้างได้"
 }

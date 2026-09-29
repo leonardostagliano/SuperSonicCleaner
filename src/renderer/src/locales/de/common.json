@@ -2,9 +2,7 @@
   "scanning": "Wird gescannt...",
   "cleaning": "Wird bereinigt...",
   "foundLabel": "Gefunden:",
-  "itemsUnit": "Elemente",
   "sizeLabel": "Größe:",
-  "health": "Zustand",
   "cancel": "Abbrechen",
   "confirm": "Bestätigen",
   "adminBannerMessage": "Einige Funktionen erfordern Administratorrechte.",
@@ -14,6 +12,5 @@
   "hoursAgo": "vor {{hours}} Std.",
   "daysAgo": "vor {{days}} T.",
   "zeroBytes": "0 B",
-  "zeroSpeed": "0 B/s",
   "whatIsChecked": "Was geprüft wird"
 }
