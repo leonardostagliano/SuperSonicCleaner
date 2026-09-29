@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Tietosuojakilpi",
-    "pageDescription": "Hallitse telemetriaa, mainoksia, seurantaa ja tiedonkeruuta koko järjestelmässäsi",
+    "pageDescription": "Lukee telemetria-, mainos-, haku- ja synkronointiasetukset ja vertailee niitä yksityisimpään arvoon. Asetus muuttuu vain, kun käytät sen kytkintä tai vahvistat muutoksen; useimmat voi palauttaa oletusarvoon.",
     "scanButton": "Tarkista",
-    "scanProgressPreparing": "Valmistellaan tarkistusta...",
-    "applyingProtections": "Otetaan tietosuojasuojaukset käyttöön...",
-    "emptyStateTitle": "Tietosuojakilpi",
-    "emptyStateDescription": "Napsauta \"Tarkista\" tarkistaaksesi tietosuoja- ja suojausasetuksesi ja ottaaksesi käyttöön suositellut kovennukset.",
-    "adminWarning": "Joidenkin asetusten muuttaminen vaatii järjestelmänvalvojan oikeudet. Suorita SuperSonicCleaner järjestelmänvalvojana saadaksesi täyden suojauksen.",
+    "scanProgressPreparing": "Valmistellaan tarkistusta",
+    "applyingProtections": "Otetaan asetuksia käyttöön…",
+    "emptyStateTitle": "Asetuksia ei ole vielä tarkistettu",
+    "emptyStateDescription": "Tarkistus lukee asetukset eikä muuta niistä yhtäkään.",
+    "adminWarning": "Joitakin asetuksia voi muuttaa vain, kun SuperSonicCleaner toimii järjestelmänvalvojana; ilman näitä oikeuksia ne pysyvät ennallaan.",
     "scanFailed": "Tietosuojatarkistus epäonnistui",
     "applyFailed": "Tietosuoja-asetusten käyttöönotto epäonnistui",
-    "applyFailedDescription": "Yritä suorittaa järjestelmänvalvojana",
-    "settingApplyFailed": "Asetuksen \"{{label}}\" käyttöönotto epäonnistui",
-    "settingEnabled": "{{label}} estetty",
-    "settingDisabled": "{{label}} palautettu oletukseksi",
-    "settingRevertFailed": "Asetuksen \"{{label}}\" palautus epäonnistui",
+    "applyFailedDescription": "Yritä suorittaa sovellus järjestelmänvalvojana",
+    "settingApplyFailed": "Kohteen ”{{label}}” käyttöönotto epäonnistui",
+    "settingEnabled": "Otettu käyttöön: {{label}}",
+    "settingDisabled": "Palautettu oletukseksi: {{label}}",
+    "settingRevertFailed": "Kohteen ”{{label}}” palautus epäonnistui",
     "settingRevertFailedGeneric": "Tietosuoja-asetuksen palautus epäonnistui",
     "settingApplyFailedGeneric": "Tietosuoja-asetuksen käyttöönotto epäonnistui",
-    "ipcCallFailed": "IPC-kutsu epäonnistui — yritä suorittaa järjestelmänvalvojana",
+    "ipcCallFailed": "Kutsu epäonnistui: yritä suorittaa sovellus järjestelmänvalvojana",
     "allSettingsLabel": "Kaikki asetukset",
     "unknownError": "Tuntematon virhe",
-    "requiresSettingEnabled": "Ota ensin käyttöön \"{{label}}\"",
-    "adminRequired": "Yritä suorittaa järjestelmänvalvojana",
-    "settingNotApplied": "Järjestelmä ei ilmoittanut muutoksesta — se saattaa vaatia uudelleenkäynnistyksen tai asetusta voi hallita toinen profiili"
+    "requiresSettingEnabled": "Ota ensin käyttöön ”{{label}}”",
+    "adminRequired": "Yritä suorittaa sovellus järjestelmänvalvojana",
+    "settingNotApplied": "Järjestelmä ei ilmoittanut muutoksesta: se saattaa vaatia uudelleenkäynnistyksen, tai asetusta hallitaan toisesta profiilista.",
+    "rescanButton": "Tarkista uudelleen",
+    "scanningButton": "Tarkistetaan…",
+    "applyRecommended_one": "Ota käyttöön {{count}} suositeltu muutos",
+    "applyRecommended_other": "Ota käyttöön {{count}} suositeltua muutosta",
+    "summaryTitle_one": "{{count}} asetus muutettavana",
+    "summaryTitle_other": "{{count}} asetusta muutettavana",
+    "summaryNone": "Kaikilla {{total}} asetuksella on jo yksityisin arvo",
+    "summaryFacts": "{{protected}}/{{total}} on jo yksityisimmällä arvolla · {{categories}} luokkaa",
+    "categoryMeta_one": "{{count}} muutettavana",
+    "categoryMeta_other": "{{count}} muutettavana",
+    "categoryAllSet": "kaikki jo asetettu",
+    "categoryApply_one": "Ota käyttöön {{count}}",
+    "categoryApply_other": "Ota käyttöön {{count}}",
+    "categoryShow": "Näytä",
+    "categoryHide": "Piilota",
+    "adminTag": "Vaatii järjestelmänvalvojan",
+    "notReversibleTag": "Ei peruutettavissa",
+    "scanProgressTitle": "Tarkistus käynnissä",
+    "scanProgressCount": "{{current}}/{{total}}",
+    "scanProgressCategory": "Tarkistetaan: {{category}}",
+    "scanProgressLabel": "Tarkistuksen eteneminen",
+    "applyingLabel": "Käyttöönoton eteneminen",
+    "receiptTitle": "Asetukset otettu käyttöön",
+    "receiptApplied_one": "{{count}} asetus muutettu",
+    "receiptApplied_other": "{{count}} asetusta muutettu",
+    "receiptReversible": "voidaan palauttaa kytkimistä",
+    "receiptFailed_one": "{{count}} ei otettu käyttöön: syy näkyy alla.",
+    "receiptFailed_other": "{{count}} ei otettu käyttöön: syyt näkyvät alla.",
+    "receiptFailedAdmin_one": "{{count}} ei otettu käyttöön: sovellus saattaa vaatia järjestelmänvalvojan oikeudet. Syy näkyy alla.",
+    "receiptFailedAdmin_other": "{{count}} ei otettu käyttöön: sovellus saattaa vaatia järjestelmänvalvojan oikeudet. Syyt näkyvät alla.",
+    "failedHeading": "Asetuksia ei otettu käyttöön",
+    "failedColumnSetting": "Asetus",
+    "failedColumnReason": "Syy",
+    "confirmTitle_one": "Muutetaanko {{count}} asetus?",
+    "confirmTitle_other": "Muutetaanko {{count}} asetusta?",
+    "confirmDescription": "Luetellut asetukset vaihtuvat yksityisimpään arvoon. Ne voi palauttaa oletukseksi tämän sivun kytkimistä.",
+    "confirmDescriptionIrreversible_one": "Luetellut asetukset vaihtuvat yksityisimpään arvoon. {{count}} ei voi palauttaa oletukseksi tältä sivulta.",
+    "confirmDescriptionIrreversible_other": "Luetellut asetukset vaihtuvat yksityisimpään arvoon. {{count}} ei voi palauttaa oletukseksi tältä sivulta.",
+    "confirmLabel_one": "Muuta {{count}} asetus",
+    "confirmLabel_other": "Muuta {{count}} asetusta",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windowsin telemetria",
+        "description": "Aseta diagnostiikkatietojen keruu vähimmäistasolle (vain suojaustaso)"
+      },
+      "activity-history": {
+        "label": "Toimintahistoria",
+        "description": "Estä Windowsia seuraamasta ja synkronoimasta sovellusten ja tiedostojen käyttöä"
+      },
+      "publish-activity": {
+        "label": "Käyttäjän toimintojen julkaisu",
+        "description": "Estä Windowsia julkaisemasta toimintojasi Microsoftille"
+      },
+      "feedback-frequency": {
+        "label": "Palautekehotteet",
+        "description": "Poista käytöstä Microsoftin toistuvat palautekehotteet ja kyselyt"
+      },
+      "handwriting-telemetry": {
+        "label": "Käsialatiedot",
+        "description": "Estä käsiala- ja näppäilytietojen lähettäminen Microsoftille"
+      },
+      "input-personalization": {
+        "label": "Syötteen personointi",
+        "description": "Estä näppäily- ja kirjoitustietojen keruu personointia varten"
+      },
+      "tailored-experiences": {
+        "label": "Räätälöidyt kokemukset",
+        "description": "Estä Microsoftia käyttämästä diagnostiikkatietoja vinkkien ja mainosten räätälöintiin"
+      },
+      "app-launch-tracking": {
+        "label": "Sovellusten käynnistysten seuranta",
+        "description": "Estä Windowsia seuraamasta, mitä sovelluksia avaat, aloitusvalikon mukauttamiseksi"
+      },
+      "advertising-id": {
+        "label": "Mainostunniste",
+        "description": "Poista käytöstä yksilöllinen mainostunniste, jolla sovellukset seuraavat sinua"
+      },
+      "suggested-content": {
+        "label": "Ehdotettu sisältö Asetuksissa",
+        "description": "Estä Microsoftia näyttämästä sovellusehdotuksia ja mainoksia Asetuksissa"
+      },
+      "tips-notifications": {
+        "label": "Vinkit ja ehdotukset",
+        "description": "Poista käytöstä Windowsin vinkki- ja ehdotusilmoitukset"
+      },
+      "start-suggestions": {
+        "label": "Aloitusvalikon ehdotukset",
+        "description": "Poista käytöstä sovellusehdotukset (mainokset) aloitusvalikossa"
+      },
+      "lock-screen-spotlight": {
+        "label": "Lukitusnäytön Spotlight",
+        "description": "Poista käytöstä Microsoft Spotlightin mainokset ja ehdotukset lukitusnäytöllä"
+      },
+      "silently-installed-apps": {
+        "label": "Hiljaa asennetut sovellukset",
+        "description": "Estä Windowsia asentamasta mainostettuja sovelluksia automaattisesti"
+      },
+      "preinstalled-apps": {
+        "label": "Esiasennettujen sovellusten ehdotukset",
+        "description": "Estä Windowsia ehdottamasta esiasennettuja sovelluksia, joita et ole käyttänyt"
+      },
+      "bing-start-menu": {
+        "label": "Bing aloitusvalikossa",
+        "description": "Estä aloitusvalikkoon kirjoitettuja hakuja lähtemästä Bingiin"
+      },
+      "bing-web-search": {
+        "label": "Bingin verkkotulokset",
+        "description": "Poista käytöstä verkkotulokset Windowsin haussa, jotta haut pysyvät tällä koneella"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Poista käytöstä Cortana, joka toimii taustalla ja kerää tietoja"
+      },
+      "search-highlights": {
+        "label": "Haun kohokohdat",
+        "description": "Poista käytöstä suositut hakuehdotukset ja verkkosisältö hakukentässä"
+      },
+      "store-search-suggestions": {
+        "label": "Storen hakuehdotukset",
+        "description": "Poista käytöstä Microsoft Storen hakuehdotukset, jotka lähettävät hakusi Microsoftille"
+      },
+      "clipboard-sync": {
+        "label": "Leikepöydän pilvisynkronointi",
+        "description": "Estä leikepöydän tietojen synkronointi laitteiden välillä pilven kautta"
+      },
+      "clipboard-history": {
+        "label": "Leikepöydän historia",
+        "description": "Poista käytöstä leikepöydän historia, joka tallentaa kopioidun tekstin ja kuvat"
+      },
+      "settings-sync": {
+        "label": "Asetusten synkronointi",
+        "description": "Estä Windowsin asetusten, teemojen ja salasanojen synkronointi Microsoft-tilillesi"
+      },
+      "find-my-device": {
+        "label": "Etsi laitteeni",
+        "description": "Poista käytöstä Microsoftin sijaintiin perustuva laiteseuranta"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Poista käytöstä Microsoft Copilot -tekoälyavustaja koko Windowsista"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Poista käytöstä Windows Recall, tekoälyyn perustuva kuvakaappaushistoria, joka tallentaa kaiken näytöllä näkyvän"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Poista käytöstä Click to Do -toiminnon tekoälypohjainen näytöllä olevan tekstin ja kuvien analysointi"
+      },
+      "ai-service-autostart": {
+        "label": "Tekoälypalveluiden automaattikäynnistys",
+        "description": "Estä tekoälypalveluita käynnistymästä automaattisesti taustalla"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose -tekoäly",
+        "description": "Poista käytöstä Edgen tekoälypohjaiset tekstin laadinta- ja uudelleenkirjoitustoiminnot"
+      },
+      "paint-ai": {
+        "label": "Paintin tekoälytoiminnot",
+        "description": "Poista käytöstä Microsoft Paintin tekoälypohjaiset kuvantuottotoiminnot"
+      },
+      "notepad-ai": {
+        "label": "Notepadin tekoälytoiminnot",
+        "description": "Poista käytöstä Microsoft Notepadin tekoälypohjaiset tekstin uudelleenkirjoitustoiminnot"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack-palvelu",
+        "description": "Poista käytöstä Connected User Experiences and Telemetry -palvelu"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push -palvelu",
+        "description": "Poista käytöstä telemetriaan käytetty WAP Push -viestinvälityspalvelu"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Poista käytöstä Windows-päivitysten vertaisjako, jotta tämä tietokone ei lähetä päivitystietoja muille laitteille"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Poista käytöstä Downloaded Maps Manager -taustapalvelu, jota useimmat koneet eivät tarvitse"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Poista käytöstä Microsoftin telemetriatehtävä, joka kerää yhteensopivuustietoja"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Poista käytöstä taustatehtävä, joka lähettää ohjelmien telemetriatietoja"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Poista käytöstä autochk-proxyn kautta tapahtuva telemetrian keruu"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Poista käytöstä Customer Experience Improvement Program -tietojen lähetys"
+      },
+      "task-usb-ceip": {
+        "label": "USB-käyttötiedot (CEIP)",
+        "description": "Poista käytöstä USB-laitteiden käyttöä koskevan telemetrian keruu"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Poista käytöstä levydiagnostiikkatietojen keruu ja lähetys"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Poista käytöstä palautteen laitehallinnan telemetriatehtävä"
+      },
+      "task-maps-update": {
+        "label": "Karttojen päivitystehtävä",
+        "description": "Poista käytöstä karttatietojen automaattinen lataus taustalla"
+      },
+      "task-maps-toast": {
+        "label": "Karttailmoitustehtävä",
+        "description": "Poista käytöstä karttailmoitustehtävä"
+      },
+      "edge-metrics": {
+        "label": "Edgen käyttöraportointi",
+        "description": "Estä Edgeä lähettämästä käyttö- ja kaatumismittareita Microsoftille"
+      },
+      "edge-site-info": {
+        "label": "Edgen sivustotietojen keruu",
+        "description": "Estä Edgeä lähettämästä käyttämiesi sivustojen osoitteita Microsoftille"
+      },
+      "edge-personalization": {
+        "label": "Edgen personointiraportointi",
+        "description": "Estä Edgeä lähettämästä selaushistoriaasi mainosten personointiin"
+      },
+      "edge-copilot-cdp": {
+        "label": "Copilotin sivupääsy Edgessä (CDP)",
+        "description": "Estä Copilotia lukemasta sivun sisältöä Chrome DevTools Protocolin kautta"
+      },
+      "edge-copilot-page": {
+        "label": "Copilotin sivukonteksti Edgessä",
+        "description": "Estä Copilotia käyttämästä sivun kontekstia sisällön analysointiin"
+      },
+      "edge-discover": {
+        "label": "Edge Discoverin sivujen tarkistus",
+        "description": "Estä Discover-toimintoa tarkistamasta sivun sisältöä"
+      },
+      "edge-sidebar": {
+        "label": "Edgen sivupalkki",
+        "description": "Poista käytöstä Edgen sivupalkki ja sen taustalla tekemä tiedonkeruu"
+      },
+      "edge-shopping": {
+        "label": "Edgen ostosavustaja",
+        "description": "Poista käytöstä Edgen hintavertailuseuranta"
+      },
+      "chrome-metrics": {
+        "label": "Chromen käyttöraportointi",
+        "description": "Estä Chromea lähettämästä käyttö- ja kaatumismittareita Googlelle"
+      },
+      "chrome-feedback": {
+        "label": "Chromen käyttäjäpalaute",
+        "description": "Estä Chromea keräämästä ja lähettämästä käyttäjäpalautetietoja"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chromen laajennettu Safe Browsing",
+        "description": "Estä Chromea lähettämästä laajennettuja URL- ja latausraportteja Googlelle"
+      },
+      "firefox-telemetry": {
+        "label": "Firefoxin telemetria",
+        "description": "Estä Firefoxia keräämästä telemetriatietoja ja lähettämästä niitä Mozillalle"
+      },
+      "firefox-default-agent": {
+        "label": "Firefoxin oletusselainagentti",
+        "description": "Poista käytöstä taustaohjelma, joka raportoi selaimen käyttötietoja Mozillalle"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnostiikka- ja käyttötiedot",
+        "description": "Estä diagnostiikka- ja käyttötietojen jakaminen Applelle"
+      },
+      "macos-siri-analytics": {
+        "label": "Sirin analytiikka",
+        "description": "Estä Sirin analytiikka- ja parannustietojen keruu"
+      },
+      "macos-health-data-sharing": {
+        "label": "Terveystietojen jakaminen",
+        "description": "Estä terveystietojen jakaminen Applelle tutkimusta varten"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDropin näkyvyys",
+        "description": "Aseta AirDrop tilaan Ei kenellekään: et voi vastaanottaa tiedostoja AirDropilla, ennen kuin otat sen taas käyttöön Järjestelmäasetuksissa"
+      },
+      "macos-crash-reporter": {
+        "label": "Kaatumisraportointi",
+        "description": "Estä kaatumisraportointia lähettämästä raportteja automaattisesti"
+      },
+      "macos-ad-tracking": {
+        "label": "Personoidut mainokset",
+        "description": "Rajoita Applen mainosseurantaa"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Sirin ehdotukset App Storessa",
+        "description": "Poista käytöstä Sirin ehdotukset App Storessa"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safarin hakuehdotukset",
+        "description": "Poista käytöstä Safarin Applelle lähettämät hakuehdotukset"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlightin ehdotukset",
+        "description": "Poista käytöstä Spotlightin verkkoehdotukset"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safarin ensimmäisen tuloksen esilataus",
+        "description": "Estä Safaria esilataamasta parasta hakutulosta, mikä lähettää selaustietoja sivustoille"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Poista käytöstä Handoff ja jaettu leikepöytä: et voi enää jatkaa toimintoja tai kopioida ja liittää Apple-laitteiden välillä"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud-analytiikka",
+        "description": "Estä iCloud-analytiikan jakaminen Applelle"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safarin iCloud-välilehdet",
+        "description": "Poista käytöstä Safarin iCloud-välilehtien synkronointi: et enää näe muilla Apple-laitteillasi avoinna olevia välilehtiä"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Poista Siri kokonaan käytöstä: Hei Siri, äänikomennot ja Siri-pikatoiminnot lakkaavat toimimasta"
+      },
+      "macos-siri-dictation": {
+        "label": "Sirin sanelu",
+        "description": "Poista sanelu käytöstä: näppäimistön mikrofonipainike lakkaa toimimasta"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Poista käytöstä Apple Intelligencen tekoälytoiminnot (macOS 15 Sequoia ja uudemmat)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safarin Do Not Track",
+        "description": "Ota käyttöön Safarin Do Not Track -otsake (seurannan esto)"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chromen käyttöraportointi",
+        "description": "Estä Chromea lähettämästä käyttömittareita Googlelle"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chromen Safe Browsing -raportit",
+        "description": "Estä Chromea lähettämästä laajennettuja URL- ja latausraportteja Googlelle"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefoxin telemetria",
+        "description": "Estä Firefoxia keräämästä telemetriatietoja ja lähettämästä niitä Mozillalle"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Varmista, että Gatekeeper on käytössä, jotta vahvistamattomat sovellukset estetään"
+      },
+      "macos-remote-apple-events": {
+        "label": "Etä-Apple-tapahtumat",
+        "description": "Poista käytöstä etä-Apple-tapahtumat, jotta Maciasi ei voi automatisoida etänä"
+      },
+      "macos-wake-on-network": {
+        "label": "Herätys verkkoyhteydestä",
+        "description": "Poista käytöstä herätys verkkoyhteydestä, jotta Maciasi ei voi herättää etänä"
+      },
+      "macos-guest-account": {
+        "label": "Vierastili",
+        "description": "Poista vierastili käytöstä luvattoman paikallisen pääsyn estämiseksi"
+      },
+      "macos-auto-login": {
+        "label": "Automaattinen kirjautuminen",
+        "description": "Poista automaattinen kirjautuminen käytöstä, jotta Mac pyytää todennusta käynnistyksessä"
+      },
+      "macos-firewall": {
+        "label": "Sovelluspalomuuri",
+        "description": "Ota käyttöön macOS:n sovelluspalomuuri saapuvien yhteyksien hallintaan"
+      },
+      "macos-stealth-mode": {
+        "label": "Stealth-tila",
+        "description": "Ota käyttöön stealth-tila, jotta Mac ei vastaa luotauspyyntöihin (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Poista IP-edelleenlähetys käytöstä",
+        "description": "Estä järjestelmää välittämästä paketteja verkkoliitäntöjen välillä"
+      },
+      "macos-block-signed-auto": {
+        "label": "Estä allekirjoitettujen sovellusten automaattinen salliminen",
+        "description": "Estä allekirjoitettuja sovelluksia ohittamasta palomuuria automaattisesti"
+      },
+      "macos-remote-login": {
+        "label": "Poista etäkirjautuminen käytöstä (SSH)",
+        "description": "Poista SSH-palvelin kokonaan käytöstä. Jos tarvitset SSH-yhteyden, jätä tämä pois käytöstä ja koveta SSH-asetukset sen sijaan"
+      },
+      "macos-ssh-root-login": {
+        "label": "Poista SSH-root-kirjautuminen käytöstä",
+        "description": "Estä suora root-kirjautuminen SSH:n kautta; käytä sen sijaan sudo-komentoa tavallisella tililtä"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Poista SSH-salasanatodennus käytöstä",
+        "description": "Salli vain avainpohjainen SSH-todennus. Määritä SSH-avaimet ensin, tai saatat jäädä ulos"
+      },
+      "macos-core-dumps": {
+        "label": "Poista core dump -tiedostot käytöstä",
+        "description": "Estä core dump -tiedostot, jotka voivat paljastaa arkaluontoista muistisisältöä"
+      },
+      "gnome-usage-stats": {
+        "label": "Käyttötilastot",
+        "description": "Poista käytöstä GNOMEn käyttötilastojen keruu"
+      },
+      "gnome-recent-files": {
+        "label": "Viimeisimpien tiedostojen seuranta",
+        "description": "Poista käytöstä äskettäin käytettyjen tiedostojen seuranta"
+      },
+      "gnome-location": {
+        "label": "Sijaintipalvelut",
+        "description": "Poista käytöstä GNOMEn sijaintipalvelut"
+      },
+      "gnome-crash-reporting": {
+        "label": "Kaatumisraportointi (Apport)",
+        "description": "Poista käytöstä kaatumisraporttien automaattinen lähetys"
+      },
+      "gnome-connectivity-check": {
+        "label": "Yhteystarkistus",
+        "description": "Poista käytöstä toistuvat verkkoyhteyden tarkistukset"
+      },
+      "core-dump-disable": {
+        "label": "Poista core dump -tiedostot käytöstä",
+        "description": "Estä core dump -tiedostot, jotka voivat paljastaa arkaluontoista muistisisältöä"
+      },
+      "ssh-root-login": {
+        "label": "Poista SSH-root-kirjautuminen käytöstä",
+        "description": "Estä suora root-kirjautuminen SSH:n kautta; käytä sen sijaan sudo-komentoa tavallisella tililtä"
+      },
+      "ssh-password-auth": {
+        "label": "Poista SSH-salasanatodennus käytöstä",
+        "description": "Salli vain avainpohjainen SSH-todennus. Määritä SSH-avaimet ensin, tai saatat jäädä ulos"
+      },
+      "kde-usage-stats": {
+        "label": "Käyttötilastot",
+        "description": "Poista käytöstä KDE Plasman käyttäjäpalaute"
+      },
+      "kde-recent-files": {
+        "label": "Viimeisimpien tiedostojen seuranta",
+        "description": "Poista käytöstä KDE:n viimeisimpien tiedostojen toimintohistoria"
+      },
+      "kde-baloo": {
+        "label": "Tiedostojen indeksointi (Baloo)",
+        "description": "Poista käytöstä Baloo-tiedostoindeksoija"
+      },
+      "kde-crash-reporting": {
+        "label": "Kaatumisraportointi (DrKonqi)",
+        "description": "Poista käytöstä KDE:n kaatumisraportin käsittelijä"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetria ja tiedonkeruu",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Turhien sovellusten poisto",
-    "pageDescription": "Poista esiasennetut Windows-sovellukset ja OEM-valmistajien turhat sovellukset",
+    "pageDescription": "Windowsin ja valmistajan esiasentamia sovelluksia. Poistamisen jälkeen ne voi asentaa uudelleen vain Microsoft Storesta.",
     "scanButton": "Tarkista",
-    "irreversibleWarning": "Peruuttamaton — poistetut sovellukset voidaan asentaa uudelleen vain Microsoft Storesta. Tarkista valinnat huolellisesti.",
-    "scanningPackages": "Tarkistetaan asennettuja paketteja...",
-    "removingProgress": "Poistetaan {{current}} / {{total}}",
+    "rescanButton": "Tarkista uudelleen",
+    "irreversibleWarning": "Poistoa ei voi kumota sovelluksesta: tarkista valitut sovellukset ennen vahvistamista.",
+    "scanningPackages": "Tarkistetaan asennettuja paketteja…",
+    "removingProgress": "Poistetaan sovelluksia ({{current}}/{{total}})",
+    "receiptTitle": "Poisto valmis",
+    "removedApps_one": "{{count}} sovellus poistettu",
+    "removedApps_other": "{{count}} sovellusta poistettu",
+    "failedCount_one": "{{count}} epäonnistui",
+    "failedCount_other": "{{count}} epäonnistui",
+    "reinstallFromStore": "asennettavissa uudelleen vain Microsoft Storesta",
     "selectAll": "Valitse kaikki",
-    "emptyStateTitle": "Turhia sovelluksia ei havaittu",
-    "emptyStateDescription": "Napsauta \"Tarkista\" löytääksesi esiasennetut sovellukset ja OEM-valmistajien turhat sovellukset.",
+    "filterLabel": "Luokka",
+    "confirmTitle_one": "Poistetaanko {{count}} sovellus?",
+    "confirmTitle_other": "Poistetaanko {{count}} sovellusta?",
+    "confirmDescription_one": "Sovellus poistetaan käyttäjältäsi ja, järjestelmänvalvojan oikeuksin, myös uusilta käyttäjiltä. Sen voi asentaa uudelleen vain Microsoft Storesta.",
+    "confirmDescription_other": "Sovellukset poistetaan käyttäjältäsi ja, järjestelmänvalvojan oikeuksin, myös uusilta käyttäjiltä. Ne voi asentaa uudelleen vain Microsoft Storesta.",
+    "confirmLabel_one": "Poista {{count}} sovellus",
+    "confirmLabel_other": "Poista {{count}} sovellusta",
+    "emptyStateTitle": "Ei vielä tarkistettu",
+    "emptyStateDescription": "Esiasennettuja sovelluksia ei ole tarkistettu tällä istunnolla.",
+    "lastRun_one": "Viimeisin poisto: {{date}}, {{count}} sovellus poistettu.",
+    "lastRun_other": "Viimeisin poisto: {{date}}, {{count}} sovellusta poistettu.",
+    "checkKnownTitle": "Tunnetut sovellukset",
+    "checkKnownDetail": "Luettelo Microsoftin ja valmistajien (OEM) esiasentamista sovelluksista",
+    "checkInstalledTitle": "Asennetut paketit",
+    "checkInstalledDetail": "Käyttäjäsi sovelluspaketit verrattuna luetteloon",
+    "checkRemovalTitle": "Poisto",
+    "checkRemovalDetail": "Käyttäjällesi; järjestelmänvalvojan oikeuksin myös uusien käyttäjien pohjakopiosta",
+    "noneFoundTitle": "Yksikään luetelluista sovelluksista ei ole asennettuna",
+    "noneFoundDescription": "Tunnetut esiasennetut sovellukset eivät ole käyttäjälläsi.",
+    "summaryTitle_one": "{{count}} esiasennettu sovellus löytyi",
+    "summaryTitle_other": "{{count}} esiasennettua sovellusta löytyi",
+    "selectedCount_one": "{{count}} valittu",
+    "selectedCount_other": "{{count}} valittu",
+    "removeButton_one": "Poista {{count}} sovellus",
+    "removeButton_other": "Poista {{count}} sovellusta",
+    "removeNone": "Poista valitut",
     "scanFailedToast": "Turhien sovellusten tarkistus epäonnistui",
     "scanFailedDescription": "Varmista, että PowerShell on käytettävissä",
     "scanFailedError": "Turhien sovellusten tarkistus epäonnistui. Varmista, että PowerShell on käytettävissä.",

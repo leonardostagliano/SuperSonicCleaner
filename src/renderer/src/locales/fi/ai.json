@@ -1,7 +1,7 @@
 {
   "title": "AI-analyysi",
   "description": "Pyydä uusi arvio näistä tarkistustuloksista.",
-  "hubDescription": "Uusi arvio tarkistuksista ja suorituskykytallenteista Codex-kirjautumisesi avulla.",
+  "hubDescription": "Lähettää Codexille oman kirjautumisesi kautta vain skannauksen metatietoja tai tallenteiden mittaustuloksia, ja vain kun käynnistät analyysin jostakin työkalusta.",
   "hubPrivacy": "Tarkistukset jakavat vain anonyymejä tiedostojen metatietoja. Tallenteet jakavat numeerisia CPU-, muisti- ja levymittauksia väliaikaisilla prosessitunnisteilla. Nimet, polut, muistiinpanot ja tiedostojen sisältö pysyvät tällä laitteella.",
   "connectionTitle": "Codex-yhteys",
   "connectionIntro": "Käytä Codexia tällä tietokoneella. Tarkista yhteys ja valitse sitten työkalu alta.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Suorita tarkistus tai tallenna suorituskykytallenne, ota sen AI-analyysi käyttöön ja käynnistä se sitten omalla painikkeellaan. Mitään ei lähetetä automaattisesti.",
   "tools": {
     "cleaner": {
-      "title": "Järjestelmän puhdistus"
+      "title": "Järjestelmän puhdistus",
+      "dataSent": "Väliaikaiset tunnisteet, tiedostotyyppi, koko ja arvioitu ikä. Yksityisyysjäljet pois lukien."
     },
     "largeFiles": {
-      "title": "Suuret tiedostot"
+      "title": "Suuret tiedostot",
+      "dataSent": "Väliaikaiset tunnisteet, tiedostotyyppi, koko ja arvioitu ikä."
     },
     "duplicates": {
-      "title": "Kaksoiskappaleet"
+      "title": "Kaksoiskappaleet",
+      "dataSent": "Väliaikaiset tunnisteet, tiedostotyyppi, koko, arvioitu ikä ja kaksoiskappaleryhmä."
     },
     "disk": {
-      "title": "Levyanalyysi"
+      "title": "Levyanalyysi",
+      "dataSent": "Väliaikaiset tunnisteet, kansion kokonaiskoko ja arvioitu ikä."
     },
     "performance": {
-      "title": "Suorituskykytallenteet"
+      "title": "Suorituskykytallenteet",
+      "dataSent": "Numeeriset CPU-, muisti- ja levymittaukset sekä väliaikaiset prosessitunnisteet."
     }
   },
   "enable": "Ota AI-analyysi käyttöön tälle näkymälle",
@@ -51,5 +56,23 @@
     "low": "Matala prioriteetti",
     "medium": "Keskitason prioriteetti",
     "high": "Korkea prioriteetti"
+  },
+  "toolsTitle": "Työkalut",
+  "columns": {
+    "tool": "Työkalu",
+    "dataSent": "Lähetetyt tiedot",
+    "lastRun": "Viimeksi suoritettu",
+    "state": "Tila"
+  },
+  "lastRun": {
+    "running": "Käynnissä",
+    "done": "Valmistui tässä istunnossa",
+    "failed": "Epäonnistui",
+    "none": "Ei yhtään tässä istunnossa",
+    "perRecording": "Tallennetaan jokaisen analysoidun tallenteen yhteydessä"
+  },
+  "state": {
+    "on": "Käytössä",
+    "off": "Ei käytössä"
   }
 }

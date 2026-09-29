@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Näe, mikä muuttui, mitä palautettiin ja mikä tarvitsee uuden tarkastelun. Jokaisesta suoritetusta tehtävästä jää merkintä.",
-    "settings": "Muokkaa SuperSonicCleaneria mieleiseksesi. Määritä ulkoasu, ilmoitukset, poissulut ja puhdistusasetukset.",
-    "about": "Avoin lähdekoodi, huolella tehty. Etsi versiosi, tarkista päivitykset ja tutustu projektiin.",
-    "recovery": "Selkeä tie takaisin. Tarkista tuetut muutokset ja palautuksen tiedot ennen minkään kumoamista."
+    "history": "Tällä tietokoneella suoritetut 100 viimeisintä skannausta ja puhdistusta: päivämäärä, kesto, käsitellyt kohteet ja vapautettu tila, sekä kunkin puhdistuksen kuitti.",
+    "settings": "Ulkoasu, kieli, käynnistys, ilmoitukset, päivitykset, varmuuskopiot, puhdistusasetukset ja poissulut. Jokainen muutos tallennetaan välittömästi.",
+    "about": "Asennettu versio, päivitykset, MIT-lisenssi ja alkuperäinen projekti (Kudu).",
+    "recovery": "SuperSonicCleanerin tekemät muutokset rekisteriin, palveluihin ja ajastettuihin tehtäviin, sekä varmuuskopiot niiden kumoamiseksi. Poistettuja tiedostoja ei voi palauttaa."
   },
   "storageTrend": {
     "title": "Tallennustila ajan mittaan",

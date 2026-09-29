@@ -15,6 +15,7 @@
   "cpuDetail": "Nykyinen suorittimen käyttö",
   "sample": "Viimeisin näyte",
   "used": "{{used}}/{{total}} Gt käytetty",
+  "free": "{{free}} Gt vapaana",
   "waiting": "Odotetaan reaaliaikaisia tietoja",
   "unavailable": "Levytiedot eivät ole saatavilla",
   "live": "Reaaliaikaiset järjestelmämittarit",

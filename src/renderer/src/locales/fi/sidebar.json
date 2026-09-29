@@ -10,5 +10,7 @@
   "history": "Toiminta",
   "settings": "Asetukset",
   "gameMode": "Pelitila",
-  "firewallAudit": "Palomuurin tarkistus"
+  "firewallAudit": "Palomuurin tarkistus",
+  "updateBadge": "Päivitys",
+  "mainNavigation": "Päänavigaatio"
 }
