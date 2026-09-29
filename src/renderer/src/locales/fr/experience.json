@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Voyez ce qui a changé, ce qui a été récupéré et ce qui mérite un nouvel examen. Chaque tâche terminée laisse une trace.",
-    "settings": "Faites en sorte que SuperSonicCleaner vous convienne. Définissez l’apparence, les notifications, les exclusions et les préférences de nettoyage.",
-    "about": "Open source, conçu avec soin. Trouvez votre version, recherchez des mises à jour et découvrez le projet.",
-    "recovery": "Un retour en arrière clair. Examinez les modifications prises en charge et les détails de restauration avant d’annuler quoi que ce soit."
+    "history": "Les 100 derniers scans et nettoyages exécutés sur ce PC, avec la date, la durée, les éléments traités et l’espace libéré, ainsi que le reçu de chaque nettoyage.",
+    "settings": "Apparence, langue, démarrage, notifications, mises à jour, sauvegardes, préférences de nettoyage et exclusions. Chaque modification est enregistrée immédiatement.",
+    "about": "Version installée, mises à jour, licence MIT et le projet d’origine (Kudu).",
+    "recovery": "Modifications apportées au registre, aux services et aux tâches planifiées par SuperSonicCleaner, avec les sauvegardes permettant de les annuler. Les fichiers supprimés ne peuvent pas être récupérés."
   },
   "storageTrend": {
     "title": "Stockage au fil du temps",

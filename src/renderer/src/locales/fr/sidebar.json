@@ -10,5 +10,7 @@
   "history": "Activité",
   "settings": "Préférences",
   "gameMode": "Mode Jeu",
-  "firewallAudit": "Audit du pare-feu"
+  "firewallAudit": "Audit du pare-feu",
+  "updateBadge": "Mise à jour",
+  "mainNavigation": "Navigation principale"
 }

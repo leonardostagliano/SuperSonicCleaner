@@ -1,7 +1,7 @@
 {
   "title": "Analyse IA",
   "description": "Obtenez un second avis sur ces résultats d’analyse.",
-  "hubDescription": "Un second avis sur les analyses et les enregistrements de performances, via votre connexion Codex.",
+  "hubDescription": "Envoie à Codex, sous votre connexion, uniquement les métadonnées d’analyse ou les mesures d’enregistrement, et seulement lorsque vous lancez une analyse depuis un outil.",
   "hubPrivacy": "Les analyses ne partagent que des métadonnées de fichiers anonymes. Les enregistrements partagent des mesures numériques du CPU, de la mémoire et du disque avec des ID de processus temporaires. Les noms, chemins, notes et contenus des fichiers restent sur cet appareil.",
   "connectionTitle": "Connexion Codex",
   "connectionIntro": "Utilisez Codex sur cet ordinateur. Vérifiez la connexion, puis choisissez un outil ci-dessous.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Terminez une analyse ou enregistrez un enregistrement de performances, activez son analyse IA, puis démarrez-la avec le bouton dédié. Rien n’est envoyé automatiquement.",
   "tools": {
     "cleaner": {
-      "title": "Nettoyage du système"
+      "title": "Nettoyage du système",
+      "dataSent": "ID temporaires, type de fichier, taille et âge approximatif. Traces de confidentialité exclues."
     },
     "largeFiles": {
-      "title": "Fichiers volumineux"
+      "title": "Fichiers volumineux",
+      "dataSent": "ID temporaires, type de fichier, taille et âge approximatif."
     },
     "duplicates": {
-      "title": "Fichiers en double"
+      "title": "Fichiers en double",
+      "dataSent": "ID temporaires, type de fichier, taille, âge approximatif et groupe de doublons."
     },
     "disk": {
-      "title": "Analyse de disque"
+      "title": "Analyse de disque",
+      "dataSent": "ID temporaires, taille totale du dossier et âge approximatif."
     },
     "performance": {
-      "title": "Enregistrements de performances"
+      "title": "Enregistrements de performances",
+      "dataSent": "Mesures numériques du CPU, de la mémoire et du disque, avec des ID de processus temporaires."
     }
   },
   "enable": "Activer l’analyse IA pour cette vue",
@@ -51,5 +56,23 @@
     "low": "Priorité faible",
     "medium": "Priorité moyenne",
     "high": "Priorité élevée"
+  },
+  "toolsTitle": "Outils",
+  "columns": {
+    "tool": "Outil",
+    "dataSent": "Données envoyées",
+    "lastRun": "Dernière exécution",
+    "state": "État"
+  },
+  "lastRun": {
+    "running": "En cours",
+    "done": "Terminé au cours de cette session",
+    "failed": "Échoué",
+    "none": "Aucun au cours de cette session",
+    "perRecording": "Enregistré à chaque enregistrement analysé"
+  },
+  "state": {
+    "on": "Activé",
+    "off": "Désactivé"
   }
 }

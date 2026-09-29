@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "Centre de récupération",
-    "limits": "La récupération couvre les valeurs DWORD de confidentialité/du registre Windows enregistrées, les tâches planifiées et la configuration des services. La suppression définitive de fichiers ne peut pas être annulée. Les modifications plus anciennes ou non prises en charge peuvent ne disposer que d’une sauvegarde manuelle. Certains paramètres restaurés nécessitent un redémarrage.",
+    "limits": "La récupération couvre les valeurs DWORD du registre écrites pour les paramètres de confidentialité et système, les tâches planifiées et la configuration des services. Les modifications plus anciennes ou non prises en charge peuvent ne disposer que d’une sauvegarde manuelle. Certains paramètres restaurés prennent effet après un redémarrage.",
     "refresh": "Actualiser",
     "export": "Exporter l’historique de récupération",
     "loadError": "Impossible de lire l’historique de récupération.",
     "failed": "La récupération a échoué.",
-    "empty": "Aucune modification enregistrée sur cette page. Les nouvelles modifications prises en charge apparaîtront ici.",
+    "empty": "Les modifications effectuées par Bouclier de confidentialité, Gestionnaire de services et Nettoyeur du registre apparaissent ici avec leur état d’origine et ultérieur.",
+    "summary": {
+      "recorded": "Modifications enregistrées",
+      "registryBackups": "Sauvegardes du registre",
+      "backupFiles": "Fichiers de sauvegarde"
+    },
+    "changesTitle": "Modifications enregistrées",
+    "range": "{{from}}–{{to}} sur {{total}}",
     "gameMode": "Récupération du mode Jeu",
     "gameModeDescription": "Le mode Jeu dispose d’un instantané de récupération actif ou en attente.",
-    "openGameMode": "Ouvrir la récupération du mode Jeu",
+    "openGameMode": "Ouvrir le Mode Jeu",
     "before": "État d’origine",
     "after": "État après SuperSonicCleaner",
     "restore": "Restaurer l’état d’origine",
     "previous": "Précédent",
     "next": "Suivant",
     "backups": "Sauvegardes du registre et du menu contextuel",
-    "backupDescription": "Ces fichiers de sauvegarde ne contiennent pas d’informations vérifiées sur l’état après modification. Vérifiez-les dans le dossier de sauvegarde avant de les restaurer manuellement ; leur importation peut écraser des paramètres plus récents. Un fichier de sauvegarde n’est pas un point de restauration du système d’exploitation.",
+    "backupDescription": "Ces fichiers de sauvegarde ne contiennent pas d’état ultérieur vérifié. Examinez-les dans le dossier de sauvegarde avant de les restaurer manuellement : leur importation peut écraser des paramètres plus récents. Un fichier de sauvegarde n’est pas un point de restauration du système d’exploitation.",
     "openBackups": "Ouvrir le dossier de sauvegarde",
     "confirmTitle": "Restaurer cette modification ?",
-    "confirmDescription": "SuperSonicCleaner vérifiera l’état actuel avant de restaurer la valeur d’origine enregistrée. Les modifications conflictuelles plus récentes seront conservées. Des privilèges d’administrateur peuvent être requis.",
+    "confirmDescription": "SuperSonicCleaner vérifie l’état actuel avant de réécrire la valeur d’origine enregistrée. Si la valeur a été modifiée à nouveau entre-temps, la modification la plus récente est conservée. Des droits administrateur peuvent être requis.",
     "status": {
-      "pending": "Interrompu / en attente",
-      "ready": "Disponible",
+      "pending": "Interrompu ou en attente",
+      "ready": "Restaurable",
       "restored": "Restauré",
-      "failed": "Nécessite une attention",
+      "failed": "Échec de la restauration",
       "conflict": "Modification plus récente détectée"
     },
     "remove": "Supprimer l’entrée",
-    "removeDescription": "Supprimer cet enregistrement de récupération de l’historique local ? Cela ne modifie pas vos paramètres et ne supprime pas les sauvegardes du registre. SuperSonicCleaner ne pourra plus restaurer cette modification pour vous.",
-    "unreadable": "Impossible de lire cet enregistrement de récupération. Il a peut-être été écrit par un autre compte utilisateur ou endommagé sur le disque.",
-    "loading": "Chargement de l’historique de récupération ?",
-    "emptyTitle": "Votre historique de récupération commence ici",
+    "removeTitle": "Supprimer cet enregistrement de récupération ?",
+    "removeDescription": "L’entrée quitte l’historique local et SuperSonicCleaner ne peut plus annuler cette modification. Les paramètres et les sauvegardes du registre ne sont pas modifiés. Cette action est irréversible.",
+    "unreadable": "Cette entrée de récupération n’a pas pu être lue : elle a peut-être été écrite par un autre compte utilisateur ou être endommagée sur le disque.",
+    "loading": "Lecture de l’historique de récupération…",
+    "emptyTitle": "Aucune modification restaurable",
     "source": {
       "privacy": "Bouclier de confidentialité",
       "services": "Gestionnaire de services",
       "registry": "Nettoyeur du registre"
+    },
+    "value": {
+      "absent": "La valeur n’existait pas",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Tâche activée",
+      "taskDisabled": "Tâche désactivée",
+      "start": {
+        "boot": "Démarrage au boot",
+        "system": "Démarrage système",
+        "automatic": "Démarrage automatique",
+        "manual": "Démarrage manuel",
+        "disabled": "Désactivé"
+      },
+      "delayed": "différé",
+      "running": "en cours d’exécution",
+      "stopped": "arrêté",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Sauvegardes du registre",
@@ -43,7 +68,7 @@
       "empty": "Aucune sauvegarde du registre pour le moment.",
       "restore": "Restaurer",
       "showInFolder": "Afficher dans le dossier",
-      "requiresAdmin": "Nécessite les droits d’administrateur",
+      "requiresAdmin": "Nécessite des droits administrateur",
       "confirmTitle": "Restaurer cette sauvegarde du registre ?",
       "confirmDescription": "SuperSonicCleaner importera les clés ci-dessous. Les valeurs de la sauvegarde remplacent les valeurs actuelles, et les clés et valeurs manquantes sont rétablies. Rien d’autre n’est supprimé, sauf que la restauration d’une sauvegarde pré-restauration supprime également les clés et valeurs ajoutées par la restauration qu’elle annule. Avant l’importation, SuperSonicCleaner enregistre l’état actuel de ces clés dans une sauvegarde pré-restauration. Certaines modifications ne prennent effet qu’après la déconnexion ou le redémarrage.",
       "restored": "Restauration effectuée. L’état précédent a été enregistré dans {{file}}.",
@@ -64,8 +89,12 @@
         "empty": "Ne contient aucune clé de registre.",
         "unreadable": "Impossible à lire.",
         "classes-root": "Contient des clés HKEY_CLASSES_ROOT, qui fusionnent les classes de la machine et celles de chaque utilisateur ; SuperSonicCleaner ne peut donc pas déterminer où les restaurer. Elles peuvent uniquement être inspectées.",
-        "unverified": "Cette sauvegarde ne peut pas être vérifiée — elle a peut-être été modifiée depuis que SuperSonicCleaner l’a créée, elle peut donc uniquement être examinée."
-      }
+        "unverified": "Cette sauvegarde ne peut pas être vérifiée : elle a peut-être été modifiée depuis que SuperSonicCleaner l’a créée, elle ne peut donc être qu’examinée."
+      },
+      "moreKeys_one": "+1 clé supplémentaire",
+      "moreKeys_other": "+{{formatted}} clés supplémentaires",
+      "confirmLabel_one": "Importer 1 clé",
+      "confirmLabel_other": "Importer {{formatted}} clés"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "Éléments en cache dans ces catégories : {{found}} · Non sélectionnés dans cette opération : {{unselected}}",
     "title": "Reçus de nettoyage",
     "description": "Enregistrés au moment de la suppression. Chaque reçu couvre une opération de nettoyage ou un lot.",
-    "empty": "Aucun reçu de nettoyage pour le moment. Exécutez un nettoyage pour enregistrer ses résultats.",
+    "empty": "Aucun reçu de nettoyage",
     "loadError": "Impossible de lire les reçus de nettoyage. Les données existantes ont été conservées.",
     "actionError": "L’action sur le reçu a échoué.",
     "saveError": "Le nettoyage est terminé, mais son reçu n’a pas pu être enregistré.",
@@ -91,7 +120,7 @@
     "retryOf": "Nouvelle tentative de",
     "export": "Exporter le reçu",
     "retry": "Réessayer les échecs admissibles ({{count}})",
-    "rescan": "Lancer une nouvelle analyse",
+    "rescan": "Nouvelle analyse",
     "retryLifetime": "Les nouvelles tentatives utilisent les sélections encore en cache pendant 30 minutes maximum. Les exclusions et les protections d’ancienneté sont vérifiées à nouveau. Après expiration ou redémarrage, lancez une nouvelle analyse.",
     "pathsOff": "L’enregistrement des chemins était désactivé pour cette exécution. Seules les catégories et les résultats ont été conservés.",
     "item": "Élément / catégorie",
@@ -106,18 +135,26 @@
     "retryConfirm": "Réessayer le nettoyage",
     "clearTitle": "Effacer les reçus de nettoyage ?",
     "clearDescription": "Cela supprime définitivement les reçus enregistrés et leurs informations de nouvelle tentative. L’historique des analyses et le journal de suppression séparé restent inchangés.",
-    "loading": "Loading cleanup receipts?"
+    "loading": "Lecture des reçus de nettoyage…"
   },
-  "pageTitle": "Historique des analyses",
+  "pageTitle": "Activité",
+  "viewLabel": "Vue",
   "viewOverview": "Vue d’ensemble",
+  "viewList": "Liste",
+  "viewReceipts": "Reçus",
   "clearButton": "Effacer",
-  "emptyStateTitle": "Aucun historique pour le moment",
-  "emptyStateDescription": "Lancez une analyse depuis les pages Cleaner, Registry ou Debloater. Les résultats apparaîtront ici.",
-  "confirmClearScanDescription": "Cela supprimera définitivement toutes les entrées de l’historique des analyses. Cette action est irréversible.",
+  "clearHistory": "Effacer l’historique",
+  "emptyStateTitle": "Aucune activité enregistrée",
+  "emptyStateDescription": "Les analyses et nettoyages apparaissent ici après leur première exécution, avec la date, la durée et le résultat. Les reçus de nettoyage se trouvent dans la vue Reçus.",
+  "confirmClearScanTitle_one": "Effacer 1 entrée de l’historique ?",
+  "confirmClearScanTitle_other": "Effacer {{count}} entrées de l’historique ?",
+  "confirmClearScanDescription": "Les chemins du journal des fichiers supprimés sont également effacés. Les reçus de nettoyage sont conservés. Cette action est irréversible.",
+  "confirmClearLabel_one": "Effacer 1 entrée",
+  "confirmClearLabel_other": "Effacer {{count}} entrées",
   "typeLabels": {
     "cleaner": "Nettoyage du système",
-    "registry": "Correction du registre",
-    "debloater": "Debloater",
+    "registry": "Nettoyage du registre",
+    "debloater": "Suppression des bloatwares",
     "network": "Nettoyage du réseau",
     "drivers": "Nettoyage des pilotes",
     "malware": "Analyse des logiciels malveillants",
@@ -125,29 +162,88 @@
     "startup": "Gestionnaire de démarrage",
     "services": "Gestionnaire de services",
     "softwareUpdate": "Mise à jour des logiciels",
-    "cveScan": "Analyse CVE"
+    "cveScan": "Analyse des vulnérabilités (CVE)"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} libérés",
+    "noSpace": "Aucun espace libéré",
+    "entries_one": "1 entrée",
+    "entries_other": "{{formatted}} entrées",
+    "items_one": "1 élément traité",
+    "items_other": "{{formatted}} éléments traités",
+    "averageDuration": "durée moyenne {{duration}}",
+    "errors_one": "1 erreur",
+    "errors_other": "{{formatted}} erreurs",
+    "noErrors": "aucune erreur",
+    "range": "du {{from}} au {{to}}",
+    "sameDay": "le {{date}}"
   },
   "overview": {
-    "tooltipSpace": "Espace"
+    "spaceOverTime": "Espace libéré par jour",
+    "spaceSentence_one": "{{size}} libérés sur 1 jour avec activité.",
+    "spaceSentence_other": "{{size}} libérés sur {{count}} jours avec activité.",
+    "noSpaceSentence": "Aucune activité enregistrée n’a libéré d’espace.",
+    "chartLabel_one": "Espace libéré sur 1 jour",
+    "chartLabel_other": "Espace libéré sur {{count}} jours",
+    "tooltipSpace": "{{size}} libérés",
+    "byType": "Par type",
+    "topCategories": "Catégories ayant libéré le plus d’espace",
+    "recent": "Activité récente",
+    "showAll": "Liste complète"
+  },
+  "columns": {
+    "type": "Type",
+    "date": "Date",
+    "entries": "Entrées",
+    "items": "Éléments",
+    "space": "Espace",
+    "duration": "Durée",
+    "outcome": "Résultat",
+    "category": "Catégorie"
+  },
+  "list": {
+    "title": "Toute l’activité",
+    "count_one": "1 entrée",
+    "count_other": "{{formatted}} entrées",
+    "filterLabel": "Type",
+    "filterAll": "Tous les types",
+    "scheduled": "Planifié",
+    "noErrors": "Aucune erreur"
   },
   "detail": {
+    "close": "Fermer",
+    "outcomeDone": "Terminé",
+    "outcomeErrors_one": "Terminé avec 1 erreur",
+    "outcomeErrors_other": "Terminé avec {{formatted}} erreurs",
+    "found_one": "1 élément trouvé",
+    "found_other": "{{formatted}} éléments trouvés",
+    "processed_one": "1 traité",
+    "processed_other": "{{formatted}} traités",
+    "skipped_one": "1 élément ignoré.",
+    "skipped_other": "{{formatted}} éléments ignorés.",
+    "scheduled": "planifié",
+    "scheduledBy": "planifié : {{name}}",
     "categoriesLabel": "Catégories",
     "deletedFiles": {
       "title": "Fichiers supprimés",
-      "loading": "Chargement…",
+      "loading": "Lecture du journal de suppression…",
       "shownCount": "{{shown}} sur {{total}}",
       "loadMore": "Charger plus",
       "exportCsv": "Exporter en CSV",
       "openLog": "Ouvrir le journal",
-      "exportFailed": "Impossible d’exporter la liste des fichiers supprimés",
-      "truncatedBadge": "+{{count}} de plus",
+      "exported_one": "1 chemin exporté",
+      "exported_other": "{{formatted}} chemins exportés",
+      "exportFailed": "Impossible d’exporter la liste des fichiers supprimés.",
+      "truncatedBadge": "+{{formatted}} non répertoriés",
+      "truncatedHint_one": "Ce dossier contenait 1 entrée supplémentaire au-delà de la limite d’affichage par dossier. Elle a été supprimée mais non répertoriée.",
+      "truncatedHint_other": "Ce dossier contenait {{formatted}} entrées supplémentaires au-delà de la limite d’affichage par dossier. Elles ont été supprimées mais non répertoriées individuellement.",
       "emptyRecorded": "Aucun chemin de fichier n’a été enregistré pour cette exécution.",
-      "disabledHint": "La journalisation des suppressions est désactivée, les chemins individuels de cette exécution n’ont donc pas été enregistrés. Activez « Conserver un journal des fichiers supprimés » dans Paramètres → Préférences de nettoyage pour les enregistrer à l’avenir."
+      "disabledHint": "La journalisation des suppressions était désactivée, les chemins de cette exécution n’ont donc pas été enregistrés. Pour les enregistrer désormais, activez « Conserver un journal des fichiers supprimés » dans Paramètres › Préférences de nettoyage."
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1s",
-    "seconds": "{{count}}s",
-    "minutesAndSeconds": "{{minutes}}m {{seconds}}s"
+    "lessThanOneSecond": "moins de 1 s",
+    "seconds": "{{count}} s",
+    "minutesAndSeconds": "{{minutes}} min {{seconds}} s"
   }
 }

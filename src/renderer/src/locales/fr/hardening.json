@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Bouclier de confidentialité",
-    "pageDescription": "Contrôlez la télémétrie, les publicités, le suivi et la collecte de données sur l’ensemble de votre système",
+    "pageDescription": "Lit les paramètres de télémétrie, de publicité, de recherche et de synchronisation, et les compare à la valeur la plus respectueuse de la vie privée. Un paramètre ne change que si vous utilisez son interrupteur ou confirmez ; la plupart peuvent être rétablis à leur valeur par défaut.",
     "scanButton": "Analyser",
-    "scanProgressPreparing": "Préparation de l’analyse...",
-    "applyingProtections": "Application des protections de confidentialité...",
-    "emptyStateTitle": "Bouclier de confidentialité",
-    "emptyStateDescription": "Cliquez sur \"Analyser\" pour auditer vos paramètres de confidentialité et de sécurité et appliquer le renforcement recommandé.",
-    "adminWarning": "Certains paramètres nécessitent des privilèges administrateur pour être modifiés. Exécutez SuperSonicCleaner en tant qu’administrateur pour une protection complète.",
+    "scanProgressPreparing": "Préparation de l’analyse",
+    "applyingProtections": "Application des paramètres…",
+    "emptyStateTitle": "Paramètres non encore analysés",
+    "emptyStateDescription": "L’analyse lit les paramètres et n’en modifie aucun.",
+    "adminWarning": "Certains paramètres ne peuvent être modifiés que lorsque SuperSonicCleaner s’exécute en tant qu’administrateur ; sans ces droits, ils restent inchangés.",
     "scanFailed": "Échec de l’analyse de confidentialité",
-    "applyFailed": "Échec de l’application des paramètres de confidentialité",
-    "applyFailedDescription": "Essayez d’exécuter en tant qu’administrateur",
-    "settingApplyFailed": "Échec de l’application de \"{{label}}\"",
-    "settingEnabled": "{{label}} bloqué",
-    "settingDisabled": "{{label}} rétabli par défaut",
-    "settingRevertFailed": "Échec du rétablissement de \"{{label}}\"",
+    "applyFailed": "Impossible d’appliquer les paramètres de confidentialité",
+    "applyFailedDescription": "Essayez d’exécuter l’application en tant qu’administrateur",
+    "settingApplyFailed": "Impossible d’appliquer « {{label}} »",
+    "settingEnabled": "Appliqué : {{label}}",
+    "settingDisabled": "Rétabli à la valeur par défaut : {{label}}",
+    "settingRevertFailed": "Impossible de rétablir « {{label}} »",
     "settingRevertFailedGeneric": "Échec du rétablissement du paramètre de confidentialité",
     "settingApplyFailedGeneric": "Échec de l’application du paramètre de confidentialité",
-    "ipcCallFailed": "Échec de l’appel IPC — essayez d’exécuter en tant qu’administrateur",
+    "ipcCallFailed": "L’appel a échoué : essayez d’exécuter l’application en tant qu’administrateur",
     "allSettingsLabel": "Tous les paramètres",
     "unknownError": "Erreur inconnue",
-    "requiresSettingEnabled": "Activez d’abord \"{{label}}\"",
-    "adminRequired": "Essayez d’exécuter en tant qu’administrateur",
-    "settingNotApplied": "Le système n’a pas signalé le changement — un redémarrage peut être nécessaire, ou le paramètre peut être géré par un autre profil"
+    "requiresSettingEnabled": "Activez d’abord « {{label}} »",
+    "adminRequired": "Essayez d’exécuter l’application en tant qu’administrateur",
+    "settingNotApplied": "Le système n’a pas signalé le changement : un redémarrage est peut-être nécessaire, ou le paramètre est géré par un autre profil.",
+    "rescanButton": "Analyser à nouveau",
+    "scanningButton": "Analyse en cours…",
+    "applyRecommended_one": "Appliquer {{count}} changement recommandé",
+    "applyRecommended_other": "Appliquer {{count}} changements recommandés",
+    "summaryTitle_one": "{{count}} paramètre à changer",
+    "summaryTitle_other": "{{count}} paramètres à changer",
+    "summaryNone": "Les {{total}} paramètres ont déjà la valeur la plus respectueuse de la vie privée",
+    "summaryFacts": "{{protected}} sur {{total}} déjà à la valeur la plus respectueuse de la vie privée · {{categories}} catégories",
+    "categoryMeta_one": "{{count}} à changer",
+    "categoryMeta_other": "{{count}} à changer",
+    "categoryAllSet": "tous déjà définis",
+    "categoryApply_one": "Appliquer {{count}}",
+    "categoryApply_other": "Appliquer {{count}}",
+    "categoryShow": "Afficher",
+    "categoryHide": "Masquer",
+    "adminTag": "Nécessite un administrateur",
+    "notReversibleTag": "Non réversible",
+    "scanProgressTitle": "Analyse en cours",
+    "scanProgressCount": "{{current}} sur {{total}}",
+    "scanProgressCategory": "Vérification : {{category}}",
+    "scanProgressLabel": "Progression de l’analyse",
+    "applyingLabel": "Progression de l’application",
+    "receiptTitle": "Paramètres appliqués",
+    "receiptApplied_one": "{{count}} paramètre modifié",
+    "receiptApplied_other": "{{count}} paramètres modifiés",
+    "receiptReversible": "peut être rétabli depuis les interrupteurs",
+    "receiptFailed_one": "{{count}} non appliqué : la raison est indiquée ci-dessous.",
+    "receiptFailed_other": "{{count}} non appliqués : les raisons sont indiquées ci-dessous.",
+    "receiptFailedAdmin_one": "{{count}} non appliqué : l’application doit peut-être s’exécuter en tant qu’administrateur. La raison est indiquée ci-dessous.",
+    "receiptFailedAdmin_other": "{{count}} non appliqués : l’application doit peut-être s’exécuter en tant qu’administrateur. Les raisons sont indiquées ci-dessous.",
+    "failedHeading": "Paramètres non appliqués",
+    "failedColumnSetting": "Paramètre",
+    "failedColumnReason": "Raison",
+    "confirmTitle_one": "Changer {{count}} paramètre ?",
+    "confirmTitle_other": "Changer {{count}} paramètres ?",
+    "confirmDescription": "Les paramètres listés passent à la valeur la plus respectueuse de la vie privée. Ils peuvent être rétablis à la valeur par défaut depuis les interrupteurs de cette page.",
+    "confirmDescriptionIrreversible_one": "Les paramètres listés passent à la valeur la plus respectueuse de la vie privée. {{count}} ne peut pas être rétabli à la valeur par défaut depuis cette page.",
+    "confirmDescriptionIrreversible_other": "Les paramètres listés passent à la valeur la plus respectueuse de la vie privée. {{count}} ne peuvent pas être rétablis à la valeur par défaut depuis cette page.",
+    "confirmLabel_one": "Changer {{count}} paramètre",
+    "confirmLabel_other": "Changer {{count}} paramètres",
+    "settings": {
+      "telemetry-level": {
+        "label": "Télémétrie Windows",
+        "description": "Réduit la collecte de données de diagnostic au minimum (niveau Sécurité uniquement)"
+      },
+      "activity-history": {
+        "label": "Historique des activités",
+        "description": "Empêche Windows de suivre et de synchroniser l’utilisation de vos applications et fichiers"
+      },
+      "publish-activity": {
+        "label": "Publication des activités utilisateur",
+        "description": "Empêche Windows de publier vos activités auprès de Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Invites de commentaires",
+        "description": "Désactive les invites et sondages de commentaires périodiques de Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Données d’écriture manuscrite",
+        "description": "Arrête l’envoi des données d’écriture manuscrite et de frappe à Microsoft"
+      },
+      "input-personalization": {
+        "label": "Personnalisation de la saisie",
+        "description": "Arrête la collecte des données de frappe et d’encre pour la personnalisation"
+      },
+      "tailored-experiences": {
+        "label": "Expériences personnalisées",
+        "description": "Empêche Microsoft d’utiliser les données de diagnostic pour personnaliser conseils et publicités"
+      },
+      "app-launch-tracking": {
+        "label": "Suivi du lancement des applications",
+        "description": "Empêche Windows de suivre les applications que vous ouvrez pour ajuster le menu Démarrer"
+      },
+      "advertising-id": {
+        "label": "Identifiant publicitaire",
+        "description": "Désactive l’identifiant publicitaire unique utilisé par les applications pour vous suivre"
+      },
+      "suggested-content": {
+        "label": "Contenu suggéré dans Paramètres",
+        "description": "Empêche Microsoft d’afficher des suggestions d’applications et des publicités dans Paramètres"
+      },
+      "tips-notifications": {
+        "label": "Astuces et suggestions",
+        "description": "Désactive les astuces, conseils et notifications de suggestion de Windows"
+      },
+      "start-suggestions": {
+        "label": "Suggestions du menu Démarrer",
+        "description": "Désactive les suggestions d’applications (publicités) dans le menu Démarrer"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight de l’écran de verrouillage",
+        "description": "Désactive les publicités et suggestions Microsoft Spotlight sur l’écran de verrouillage"
+      },
+      "silently-installed-apps": {
+        "label": "Applications installées silencieusement",
+        "description": "Empêche Windows d’installer automatiquement des applications promues"
+      },
+      "preinstalled-apps": {
+        "label": "Suggestions d’applications préinstallées",
+        "description": "Empêche Windows de suggérer des applications préinstallées que vous n’avez pas utilisées"
+      },
+      "bing-start-menu": {
+        "label": "Bing dans le menu Démarrer",
+        "description": "Empêche l’envoi à Bing des recherches saisies dans le menu Démarrer"
+      },
+      "bing-web-search": {
+        "label": "Résultats web Bing",
+        "description": "Désactive les résultats web dans la Recherche Windows, afin que les recherches restent sur ce PC"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Désactive Cortana, qui s’exécute en arrière-plan et collecte des données"
+      },
+      "search-highlights": {
+        "label": "Mises en avant de la recherche",
+        "description": "Désactive les suggestions de recherches tendance et le contenu web dans la zone de recherche"
+      },
+      "store-search-suggestions": {
+        "label": "Suggestions de recherche du Store",
+        "description": "Désactive les suggestions de recherche du Microsoft Store, qui envoient vos recherches à Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Synchronisation cloud du presse-papiers",
+        "description": "Empêche la synchronisation des données du presse-papiers entre appareils via le cloud"
+      },
+      "clipboard-history": {
+        "label": "Historique du presse-papiers",
+        "description": "Désactive l’historique du presse-papiers qui stocke le texte et les images copiés"
+      },
+      "settings-sync": {
+        "label": "Synchronisation des paramètres",
+        "description": "Arrête la synchronisation des paramètres, thèmes et mots de passe Windows avec votre compte Microsoft"
+      },
+      "find-my-device": {
+        "label": "Localiser mon appareil",
+        "description": "Désactive le suivi de l’appareil par géolocalisation effectué par Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Désactive l’assistant IA Microsoft Copilot sur l’ensemble de Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Désactive Windows Recall, l’historique de captures d’écran IA qui enregistre tout ce qui s’affiche à l’écran"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Désactive l’analyse IA Click to Do du texte et des images à l’écran"
+      },
+      "ai-service-autostart": {
+        "label": "Démarrage automatique des services IA",
+        "description": "Empêche les services IA de démarrer automatiquement en arrière-plan"
+      },
+      "edge-ai-features": {
+        "label": "IA de rédaction d’Edge",
+        "description": "Désactive les fonctions IA de rédaction et de reformulation de texte d’Edge"
+      },
+      "paint-ai": {
+        "label": "Fonctions IA de Paint",
+        "description": "Désactive les fonctions de génération d’images par IA de Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Fonctions IA du Bloc-notes",
+        "description": "Désactive les fonctions de reformulation de texte par IA du Bloc-notes Microsoft"
+      },
+      "service-diagtrack": {
+        "label": "Service DiagTrack",
+        "description": "Désactive le service Expériences utilisateur connectées et télémétrie"
+      },
+      "service-dmwappush": {
+        "label": "Service WAP Push",
+        "description": "Désactive le service de routage des messages WAP Push utilisé pour la télémétrie"
+      },
+      "service-delivery-optimization": {
+        "label": "Optimisation de la distribution",
+        "description": "Désactive le partage pair-à-pair des mises à jour Windows, afin que ce PC n’envoie pas de données de mise à jour à d’autres appareils"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Désactive le Gestionnaire de cartes téléchargées, un service en arrière-plan dont la plupart des PC n’ont pas besoin"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Désactive la tâche de télémétrie Microsoft qui collecte les données de compatibilité"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Désactive la tâche en arrière-plan qui envoie la télémétrie des programmes"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Désactive la collecte de télémétrie effectuée via le proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Désactive l’envoi des données du programme d’amélioration de l’expérience client (CEIP)"
+      },
+      "task-usb-ceip": {
+        "label": "Données d’utilisation USB (CEIP)",
+        "description": "Désactive la collecte de télémétrie sur l’utilisation des périphériques USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Désactive la collecte et l’envoi des données de diagnostic disque"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Désactive la tâche de télémétrie de gestion des appareils pour les commentaires"
+      },
+      "task-maps-update": {
+        "label": "Tâche de mise à jour des cartes",
+        "description": "Désactive les téléchargements automatiques de données cartographiques en arrière-plan"
+      },
+      "task-maps-toast": {
+        "label": "Tâche de notification des cartes",
+        "description": "Désactive la tâche de notification des cartes"
+      },
+      "edge-metrics": {
+        "label": "Rapports de mesures d’Edge",
+        "description": "Empêche Edge d’envoyer des mesures d’utilisation et de plantage à Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Collecte d’informations sur les sites d’Edge",
+        "description": "Empêche Edge d’envoyer à Microsoft les adresses des sites que vous visitez"
+      },
+      "edge-personalization": {
+        "label": "Rapports de personnalisation d’Edge",
+        "description": "Empêche Edge d’envoyer votre historique de navigation pour la personnalisation publicitaire"
+      },
+      "edge-copilot-cdp": {
+        "label": "Accès de Copilot aux pages (CDP) dans Edge",
+        "description": "Empêche Copilot de lire le contenu des pages via le Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Contexte de page pour Copilot dans Edge",
+        "description": "Empêche Copilot d’utiliser le contexte de la page pour analyser le contenu"
+      },
+      "edge-discover": {
+        "label": "Analyse des pages par Discover dans Edge",
+        "description": "Empêche la fonction Discover d’analyser le contenu des pages"
+      },
+      "edge-sidebar": {
+        "label": "Barre latérale d’Edge",
+        "description": "Désactive la barre latérale d’Edge et sa collecte de données en arrière-plan"
+      },
+      "edge-shopping": {
+        "label": "Assistant d’achats d’Edge",
+        "description": "Désactive le suivi de comparaison de prix dans Edge"
+      },
+      "chrome-metrics": {
+        "label": "Rapports de mesures de Chrome",
+        "description": "Empêche Chrome d’envoyer des mesures d’utilisation et de plantage à Google"
+      },
+      "chrome-feedback": {
+        "label": "Commentaires utilisateur de Chrome",
+        "description": "Empêche Chrome de collecter et d’envoyer des données de commentaires utilisateur"
+      },
+      "chrome-extended-reporting": {
+        "label": "Navigation sécurisée étendue de Chrome",
+        "description": "Empêche Chrome d’envoyer à Google des rapports étendus d’URL et de téléchargement"
+      },
+      "firefox-telemetry": {
+        "label": "Télémétrie de Firefox",
+        "description": "Empêche Firefox de collecter des données de télémétrie et de les envoyer à Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Agent de navigateur par défaut de Firefox",
+        "description": "Désactive l’agent en arrière-plan qui envoie les données d’utilisation du navigateur à Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Données de diagnostic et d’utilisation",
+        "description": "Arrête le partage des données de diagnostic et d’utilisation avec Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Analytique de Siri",
+        "description": "Arrête la collecte des données d’analytique et d’amélioration de Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Partage des données de santé",
+        "description": "Arrête le partage des données de santé avec Apple à des fins de recherche"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Visibilité AirDrop",
+        "description": "Règle AirDrop sur Aucun : vous ne pouvez plus recevoir de fichiers par AirDrop tant que vous ne le réactivez pas dans Réglages Système"
+      },
+      "macos-crash-reporter": {
+        "label": "Rapporteur de plantages",
+        "description": "Empêche le rapporteur de plantages d’envoyer des rapports automatiquement"
+      },
+      "macos-ad-tracking": {
+        "label": "Publicités personnalisées",
+        "description": "Limite le suivi publicitaire par Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Suggestions Siri dans l’App Store",
+        "description": "Désactive les suggestions Siri dans l’App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Suggestions Safari",
+        "description": "Désactive les suggestions de recherche Safari envoyées à Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Suggestions Spotlight",
+        "description": "Désactive les suggestions web de Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Préchargement du premier résultat Safari",
+        "description": "Empêche Safari de précharger le premier résultat de recherche, ce qui envoie des données de navigation aux sites"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Désactive Handoff et le presse-papiers universel : vous ne pouvez plus reprendre vos activités ni copier-coller entre appareils Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Analytique iCloud",
+        "description": "Arrête le partage des données analytiques iCloud avec Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Onglets iCloud de Safari",
+        "description": "Désactive la synchronisation des onglets iCloud de Safari : vous ne voyez plus les onglets ouverts sur vos autres appareils Apple"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Désactive entièrement Siri : « Dis Siri », les commandes vocales et les raccourcis Siri cessent de fonctionner"
+      },
+      "macos-siri-dictation": {
+        "label": "Dictée Siri",
+        "description": "Désactive la dictée : la touche microphone de votre clavier cesse de fonctionner"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Désactive les fonctions IA d’Apple Intelligence (macOS 15 Sequoia et ultérieur)"
+      },
+      "macos-safari-dnt": {
+        "label": "Ne pas suivre de Safari",
+        "description": "Active l’en-tête Ne pas suivre dans Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Rapports de mesures de Chrome",
+        "description": "Empêche Chrome d’envoyer des mesures d’utilisation à Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Rapports de navigation sécurisée de Chrome",
+        "description": "Empêche Chrome d’envoyer à Google des rapports étendus d’URL et de téléchargement"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Télémétrie de Firefox",
+        "description": "Empêche Firefox de collecter des données de télémétrie et de les envoyer à Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Vérifie que Gatekeeper est activé, afin que les applications non vérifiées soient bloquées"
+      },
+      "macos-remote-apple-events": {
+        "label": "Événements Apple distants",
+        "description": "Désactive les événements Apple distants, afin que votre Mac ne puisse pas être automatisé à distance"
+      },
+      "macos-wake-on-network": {
+        "label": "Réveil sur accès réseau",
+        "description": "Désactive le réveil sur accès réseau, afin que votre Mac ne puisse pas être réveillé à distance"
+      },
+      "macos-guest-account": {
+        "label": "Compte invité",
+        "description": "Désactive le compte invité pour empêcher tout accès local non autorisé"
+      },
+      "macos-auto-login": {
+        "label": "Connexion automatique",
+        "description": "Désactive la connexion automatique, afin que le Mac demande une authentification au démarrage"
+      },
+      "macos-firewall": {
+        "label": "Coupe-feu applicatif",
+        "description": "Active le coupe-feu applicatif de macOS pour contrôler les connexions entrantes"
+      },
+      "macos-stealth-mode": {
+        "label": "Mode furtif",
+        "description": "Active le mode furtif, afin que votre Mac ne réponde pas aux requêtes de sondage (ping ICMP)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Désactiver le transfert IP",
+        "description": "Empêche le système de transférer des paquets entre interfaces réseau"
+      },
+      "macos-block-signed-auto": {
+        "label": "Bloquer l’autorisation automatique des applications signées",
+        "description": "Empêche les applications signées de contourner automatiquement le coupe-feu"
+      },
+      "macos-remote-login": {
+        "label": "Désactiver la connexion distante (SSH)",
+        "description": "Désactive entièrement le serveur SSH. Si vous avez besoin d’un accès SSH, laissez cette option désactivée et durcissez plutôt les paramètres SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Désactiver la connexion SSH root",
+        "description": "Empêche la connexion directe en tant que root par SSH ; utilisez plutôt sudo depuis un compte standard"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Désactiver l’authentification SSH par mot de passe",
+        "description": "N’autorise que l’authentification SSH par clé. Configurez d’abord vos clés SSH, sinon vous risquez d’être bloqué à l’extérieur"
+      },
+      "macos-core-dumps": {
+        "label": "Désactiver les vidages mémoire (core dumps)",
+        "description": "Empêche les vidages mémoire, qui peuvent divulguer un contenu de mémoire sensible"
+      },
+      "gnome-usage-stats": {
+        "label": "Statistiques d’utilisation",
+        "description": "Désactive la collecte de statistiques d’utilisation de GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Suivi des fichiers récents",
+        "description": "Désactive le suivi des fichiers récemment utilisés"
+      },
+      "gnome-location": {
+        "label": "Services de localisation",
+        "description": "Désactive les services de localisation de GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Rapports de plantage (Apport)",
+        "description": "Désactive l’envoi automatique des rapports de plantage"
+      },
+      "gnome-connectivity-check": {
+        "label": "Vérification de connectivité",
+        "description": "Désactive les vérifications périodiques de connectivité réseau"
+      },
+      "core-dump-disable": {
+        "label": "Désactiver les vidages mémoire (core dumps)",
+        "description": "Empêche les vidages mémoire, qui peuvent divulguer un contenu de mémoire sensible"
+      },
+      "ssh-root-login": {
+        "label": "Désactiver la connexion SSH root",
+        "description": "Empêche la connexion directe en tant que root par SSH ; utilisez plutôt sudo depuis un compte standard"
+      },
+      "ssh-password-auth": {
+        "label": "Désactiver l’authentification SSH par mot de passe",
+        "description": "N’autorise que l’authentification SSH par clé. Configurez d’abord vos clés SSH, sinon vous risquez d’être bloqué à l’extérieur"
+      },
+      "kde-usage-stats": {
+        "label": "Statistiques d’utilisation",
+        "description": "Désactive les commentaires utilisateur de KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Suivi des fichiers récents",
+        "description": "Désactive l’historique d’activité KDE des fichiers récents"
+      },
+      "kde-baloo": {
+        "label": "Indexation des fichiers (Baloo)",
+        "description": "Désactive l’indexeur de fichiers Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Rapports de plantage (DrKonqi)",
+        "description": "Désactive le gestionnaire de rapports de plantage de KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Télémétrie et collecte de données",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Suppression des logiciels préinstallés",
-    "pageDescription": "Supprimez les applications Windows préinstallées et les logiciels OEM indésirables",
+    "pageDescription": "Applications préinstallées par Windows et par le fabricant. Une fois supprimées, elles ne peuvent être réinstallées que depuis le Microsoft Store.",
     "scanButton": "Analyser",
-    "irreversibleWarning": "Irréversible — Les applications supprimées ne peuvent être réinstallées que depuis le Microsoft Store. Vérifiez attentivement votre sélection.",
-    "scanningPackages": "Analyse des packages installés...",
-    "removingProgress": "Suppression de {{current}} sur {{total}}",
+    "rescanButton": "Analyser à nouveau",
+    "irreversibleWarning": "La suppression ne peut pas être annulée depuis l’application : vérifiez les applications sélectionnées avant de confirmer.",
+    "scanningPackages": "Analyse des paquets installés…",
+    "removingProgress": "Suppression des applications ({{current}} sur {{total}})",
+    "receiptTitle": "Suppression terminée",
+    "removedApps_one": "{{count}} application supprimée",
+    "removedApps_other": "{{count}} applications supprimées",
+    "failedCount_one": "{{count}} échec",
+    "failedCount_other": "{{count}} échecs",
+    "reinstallFromStore": "réinstallable uniquement depuis le Microsoft Store",
     "selectAll": "Tout sélectionner",
-    "emptyStateTitle": "Aucun logiciel indésirable détecté",
-    "emptyStateDescription": "Cliquez sur \"Analyser\" pour rechercher les applications préinstallées et les logiciels OEM indésirables.",
+    "filterLabel": "Catégorie",
+    "confirmTitle_one": "Supprimer {{count}} application ?",
+    "confirmTitle_other": "Supprimer {{count}} applications ?",
+    "confirmDescription_one": "L’application est supprimée pour votre utilisateur et, avec des droits administrateur, pour les nouveaux utilisateurs aussi. Elle ne peut être réinstallée que depuis le Microsoft Store.",
+    "confirmDescription_other": "Les applications sont supprimées pour votre utilisateur et, avec des droits administrateur, pour les nouveaux utilisateurs aussi. Elles ne peuvent être réinstallées que depuis le Microsoft Store.",
+    "confirmLabel_one": "Supprimer {{count}} application",
+    "confirmLabel_other": "Supprimer {{count}} applications",
+    "emptyStateTitle": "Pas encore analysé",
+    "emptyStateDescription": "Aucune analyse des applications préinstallées dans cette session.",
+    "lastRun_one": "Dernière suppression : {{date}}, {{count}} application supprimée.",
+    "lastRun_other": "Dernière suppression : {{date}}, {{count}} applications supprimées.",
+    "checkKnownTitle": "Applications connues",
+    "checkKnownDetail": "Une liste des applications préinstallées par Microsoft et par les fabricants (OEM)",
+    "checkInstalledTitle": "Paquets installés",
+    "checkInstalledDetail": "Les paquets d’applications de votre utilisateur, comparés à la liste",
+    "checkRemovalTitle": "Suppression",
+    "checkRemovalDetail": "Pour votre utilisateur ; avec des droits administrateur, également depuis la copie utilisée pour les nouveaux utilisateurs",
+    "noneFoundTitle": "Aucune des applications listées n’est installée",
+    "noneFoundDescription": "Les applications préinstallées connues ne sont pas présentes pour votre utilisateur.",
+    "summaryTitle_one": "{{count}} application préinstallée trouvée",
+    "summaryTitle_other": "{{count}} applications préinstallées trouvées",
+    "selectedCount_one": "{{count}} sélectionnée",
+    "selectedCount_other": "{{count}} sélectionnées",
+    "removeButton_one": "Supprimer {{count}} application",
+    "removeButton_other": "Supprimer {{count}} applications",
+    "removeNone": "Supprimer la sélection",
     "scanFailedToast": "Échec de l’analyse des logiciels indésirables",
     "scanFailedDescription": "Assurez-vous que PowerShell est disponible",
     "scanFailedError": "Échec de l’analyse des logiciels indésirables. Assurez-vous que PowerShell est disponible.",
