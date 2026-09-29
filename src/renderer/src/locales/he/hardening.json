@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "מגן הפרטיות",
-    "pageDescription": "שליטה בטלמטריה, פרסומות, מעקב ואיסוף נתונים בכל רחבי המערכת",
+    "pageDescription": "קורא את הגדרות הטלמטריה, הפרסום, החיפוש והסנכרון ומשווה אותן לערך הפרטי ביותר. הגדרה משתנה רק כשמשתמשים במתג שלה או מאשרים; את רובן אפשר להחזיר לברירת המחדל.",
     "scanButton": "סרוק",
-    "scanProgressPreparing": "מכין סריקה...",
-    "applyingProtections": "מחיל הגנות פרטיות...",
-    "emptyStateTitle": "מגן הפרטיות",
-    "emptyStateDescription": "לחץ על \"סרוק\" כדי לבדוק את הגדרות הפרטיות והאבטחה שלך ולהחיל הקשחה מומלצת.",
-    "adminWarning": "חלק מההגדרות דורשות הרשאות מנהל מערכת לשינוי. הפעל את SuperSonicCleaner כמנהל מערכת להגנה מלאה.",
+    "scanProgressPreparing": "מכין את הסריקה",
+    "applyingProtections": "מחיל את ההגדרות…",
+    "emptyStateTitle": "ההגדרות עדיין לא נסרקו",
+    "emptyStateDescription": "הסריקה קוראת את ההגדרות ולא משנה אף אחת מהן.",
+    "adminWarning": "אפשר לשנות חלק מההגדרות רק כש-SuperSonicCleaner פועל כמנהל מערכת; בלי ההרשאות האלה הן נשארות כפי שהן.",
     "scanFailed": "סריקת הפרטיות נכשלה",
     "applyFailed": "החלת הגדרות הפרטיות נכשלה",
-    "applyFailedDescription": "נסה להפעיל כמנהל",
-    "settingApplyFailed": "החלת \"{{label}}\" נכשלה",
-    "settingEnabled": "{{label}} נחסם",
-    "settingDisabled": "{{label}} שוחזר לברירת המחדל",
-    "settingRevertFailed": "שחזור \"{{label}}\" נכשל",
+    "applyFailedDescription": "נסה להפעיל את האפליקציה כמנהל מערכת",
+    "settingApplyFailed": "החלת ”{{label}}” נכשלה",
+    "settingEnabled": "הוחל: {{label}}",
+    "settingDisabled": "הוחזר לברירת המחדל: {{label}}",
+    "settingRevertFailed": "שחזור ”{{label}}” נכשל",
     "settingRevertFailedGeneric": "שחזור הגדרת הפרטיות נכשל",
     "settingApplyFailedGeneric": "החלת הגדרת הפרטיות נכשלה",
-    "ipcCallFailed": "קריאת IPC נכשלה — נסה להפעיל כמנהל",
+    "ipcCallFailed": "הקריאה נכשלה: נסה להפעיל את האפליקציה כמנהל מערכת",
     "allSettingsLabel": "כל ההגדרות",
     "unknownError": "שגיאה לא ידועה",
-    "requiresSettingEnabled": "יש להפעיל תחילה את \"{{label}}\"",
-    "adminRequired": "נסה להפעיל כמנהל",
-    "settingNotApplied": "המערכת לא דיווחה על השינוי — ייתכן שנדרשת הפעלה מחדש, או שההגדרה מנוהלת על ידי פרופיל אחר"
+    "requiresSettingEnabled": "יש להפעיל תחילה את ”{{label}}”",
+    "adminRequired": "נסה להפעיל את האפליקציה כמנהל מערכת",
+    "settingNotApplied": "המערכת לא דיווחה על השינוי: ייתכן שנדרשת הפעלה מחדש, או שההגדרה מנוהלת על ידי פרופיל אחר.",
+    "rescanButton": "סרוק שוב",
+    "scanningButton": "סורק…",
+    "applyRecommended_one": "החלת {{count}} שינוי מומלץ",
+    "applyRecommended_other": "החלת {{count}} שינויים מומלצים",
+    "summaryTitle_one": "{{count}} הגדרה לשינוי",
+    "summaryTitle_other": "{{count}} הגדרות לשינוי",
+    "summaryNone": "כל {{total}} ההגדרות כבר בערך הפרטי ביותר",
+    "summaryFacts": "{{protected}} מתוך {{total}} כבר בערך הפרטי ביותר · {{categories}} קטגוריות",
+    "categoryMeta_one": "{{count}} לשינוי",
+    "categoryMeta_other": "{{count}} לשינוי",
+    "categoryAllSet": "הכול כבר מוגדר",
+    "categoryApply_one": "החל {{count}}",
+    "categoryApply_other": "החל {{count}}",
+    "categoryShow": "הצג",
+    "categoryHide": "הסתר",
+    "adminTag": "דורש הרשאת מנהל מערכת",
+    "notReversibleTag": "בלתי הפיך",
+    "scanProgressTitle": "הסריקה מתבצעת",
+    "scanProgressCount": "{{current}} מתוך {{total}}",
+    "scanProgressCategory": "בודק: {{category}}",
+    "scanProgressLabel": "התקדמות הסריקה",
+    "applyingLabel": "התקדמות ההחלה",
+    "receiptTitle": "ההגדרות הוחלו",
+    "receiptApplied_one": "{{count}} הגדרה השתנתה",
+    "receiptApplied_other": "{{count}} הגדרות השתנו",
+    "receiptReversible": "אפשר לשחזר מהמתגים",
+    "receiptFailed_one": "{{count}} לא הוחל: הסיבה מפורטת למטה.",
+    "receiptFailed_other": "{{count}} לא הוחלו: הסיבות מפורטות למטה.",
+    "receiptFailedAdmin_one": "{{count}} לא הוחל: ייתכן שצריך להפעיל את האפליקציה כמנהל מערכת. הסיבה מפורטת למטה.",
+    "receiptFailedAdmin_other": "{{count}} לא הוחלו: ייתכן שצריך להפעיל את האפליקציה כמנהל מערכת. הסיבות מפורטות למטה.",
+    "failedHeading": "הגדרות שלא הוחלו",
+    "failedColumnSetting": "הגדרה",
+    "failedColumnReason": "סיבה",
+    "confirmTitle_one": "לשנות {{count}} הגדרה?",
+    "confirmTitle_other": "לשנות {{count}} הגדרות?",
+    "confirmDescription": "ההגדרות המפורטות עוברות לערך הפרטי ביותר. אפשר להחזיר אותן לברירת המחדל מהמתגים בעמוד הזה.",
+    "confirmDescriptionIrreversible_one": "ההגדרות המפורטות עוברות לערך הפרטי ביותר. את {{count}} אי אפשר להחזיר לברירת המחדל מהעמוד הזה.",
+    "confirmDescriptionIrreversible_other": "ההגדרות המפורטות עוברות לערך הפרטי ביותר. את {{count}} אי אפשר להחזיר לברירת המחדל מהעמוד הזה.",
+    "confirmLabel_one": "שינוי {{count}} הגדרה",
+    "confirmLabel_other": "שינוי {{count}} הגדרות",
+    "settings": {
+      "telemetry-level": {
+        "label": "טלמטריה של Windows",
+        "description": "מצמצם את איסוף נתוני האבחון למינימום (רמת אבטחה בלבד)"
+      },
+      "activity-history": {
+        "label": "היסטוריית פעילות",
+        "description": "מונע מ-Windows לעקוב אחר השימוש שלך באפליקציות ובקבצים ולסנכרן אותו"
+      },
+      "publish-activity": {
+        "label": "פרסום פעילויות המשתמש",
+        "description": "מונע מ-Windows לפרסם את הפעילויות שלך ל-Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "בקשות משוב",
+        "description": "מכבה את בקשות המשוב והסקרים התקופתיים של Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "נתוני כתב יד",
+        "description": "מפסיק לשלוח נתוני כתב יד והקלדה ל-Microsoft"
+      },
+      "input-personalization": {
+        "label": "התאמה אישית של קלט",
+        "description": "מפסיק לאסוף נתוני הקלדה וכתיבת דיו לצורך התאמה אישית"
+      },
+      "tailored-experiences": {
+        "label": "חוויות מותאמות אישית",
+        "description": "מונע מ-Microsoft להשתמש בנתוני אבחון להתאמה אישית של טיפים ופרסומות"
+      },
+      "app-launch-tracking": {
+        "label": "מעקב אחר הפעלת אפליקציות",
+        "description": "מונע מ-Windows לעקוב אחר האפליקציות שאתה פותח כדי לכוונן את תפריט התחל"
+      },
+      "advertising-id": {
+        "label": "מזהה פרסום",
+        "description": "מכבה את מזהה הפרסום הייחודי שאפליקציות משתמשות בו כדי לעקוב אחריך"
+      },
+      "suggested-content": {
+        "label": "תוכן מוצע בהגדרות",
+        "description": "מונע מ-Microsoft להציג הצעות אפליקציות ופרסומות בהגדרות"
+      },
+      "tips-notifications": {
+        "label": "טיפים והצעות",
+        "description": "מכבה את התראות הטיפים, התכסיסים וההצעות של Windows"
+      },
+      "start-suggestions": {
+        "label": "הצעות בתפריט התחל",
+        "description": "מכבה הצעות אפליקציות (פרסומות) בתפריט התחל"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight במסך הנעילה",
+        "description": "מכבה פרסומות והצעות של Microsoft Spotlight במסך הנעילה"
+      },
+      "silently-installed-apps": {
+        "label": "אפליקציות שמותקנות בשקט",
+        "description": "מונע מ-Windows להתקין אפליקציות מקודמות באופן אוטומטי"
+      },
+      "preinstalled-apps": {
+        "label": "הצעות אפליקציות שהותקנו מראש",
+        "description": "מונע מ-Windows להציע אפליקציות שהותקנו מראש ולא השתמשת בהן"
+      },
+      "bing-start-menu": {
+        "label": "Bing בתפריט התחל",
+        "description": "מפסיק לשלוח שאילתות חיפוש שהוקלדו בתפריט התחל אל Bing"
+      },
+      "bing-web-search": {
+        "label": "תוצאות אינטרנט של Bing",
+        "description": "מכבה תוצאות אינטרנט בחיפוש של Windows, כך שהחיפושים נשארים במחשב הזה"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "מכבה את Cortana, שפועלת ברקע ואוספת נתונים"
+      },
+      "search-highlights": {
+        "label": "נקודות חיפוש בולטות",
+        "description": "מכבה הצעות חיפוש פופולריות ותוכן אינטרנט בתיבת החיפוש"
+      },
+      "store-search-suggestions": {
+        "label": "הצעות חיפוש בחנות",
+        "description": "מכבה הצעות חיפוש של Microsoft Store, שמעבירות את השאילתות שלך ל-Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "סנכרון ענן של לוח הגזירה",
+        "description": "מונע סנכרון של נתוני לוח הגזירה בין מכשירים דרך הענן"
+      },
+      "clipboard-history": {
+        "label": "היסטוריית לוח הגזירה",
+        "description": "מכבה את היסטוריית לוח הגזירה ששומרת טקסט ותמונות שהועתקו"
+      },
+      "settings-sync": {
+        "label": "סנכרון הגדרות",
+        "description": "מפסיק לסנכרן הגדרות, ערכות נושא וסיסמאות של Windows עם חשבון ה-Microsoft שלך"
+      },
+      "find-my-device": {
+        "label": "איתור המכשיר שלי",
+        "description": "מכבה מעקב אחר מיקום המכשיר על ידי Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "מכבה את עוזר הבינה המלאכותית Microsoft Copilot בכל Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "מכבה את Windows Recall, היסטוריית צילומי המסך מבוססת הבינה המלאכותית שמתעדת הכול על המסך"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "מכבה את ניתוח הבינה המלאכותית של Click to Do לטקסט ולתמונות על המסך"
+      },
+      "ai-service-autostart": {
+        "label": "הפעלה אוטומטית של שירותי בינה מלאכותית",
+        "description": "מונע משירותי בינה מלאכותית להתחיל אוטומטית ברקע"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "מכבה את תכונות כתיבת הטקסט וניסוחו מחדש באמצעות בינה מלאכותית ב-Edge"
+      },
+      "paint-ai": {
+        "label": "תכונות בינה מלאכותית ב-Paint",
+        "description": "מכבה את תכונות יצירת התמונות מבוססות הבינה המלאכותית ב-Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "תכונות בינה מלאכותית ב-Notepad",
+        "description": "מכבה את תכונות ניסוח הטקסט מחדש מבוססות הבינה המלאכותית ב-Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "שירות DiagTrack",
+        "description": "משבית את שירות חוויות המשתמש המחוברות והטלמטריה"
+      },
+      "service-dmwappush": {
+        "label": "שירות WAP Push",
+        "description": "משבית את שירות ניתוב הודעות WAP Push המשמש לטלמטריה"
+      },
+      "service-delivery-optimization": {
+        "label": "אופטימיזציית אספקה",
+        "description": "משבית שיתוף עדכוני Windows בין עמיתים, כך שהמחשב הזה לא מעלה נתוני עדכונים למכשירים אחרים"
+      },
+      "service-mapsbroker": {
+        "label": "מתווך המפות",
+        "description": "משבית את מנהל המפות שהורדו, שירות רקע שרוב המחשבים לא זקוקים לו"
+      },
+      "task-compatibility-appraiser": {
+        "label": "מעריך התאימות",
+        "description": "משבית את משימת הטלמטריה של Microsoft שאוספת נתוני תאימות"
+      },
+      "task-program-data-updater": {
+        "label": "מעדכן נתוני התוכניות",
+        "description": "משבית את משימת הרקע שמעלה טלמטריית תוכניות"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "משבית את איסוף הטלמטריה שמתבצע דרך ה-proxy של autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "מאחד ה-CEIP",
+        "description": "משבית את העלאת הנתונים של תוכנית שיפור חוויית הלקוח"
+      },
+      "task-usb-ceip": {
+        "label": "נתוני שימוש ב-USB (CEIP)",
+        "description": "משבית את איסוף הטלמטריה של השימוש בהתקני USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "אספן אבחון הדיסק",
+        "description": "משבית את איסוף נתוני אבחון הדיסק והעלאתם"
+      },
+      "task-feedback-dm": {
+        "label": "לקוח ניהול המשוב",
+        "description": "משבית את משימת הטלמטריה של ניהול המכשירים למשוב"
+      },
+      "task-maps-update": {
+        "label": "משימת עדכון המפות",
+        "description": "משבית הורדות אוטומטיות של נתוני מפות ברקע"
+      },
+      "task-maps-toast": {
+        "label": "משימת ההתראות של המפות",
+        "description": "משבית את משימת ההתראות של המפות"
+      },
+      "edge-metrics": {
+        "label": "דיווח מדדים של Edge",
+        "description": "מונע מ-Edge לשלוח נתוני שימוש וקריסות ל-Microsoft"
+      },
+      "edge-site-info": {
+        "label": "איסוף מידע על אתרים ב-Edge",
+        "description": "מפסיק לשלוח מ-Edge את הכתובות של האתרים שבהם אתה מבקר אל Microsoft"
+      },
+      "edge-personalization": {
+        "label": "דיווח התאמה אישית של Edge",
+        "description": "מפסיק לשלוח מ-Edge את היסטוריית הגלישה שלך להתאמה אישית של פרסומות"
+      },
+      "edge-copilot-cdp": {
+        "label": "גישת Copilot לדף (CDP) ב-Edge",
+        "description": "מונע מ-Copilot לקרוא את תוכן הדף דרך פרוטוקול Chrome DevTools"
+      },
+      "edge-copilot-page": {
+        "label": "הקשר הדף עבור Copilot ב-Edge",
+        "description": "מונע מ-Copilot להשתמש בהקשר הדף כדי לנתח תוכן"
+      },
+      "edge-discover": {
+        "label": "סריקת דפים של Discover ב-Edge",
+        "description": "מפסיק את תכונת ה-Discover מלסרוק תוכן דפים"
+      },
+      "edge-sidebar": {
+        "label": "סרגל הצד של Edge",
+        "description": "מכבה את סרגל הצד של Edge ואיסוף הנתונים שלו ברקע"
+      },
+      "edge-shopping": {
+        "label": "עוזר הקניות של Edge",
+        "description": "מכבה את עוקב השוואת המחירים ב-Edge"
+      },
+      "chrome-metrics": {
+        "label": "דיווח מדדים של Chrome",
+        "description": "מונע מ-Chrome לשלוח נתוני שימוש וקריסות ל-Google"
+      },
+      "chrome-feedback": {
+        "label": "משוב משתמשים של Chrome",
+        "description": "מונע מ-Chrome לאסוף ולשלוח נתוני משוב משתמשים"
+      },
+      "chrome-extended-reporting": {
+        "label": "גלישה בטוחה מורחבת ב-Chrome",
+        "description": "מפסיק לשלוח מ-Chrome דוחות מורחבים של כתובות URL והורדות אל Google"
+      },
+      "firefox-telemetry": {
+        "label": "טלמטריה של Firefox",
+        "description": "מפסיק את איסוף נתוני הטלמטריה של Firefox והעלאתם ל-Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "סוכן דפדפן ברירת המחדל של Firefox",
+        "description": "משבית את סוכן הרקע שמדווח ל-Mozilla על נתוני השימוש בדפדפן"
+      },
+      "macos-diagnostics": {
+        "label": "נתוני אבחון ושימוש",
+        "description": "מפסיק לשתף נתוני אבחון ושימוש עם Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "אנליטיקת Siri",
+        "description": "מפסיק את איסוף נתוני האנליטיקה והשיפור של Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "שיתוף נתוני בריאות",
+        "description": "מפסיק לשתף נתוני בריאות עם Apple למטרות מחקר"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "יכולת גילוי של AirDrop",
+        "description": "מגדיר את AirDrop לאף אחד: לא ניתן לקבל קבצים דרך AirDrop עד שתפעיל אותו מחדש בהגדרות המערכת"
+      },
+      "macos-crash-reporter": {
+        "label": "מדווח הקריסות",
+        "description": "מפסיק ממדווח הקריסות לשלוח דוחות אוטומטית"
+      },
+      "macos-ad-tracking": {
+        "label": "פרסומות מותאמות אישית",
+        "description": "מגביל את מעקב הפרסומות של Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "הצעות Siri ב-App Store",
+        "description": "מכבה הצעות Siri ב-App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "הצעות Safari",
+        "description": "מכבה את הצעות החיפוש של Safari שנשלחות ל-Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "הצעות Spotlight",
+        "description": "מכבה הצעות אינטרנט של Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "טעינה מראש של התוצאה המובילה ב-Safari",
+        "description": "מפסיק מ-Safari לטעון מראש את תוצאת החיפוש המובילה, מה ששולח נתוני גלישה לאתרים"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "מכבה את Handoff ואת לוח הגזירה האוניברסלי: לא ניתן יהיה יותר להמשיך פעילויות או להעתיק ולהדביק בין מכשירי Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "אנליטיקת iCloud",
+        "description": "מפסיק לשתף אנליטיקת iCloud עם Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "כרטיסיות Safari ב-iCloud",
+        "description": "מכבה את סנכרון כרטיסיות Safari דרך iCloud: לא תראה יותר את הכרטיסיות הפתוחות במכשירי Apple האחרים שלך"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "מכבה את Siri לגמרי: Hey Siri, פקודות קוליות וקיצורי Siri מפסיקים לעבוד"
+      },
+      "macos-siri-dictation": {
+        "label": "הכתבה של Siri",
+        "description": "מכבה הכתבה: מקש המיקרופון במקלדת שלך מפסיק לעבוד"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "מכבה את תכונות הבינה המלאכותית של Apple Intelligence (macOS 15 Sequoia ומעלה)"
+      },
+      "macos-safari-dnt": {
+        "label": "אל תעקוב אחריי ב-Safari",
+        "description": "מפעיל את כותרת Do Not Track ב-Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "דיווח מדדים של Chrome",
+        "description": "מונע מ-Chrome לשלוח מדדי שימוש ל-Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "דוחות גלישה בטוחה ב-Chrome",
+        "description": "מפסיק לשלוח מ-Chrome דוחות מורחבים של כתובות URL והורדות אל Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "טלמטריה של Firefox",
+        "description": "מפסיק את איסוף נתוני הטלמטריה של Firefox והעלאתם ל-Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "מוודא ש-Gatekeeper מופעל, כדי לחסום אפליקציות לא מאומתות"
+      },
+      "macos-remote-apple-events": {
+        "label": "אירועי Apple מרוחקים",
+        "description": "מכבה אירועי Apple מרוחקים, כך שלא ניתן יהיה להפעיל את ה-Mac שלך אוטומטית מרחוק"
+      },
+      "macos-wake-on-network": {
+        "label": "התעוררות לגישת רשת",
+        "description": "מכבה התעוררות לגישת רשת, כך שלא ניתן יהיה להעיר את ה-Mac שלך מרחוק"
+      },
+      "macos-guest-account": {
+        "label": "חשבון אורח",
+        "description": "מכבה את חשבון האורח כדי למנוע גישה מקומית לא מורשית"
+      },
+      "macos-auto-login": {
+        "label": "כניסה אוטומטית",
+        "description": "מכבה כניסה אוטומטית, כך שה-Mac מבקש אימות בהפעלה"
+      },
+      "macos-firewall": {
+        "label": "חומת אש ליישומים",
+        "description": "מפעיל את חומת האש של יישומי macOS כדי לשלוט בחיבורים נכנסים"
+      },
+      "macos-stealth-mode": {
+        "label": "מצב חמקן",
+        "description": "מפעיל מצב חמקן, כך שה-Mac שלך לא עונה לבקשות בדיקה (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "השבתת ניתוב מחדש של IP",
+        "description": "מונע מהמערכת להעביר חבילות בין ממשקי רשת"
+      },
+      "macos-block-signed-auto": {
+        "label": "חסימת אישור אוטומטי ליישומים חתומים",
+        "description": "מונע מיישומים חתומים לעקוף את חומת האש אוטומטית"
+      },
+      "macos-remote-login": {
+        "label": "השבתת כניסה מרחוק (SSH)",
+        "description": "מכבה לגמרי את שרת ה-SSH. אם אתה זקוק לגישת SSH, השאר את זה כבוי והקשח במקום זאת את הגדרות ה-SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "השבתת כניסת root דרך SSH",
+        "description": "מונע כניסה ישירה כ-root דרך SSH; יש להשתמש ב-sudo מחשבון רגיל במקום זאת"
+      },
+      "macos-ssh-password-auth": {
+        "label": "השבתת אימות סיסמה ב-SSH",
+        "description": "מאפשר רק אימות SSH מבוסס מפתח. הגדר מפתחות SSH קודם, אחרת ייתכן שתינעל בחוץ"
+      },
+      "macos-core-dumps": {
+        "label": "השבתת core dumps",
+        "description": "מונע core dumps, שעלולים לחשוף תוכן זיכרון רגיש"
+      },
+      "gnome-usage-stats": {
+        "label": "סטטיסטיקת שימוש",
+        "description": "מכבה את איסוף סטטיסטיקת השימוש של GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "מעקב אחר קבצים אחרונים",
+        "description": "מכבה את המעקב אחר קבצים שנעשה בהם שימוש לאחרונה"
+      },
+      "gnome-location": {
+        "label": "שירותי מיקום",
+        "description": "מכבה את שירותי המיקום של GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "דיווח קריסות (Apport)",
+        "description": "מכבה שליחה אוטומטית של דוחות קריסה"
+      },
+      "gnome-connectivity-check": {
+        "label": "בדיקת קישוריות",
+        "description": "מכבה את בדיקות קישוריות הרשת התקופתיות"
+      },
+      "core-dump-disable": {
+        "label": "השבתת core dumps",
+        "description": "מונע core dumps, שעלולים לחשוף תוכן זיכרון רגיש"
+      },
+      "ssh-root-login": {
+        "label": "השבתת כניסת root דרך SSH",
+        "description": "מונע כניסה ישירה כ-root דרך SSH; יש להשתמש ב-sudo מחשבון רגיל במקום זאת"
+      },
+      "ssh-password-auth": {
+        "label": "השבתת אימות סיסמה ב-SSH",
+        "description": "מאפשר רק אימות SSH מבוסס מפתח. הגדר מפתחות SSH קודם, אחרת ייתכן שתינעל בחוץ"
+      },
+      "kde-usage-stats": {
+        "label": "סטטיסטיקת שימוש",
+        "description": "מכבה את משוב המשתמשים של KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "מעקב אחר קבצים אחרונים",
+        "description": "מכבה את היסטוריית הפעילות של KDE לקבצים אחרונים"
+      },
+      "kde-baloo": {
+        "label": "אינדוקס קבצים (Baloo)",
+        "description": "מכבה את מנוע האינדוקס Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "דיווח קריסות (DrKonqi)",
+        "description": "מכבה את מטפל דוחות הקריסה של KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "טלמטריה ואיסוף נתונים",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "הסרת תוכנות מיותרות",
-    "pageDescription": "הסרת יישומי Windows מותקנים מראש ותוכנות OEM מיותרות",
+    "pageDescription": "אפליקציות שהותקנו מראש על ידי Windows ויצרן המכשיר. לאחר ההסרה, אפשר להתקין אותן מחדש רק דרך Microsoft Store.",
     "scanButton": "סרוק",
-    "irreversibleWarning": "בלתי הפיך — ניתן להתקין מחדש יישומים שהוסרו רק דרך Microsoft Store. בדוק את הבחירות בקפידה.",
-    "scanningPackages": "סורק חבילות מותקנות...",
-    "removingProgress": "מסיר {{current}} מתוך {{total}}",
+    "rescanButton": "סרוק שוב",
+    "irreversibleWarning": "לא ניתן לבטל את ההסרה מהאפליקציה: בדוק את האפליקציות שנבחרו לפני האישור.",
+    "scanningPackages": "סורק חבילות מותקנות…",
+    "removingProgress": "מסיר אפליקציות ({{current}} מתוך {{total}})",
+    "receiptTitle": "ההסרה הושלמה",
+    "removedApps_one": "{{count}} אפליקציה הוסרה",
+    "removedApps_other": "{{count}} אפליקציות הוסרו",
+    "failedCount_one": "{{count}} נכשלו",
+    "failedCount_other": "{{count}} נכשלו",
+    "reinstallFromStore": "ניתן להתקנה מחדש רק דרך Microsoft Store",
     "selectAll": "בחר הכול",
-    "emptyStateTitle": "לא זוהו תוכנות מיותרות",
-    "emptyStateDescription": "לחץ על \"סרוק\" כדי למצוא יישומים מותקנים מראש ותוכנות OEM מיותרות.",
+    "filterLabel": "קטגוריה",
+    "confirmTitle_one": "להסיר {{count}} אפליקציה?",
+    "confirmTitle_other": "להסיר {{count}} אפליקציות?",
+    "confirmDescription_one": "האפליקציה מוסרת עבור המשתמש שלך, ועם הרשאות מנהל מערכת גם עבור משתמשים חדשים. אפשר להתקין אותה מחדש רק דרך Microsoft Store.",
+    "confirmDescription_other": "האפליקציות מוסרות עבור המשתמש שלך, ועם הרשאות מנהל מערכת גם עבור משתמשים חדשים. אפשר להתקין אותן מחדש רק דרך Microsoft Store.",
+    "confirmLabel_one": "הסרת {{count}} אפליקציה",
+    "confirmLabel_other": "הסרת {{count}} אפליקציות",
+    "emptyStateTitle": "עדיין לא נסרק",
+    "emptyStateDescription": "לא בוצעה סריקה של אפליקציות שהותקנו מראש בסשן הזה.",
+    "lastRun_one": "הסרה אחרונה: {{date}}, {{count}} אפליקציה הוסרה.",
+    "lastRun_other": "הסרה אחרונה: {{date}}, {{count}} אפליקציות הוסרו.",
+    "checkKnownTitle": "אפליקציות ידועות",
+    "checkKnownDetail": "רשימה של אפליקציות שהותקנו מראש על ידי Microsoft ויצרנים (OEM)",
+    "checkInstalledTitle": "חבילות מותקנות",
+    "checkInstalledDetail": "חבילות האפליקציות של המשתמש שלך, מושוות לרשימה",
+    "checkRemovalTitle": "הסרה",
+    "checkRemovalDetail": "עבור המשתמש שלך; עם הרשאות מנהל מערכת גם מהעותק המשמש למשתמשים חדשים",
+    "noneFoundTitle": "אף אחת מהאפליקציות המפורטות אינה מותקנת",
+    "noneFoundDescription": "האפליקציות הידועות שהותקנו מראש אינן קיימות עבור המשתמש שלך.",
+    "summaryTitle_one": "נמצאה {{count}} אפליקציה שהותקנה מראש",
+    "summaryTitle_other": "נמצאו {{count}} אפליקציות שהותקנו מראש",
+    "selectedCount_one": "{{count}} נבחרו",
+    "selectedCount_other": "{{count}} נבחרו",
+    "removeButton_one": "הסרת {{count}} אפליקציה",
+    "removeButton_other": "הסרת {{count}} אפליקציות",
+    "removeNone": "הסרת הנבחרות",
     "scanFailedToast": "סריקת תוכנות מיותרות נכשלה",
     "scanFailedDescription": "ודא ש-PowerShell זמין",
     "scanFailedError": "הסריקה לאיתור תוכנות מיותרות נכשלה. ודא ש-PowerShell זמין.",
