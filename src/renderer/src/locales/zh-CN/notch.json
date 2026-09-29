@@ -15,6 +15,7 @@
   "cpuDetail": "当前处理器使用率",
   "sample": "最近一次采样",
   "used": "已用 {{used}}，共 {{total}} GB",
+  "free": "可用 {{free}} GB",
   "waiting": "正在等待实时数据",
   "unavailable": "无磁盘数据",
   "live": "实时系统指标",

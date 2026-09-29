@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "恢复中心",
-    "limits": "恢复功能涵盖已记录的 Windows DWORD 隐私/注册表值、计划任务和服务配置。永久删除的文件无法撤销。较早或不受支持的更改可能仅提供手动备份。某些已恢复的设置需要重新启动后才会生效。",
+    "limits": "恢复功能涵盖为隐私和系统设置、计划任务和服务配置而写入的注册表 DWORD 值。较早或不受支持的更改可能仅提供手动备份。某些已恢复的设置在重新启动后生效。",
     "refresh": "刷新",
     "export": "导出恢复历史",
     "loadError": "无法读取恢复历史。",
     "failed": "恢复失败。",
-    "empty": "此页面没有已记录的更改。新的受支持更改将显示在此处。",
+    "empty": "隐私防护、服务管理器和注册表清理所做的更改会连同其原始状态和后续状态一起显示在此处。",
+    "summary": {
+      "recorded": "已记录的更改",
+      "registryBackups": "注册表备份",
+      "backupFiles": "备份文件"
+    },
+    "changesTitle": "已记录的更改",
+    "range": "{{total}} 项中的 {{from}}–{{to}}",
     "gameMode": "游戏模式恢复",
     "gameModeDescription": "游戏模式存在活动或待处理的恢复快照。",
-    "openGameMode": "打开游戏模式恢复",
+    "openGameMode": "打开游戏模式",
     "before": "原始状态",
     "after": "SuperSonicCleaner 更改后的状态",
     "restore": "恢复原始状态",
     "previous": "上一个",
     "next": "下一个",
     "backups": "注册表和上下文菜单备份",
-    "backupDescription": "这些备份文件不包含经过验证的更改后状态信息。请在手动恢复前先在备份文件夹中检查它们；导入这些文件可能会覆盖较新的设置。备份文件不是操作系统还原点。",
+    "backupDescription": "这些备份文件不包含经过验证的后续状态。请在手动还原前先在备份文件夹中检查它们：导入可能会覆盖较新的设置。备份文件不是操作系统还原点。",
     "openBackups": "打开备份文件夹",
     "confirmTitle": "恢复此更改？",
-    "confirmDescription": "SuperSonicCleaner 会在恢复已记录的原始值之前检查当前状态。此后发生的冲突更改将会保留。可能需要管理员权限。",
+    "confirmDescription": "SuperSonicCleaner 会在写回已记录的原始值之前检查当前状态。如果该值在此期间再次被更改，则会保留较新的更改。可能需要管理员权限。",
     "status": {
-      "pending": "已中断 / 待处理",
-      "ready": "可用",
+      "pending": "已中断或待处理",
+      "ready": "可还原",
       "restored": "已恢复",
-      "failed": "需要注意",
+      "failed": "还原失败",
       "conflict": "检测到较新的更改"
     },
     "remove": "删除条目",
-    "removeDescription": "要从本地历史记录中删除此恢复记录吗？此操作不会更改您的设置，也不会删除注册表备份。此后 SuperSonicCleaner 将无法再为您恢复此更改。",
-    "unreadable": "无法读取此恢复记录。它可能由其他用户账户写入，或已在磁盘上损坏。",
-    "loading": "正在加载恢复历史？",
-    "emptyTitle": "您的恢复历史将从这里开始",
+    "removeTitle": "要移除此恢复项吗？",
+    "removeDescription": "该条目将从本地历史记录中移除，SuperSonicCleaner 将无法再撤销此更改。设置和注册表备份不会受到影响。此操作无法撤销。",
+    "unreadable": "无法读取此恢复项：它可能由其他用户账户写入，或已在磁盘上损坏。",
+    "loading": "正在读取恢复历史…",
+    "emptyTitle": "没有可还原的更改",
     "source": {
       "privacy": "隐私防护",
       "services": "服务管理器",
       "registry": "注册表清理"
+    },
+    "value": {
+      "absent": "该值不存在",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "任务已启用",
+      "taskDisabled": "任务已禁用",
+      "start": {
+        "boot": "引导启动",
+        "system": "系统启动",
+        "automatic": "自动启动",
+        "manual": "手动启动",
+        "disabled": "已禁用"
+      },
+      "delayed": "延迟",
+      "running": "正在运行",
+      "stopped": "已停止",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "注册表备份",
@@ -64,8 +89,12 @@
         "empty": "不包含任何注册表项。",
         "unreadable": "无法读取。",
         "classes-root": "包含 HKEY_CLASSES_ROOT 项，该项合并了计算机类和每个用户的类，因此 SuperSonicCleaner 无法判断应恢复到哪一个。此备份仅可查看。",
-        "unverified": "无法验证此备份 — 它可能在 SuperSonicCleaner 写入后被更改过，因此仅可查看。"
-      }
+        "unverified": "无法验证此备份：它可能在 SuperSonicCleaner 写入后被更改过，因此只能查看。"
+      },
+      "moreKeys_one": "另有 1 个注册表项",
+      "moreKeys_other": "另有 {{formatted}} 个注册表项",
+      "confirmLabel_one": "导入 1 个注册表项",
+      "confirmLabel_other": "导入 {{formatted}} 个注册表项"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "这些类别中的缓存条目：{{found}} · 本次操作未选中：{{unselected}}",
     "title": "清理回执",
     "description": "在删除时记录。每份回执对应一次清理操作或一批清理操作。",
-    "empty": "暂无清理回执。运行一次清理以记录其结果。",
+    "empty": "没有清理收据",
     "loadError": "无法读取清理回执。现有数据已保留。",
     "actionError": "回执操作失败。",
     "saveError": "清理已完成，但其回执无法保存。",
@@ -91,7 +120,7 @@
     "retryOf": "重试自",
     "export": "导出回执",
     "retry": "重试可重试的失败项（{{count}}）",
-    "rescan": "重新扫描",
+    "rescan": "新扫描",
     "retryLifetime": "重试会使用仍在缓存中的所选条目，最长可达 30 分钟。排除项和时间保护将再次检查。过期或重启后，请重新扫描。",
     "pathsOff": "本次运行未启用路径记录。仅保留了类别和结果。",
     "item": "项目 / 类别",
@@ -106,18 +135,26 @@
     "retryConfirm": "重试清理",
     "clearTitle": "清除清理回执？",
     "clearDescription": "这将永久删除已保存的回执及其重试信息。扫描历史和单独的删除日志不会更改。",
-    "loading": "Loading cleanup receipts?"
+    "loading": "正在读取清理收据…"
   },
-  "pageTitle": "扫描历史",
+  "pageTitle": "活动",
+  "viewLabel": "视图",
   "viewOverview": "概览",
+  "viewList": "列表",
+  "viewReceipts": "收据",
   "clearButton": "清除",
-  "emptyStateTitle": "暂无历史记录",
-  "emptyStateDescription": "请从 Cleaner、Registry 或 Debloater 页面运行扫描。结果将显示在此处。",
-  "confirmClearScanDescription": "这将永久删除所有扫描历史记录。此操作无法撤销。",
+  "clearHistory": "清除历史记录",
+  "emptyStateTitle": "没有记录的活动",
+  "emptyStateDescription": "扫描和清理会在首次运行后显示在此处，包含日期、耗时和结果。清理收据位于收据视图中。",
+  "confirmClearScanTitle_one": "要清除 1 条历史记录吗？",
+  "confirmClearScanTitle_other": "要清除 {{count}} 条历史记录吗？",
+  "confirmClearScanDescription": "已删除文件日志中的路径也会一并清除。清理收据会保留。此操作无法撤销。",
+  "confirmClearLabel_one": "清除 1 条记录",
+  "confirmClearLabel_other": "清除 {{count}} 条记录",
   "typeLabels": {
     "cleaner": "系统清理",
-    "registry": "注册表修复",
-    "debloater": "系统精简",
+    "registry": "注册表清理",
+    "debloater": "移除预装软件",
     "network": "网络清理",
     "drivers": "驱动程序清理",
     "malware": "恶意软件扫描",
@@ -125,29 +162,88 @@
     "startup": "启动项管理",
     "services": "服务管理",
     "softwareUpdate": "软件更新",
-    "cveScan": "CVE 扫描"
+    "cveScan": "漏洞扫描（CVE）"
+  },
+  "summary": {
+    "spaceFreed": "已释放 {{size}}",
+    "noSpace": "未释放任何空间",
+    "entries_one": "1 条",
+    "entries_other": "{{formatted}} 条",
+    "items_one": "已处理 1 项",
+    "items_other": "已处理 {{formatted}} 项",
+    "averageDuration": "平均耗时 {{duration}}",
+    "errors_one": "1 个错误",
+    "errors_other": "{{formatted}} 个错误",
+    "noErrors": "无错误",
+    "range": "从 {{from}} 到 {{to}}",
+    "sameDay": "于 {{date}}"
   },
   "overview": {
-    "tooltipSpace": "空间"
+    "spaceOverTime": "每日释放的空间",
+    "spaceSentence_one": "在有活动的 1 天内释放了 {{size}}。",
+    "spaceSentence_other": "在有活动的 {{count}} 天内释放了 {{size}}。",
+    "noSpaceSentence": "没有记录的活动释放过空间。",
+    "chartLabel_one": "1 天内释放的空间",
+    "chartLabel_other": "{{count}} 天内释放的空间",
+    "tooltipSpace": "已释放 {{size}}",
+    "byType": "按类型",
+    "topCategories": "释放空间最多的类别",
+    "recent": "近期活动",
+    "showAll": "完整列表"
+  },
+  "columns": {
+    "type": "类型",
+    "date": "日期",
+    "entries": "条目",
+    "items": "项目",
+    "space": "空间",
+    "duration": "耗时",
+    "outcome": "结果",
+    "category": "类别"
+  },
+  "list": {
+    "title": "所有活动",
+    "count_one": "1 条",
+    "count_other": "{{formatted}} 条",
+    "filterLabel": "类型",
+    "filterAll": "所有类型",
+    "scheduled": "已计划",
+    "noErrors": "无错误"
   },
   "detail": {
+    "close": "关闭",
+    "outcomeDone": "已完成",
+    "outcomeErrors_one": "已完成，有 1 个错误",
+    "outcomeErrors_other": "已完成，有 {{formatted}} 个错误",
+    "found_one": "找到 1 项",
+    "found_other": "找到 {{formatted}} 项",
+    "processed_one": "已处理 1 项",
+    "processed_other": "已处理 {{formatted}} 项",
+    "skipped_one": "已跳过 1 项。",
+    "skipped_other": "已跳过 {{formatted}} 项。",
+    "scheduled": "已计划",
+    "scheduledBy": "计划：{{name}}",
     "categoriesLabel": "类别",
     "deletedFiles": {
-      "title": "已删除文件",
-      "loading": "正在加载…",
+      "title": "已删除的文件",
+      "loading": "正在读取删除日志…",
       "shownCount": "已显示 {{shown}} / {{total}}",
       "loadMore": "加载更多",
       "exportCsv": "导出 CSV",
       "openLog": "打开日志",
-      "exportFailed": "无法导出已删除文件列表",
-      "truncatedBadge": "另有 +{{count}} 项",
-      "emptyRecorded": "此次运行未记录任何文件路径。",
-      "disabledHint": "删除日志记录已关闭，因此此次运行中各个路径未被记录。请在“设置 → 清理首选项”中启用“保留已删除文件日志”，以便今后记录这些路径。"
+      "exported_one": "已导出 1 个路径",
+      "exported_other": "已导出 {{formatted}} 个路径",
+      "exportFailed": "无法导出已删除文件列表。",
+      "truncatedBadge": "另有 {{formatted}} 项未列出",
+      "truncatedHint_one": "此文件夹中还有 1 项超出了每个文件夹的列出上限。已被删除，但未列出。",
+      "truncatedHint_other": "此文件夹中还有 {{formatted}} 项超出了每个文件夹的列出上限。已被删除，但未逐一列出。",
+      "emptyRecorded": "此次运行未记录任何路径。",
+      "disabledHint": "删除日志记录当时已关闭，因此此次运行的路径未被记录。如需从现在开始记录，请在“首选项 › 清理偏好设置”中开启“保留已删除文件日志”。"
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1秒",
-    "seconds": "{{count}}秒",
-    "minutesAndSeconds": "{{minutes}}分 {{seconds}}秒"
+    "lessThanOneSecond": "不到 1 秒",
+    "seconds": "{{count}} 秒",
+    "minutesAndSeconds": "{{minutes}} 分 {{seconds}} 秒"
   }
 }

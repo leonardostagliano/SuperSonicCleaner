@@ -1,7 +1,7 @@
 {
   "title": "AI 分析",
   "description": "获取有关此次扫描结果的第二意见。",
-  "hubDescription": "使用您已登录的 Codex 账号，获取有关扫描和性能录制的第二意见。",
+  "hubDescription": "仅在您从工具中开始分析时，使用您已登录的账号，向 Codex 发送扫描元数据或录制测量值。",
   "hubPrivacy": "扫描仅共享匿名的文件元数据。录制会共享 CPU、内存和磁盘的数值测量数据以及临时进程 ID。名称、路径、备注和文件内容都保留在此设备上。",
   "connectionTitle": "Codex 连接",
   "connectionIntro": "在此计算机上使用 Codex。请先检查连接状态，然后在下方选择一个工具。",
@@ -13,19 +13,24 @@
   "hubInstructions": "完成一次扫描或保存一次性能录制，启用其 AI 分析，然后使用专用按钮开始。不会自动发送任何内容。",
   "tools": {
     "cleaner": {
-      "title": "系统清理"
+      "title": "系统清理",
+      "dataSent": "临时 ID、文件类型、大小和大致存在时长。不包含隐私痕迹。"
     },
     "largeFiles": {
-      "title": "大文件"
+      "title": "大文件",
+      "dataSent": "临时 ID、文件类型、大小和大致存在时长。"
     },
     "duplicates": {
-      "title": "重复文件"
+      "title": "重复文件",
+      "dataSent": "临时 ID、文件类型、大小、大致存在时长和重复文件组。"
     },
     "disk": {
-      "title": "磁盘分析"
+      "title": "磁盘分析",
+      "dataSent": "临时 ID、文件夹总大小和大致存在时长。"
     },
     "performance": {
-      "title": "性能录制"
+      "title": "性能录制",
+      "dataSent": "CPU、内存和磁盘的数值测量数据，以及临时进程 ID。"
     }
   },
   "enable": "为此页面启用 AI 分析",
@@ -51,5 +56,23 @@
     "low": "低优先级",
     "medium": "中优先级",
     "high": "高优先级"
+  },
+  "toolsTitle": "工具",
+  "columns": {
+    "tool": "工具",
+    "dataSent": "已发送的数据",
+    "lastRun": "上次运行",
+    "state": "状态"
+  },
+  "lastRun": {
+    "running": "正在运行",
+    "done": "已在本次会话中完成",
+    "failed": "失败",
+    "none": "本次会话中无",
+    "perRecording": "随每次已分析的录制一同保存"
+  },
+  "state": {
+    "on": "开启",
+    "off": "关闭"
   }
 }
