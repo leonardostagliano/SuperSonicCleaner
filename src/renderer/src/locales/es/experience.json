@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Vea qué cambió, qué se recuperó y qué necesita otra revisión. Cada tarea completada deja un registro.",
-    "settings": "Haga que SuperSonicCleaner se adapte a usted. Configure la apariencia, las notificaciones, las exclusiones y las preferencias de limpieza.",
-    "about": "Código abierto, creado con cuidado. Encuentre su versión, busque actualizaciones y conozca el proyecto.",
-    "recovery": "Una forma clara de volver atrás. Revise los cambios compatibles y los detalles de restauración antes de deshacer nada."
+    "history": "Los últimos 100 análisis y limpiezas ejecutados en este PC, con fecha, duración, elementos procesados y espacio liberado, y el comprobante de cada limpieza.",
+    "settings": "Apariencia, idioma, inicio, notificaciones, actualizaciones, copias de seguridad, preferencias de limpieza y exclusiones. Cada cambio se guarda de inmediato.",
+    "about": "Versión instalada, actualizaciones, licencia MIT y el proyecto original (Kudu).",
+    "recovery": "Cambios en el registro, los servicios y las tareas programadas realizados por SuperSonicCleaner, con las copias de seguridad para deshacerlos. Los archivos eliminados no se pueden recuperar."
   },
   "storageTrend": {
     "title": "Almacenamiento a lo largo del tiempo",

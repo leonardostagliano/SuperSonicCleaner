@@ -1,7 +1,7 @@
 {
   "title": "Análisis de IA",
   "description": "Obtenga una segunda opinión sobre estos resultados del análisis.",
-  "hubDescription": "Una segunda opinión sobre análisis y grabaciones de rendimiento, mediante su inicio de sesión de Codex.",
+  "hubDescription": "Envía a Codex, con su inicio de sesión, solo metadatos de análisis o mediciones de grabaciones, y solo cuando inicia un análisis desde una herramienta.",
   "hubPrivacy": "Los análisis solo comparten metadatos de archivo anónimos. Las grabaciones comparten mediciones numéricas de CPU, memoria y disco con ID de proceso temporales. Los nombres, rutas, notas y contenidos de los archivos permanecen en este dispositivo.",
   "connectionTitle": "Conexión con Codex",
   "connectionIntro": "Use Codex en este equipo. Compruebe la conexión y luego elija una herramienta a continuación.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Complete un análisis o guarde una grabación de rendimiento, active su análisis de IA y luego iníciela con el botón correspondiente. No se envía nada automáticamente.",
   "tools": {
     "cleaner": {
-      "title": "Limpieza del sistema"
+      "title": "Limpieza del sistema",
+      "dataSent": "ID temporales, tipo de archivo, tamaño y antigüedad aproximada. Rastros de privacidad excluidos."
     },
     "largeFiles": {
-      "title": "Archivos grandes"
+      "title": "Archivos grandes",
+      "dataSent": "ID temporales, tipo de archivo, tamaño y antigüedad aproximada."
     },
     "duplicates": {
-      "title": "Archivos duplicados"
+      "title": "Archivos duplicados",
+      "dataSent": "ID temporales, tipo de archivo, tamaño, antigüedad aproximada y grupo de duplicados."
     },
     "disk": {
-      "title": "Análisis de disco"
+      "title": "Análisis de disco",
+      "dataSent": "ID temporales, tamaño total de la carpeta y antigüedad aproximada."
     },
     "performance": {
-      "title": "Grabaciones de rendimiento"
+      "title": "Grabaciones de rendimiento",
+      "dataSent": "Mediciones numéricas de CPU, memoria y disco, con ID de proceso temporales."
     }
   },
   "enable": "Activar el análisis de IA para esta vista",
@@ -51,5 +56,23 @@
     "low": "Prioridad baja",
     "medium": "Prioridad media",
     "high": "Prioridad alta"
+  },
+  "toolsTitle": "Herramientas",
+  "columns": {
+    "tool": "Herramienta",
+    "dataSent": "Datos enviados",
+    "lastRun": "Última ejecución",
+    "state": "Estado"
+  },
+  "lastRun": {
+    "running": "En curso",
+    "done": "Completado en esta sesión",
+    "failed": "Fallido",
+    "none": "Ninguno en esta sesión",
+    "perRecording": "Se guarda con cada grabación analizada"
+  },
+  "state": {
+    "on": "Activado",
+    "off": "Desactivado"
   }
 }

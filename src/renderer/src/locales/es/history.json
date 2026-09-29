@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "Centro de recuperación",
-    "limits": "La recuperación cubre los valores DWORD de privacidad/registro de Windows registrados, las tareas programadas y la configuración de los servicios. La eliminación permanente de archivos no se puede deshacer. Es posible que los cambios antiguos o no compatibles solo tengan una copia de seguridad manual. Algunos ajustes restaurados requieren reiniciar.",
+    "limits": "La recuperación cubre los valores DWORD del registro escritos para la configuración de privacidad y del sistema, las tareas programadas y la configuración de los servicios. Es posible que los cambios antiguos o no compatibles solo tengan una copia de seguridad manual. Algunos ajustes restaurados surten efecto después de reiniciar.",
     "refresh": "Actualizar",
     "export": "Exportar historial de recuperación",
     "loadError": "No se pudo leer el historial de recuperación.",
     "failed": "La recuperación falló.",
-    "empty": "No hay cambios registrados en esta página. Los nuevos cambios compatibles aparecerán aquí.",
+    "empty": "Los cambios realizados por Privacy Shield, Administrador de servicios y Limpiador del registro aparecen aquí con su estado original y posterior.",
+    "summary": {
+      "recorded": "Cambios registrados",
+      "registryBackups": "Copias de seguridad del registro",
+      "backupFiles": "Archivos de copia de seguridad"
+    },
+    "changesTitle": "Cambios registrados",
+    "range": "{{from}}–{{to}} de {{total}}",
     "gameMode": "Recuperación del Modo de juego",
     "gameModeDescription": "El Modo de juego tiene una instantánea de recuperación activa o pendiente.",
-    "openGameMode": "Abrir recuperación del Modo de juego",
+    "openGameMode": "Abrir el Modo Juego",
     "before": "Estado original",
     "after": "Estado después de SuperSonicCleaner",
     "restore": "Restaurar estado original",
     "previous": "Anterior",
     "next": "Siguiente",
     "backups": "Copias de seguridad del registro y del menú contextual",
-    "backupDescription": "Estos archivos de copia de seguridad no contienen información verificada del estado posterior. Inspecciónelos en la carpeta de copias de seguridad antes de restaurarlos manualmente; al importarlos, pueden sobrescribir ajustes más recientes. Un archivo de copia de seguridad no es un punto de restauración del sistema operativo.",
+    "backupDescription": "Estos archivos de copia de seguridad no contienen un estado posterior verificado. Inspecciónelos en la carpeta de copias de seguridad antes de restaurarlos manualmente: al importarlos pueden sobrescribir ajustes más recientes. Un archivo de copia de seguridad no es un punto de restauración del sistema operativo.",
     "openBackups": "Abrir carpeta de copias de seguridad",
     "confirmTitle": "¿Restaurar este cambio?",
-    "confirmDescription": "SuperSonicCleaner comprobará el estado actual antes de restaurar el valor original registrado. Se conservarán los cambios posteriores que entren en conflicto. Es posible que se requieran privilegios de administrador.",
+    "confirmDescription": "SuperSonicCleaner comprueba el estado actual antes de volver a escribir el valor original registrado. Si el valor se cambió de nuevo mientras tanto, se conserva el cambio más reciente. Es posible que se requieran privilegios de administrador.",
     "status": {
-      "pending": "Interrumpido / pendiente",
-      "ready": "Disponible",
+      "pending": "Interrumpido o pendiente",
+      "ready": "Se puede restaurar",
       "restored": "Restaurado",
-      "failed": "Requiere atención",
+      "failed": "Error al restaurar",
       "conflict": "Se detectó un cambio más reciente"
     },
     "remove": "Eliminar entrada",
-    "removeDescription": "¿Eliminar este registro de recuperación del historial local? Esto no cambia sus ajustes ni elimina las copias de seguridad del registro. SuperSonicCleaner ya no podrá restaurar este cambio por usted.",
-    "unreadable": "No se pudo leer este registro de recuperación. Es posible que haya sido escrito por otra cuenta de usuario o que esté dañado en el disco.",
-    "loading": "¿Cargando historial de recuperación?",
-    "emptyTitle": "Su historial de recuperación comienza aquí",
+    "removeTitle": "¿Eliminar este registro de recuperación?",
+    "removeDescription": "La entrada sale del historial local y SuperSonicCleaner ya no podrá deshacer este cambio. La configuración y las copias de seguridad del registro no se modifican. Esta acción no se puede deshacer.",
+    "unreadable": "No se pudo leer esta entrada de recuperación: es posible que haya sido escrita por otra cuenta de usuario o que esté dañada en el disco.",
+    "loading": "Leyendo el historial de recuperación…",
+    "emptyTitle": "No hay cambios que se puedan restaurar",
     "source": {
       "privacy": "Privacy Shield",
       "services": "Administrador de servicios",
       "registry": "Limpiador del registro"
+    },
+    "value": {
+      "absent": "El valor no existía",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Tarea habilitada",
+      "taskDisabled": "Tarea deshabilitada",
+      "start": {
+        "boot": "Inicio de arranque",
+        "system": "Inicio del sistema",
+        "automatic": "Inicio automático",
+        "manual": "Inicio manual",
+        "disabled": "Deshabilitado"
+      },
+      "delayed": "retrasado",
+      "running": "en ejecución",
+      "stopped": "detenido",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Copias de seguridad del registro",
@@ -43,7 +68,7 @@
       "empty": "Aún no hay copias de seguridad del registro.",
       "restore": "Restaurar",
       "showInFolder": "Mostrar en la carpeta",
-      "requiresAdmin": "Requiere administrador",
+      "requiresAdmin": "Requiere privilegios de administrador",
       "confirmTitle": "¿Restaurar esta copia de seguridad del registro?",
       "confirmDescription": "SuperSonicCleaner importará las claves que se indican a continuación. Los valores de la copia de seguridad reemplazarán a los actuales y se volverán a agregar las claves y los valores que falten. No se eliminará nada más, salvo que al restaurar una copia de seguridad previa a la restauración también se eliminan las claves y los valores que había agregado la restauración que se deshace. Antes de importar, SuperSonicCleaner guarda el estado actual de estas claves como una copia de seguridad previa a la restauración. Algunos cambios solo surten efecto después de cerrar sesión o reiniciar.",
       "restored": "Restaurado. El estado anterior se guardó en {{file}}.",
@@ -64,8 +89,12 @@
         "empty": "No contiene claves del registro.",
         "unreadable": "No se pudo leer.",
         "classes-root": "Contiene claves HKEY_CLASSES_ROOT, que combinan las clases del equipo y las de cada usuario, por lo que SuperSonicCleaner no puede determinar en cuál de ellas restaurarlas. Solo se puede inspeccionar.",
-        "unverified": "No se puede verificar esta copia de seguridad; es posible que se haya modificado desde que SuperSonicCleaner la creó, por lo que solo puede inspeccionarse."
-      }
+        "unverified": "No se puede verificar esta copia de seguridad: es posible que se haya modificado desde que SuperSonicCleaner la creó, por lo que solo puede inspeccionarse."
+      },
+      "moreKeys_one": "+1 clave más",
+      "moreKeys_other": "+{{formatted}} claves más",
+      "confirmLabel_one": "Importar 1 clave",
+      "confirmLabel_other": "Importar {{formatted}} claves"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "Entradas en caché en estas categorías: {{found}} · No seleccionadas en esta operación: {{unselected}}",
     "title": "Comprobantes de limpieza",
     "description": "Registrados en el momento de la eliminación. Cada comprobante cubre una operación de limpieza o un lote.",
-    "empty": "Aún no hay comprobantes de limpieza. Ejecute una limpieza para registrar sus resultados.",
+    "empty": "No hay comprobantes de limpieza",
     "loadError": "No se pudieron leer los comprobantes de limpieza. Los datos existentes se han conservado.",
     "actionError": "La acción del comprobante falló.",
     "saveError": "La limpieza finalizó, pero no se pudo guardar su comprobante.",
@@ -91,7 +120,7 @@
     "retryOf": "Reintento de",
     "export": "Exportar comprobante",
     "retry": "Reintentar fallos aptos ({{count}})",
-    "rescan": "Ejecutar un análisis nuevo",
+    "rescan": "Nuevo análisis",
     "retryLifetime": "Los reintentos usan selecciones aún almacenadas en caché durante un máximo de 30 minutos. Las exclusiones y las protecciones por antigüedad se vuelven a comprobar. Después del vencimiento o de reiniciar, ejecute un análisis nuevo.",
     "pathsOff": "El registro de rutas estaba desactivado en esta ejecución. Solo se conservaron las categorías y los resultados.",
     "item": "Elemento / categoría",
@@ -106,18 +135,26 @@
     "retryConfirm": "Reintentar limpieza",
     "clearTitle": "¿Borrar los comprobantes de limpieza?",
     "clearDescription": "Esto elimina permanentemente los comprobantes guardados y su información de reintento. El historial de análisis y el registro de eliminación independiente no cambian.",
-    "loading": "Loading cleanup receipts?"
+    "loading": "Leyendo los comprobantes de limpieza…"
   },
-  "pageTitle": "Historial de análisis",
+  "pageTitle": "Actividad",
+  "viewLabel": "Vista",
   "viewOverview": "Resumen",
+  "viewList": "Lista",
+  "viewReceipts": "Comprobantes",
   "clearButton": "Borrar",
-  "emptyStateTitle": "Aún no hay historial",
-  "emptyStateDescription": "Ejecute un análisis desde las páginas Cleaner, Registry o Debloater. Los resultados aparecerán aquí.",
-  "confirmClearScanDescription": "Esto eliminará permanentemente todas las entradas del historial de análisis. Esta acción no se puede deshacer.",
+  "clearHistory": "Borrar historial",
+  "emptyStateTitle": "No se ha registrado ninguna actividad",
+  "emptyStateDescription": "Los análisis y limpiezas aparecen aquí después de su primera ejecución, con fecha, duración y resultado. Los comprobantes de limpieza están en la vista Comprobantes.",
+  "confirmClearScanTitle_one": "¿Borrar 1 entrada del historial?",
+  "confirmClearScanTitle_other": "¿Borrar {{count}} entradas del historial?",
+  "confirmClearScanDescription": "Las rutas del registro de archivos eliminados también se borran. Los comprobantes de limpieza se conservan. Esta acción no se puede deshacer.",
+  "confirmClearLabel_one": "Borrar 1 entrada",
+  "confirmClearLabel_other": "Borrar {{count}} entradas",
   "typeLabels": {
     "cleaner": "Limpieza del sistema",
-    "registry": "Reparación del registro",
-    "debloater": "Debloater",
+    "registry": "Limpieza del registro",
+    "debloater": "Eliminación de bloatware",
     "network": "Limpieza de red",
     "drivers": "Limpieza de controladores",
     "malware": "Análisis de malware",
@@ -125,29 +162,88 @@
     "startup": "Administrador de inicio",
     "services": "Administrador de servicios",
     "softwareUpdate": "Actualización de software",
-    "cveScan": "Análisis de CVE"
+    "cveScan": "Análisis de vulnerabilidades (CVE)"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} liberados",
+    "noSpace": "No se liberó espacio",
+    "entries_one": "1 entrada",
+    "entries_other": "{{formatted}} entradas",
+    "items_one": "1 elemento procesado",
+    "items_other": "{{formatted}} elementos procesados",
+    "averageDuration": "duración media {{duration}}",
+    "errors_one": "1 error",
+    "errors_other": "{{formatted}} errores",
+    "noErrors": "sin errores",
+    "range": "de {{from}} a {{to}}",
+    "sameDay": "el {{date}}"
   },
   "overview": {
-    "tooltipSpace": "Espacio"
+    "spaceOverTime": "Espacio liberado por día",
+    "spaceSentence_one": "{{size}} liberados en 1 día con actividad.",
+    "spaceSentence_other": "{{size}} liberados en {{count}} días con actividad.",
+    "noSpaceSentence": "Ninguna actividad registrada liberó espacio.",
+    "chartLabel_one": "Espacio liberado en 1 día",
+    "chartLabel_other": "Espacio liberado en {{count}} días",
+    "tooltipSpace": "{{size}} liberados",
+    "byType": "Por tipo",
+    "topCategories": "Categorías que liberaron más espacio",
+    "recent": "Actividad reciente",
+    "showAll": "Lista completa"
+  },
+  "columns": {
+    "type": "Tipo",
+    "date": "Fecha",
+    "entries": "Entradas",
+    "items": "Elementos",
+    "space": "Espacio",
+    "duration": "Duración",
+    "outcome": "Resultado",
+    "category": "Categoría"
+  },
+  "list": {
+    "title": "Toda la actividad",
+    "count_one": "1 entrada",
+    "count_other": "{{formatted}} entradas",
+    "filterLabel": "Tipo",
+    "filterAll": "Todos los tipos",
+    "scheduled": "Programado",
+    "noErrors": "Sin errores"
   },
   "detail": {
+    "close": "Cerrar",
+    "outcomeDone": "Completado",
+    "outcomeErrors_one": "Completado con 1 error",
+    "outcomeErrors_other": "Completado con {{formatted}} errores",
+    "found_one": "1 elemento encontrado",
+    "found_other": "{{formatted}} elementos encontrados",
+    "processed_one": "1 procesado",
+    "processed_other": "{{formatted}} procesados",
+    "skipped_one": "1 elemento omitido.",
+    "skipped_other": "{{formatted}} elementos omitidos.",
+    "scheduled": "programado",
+    "scheduledBy": "programado: {{name}}",
     "categoriesLabel": "Categorías",
     "deletedFiles": {
       "title": "Archivos eliminados",
-      "loading": "Cargando…",
+      "loading": "Leyendo el registro de eliminación…",
       "shownCount": "{{shown}} de {{total}}",
       "loadMore": "Cargar más",
       "exportCsv": "Exportar CSV",
       "openLog": "Abrir registro",
-      "exportFailed": "No se pudo exportar la lista de archivos eliminados",
-      "truncatedBadge": "+{{count}} más",
+      "exported_one": "1 ruta exportada",
+      "exported_other": "{{formatted}} rutas exportadas",
+      "exportFailed": "No se pudo exportar la lista de archivos eliminados.",
+      "truncatedBadge": "+{{formatted}} no incluidos en la lista",
+      "truncatedHint_one": "Esta carpeta contenía 1 entrada más allá del límite de listado por carpeta. Se eliminó pero no se incluyó en la lista.",
+      "truncatedHint_other": "Esta carpeta contenía {{formatted}} entradas más allá del límite de listado por carpeta. Se eliminaron pero no se incluyeron en la lista individualmente.",
       "emptyRecorded": "No se registraron rutas de archivos para esta ejecución.",
-      "disabledHint": "El registro de eliminaciones está desactivado, por lo que no se registraron las rutas individuales de esta ejecución. Active \"Mantener un registro de los archivos eliminados\" en Configuración → Preferencias de limpieza para registrarlas a partir de ahora."
+      "disabledHint": "El registro de eliminaciones estaba desactivado, por lo que no se registraron las rutas de esta ejecución. Para registrarlas a partir de ahora, active \"Conservar un registro de los archivos eliminados\" en Configuración › Preferencias de limpieza."
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1s",
-    "seconds": "{{count}}s",
-    "minutesAndSeconds": "{{minutes}}m {{seconds}}s"
+    "lessThanOneSecond": "menos de 1 s",
+    "seconds": "{{count}} s",
+    "minutesAndSeconds": "{{minutes}} min {{seconds}} s"
   }
 }
