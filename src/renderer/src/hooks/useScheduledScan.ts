@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import i18next from 'i18next'
 import { useScanStore } from '@/stores/scan-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore, refreshSettings } from '@/stores/settings-store'
@@ -27,42 +28,50 @@ const CLEANER_TASKS: Record<
   {
     label: string
     type: CleanerType
+    /** The category's name on the Cleaner page, for "Scan failed for". */
+    labelKey: string
     scan: () => Promise<ScanResult[]>
     clean: (ids: string[]) => Promise<any>
   }
 > = {
   'cleaner:system': {
     label: 'System',
+    labelKey: 'cleaner:categorySystem',
     type: CleanerType.System,
     scan: () => window.kudu.systemScan(),
     clean: (ids) => window.kudu.systemClean(ids)
   },
   'cleaner:browsers': {
     label: 'Browsers',
+    labelKey: 'cleaner:categoryBrowsers',
     type: CleanerType.Browser,
     scan: () => window.kudu.browserScan(),
     clean: (ids) => window.kudu.browserClean(ids)
   },
   'cleaner:apps': {
     label: 'Applications',
+    labelKey: 'cleaner:categoryApplications',
     type: CleanerType.App,
     scan: () => window.kudu.appScan(),
     clean: (ids) => window.kudu.appClean(ids)
   },
   'cleaner:gaming': {
     label: 'Gaming',
+    labelKey: 'cleaner:categoryGaming',
     type: CleanerType.Gaming,
     scan: () => window.kudu.gamingScan(),
     clean: (ids) => window.kudu.gamingClean(ids)
   },
   'cleaner:recycleBin': {
     label: 'Recycle Bin',
+    labelKey: 'cleaner:categoryRecycleBin',
     type: CleanerType.RecycleBin,
     scan: () => window.kudu.recycleBinScan(),
     clean: () => window.kudu.recycleBinClean()
   },
   'cleaner:databases': {
     label: 'Databases',
+    labelKey: 'cleaner:categoryDatabases',
     type: CleanerType.Database,
     scan: () => window.kudu.databaseScan(),
     clean: (ids) => window.kudu.databaseClean(ids)
@@ -92,8 +101,10 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
   let totalCleaned = 0
   let totalSpaceSaved = 0
   const categoryResults: Record<string, { found: number; cleaned: number; size: number }> = {}
-  // The cleaner categories this run read, for the Cleaner page's "nothing found in" list.
+  // The cleaner categories this run read, and those whose scan failed, for the Cleaner
+  // page's "Nothing found in" and "Scan failed for" lists.
   const scannedCategories: CleanerType[] = []
+  const failedCategories: string[] = []
   // Whether this run replaced the Cleaner's last results; a deferred run leaves them alone.
   let replacedResults = false
 
@@ -145,6 +156,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
     store.setScannedAt(null)
     store.setScannedCategories([])
     store.setStoppedEarly(false)
+    store.setFailedCategories([])
     replacedResults = true
     // ── Restore point before the first auto-apply clean ──
     // Created lazily so a run that ends up cleaning nothing (e.g. a scope of
@@ -219,6 +231,8 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
         } catch (error) {
           if (error instanceof ScheduleConditionChanged) throw error
           status = 'partial'
+          if (!scannedCategories.includes(task.type))
+            failedCategories.push(i18next.t(task.labelKey))
         }
       }
 
@@ -318,6 +332,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
       }
     }
     store.setScannedCategories(scannedCategories)
+    store.setFailedCategories(failedCategories)
     store.setScannedAt(Date.now())
     store.setStatus(ScanStatus.Complete)
     store.setProgress(null)
@@ -339,6 +354,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
     if (error instanceof ScheduleConditionChanged) {
       if (replacedResults) {
         store.setScannedCategories(scannedCategories)
+        store.setFailedCategories(failedCategories)
         store.setStoppedEarly(true)
         if (started) store.setScannedAt(Date.now())
       }

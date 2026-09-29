@@ -9,7 +9,8 @@ const mocks = vi.hoisted(() => ({
     setProgress: vi.fn(),
     setScannedAt: vi.fn(),
     setScannedCategories: vi.fn(),
-    setStoppedEarly: vi.fn()
+    setStoppedEarly: vi.fn(),
+    setFailedCategories: vi.fn()
   }
 }))
 vi.mock('@/stores/scan-store', () => ({ useScanStore: { getState: () => mocks.state } }))
@@ -52,6 +53,7 @@ const api = {
   notifyScheduledScanComplete: vi.fn(),
   systemScan: vi.fn(),
   systemClean: vi.fn(),
+  browserScan: vi.fn(),
   registryScan: vi.fn(),
   registryFix: vi.fn(),
   recycleBinScan: vi.fn()
@@ -84,6 +86,17 @@ it('records the cleaner categories it read and when it finished', async () => {
   expect(mocks.state.setScannedAt).toHaveBeenLastCalledWith(expect.any(Number))
   expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([CleanerType.System])
   expect(mocks.state.setStoppedEarly).toHaveBeenLastCalledWith(false)
+})
+it('reports a cleaner category whose scan failed, replacing an earlier list', async () => {
+  // Category names are translated; the key stands in for the text.
+  const i18next = (await import('i18next')).default
+  const t = vi.spyOn(i18next, 't').mockImplementation(((key: string) => key) as never)
+  api.browserScan.mockRejectedValue(new Error('boom'))
+  await runSchedule({ ...payload, tasks: ['cleaner:system', 'cleaner:browsers'] })
+  t.mockRestore()
+  expect(mocks.state.setFailedCategories).toHaveBeenNthCalledWith(1, [])
+  expect(mocks.state.setFailedCategories).toHaveBeenLastCalledWith(['cleaner:categoryBrowsers'])
+  expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([CleanerType.System])
 })
 it('marks the results as partial when the conditions change during the run', async () => {
   api.scheduleAuthorize
