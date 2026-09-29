@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Aucun lecteur ne correspond au filtre actuel.",
   "trimLastTrimmed": "Dernier TRIM",
   "trimNeverRecorded": "Jamais enregistré",
-  "trimConfirmTitle": "Exécuter TRIM ?",
   "trimCompletedToast_one": "TRIM terminé sur {{count}} lecteur",
   "trimCompletedToast_other": "TRIM terminé sur {{count}} lecteurs",
   "trimThrottledToast_one": "{{count}} lecteur a reçu un TRIM il y a moins de 24 heures — ignoré",

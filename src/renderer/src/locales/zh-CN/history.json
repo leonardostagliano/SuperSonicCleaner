@@ -43,7 +43,6 @@
       "empty": "尚无注册表备份。",
       "restore": "还原",
       "showInFolder": "在文件夹中显示",
-      "moreKeys": "另外还有 +{{count}} 项",
       "requiresAdmin": "需要管理员权限",
       "confirmTitle": "还原此注册表备份？",
       "confirmDescription": "SuperSonicCleaner 会导入以下项。备份中的值会替换当前值，缺失的项和值会被重新添加。除此之外不会删除任何其他内容，但恢复一个“恢复前备份”时，也会移除该次恢复操作所撤销的恢复所添加的项和值。导入前，SuperSonicCleaner 会先将这些项的当前状态保存为恢复前备份。部分更改只有在注销或重新启动后才会生效。",
@@ -114,9 +113,7 @@
   "clearButton": "清除",
   "emptyStateTitle": "暂无历史记录",
   "emptyStateDescription": "请从 Cleaner、Registry 或 Debloater 页面运行扫描。结果将显示在此处。",
-  "confirmClearScanTitle": "清除扫描历史记录",
   "confirmClearScanDescription": "这将永久删除所有扫描历史记录。此操作无法撤销。",
-  "confirmClearLabel": "全部清除",
   "typeLabels": {
     "cleaner": "系统清理",
     "registry": "注册表修复",
@@ -142,10 +139,8 @@
       "loadMore": "加载更多",
       "exportCsv": "导出 CSV",
       "openLog": "打开日志",
-      "exported": "已导出 {{count}} 条路径",
       "exportFailed": "无法导出已删除文件列表",
       "truncatedBadge": "另有 +{{count}} 项",
-      "truncatedHint": "此文件夹中的其他 {{count}} 条记录超出了每个文件夹的列表上限。它们已被删除，但未逐项列出。",
       "emptyRecorded": "此次运行未记录任何文件路径。",
       "disabledHint": "删除日志记录已关闭，因此此次运行中各个路径未被记录。请在“设置 → 清理首选项”中启用“保留已删除文件日志”，以便今后记录这些路径。"
     }

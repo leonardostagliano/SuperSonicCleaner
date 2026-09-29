@@ -43,7 +43,6 @@
       "empty": "Ingen sikkerhetskopier av registeret ennå.",
       "restore": "Gjenopprett",
       "showInFolder": "Vis i mappe",
-      "moreKeys": "+{{count}} til",
       "requiresAdmin": "Krever administrator",
       "confirmTitle": "Gjenopprette denne sikkerhetskopien av registeret?",
       "confirmDescription": "SuperSonicCleaner vil importere nøklene nedenfor. Verdier fra sikkerhetskopien erstatter de gjeldende, og manglende nøkler og verdier legges til igjen. Ingenting annet slettes, bortsett fra at gjenoppretting av en sikkerhetskopi fra før gjenoppretting også fjerner nøklene og verdiene som gjenopprettingen den opphever hadde lagt til. Før import lagrer SuperSonicCleaner gjeldende tilstand for disse nøklene som en sikkerhetskopi fra før gjenoppretting. Noen endringer trer først i kraft etter at du logger av eller starter på nytt.",
@@ -114,9 +113,7 @@
   "clearButton": "Tøm",
   "emptyStateTitle": "Ingen historikk ennå",
   "emptyStateDescription": "Kjør en skanning fra sidene Cleaner, Registry eller Debloater. Resultatene vises her.",
-  "confirmClearScanTitle": "Tøm skannelogg",
   "confirmClearScanDescription": "Dette vil slette alle oppføringer i skanneloggen permanent. Denne handlingen kan ikke angres.",
-  "confirmClearLabel": "Tøm alle",
   "typeLabels": {
     "cleaner": "Systemopprydding",
     "registry": "Registerreparasjon",
@@ -142,10 +139,8 @@
       "loadMore": "Last inn flere",
       "exportCsv": "Eksporter CSV",
       "openLog": "Åpne logg",
-      "exported": "Eksporterte {{count}} baner",
       "exportFailed": "Kunne ikke eksportere listen over slettede filer",
       "truncatedBadge": "+{{count}} til",
-      "truncatedHint": "Denne mappen inneholdt {{count}} flere oppføringer utover grensen for oppføring per mappe. De ble slettet, men ikke oppført enkeltvis.",
       "emptyRecorded": "Ingen filbaner ble registrert for denne kjøringen.",
       "disabledHint": "Slettelogging er slått av, så de individuelle banene fra denne kjøringen ble ikke registrert. Slå på \"Behold en logg over slettede filer\" i Innstillinger → Rengjøringsinnstillinger for å registrere dem fra nå av."
     }

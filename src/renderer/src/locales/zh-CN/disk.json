@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "没有驱动器符合当前筛选条件。",
   "trimLastTrimmed": "上次 TRIM 时间",
   "trimNeverRecorded": "从未记录",
-  "trimConfirmTitle": "运行 TRIM？",
   "trimCompletedToast_one": "已在 {{count}} 个驱动器上完成 TRIM",
   "trimCompletedToast_other": "已在 {{count}} 个驱动器上完成 TRIM",
   "trimThrottledToast_one": "{{count}} 个驱动器在 24 小时内已执行过 TRIM — 已跳过",

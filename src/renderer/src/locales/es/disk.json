@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Ninguna unidad coincide con el filtro actual.",
   "trimLastTrimmed": "Última optimización TRIM",
   "trimNeverRecorded": "Nunca registrado",
-  "trimConfirmTitle": "¿Ejecutar TRIM?",
   "trimCompletedToast_one": "TRIM completado en {{count}} unidad",
   "trimCompletedToast_other": "TRIM completado en {{count}} unidades",
   "trimThrottledToast_one": "{{count}} unidad recibió TRIM hace menos de 24 horas; se omitió",

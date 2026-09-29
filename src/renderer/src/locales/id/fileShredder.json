@@ -9,10 +9,6 @@
   "folder": "Folder",
   "remove": "Hapus dari daftar",
   "openLocation": "Buka lokasi file",
-  "confirmTitle": "Hancurkan File?",
-  "shredSuccess": "Berhasil menghancurkan {{count}} file, memusnahkan {{size}} data",
-  "shredCancelled": "Dibatalkan — menghancurkan {{count}} file ({{size}}) sebelum dihentikan",
-  "shredFailed": "{{failed}} file tidak dapat dihancurkan",
   "emptyTitle": "Tidak Ada File yang Dipilih",
   "emptyDescription": "Tambahkan file atau folder untuk dihancurkan secara aman. Data ditimpa dengan byte acak lalu dinolkan sebelum dihapus, sehingga pemulihan hampir tidak mungkin dilakukan.",
   "shredAnother": "Hancurkan Lebih Banyak File"

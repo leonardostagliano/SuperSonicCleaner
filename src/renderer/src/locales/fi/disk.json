@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Yksikään asema ei vastaa nykyistä suodatinta.",
   "trimLastTrimmed": "Viimeksi TRIM-käsitelty",
   "trimNeverRecorded": "Ei koskaan tallennettu",
-  "trimConfirmTitle": "Suoritetaanko TRIM?",
   "trimCompletedToast_one": "TRIM valmis {{count}} asemalla",
   "trimCompletedToast_other": "TRIM valmis {{count}} asemalla",
   "trimThrottledToast_one": "{{count}} asema TRIM-käsiteltiin alle 24 tuntia sitten — ohitettu",

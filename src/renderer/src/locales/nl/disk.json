@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Geen stations komen overeen met het huidige filter.",
   "trimLastTrimmed": "Laatst getrimd",
   "trimNeverRecorded": "Nooit geregistreerd",
-  "trimConfirmTitle": "TRIM uitvoeren?",
   "trimCompletedToast_one": "TRIM voltooid op {{count}} station",
   "trimCompletedToast_other": "TRIM voltooid op {{count}} stations",
   "trimThrottledToast_one": "{{count}} station is minder dan 24 uur geleden getrimd — overgeslagen",

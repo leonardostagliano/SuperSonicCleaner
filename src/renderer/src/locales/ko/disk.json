@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "현재 필터와 일치하는 드라이브가 없습니다.",
   "trimLastTrimmed": "마지막 TRIM 실행",
   "trimNeverRecorded": "기록 없음",
-  "trimConfirmTitle": "TRIM을 실행하시겠습니까?",
   "trimCompletedToast_one": "{{count}}개 드라이브에서 TRIM 완료",
   "trimCompletedToast_other": "{{count}}개 드라이브에서 TRIM 완료",
   "trimThrottledToast_one": "{{count}}개 드라이브는 24시간 이내에 TRIM이 실행되어 건너뛰었습니다",

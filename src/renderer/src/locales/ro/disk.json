@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Nicio unitate nu corespunde filtrului curent.",
   "trimLastTrimmed": "Ultimul TRIM",
   "trimNeverRecorded": "Niciodată înregistrat",
-  "trimConfirmTitle": "Rulați TRIM?",
   "trimCompletedToast_one": "TRIM s-a finalizat pe {{count}} unitate",
   "trimCompletedToast_other": "TRIM s-a finalizat pe {{count}} unități",
   "trimThrottledToast_one": "{{count}} unitate a fost supusă TRIM cu mai puțin de 24 de ore în urmă — omisă",

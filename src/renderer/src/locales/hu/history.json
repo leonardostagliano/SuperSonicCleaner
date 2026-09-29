@@ -43,7 +43,6 @@
       "empty": "Még nincsenek registry biztonsági mentések.",
       "restore": "Visszaállítás",
       "showInFolder": "Megjelenítés a mappában",
-      "moreKeys": "+{{count}} további",
       "requiresAdmin": "Rendszergazdai jogosultság szükséges",
       "confirmTitle": "Visszaállítja ezt a registry biztonsági mentést?",
       "confirmDescription": "A SuperSonicCleaner importálja az alábbi kulcsokat. A biztonsági mentésből származó értékek felülírják a jelenlegieket, és a hiányzó kulcsok és értékek visszakerülnek. Semmi más nem törlődik, kivéve, hogy egy helyreállítás előtti biztonsági mentés visszaállítása egyben eltávolítja azokat a kulcsokat és értékeket is, amelyeket a most visszavont helyreállítás adott hozzá. Importálás előtt a SuperSonicCleaner elmenti e kulcsok jelenlegi állapotát helyreállítás előtti biztonsági mentésként. Egyes módosítások csak kijelentkezés vagy újraindítás után lépnek életbe.",
@@ -114,9 +113,7 @@
   "clearButton": "Törlés",
   "emptyStateTitle": "Még nincs előzmény",
   "emptyStateDescription": "Futtasson vizsgálatot a Tisztító, a Beállításjegyzék vagy a Debloater oldalon. Az eredmények itt jelennek meg.",
-  "confirmClearScanTitle": "Vizsgálati előzmények törlése",
   "confirmClearScanDescription": "Ez véglegesen törli az összes vizsgálati előzménybejegyzést. Ez a művelet nem vonható vissza.",
-  "confirmClearLabel": "Összes törlése",
   "typeLabels": {
     "cleaner": "Rendszertisztítás",
     "registry": "Beállításjegyzék javítása",
@@ -142,10 +139,8 @@
       "loadMore": "Továbbiak betöltése",
       "exportCsv": "Exportálás CSV-be",
       "openLog": "Napló megnyitása",
-      "exported": "{{count}} elérési út exportálva",
       "exportFailed": "A törölt fájlok listáját nem sikerült exportálni",
       "truncatedBadge": "+{{count}} további",
-      "truncatedHint": "Ez a mappa a mappánkénti listázási korláton felül még {{count}} további bejegyzést tartalmazott. Ezek törölve lettek, de nem szerepelnek külön a listában.",
       "emptyRecorded": "Ehhez a futtatáshoz nem lett rögzítve fájlútvonal.",
       "disabledHint": "A törlési naplózás ki van kapcsolva, ezért a futtatás egyes elérési útjai nem lettek rögzítve. A jövőbeni rögzítéshez kapcsolja be a „Törölt fájlok naplózásának megőrzése” lehetőséget a Beállítások → Tisztítási beállítások menüben."
     }

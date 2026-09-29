@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Tidak ada drive yang cocok dengan filter saat ini.",
   "trimLastTrimmed": "Terakhir di-TRIM",
   "trimNeverRecorded": "Belum pernah dicatat",
-  "trimConfirmTitle": "Jalankan TRIM?",
   "trimCompletedToast_one": "TRIM selesai pada {{count}} drive",
   "trimCompletedToast_other": "TRIM selesai pada {{count}} drive",
   "trimThrottledToast_one": "{{count}} drive di-TRIM kurang dari 24 jam yang lalu — dilewati",

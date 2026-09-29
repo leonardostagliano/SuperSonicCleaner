@@ -43,7 +43,6 @@
       "empty": "Zatím nejsou k dispozici žádné zálohy registru.",
       "restore": "Obnovit",
       "showInFolder": "Zobrazit ve složce",
-      "moreKeys": "+{{count}} dalších",
       "requiresAdmin": "Vyžaduje oprávnění správce",
       "confirmTitle": "Obnovit tuto zálohu registru?",
       "confirmDescription": "SuperSonicCleaner naimportuje níže uvedené klíče. Hodnoty ze zálohy nahradí aktuální a chybějící klíče a hodnoty budou přidány zpět. Nic jiného se neodstraní, kromě toho, že obnovení zálohy před obnovením zároveň odstraní klíče a hodnoty, které přidalo obnovení, jež tato záloha ruší. Před importem SuperSonicCleaner uloží aktuální stav těchto klíčů jako zálohu před obnovením. Některé změny se projeví až po odhlášení nebo restartu.",
@@ -114,9 +113,7 @@
   "clearButton": "Vymazat",
   "emptyStateTitle": "Zatím žádná historie",
   "emptyStateDescription": "Spusťte kontrolu na stránkách Cleaner, Registry nebo Debloater. Výsledky se zobrazí zde.",
-  "confirmClearScanTitle": "Vymazat historii kontrol",
   "confirmClearScanDescription": "Tímto trvale odstraníte všechny záznamy historie kontrol. Tuto akci nelze vrátit zpět.",
-  "confirmClearLabel": "Vymazat vše",
   "typeLabels": {
     "cleaner": "Čištění systému",
     "registry": "Oprava registru",
@@ -142,10 +139,8 @@
       "loadMore": "Načíst více",
       "exportCsv": "Exportovat CSV",
       "openLog": "Otevřít protokol",
-      "exported": "Exportováno {{count}} cest",
       "exportFailed": "Seznam odstraněných souborů se nepodařilo exportovat",
       "truncatedBadge": "+{{count}} dalších",
-      "truncatedHint": "Tato složka obsahovala dalších {{count}} záznamů nad limit výpisu na složku. Byly odstraněny, ale nebyly jednotlivě uvedeny.",
       "emptyRecorded": "Pro tento běh nebyly zaznamenány žádné cesty k souborům.",
       "disabledHint": "Protokolování odstranění je vypnuté, takže jednotlivé cesty z tohoto běhu nebyly zaznamenány. Chcete-li je odteď zaznamenávat, zapněte v Nastavení → Předvolby čištění možnost „Uchovávat protokol odstraněných souborů“."
     }

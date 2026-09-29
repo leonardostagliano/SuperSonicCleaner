@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Keine Laufwerke entsprechen dem aktuellen Filter.",
   "trimLastTrimmed": "Zuletzt getrimmt",
   "trimNeverRecorded": "Nie erfasst",
-  "trimConfirmTitle": "TRIM ausführen?",
   "trimCompletedToast_one": "TRIM auf {{count}} Laufwerk abgeschlossen",
   "trimCompletedToast_other": "TRIM auf {{count}} Laufwerken abgeschlossen",
   "trimThrottledToast_one": "{{count}} Laufwerk wurde vor weniger als 24 Stunden getrimmt — übersprungen",

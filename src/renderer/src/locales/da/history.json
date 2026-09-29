@@ -43,7 +43,6 @@
       "empty": "Ingen sikkerhedskopier af registreringsdatabasen endnu.",
       "restore": "Gendan",
       "showInFolder": "Vis i mappe",
-      "moreKeys": "+{{count}} mere",
       "requiresAdmin": "Kræver administrator",
       "confirmTitle": "Gendan denne sikkerhedskopi af registreringsdatabasen?",
       "confirmDescription": "SuperSonicCleaner importerer nøglerne nedenfor. Værdier fra sikkerhedskopien erstatter de nuværende, og manglende nøgler og værdier tilføjes igen. Intet andet slettes, bortset fra at gendannelse af en sikkerhedskopi fra før gendannelse også fjerner de nøgler og værdier, som den gendannelse, den ophæver, havde tilføjet. Før import gemmer SuperSonicCleaner den aktuelle tilstand for disse nøgler som en sikkerhedskopi fra før gendannelse. Nogle ændringer træder først i kraft, når du logger af eller genstarter.",
@@ -114,9 +113,7 @@
   "clearButton": "Ryd",
   "emptyStateTitle": "Ingen historik endnu",
   "emptyStateDescription": "Kør en scanning fra siderne Cleaner, Registry eller Debloater. Resultaterne vises her.",
-  "confirmClearScanTitle": "Ryd scanningshistorik",
   "confirmClearScanDescription": "Dette sletter permanent alle poster i scanningshistorikken. Denne handling kan ikke fortrydes.",
-  "confirmClearLabel": "Ryd alle",
   "typeLabels": {
     "cleaner": "Systemoprydning",
     "registry": "Registreringsdatabase-reparation",
@@ -142,10 +139,8 @@
       "loadMore": "Indlæs flere",
       "exportCsv": "Eksportér CSV",
       "openLog": "Åbn log",
-      "exported": "Eksporterede {{count}} stier",
       "exportFailed": "Kunne ikke eksportere listen over slettede filer",
       "truncatedBadge": "+{{count}} mere",
-      "truncatedHint": "Denne mappe indeholdt {{count}} yderligere poster ud over grænsen for visning pr. mappe. De blev slettet, men ikke vist enkeltvis.",
       "emptyRecorded": "Der blev ikke registreret nogen filstier for denne kørsel.",
       "disabledHint": "Logføring af sletninger er slået fra, så de enkelte stier fra denne kørsel blev ikke registreret. Slå \"Behold en log over slettede filer\" til under Indstillinger → Oprydningsindstillinger for at registrere dem fremover."
     }

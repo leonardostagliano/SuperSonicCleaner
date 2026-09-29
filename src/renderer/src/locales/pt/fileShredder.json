@@ -9,10 +9,6 @@
   "folder": "Pasta",
   "remove": "Remover da lista",
   "openLocation": "Abrir localização do ficheiro",
-  "confirmTitle": "Destruir ficheiros?",
-  "shredSuccess": "{{count}} ficheiros destruídos, {{size}} de dados eliminados",
-  "shredCancelled": "Cancelado — {{count}} ficheiros destruídos ({{size}}) antes de parar",
-  "shredFailed": "Não foi possível destruir {{failed}} ficheiros",
   "emptyTitle": "Nenhum ficheiro selecionado",
   "emptyDescription": "Adicione ficheiros ou pastas para os destruir em segurança. Os dados são sobrescritos com bytes aleatórios e depois preenchidos com zeros antes da eliminação, tornando a recuperação praticamente impossível.",
   "shredAnother": "Destruir mais ficheiros"

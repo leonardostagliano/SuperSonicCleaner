@@ -43,7 +43,6 @@
       "empty": "Belum ada sandaran registry.",
       "restore": "Pulihkan",
       "showInFolder": "Tunjukkan dalam folder",
-      "moreKeys": "+{{count}} lagi",
       "requiresAdmin": "Memerlukan pentadbir",
       "confirmTitle": "Pulihkan sandaran registry ini?",
       "confirmDescription": "SuperSonicCleaner akan mengimport kunci di bawah. Nilai daripada sandaran akan menggantikan nilai semasa dan kunci serta nilai yang tiada akan ditambah semula. Tiada perkara lain akan dipadamkan, kecuali pemulihan sandaran pra-pemulihan juga akan membuang kunci dan nilai yang telah ditambah oleh pemulihan yang dibatalkannya. Sebelum mengimport, SuperSonicCleaner menyimpan keadaan semasa kunci ini sebagai sandaran pra-pemulihan. Sesetengah perubahan hanya berkuat kuasa selepas anda mendaftar keluar atau memulakan semula.",
@@ -114,9 +113,7 @@
   "clearButton": "Kosongkan",
   "emptyStateTitle": "Belum ada sejarah",
   "emptyStateDescription": "Jalankan imbasan dari halaman Cleaner, Registry, atau Debloater. Hasil akan dipaparkan di sini.",
-  "confirmClearScanTitle": "Kosongkan Sejarah Imbasan",
   "confirmClearScanDescription": "Ini akan memadam semua entri sejarah imbasan secara kekal. Tindakan ini tidak boleh dibuat asal.",
-  "confirmClearLabel": "Kosongkan Semua",
   "typeLabels": {
     "cleaner": "Pembersihan Sistem",
     "registry": "Pembaikan Registry",
@@ -142,10 +139,8 @@
       "loadMore": "Muat lagi",
       "exportCsv": "Eksport CSV",
       "openLog": "Buka log",
-      "exported": "Mengeksport {{count}} laluan",
       "exportFailed": "Tidak dapat mengeksport senarai fail yang dipadam",
       "truncatedBadge": "+{{count}} lagi",
-      "truncatedHint": "Folder ini mengandungi {{count}} entri tambahan melebihi had penyenaraian setiap folder. Ia telah dipadam tetapi tidak disenaraikan secara individu.",
       "emptyRecorded": "Tiada laluan fail direkodkan untuk proses ini.",
       "disabledHint": "Pengelogan pemadaman dimatikan, jadi laluan individu daripada proses ini tidak direkodkan. Hidupkan \"Simpan log fail yang dipadam\" dalam Tetapan → Keutamaan Pembersihan untuk merekodkannya mulai sekarang."
     }

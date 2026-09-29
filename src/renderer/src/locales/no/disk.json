@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Ingen stasjoner samsvarer med gjeldende filter.",
   "trimLastTrimmed": "Sist trimmet",
   "trimNeverRecorded": "Aldri registrert",
-  "trimConfirmTitle": "Kjøre TRIM?",
   "trimCompletedToast_one": "TRIM fullført på {{count}} stasjon",
   "trimCompletedToast_other": "TRIM fullført på {{count}} stasjoner",
   "trimThrottledToast_one": "{{count}} stasjon ble trimmet for mindre enn 24 timer siden — hoppet over",

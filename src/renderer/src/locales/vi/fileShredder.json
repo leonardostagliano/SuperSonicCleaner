@@ -9,10 +9,6 @@
   "folder": "Thư mục",
   "remove": "Xóa khỏi danh sách",
   "openLocation": "Mở vị trí tệp",
-  "confirmTitle": "Hủy tệp?",
-  "shredSuccess": "Đã hủy {{count}} tệp, đã hủy {{size}} dữ liệu",
-  "shredCancelled": "Đã hủy — đã hủy {{count}} tệp ({{size}}) trước khi dừng",
-  "shredFailed": "Không thể hủy {{failed}} tệp",
   "emptyTitle": "Chưa chọn tệp nào",
   "emptyDescription": "Thêm tệp hoặc thư mục để hủy an toàn. Dữ liệu sẽ được ghi đè bằng các byte ngẫu nhiên rồi ghi số 0 trước khi xóa, khiến việc khôi phục gần như không thể.",
   "shredAnother": "Hủy thêm tệp"

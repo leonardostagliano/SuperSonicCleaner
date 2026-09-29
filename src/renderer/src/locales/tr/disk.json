@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Geçerli filtreyle eşleşen sürücü yok.",
   "trimLastTrimmed": "Son TRIM zamanı",
   "trimNeverRecorded": "Hiç kaydedilmedi",
-  "trimConfirmTitle": "TRIM çalıştırılsın mı?",
   "trimCompletedToast_one": "TRIM, {{count}} sürücüde tamamlandı",
   "trimCompletedToast_other": "TRIM, {{count}} sürücüde tamamlandı",
   "trimThrottledToast_one": "{{count}} sürücüde 24 saatten kısa süre önce TRIM çalıştırıldı — atlandı",

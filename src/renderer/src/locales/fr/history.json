@@ -43,7 +43,6 @@
       "empty": "Aucune sauvegarde du registre pour le moment.",
       "restore": "Restaurer",
       "showInFolder": "Afficher dans le dossier",
-      "moreKeys": "+{{count}} de plus",
       "requiresAdmin": "Nécessite les droits d’administrateur",
       "confirmTitle": "Restaurer cette sauvegarde du registre ?",
       "confirmDescription": "SuperSonicCleaner importera les clés ci-dessous. Les valeurs de la sauvegarde remplacent les valeurs actuelles, et les clés et valeurs manquantes sont rétablies. Rien d’autre n’est supprimé, sauf que la restauration d’une sauvegarde pré-restauration supprime également les clés et valeurs ajoutées par la restauration qu’elle annule. Avant l’importation, SuperSonicCleaner enregistre l’état actuel de ces clés dans une sauvegarde pré-restauration. Certaines modifications ne prennent effet qu’après la déconnexion ou le redémarrage.",
@@ -114,9 +113,7 @@
   "clearButton": "Effacer",
   "emptyStateTitle": "Aucun historique pour le moment",
   "emptyStateDescription": "Lancez une analyse depuis les pages Cleaner, Registry ou Debloater. Les résultats apparaîtront ici.",
-  "confirmClearScanTitle": "Effacer l’historique des analyses",
   "confirmClearScanDescription": "Cela supprimera définitivement toutes les entrées de l’historique des analyses. Cette action est irréversible.",
-  "confirmClearLabel": "Tout effacer",
   "typeLabels": {
     "cleaner": "Nettoyage du système",
     "registry": "Correction du registre",
@@ -142,10 +139,8 @@
       "loadMore": "Charger plus",
       "exportCsv": "Exporter en CSV",
       "openLog": "Ouvrir le journal",
-      "exported": "{{count}} chemins exportés",
       "exportFailed": "Impossible d’exporter la liste des fichiers supprimés",
       "truncatedBadge": "+{{count}} de plus",
-      "truncatedHint": "Ce dossier contenait encore {{count}} entrées au-delà de la limite d’affichage par dossier. Elles ont été supprimées, mais n’ont pas été listées individuellement.",
       "emptyRecorded": "Aucun chemin de fichier n’a été enregistré pour cette exécution.",
       "disabledHint": "La journalisation des suppressions est désactivée, les chemins individuels de cette exécution n’ont donc pas été enregistrés. Activez « Conserver un journal des fichiers supprimés » dans Paramètres → Préférences de nettoyage pour les enregistrer à l’avenir."
     }

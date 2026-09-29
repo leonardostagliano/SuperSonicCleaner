@@ -9,10 +9,6 @@
   "folder": "Folder",
   "remove": "Eliminați din listă",
   "openLocation": "Deschideți locația fișierului",
-  "confirmTitle": "Distrugeți fișierele?",
-  "shredSuccess": "Au fost distruse {{count}} fișiere și {{size}} de date",
-  "shredCancelled": "Anulat — au fost distruse {{count}} fișiere ({{size}}) înainte de oprire",
-  "shredFailed": "{{failed}} fișiere nu au putut fi distruse",
   "emptyTitle": "Nu au fost selectate fișiere",
   "emptyDescription": "Adăugați fișiere sau foldere pentru a le distruge în siguranță. Datele sunt suprascrise cu octeți aleatorii, apoi cu zero înainte de ștergere, făcând recuperarea practic imposibilă.",
   "shredAnother": "Distrugeți mai multe fișiere"

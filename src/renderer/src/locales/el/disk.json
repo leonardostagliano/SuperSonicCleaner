@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Καμία μονάδα δεν αντιστοιχεί στο τρέχον φίλτρο.",
   "trimLastTrimmed": "Τελευταίο TRIM",
   "trimNeverRecorded": "Δεν έχει καταγραφεί ποτέ",
-  "trimConfirmTitle": "Εκτέλεση TRIM;",
   "trimCompletedToast_one": "Το TRIM ολοκληρώθηκε σε {{count}} μονάδα",
   "trimCompletedToast_other": "Το TRIM ολοκληρώθηκε σε {{count}} μονάδες",
   "trimThrottledToast_one": "Η μονάδα {{count}} υποβλήθηκε σε TRIM πριν από λιγότερο από 24 ώρες — παραλείφθηκε",

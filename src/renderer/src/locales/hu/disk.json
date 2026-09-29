@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Egyetlen meghajtó sem felel meg az aktuális szűrőnek.",
   "trimLastTrimmed": "Utolsó TRIM",
   "trimNeverRecorded": "Nincs rögzítve",
-  "trimConfirmTitle": "Futtatja a TRIM műveletet?",
   "trimCompletedToast_one": "A TRIM befejeződött {{count}} meghajtón",
   "trimCompletedToast_other": "A TRIM befejeződött {{count}} meghajtón",
   "trimThrottledToast_one": "{{count}} meghajtón kevesebb mint 24 órája futott TRIM — kihagyva",

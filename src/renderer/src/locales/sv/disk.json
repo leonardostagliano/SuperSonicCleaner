@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Inga enheter matchar det aktuella filtret.",
   "trimLastTrimmed": "Senast trimmad",
   "trimNeverRecorded": "Aldrig registrerad",
-  "trimConfirmTitle": "Köra TRIM?",
   "trimCompletedToast_one": "TRIM slutfördes på {{count}} enhet",
   "trimCompletedToast_other": "TRIM slutfördes på {{count}} enheter",
   "trimThrottledToast_one": "{{count}} enhet trimmades för mindre än 24 timmar sedan — hoppades över",

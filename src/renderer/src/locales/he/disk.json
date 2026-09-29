@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "אין כוננים התואמים למסנן הנוכחי.",
   "trimLastTrimmed": "TRIM אחרון",
   "trimNeverRecorded": "מעולם לא תועד",
-  "trimConfirmTitle": "להפעיל TRIM?",
   "trimCompletedToast_one": "TRIM הושלם בכונן {{count}}",
   "trimCompletedToast_other": "TRIM הושלם ב-{{count}} כוננים",
   "trimThrottledToast_one": "בוצע TRIM בכונן {{count}} לפני פחות מ-24 שעות — דולג",

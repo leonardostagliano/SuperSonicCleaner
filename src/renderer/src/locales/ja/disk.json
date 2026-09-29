@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "現在のフィルターに一致するドライブはありません。",
   "trimLastTrimmed": "前回の TRIM",
   "trimNeverRecorded": "記録なし",
-  "trimConfirmTitle": "TRIM を実行しますか？",
   "trimCompletedToast_one": "{{count}} 台のドライブで TRIM が完了しました",
   "trimCompletedToast_other": "{{count}} 台のドライブで TRIM が完了しました",
   "trimThrottledToast_one": "{{count}} 台のドライブは 24 時間以内に TRIM 済みのため、スキップされました",

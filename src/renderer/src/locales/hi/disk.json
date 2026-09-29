@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "वर्तमान फ़िल्टर से मेल खाने वाली कोई ड्राइव नहीं है।",
   "trimLastTrimmed": "अंतिम बार TRIM किया गया",
   "trimNeverRecorded": "कभी दर्ज नहीं किया गया",
-  "trimConfirmTitle": "TRIM चलाएँ?",
   "trimCompletedToast_one": "{{count}} ड्राइव पर TRIM पूरा हुआ",
   "trimCompletedToast_other": "{{count}} ड्राइव पर TRIM पूरा हुआ",
   "trimThrottledToast_one": "{{count}} ड्राइव पर 24 घंटे से कम समय पहले TRIM किया गया था — छोड़ दिया गया",

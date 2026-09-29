@@ -9,10 +9,6 @@
   "folder": "Kansio",
   "remove": "Poista luettelosta",
   "openLocation": "Avaa tiedoston sijainti",
-  "confirmTitle": "Silputa tiedostot?",
-  "shredSuccess": "Silputtu {{count}} tiedostoa, tuhottu {{size}} tietoa",
-  "shredCancelled": "Peruutettu — silputtu {{count}} tiedostoa ({{size}}) ennen pysäytystä",
-  "shredFailed": "{{failed}} tiedostoa ei voitu silputa",
   "emptyTitle": "Tiedostoja ei ole valittu",
   "emptyDescription": "Lisää tiedostoja tai kansioita silputaksesi ne turvallisesti. Tiedot ylikirjoitetaan satunnaisilla tavuilla ja sen jälkeen nollataan ennen poistamista, mikä tekee palauttamisesta käytännössä mahdotonta.",
   "shredAnother": "Silppua lisää tiedostoja"

@@ -9,10 +9,6 @@
   "folder": "Carpeta",
   "remove": "Quitar de la lista",
   "openLocation": "Abrir ubicación del archivo",
-  "confirmTitle": "¿Destruir archivos?",
-  "shredSuccess": "Se destruyeron {{count}} archivos y se eliminaron {{size}} de datos",
-  "shredCancelled": "Cancelado: se destruyeron {{count}} archivos ({{size}}) antes de detenerse",
-  "shredFailed": "No se pudieron destruir {{failed}} archivos",
   "emptyTitle": "No hay archivos seleccionados",
   "emptyDescription": "Agregue archivos o carpetas para destruirlos de forma segura. Los datos se sobrescriben con bytes aleatorios y luego con ceros antes de eliminarlos, lo que hace que su recuperación sea prácticamente imposible.",
   "shredAnother": "Destruir más archivos"

@@ -9,10 +9,6 @@
   "folder": "Folder",
   "remove": "Alih keluar daripada senarai",
   "openLocation": "Buka lokasi fail",
-  "confirmTitle": "Musnahkan Fail?",
-  "shredSuccess": "Berjaya memusnahkan {{count}} fail, {{size}} data dimusnahkan",
-  "shredCancelled": "Dibatalkan — {{count}} fail ({{size}}) telah dimusnahkan sebelum dihentikan",
-  "shredFailed": "{{failed}} fail tidak dapat dimusnahkan",
   "emptyTitle": "Tiada Fail Dipilih",
   "emptyDescription": "Tambah fail atau folder untuk dimusnahkan secara selamat. Data ditulis ganti dengan bait rawak kemudian dinolkan sebelum dipadamkan, menjadikan pemulihan hampir mustahil.",
   "shredAnother": "Musnahkan Lagi Fail"

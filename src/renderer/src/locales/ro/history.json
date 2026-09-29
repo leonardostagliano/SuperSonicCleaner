@@ -43,7 +43,6 @@
       "empty": "Nu există încă copii de siguranță ale registry.",
       "restore": "Restaurare",
       "showInFolder": "Afișează în folder",
-      "moreKeys": "+încă {{count}}",
       "requiresAdmin": "Necesită administrator",
       "confirmTitle": "Restaurați această copie de siguranță a registry?",
       "confirmDescription": "SuperSonicCleaner va importa cheile de mai jos. Valorile din copia de rezervă le înlocuiesc pe cele curente, iar cheile și valorile lipsă sunt adăugate din nou. Nimic altceva nu este șters, cu excepția faptului că restaurarea unei copii de rezervă dinaintea unei restaurări elimină și cheile și valorile pe care restaurarea anulată acum le adăugase. Înainte de import, SuperSonicCleaner salvează starea curentă a acestor chei ca o copie de rezervă dinaintea restaurării. Unele modificări intră în vigoare doar după deconectare sau repornire.",
@@ -114,9 +113,7 @@
   "clearButton": "Șterge",
   "emptyStateTitle": "Încă nu există istoric",
   "emptyStateDescription": "Rulați o scanare din paginile Cleaner, Registry sau Debloater. Rezultatele vor apărea aici.",
-  "confirmClearScanTitle": "Șterge istoricul scanărilor",
   "confirmClearScanDescription": "Aceasta va șterge definitiv toate intrările din istoricul scanărilor. Această acțiune nu poate fi anulată.",
-  "confirmClearLabel": "Șterge tot",
   "typeLabels": {
     "cleaner": "Curățare sistem",
     "registry": "Reparare registry",
@@ -142,10 +139,8 @@
       "loadMore": "Încarcă mai multe",
       "exportCsv": "Exportă CSV",
       "openLog": "Deschide jurnalul",
-      "exported": "Au fost exportate {{count}} căi",
       "exportFailed": "Nu s-a putut exporta lista fișierelor șterse",
       "truncatedBadge": "+{{count}} în plus",
-      "truncatedHint": "Acest folder conținea încă {{count}} intrări suplimentare peste limita de listare per folder. Acestea au fost șterse, dar nu au fost listate individual.",
       "emptyRecorded": "Nu au fost înregistrate căi de fișiere pentru această rulare.",
       "disabledHint": "Jurnalizarea ștergerilor este dezactivată, astfel căile individuale din această rulare nu au fost înregistrate. Activați „Păstrează un jurnal al fișierelor șterse” în Setări → Preferințe de curățare pentru a le înregistra de acum înainte."
     }

@@ -9,10 +9,6 @@
   "folder": "Map",
   "remove": "Uit lijst verwijderen",
   "openLocation": "Bestandslocatie openen",
-  "confirmTitle": "Bestanden vernietigen?",
-  "shredSuccess": "{{count}} bestanden vernietigd, {{size}} aan gegevens vernietigd",
-  "shredCancelled": "Geannuleerd — {{count}} bestanden vernietigd ({{size}}) voordat het proces werd gestopt",
-  "shredFailed": "{{failed}} bestanden konden niet worden vernietigd",
   "emptyTitle": "Geen bestanden geselecteerd",
   "emptyDescription": "Voeg bestanden of mappen toe om ze veilig te vernietigen. Gegevens worden overschreven met willekeurige bytes en daarna op nul gezet voordat ze worden verwijderd, waardoor herstel vrijwel onmogelijk is.",
   "shredAnother": "Meer bestanden vernietigen"

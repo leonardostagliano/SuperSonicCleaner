@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Żadne dyski nie pasują do bieżącego filtra.",
   "trimLastTrimmed": "Ostatnio wykonano TRIM",
   "trimNeverRecorded": "Nigdy nie zarejestrowano",
-  "trimConfirmTitle": "Uruchomić TRIM?",
   "trimCompletedToast_one": "TRIM ukończono na {{count}} dysku",
   "trimCompletedToast_other": "TRIM ukończono na {{count}} dyskach",
   "trimThrottledToast_one": "Na {{count}} dysku wykonano TRIM mniej niż 24 godziny temu — pominięto",

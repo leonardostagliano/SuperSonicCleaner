@@ -43,7 +43,6 @@
       "empty": "尚無登錄備份。",
       "restore": "還原",
       "showInFolder": "在資料夾中顯示",
-      "moreKeys": "另外 +{{count}} 個",
       "requiresAdmin": "需要系統管理員權限",
       "confirmTitle": "要還原此登錄備份嗎？",
       "confirmDescription": "SuperSonicCleaner 會匯入以下機碼。備份中的值會取代目前的值，缺漏的機碼與值會重新加回。除此之外不會刪除任何其他內容，但還原「復原前備份」時，也會移除該次復原所撤銷的復原作業所新增的機碼與值。匯入前，SuperSonicCleaner 會先將這些機碼的目前狀態儲存為復原前備份。部分變更僅在登出或重新啟動後才會生效。",
@@ -114,9 +113,7 @@
   "clearButton": "清除",
   "emptyStateTitle": "尚無記錄",
   "emptyStateDescription": "請從 Cleaner、Registry 或 Debloater 頁面執行掃描。結果將顯示於此。",
-  "confirmClearScanTitle": "清除掃描記錄",
   "confirmClearScanDescription": "這將永久刪除所有掃描記錄項目。此動作無法復原。",
-  "confirmClearLabel": "全部清除",
   "typeLabels": {
     "cleaner": "系統清理",
     "registry": "登錄修復",
@@ -142,10 +139,8 @@
       "loadMore": "載入更多",
       "exportCsv": "匯出 CSV",
       "openLog": "開啟記錄",
-      "exported": "已匯出 {{count}} 個路徑",
       "exportFailed": "無法匯出已刪除檔案清單",
       "truncatedBadge": "另有 +{{count}} 筆",
-      "truncatedHint": "此資料夾在每個資料夾的清單上限之外，還有 {{count}} 筆項目。這些項目已刪除，但未逐一列出。",
       "emptyRecorded": "此次執行未記錄任何檔案路徑。",
       "disabledHint": "刪除記錄功能目前已關閉，因此未記錄此次執行的個別路徑。請在「設定 → 清理偏好設定」中啟用「保留已刪除檔案的記錄」，之後即可開始記錄。"
     }

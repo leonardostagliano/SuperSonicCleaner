@@ -43,7 +43,6 @@
       "empty": "Nog geen registerback-ups.",
       "restore": "Herstellen",
       "showInFolder": "Weergeven in map",
-      "moreKeys": "+{{count}} meer",
       "requiresAdmin": "Administrator vereist",
       "confirmTitle": "Deze registerback-up herstellen?",
       "confirmDescription": "SuperSonicCleaner importeert de onderstaande sleutels. Waarden uit de back-up vervangen de huidige en ontbrekende sleutels en waarden worden teruggezet. Verder wordt niets verwijderd, behalve dat het herstellen van een back-up van vóór het herstel ook de sleutels en waarden verwijdert die zijn toegevoegd door het herstel dat daarmee ongedaan wordt gemaakt. Voordat SuperSonicCleaner importeert, slaat het de huidige status van deze sleutels op als een back-up van vóór het herstel. Sommige wijzigingen worden pas van kracht nadat u zich hebt afgemeld of de computer opnieuw hebt opgestart.",
@@ -114,9 +113,7 @@
   "clearButton": "Wissen",
   "emptyStateTitle": "Nog geen geschiedenis",
   "emptyStateDescription": "Voer een scan uit vanaf de pagina's Cleaner, Registry of Debloater. De resultaten verschijnen hier.",
-  "confirmClearScanTitle": "Scangeschiedenis wissen",
   "confirmClearScanDescription": "Hiermee worden alle items in de scangeschiedenis permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
-  "confirmClearLabel": "Alles wissen",
   "typeLabels": {
     "cleaner": "Systeemopschoning",
     "registry": "Registerherstel",
@@ -142,10 +139,8 @@
       "loadMore": "Meer laden",
       "exportCsv": "CSV exporteren",
       "openLog": "Logboek openen",
-      "exported": "{{count}} paden geëxporteerd",
       "exportFailed": "Kan de lijst met verwijderde bestanden niet exporteren",
       "truncatedBadge": "+{{count}} meer",
-      "truncatedHint": "Deze map bevatte nog {{count}} extra items boven de limiet voor vermeldingen per map. Ze zijn verwijderd, maar niet afzonderlijk vermeld.",
       "emptyRecorded": "Er zijn geen bestandspaden voor deze uitvoering vastgelegd.",
       "disabledHint": "Logboekregistratie van verwijderingen is uitgeschakeld, dus de afzonderlijke paden van deze uitvoering zijn niet vastgelegd. Schakel \"Een logboek van verwijderde bestanden bijhouden\" in via Instellingen → Opschoonvoorkeuren om ze voortaan vast te leggen."
     }

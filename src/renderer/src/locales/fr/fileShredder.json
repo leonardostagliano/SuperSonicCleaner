@@ -9,10 +9,6 @@
   "folder": "Dossier",
   "remove": "Retirer de la liste",
   "openLocation": "Ouvrir l’emplacement du fichier",
-  "confirmTitle": "Détruire les fichiers ?",
-  "shredSuccess": "{{count}} fichiers détruits, {{size}} de données détruites",
-  "shredCancelled": "Annulé — {{count}} fichiers détruits ({{size}}) avant l’arrêt",
-  "shredFailed": "Impossible de détruire {{failed}} fichiers",
   "emptyTitle": "Aucun fichier sélectionné",
   "emptyDescription": "Ajoutez des fichiers ou des dossiers pour les détruire de manière sécurisée. Les données sont écrasées avec des octets aléatoires puis mises à zéro avant suppression, rendant leur récupération pratiquement impossible.",
   "shredAnother": "Détruire d’autres fichiers"

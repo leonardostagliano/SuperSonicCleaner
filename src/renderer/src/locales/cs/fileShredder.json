@@ -9,10 +9,6 @@
   "folder": "Složka",
   "remove": "Odebrat ze seznamu",
   "openLocation": "Otevřít umístění souboru",
-  "confirmTitle": "Skartovat soubory?",
-  "shredSuccess": "Skartováno {{count}} souborů, zničeno {{size}} dat",
-  "shredCancelled": "Zrušeno — před zastavením bylo skartováno {{count}} souborů ({{size}})",
-  "shredFailed": "{{failed}} souborů se nepodařilo skartovat",
   "emptyTitle": "Nejsou vybrány žádné soubory",
   "emptyDescription": "Přidejte soubory nebo složky a bezpečně je skartujte. Data budou před odstraněním přepsána náhodnými bajty a poté nulami, takže jejich obnova bude prakticky nemožná.",
   "shredAnother": "Skartovat další soubory"

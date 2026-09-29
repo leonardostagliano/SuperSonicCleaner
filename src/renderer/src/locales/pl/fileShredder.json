@@ -9,10 +9,6 @@
   "folder": "Folder",
   "remove": "Usuń z listy",
   "openLocation": "Otwórz lokalizację pliku",
-  "confirmTitle": "Zniszczyć pliki?",
-  "shredSuccess": "Zniszczono {{count}} plików, usunięto {{size}} danych",
-  "shredCancelled": "Anulowano — przed zatrzymaniem zniszczono {{count}} plików ({{size}})",
-  "shredFailed": "Nie udało się zniszczyć {{failed}} plików",
   "emptyTitle": "Nie wybrano plików",
   "emptyDescription": "Dodaj pliki lub foldery, aby bezpiecznie je zniszczyć. Dane są nadpisywane losowymi bajtami, a następnie zerowane przed usunięciem, co praktycznie uniemożliwia ich odzyskanie.",
   "shredAnother": "Zniszcz więcej plików"

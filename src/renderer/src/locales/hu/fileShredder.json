@@ -9,10 +9,6 @@
   "folder": "Mappa",
   "remove": "Eltávolítás a listáról",
   "openLocation": "Fájl helyének megnyitása",
-  "confirmTitle": "Fájlok megsemmisítése?",
-  "shredSuccess": "{{count}} fájl megsemmisítve, {{size}} adat megsemmisítve",
-  "shredCancelled": "Megszakítva — {{count}} fájl ({{size}}) lett megsemmisítve a leállítás előtt",
-  "shredFailed": "{{failed}} fájlt nem sikerült megsemmisíteni",
   "emptyTitle": "Nincs kijelölt fájl",
   "emptyDescription": "Adjon hozzá fájlokat vagy mappákat a biztonságos megsemmisítéshez. Az adatok a törlés előtt véletlenszerű bájtokkal felülírásra, majd nullázásra kerülnek, így a helyreállítás gyakorlatilag lehetetlenné válik.",
   "shredAnother": "További fájlok megsemmisítése"

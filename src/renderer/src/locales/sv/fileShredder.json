@@ -9,10 +9,6 @@
   "folder": "Mapp",
   "remove": "Ta bort från listan",
   "openLocation": "Öppna filens plats",
-  "confirmTitle": "Förstöra filer?",
-  "shredSuccess": "Förstörde {{count}} filer, förstörde {{size}} data",
-  "shredCancelled": "Avbruten — förstörde {{count}} filer ({{size}}) innan processen stoppades",
-  "shredFailed": "{{failed}} filer kunde inte förstöras",
   "emptyTitle": "Inga filer valda",
   "emptyDescription": "Lägg till filer eller mappar för att förstöra dem säkert. Data skrivs över med slumpmässiga byte och nollställs sedan före borttagning, vilket gör återställning i praktiken omöjlig.",
   "shredAnother": "Förstör fler filer"

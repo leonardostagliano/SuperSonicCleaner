@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "沒有磁碟機符合目前的篩選條件。",
   "trimLastTrimmed": "上次 TRIM",
   "trimNeverRecorded": "從未記錄",
-  "trimConfirmTitle": "要執行 TRIM 嗎？",
   "trimCompletedToast_one": "已在 {{count}} 個磁碟機上完成 TRIM",
   "trimCompletedToast_other": "已在 {{count}} 個磁碟機上完成 TRIM",
   "trimThrottledToast_one": "{{count}} 個磁碟機在 24 小時內已執行過 TRIM — 已略過",

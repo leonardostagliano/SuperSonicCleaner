@@ -43,7 +43,6 @@
       "empty": "아직 레지스트리 백업이 없습니다.",
       "restore": "복원",
       "showInFolder": "폴더에서 보기",
-      "moreKeys": "+{{count}}개 더",
       "requiresAdmin": "관리자 권한 필요",
       "confirmTitle": "이 레지스트리 백업을 복원하시겠습니까?",
       "confirmDescription": "SuperSonicCleaner는 아래 키를 가져옵니다. 백업의 값이 현재 값을 대체하고, 누락된 키와 값은 다시 추가됩니다. 그 외에는 아무것도 삭제되지 않지만, 복원 전 백업을 복원하면 그 복원이 되돌리는 작업으로 인해 추가되었던 키와 값도 함께 제거됩니다. 가져오기 전에 SuperSonicCleaner는 이 키들의 현재 상태를 복원 전 백업으로 저장합니다. 일부 변경 사항은 로그아웃하거나 다시 시작한 후에만 적용됩니다.",
@@ -114,9 +113,7 @@
   "clearButton": "지우기",
   "emptyStateTitle": "아직 기록이 없습니다",
   "emptyStateDescription": "Cleaner, Registry 또는 Debloater 페이지에서 검사를 실행하세요. 결과가 여기에 표시됩니다.",
-  "confirmClearScanTitle": "검사 기록 지우기",
   "confirmClearScanDescription": "모든 검사 기록 항목이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.",
-  "confirmClearLabel": "모두 지우기",
   "typeLabels": {
     "cleaner": "시스템 정리",
     "registry": "레지스트리 수정",
@@ -142,10 +139,8 @@
       "loadMore": "더 불러오기",
       "exportCsv": "CSV 내보내기",
       "openLog": "로그 열기",
-      "exported": "{{count}}개 경로를 내보냈습니다",
       "exportFailed": "삭제된 파일 목록을 내보낼 수 없습니다",
       "truncatedBadge": "+{{count}}개 더",
-      "truncatedHint": "이 폴더에는 폴더별 목록 제한을 초과하는 {{count}}개의 추가 항목이 있었습니다. 해당 항목은 삭제되었지만 개별적으로 나열되지는 않았습니다.",
       "emptyRecorded": "이 실행에 대해 기록된 파일 경로가 없습니다.",
       "disabledHint": "삭제 로그가 꺼져 있어 이 실행의 개별 경로가 기록되지 않았습니다. 지금부터 기록하려면 설정 → 정리 기본 설정에서 \"삭제된 파일 로그 유지\"를 켜세요."
     }

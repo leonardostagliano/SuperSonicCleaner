@@ -9,10 +9,6 @@
   "folder": "資料夾",
   "remove": "從清單移除",
   "openLocation": "開啟檔案位置",
-  "confirmTitle": "要抹除檔案嗎？",
-  "shredSuccess": "已抹除 {{count}} 個檔案，銷毀 {{size}} 的資料",
-  "shredCancelled": "已取消 — 停止前已抹除 {{count}} 個檔案（{{size}}）",
-  "shredFailed": "有 {{failed}} 個檔案無法抹除",
   "emptyTitle": "未選取檔案",
   "emptyDescription": "新增檔案或資料夾以安全抹除。資料會先以隨機位元組覆寫，再以零值覆寫後刪除，使復原幾乎不可能。",
   "shredAnother": "抹除更多檔案"

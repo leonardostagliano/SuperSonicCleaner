@@ -9,10 +9,6 @@
   "folder": "Klasör",
   "remove": "Listeden kaldır",
   "openLocation": "Dosya konumunu aç",
-  "confirmTitle": "Dosyalar Öğütülsün mü?",
-  "shredSuccess": "{{count}} dosya öğütüldü, {{size}} veri yok edildi",
-  "shredCancelled": "İptal edildi — durdurulmadan önce {{count}} dosya öğütüldü ({{size}})",
-  "shredFailed": "{{failed}} dosya öğütülemedi",
   "emptyTitle": "Dosya Seçilmedi",
   "emptyDescription": "Güvenli şekilde öğütmek için dosya veya klasör ekleyin. Veriler silinmeden önce rastgele baytlarla üzerine yazılır ve ardından sıfırlanır; bu da kurtarmayı imkânsız hâle getirir.",
   "shredAnother": "Daha Fazla Dosya Öğüt"

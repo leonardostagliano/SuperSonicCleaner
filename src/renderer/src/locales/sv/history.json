@@ -43,7 +43,6 @@
       "empty": "Inga säkerhetskopior av registret ännu.",
       "restore": "Återställ",
       "showInFolder": "Visa i mapp",
-      "moreKeys": "+{{count}} till",
       "requiresAdmin": "Kräver administratör",
       "confirmTitle": "Återställa den här säkerhetskopian av registret?",
       "confirmDescription": "SuperSonicCleaner importerar nycklarna nedan. Värden från säkerhetskopian ersätter de nuvarande och saknade nycklar och värden läggs tillbaka. Inget annat tas bort, förutom att återställning av en säkerhetskopia från före återställning även tar bort de nycklar och värden som den återställning som ångras hade lagt till. Innan importen sparar SuperSonicCleaner det aktuella tillståndet för dessa nycklar som en säkerhetskopia från före återställning. Vissa ändringar börjar gälla först efter att du har loggat ut eller startat om.",
@@ -114,9 +113,7 @@
   "clearButton": "Rensa",
   "emptyStateTitle": "Ingen historik ännu",
   "emptyStateDescription": "Kör en skanning från sidorna Cleaner, Registry eller Debloater. Resultaten visas här.",
-  "confirmClearScanTitle": "Rensa skanningshistorik",
   "confirmClearScanDescription": "Detta tar permanent bort alla poster i skanningshistoriken. Åtgärden kan inte ångras.",
-  "confirmClearLabel": "Rensa alla",
   "typeLabels": {
     "cleaner": "Systemrensning",
     "registry": "Registerreparation",
@@ -142,10 +139,8 @@
       "loadMore": "Läs in fler",
       "exportCsv": "Exportera CSV",
       "openLog": "Öppna logg",
-      "exported": "Exporterade {{count}} sökvägar",
       "exportFailed": "Det gick inte att exportera listan över borttagna filer",
       "truncatedBadge": "+{{count}} till",
-      "truncatedHint": "Den här mappen innehöll ytterligare {{count}} poster utöver gränsen för listning per mapp. De togs bort men listades inte individuellt.",
       "emptyRecorded": "Inga filsökvägar registrerades för denna körning.",
       "disabledHint": "Loggning av borttagning är avstängd, så de enskilda sökvägarna från denna körning registrerades inte. Aktivera \"Behåll en logg över borttagna filer\" i Inställningar → Rensningsinställningar för att registrera dem framöver."
     }

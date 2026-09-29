@@ -9,10 +9,6 @@
   "folder": "Mappe",
   "remove": "Fjern fra listen",
   "openLocation": "Åbn filplacering",
-  "confirmTitle": "Makuler filer?",
-  "shredSuccess": "Makulerede {{count}} filer, ødelagde {{size}} data",
-  "shredCancelled": "Annulleret — makulerede {{count}} filer ({{size}}) før stop",
-  "shredFailed": "{{failed}} filer kunne ikke makuleres",
   "emptyTitle": "Ingen filer valgt",
   "emptyDescription": "Tilføj filer eller mapper for at makulere dem sikkert. Data overskrives med tilfældige bytes og nulstilles derefter før sletning, hvilket gør gendannelse praktisk talt umulig.",
   "shredAnother": "Makuler flere filer"

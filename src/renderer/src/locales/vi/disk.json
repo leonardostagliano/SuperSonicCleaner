@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Không có ổ đĩa nào khớp với bộ lọc hiện tại.",
   "trimLastTrimmed": "Lần TRIM gần nhất",
   "trimNeverRecorded": "Chưa từng ghi nhận",
-  "trimConfirmTitle": "Chạy TRIM?",
   "trimCompletedToast_one": "TRIM đã hoàn tất trên {{count}} ổ đĩa",
   "trimCompletedToast_other": "TRIM đã hoàn tất trên {{count}} ổ đĩa",
   "trimThrottledToast_one": "{{count}} ổ đĩa đã được TRIM cách đây chưa đến 24 giờ — đã bỏ qua",

@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Ingen drev matcher det aktuelle filter.",
   "trimLastTrimmed": "Sidst trimmet",
   "trimNeverRecorded": "Aldrig registreret",
-  "trimConfirmTitle": "Kør TRIM?",
   "trimCompletedToast_one": "TRIM er fuldført på {{count}} drev",
   "trimCompletedToast_other": "TRIM er fuldført på {{count}} drev",
   "trimThrottledToast_one": "{{count}} drev blev trimmet for mindre end 24 timer siden — sprunget over",

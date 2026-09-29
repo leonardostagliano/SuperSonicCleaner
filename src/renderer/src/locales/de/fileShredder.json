@@ -9,10 +9,6 @@
   "folder": "Ordner",
   "remove": "Aus Liste entfernen",
   "openLocation": "Dateispeicherort öffnen",
-  "confirmTitle": "Dateien schreddern?",
-  "shredSuccess": "{{count}} Dateien geschreddert, {{size}} Daten vernichtet",
-  "shredCancelled": "Abgebrochen — {{count}} Dateien ({{size}}) vor dem Beenden geschreddert",
-  "shredFailed": "{{failed}} Dateien konnten nicht geschreddert werden",
   "emptyTitle": "Keine Dateien ausgewählt",
   "emptyDescription": "Fügen Sie Dateien oder Ordner hinzu, um sie sicher zu schreddern. Die Daten werden vor dem Löschen mit zufälligen Bytes überschrieben und anschließend mit Nullen überschrieben, sodass eine Wiederherstellung praktisch unmöglich ist.",
   "shredAnother": "Weitere Dateien schreddern"

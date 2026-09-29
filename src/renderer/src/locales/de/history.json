@@ -43,7 +43,6 @@
       "empty": "Noch keine Registrierungs-Backups.",
       "restore": "Wiederherstellen",
       "showInFolder": "Im Ordner anzeigen",
-      "moreKeys": "+{{count}} weitere",
       "requiresAdmin": "Administrator erforderlich",
       "confirmTitle": "Dieses Registrierungs-Backup wiederherstellen?",
       "confirmDescription": "SuperSonicCleaner importiert die unten aufgeführten Schlüssel. Werte aus der Sicherung ersetzen die aktuellen, und fehlende Schlüssel und Werte werden wieder hinzugefügt. Nichts anderes wird gelöscht, außer dass beim Wiederherstellen einer Sicherung vor der Wiederherstellung auch die Schlüssel und Werte entfernt werden, die durch die damit rückgängig gemachte Wiederherstellung hinzugefügt wurden. Vor dem Importieren speichert SuperSonicCleaner den aktuellen Zustand dieser Schlüssel als Sicherung vor der Wiederherstellung. Einige Änderungen werden erst nach dem Abmelden oder einem Neustart wirksam.",
@@ -114,9 +113,7 @@
   "clearButton": "Löschen",
   "emptyStateTitle": "Noch kein Verlauf",
   "emptyStateDescription": "Führen Sie einen Scan auf den Seiten „Cleaner“, „Registry“ oder „Debloater“ aus. Die Ergebnisse werden hier angezeigt.",
-  "confirmClearScanTitle": "Scanverlauf löschen",
   "confirmClearScanDescription": "Dadurch werden alle Einträge im Scanverlauf dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
-  "confirmClearLabel": "Alle löschen",
   "typeLabels": {
     "cleaner": "Systembereinigung",
     "registry": "Registry-Reparatur",
@@ -142,10 +139,8 @@
       "loadMore": "Mehr laden",
       "exportCsv": "CSV exportieren",
       "openLog": "Protokoll öffnen",
-      "exported": "{{count}} Pfade exportiert",
       "exportFailed": "Die Liste der gelöschten Dateien konnte nicht exportiert werden",
       "truncatedBadge": "+{{count}} weitere",
-      "truncatedHint": "Dieser Ordner enthielt {{count}} weitere Einträge über das Limit der Auflistung pro Ordner hinaus. Sie wurden gelöscht, aber nicht einzeln aufgeführt.",
       "emptyRecorded": "Für diesen Durchlauf wurden keine Dateipfade aufgezeichnet.",
       "disabledHint": "Die Protokollierung von Löschvorgängen ist deaktiviert, daher wurden die einzelnen Pfade dieses Durchlaufs nicht aufgezeichnet. Aktivieren Sie in Einstellungen → Bereinigungseinstellungen „Protokoll gelöschter Dateien führen“, um sie ab jetzt aufzuzeichnen."
     }

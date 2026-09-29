@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Нет дисков, соответствующих текущему фильтру.",
   "trimLastTrimmed": "Последний TRIM",
   "trimNeverRecorded": "Никогда не выполнялся",
-  "trimConfirmTitle": "Запустить TRIM?",
   "trimCompletedToast_one": "TRIM выполнен для {{count}} диска",
   "trimCompletedToast_other": "TRIM выполнен для {{count}} дисков",
   "trimThrottledToast_one": "{{count}} диск был обработан TRIM менее 24 часов назад — пропущен",

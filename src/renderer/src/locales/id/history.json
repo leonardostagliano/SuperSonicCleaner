@@ -43,7 +43,6 @@
       "empty": "Belum ada cadangan registry.",
       "restore": "Pulihkan",
       "showInFolder": "Tampilkan di folder",
-      "moreKeys": "+{{count}} lainnya",
       "requiresAdmin": "Memerlukan administrator",
       "confirmTitle": "Pulihkan cadangan registry ini?",
       "confirmDescription": "SuperSonicCleaner akan mengimpor kunci di bawah ini. Nilai dari cadangan akan menggantikan nilai saat ini, dan kunci serta nilai yang hilang akan ditambahkan kembali. Tidak ada hal lain yang dihapus, kecuali bahwa memulihkan cadangan pra-pemulihan juga akan menghapus kunci dan nilai yang telah ditambahkan oleh pemulihan yang dibatalkannya. Sebelum mengimpor, SuperSonicCleaner menyimpan status saat ini dari kunci-kunci ini sebagai cadangan pra-pemulihan. Beberapa perubahan hanya berlaku setelah Anda keluar atau memulai ulang.",
@@ -114,9 +113,7 @@
   "clearButton": "Hapus",
   "emptyStateTitle": "Belum ada riwayat",
   "emptyStateDescription": "Jalankan pemindaian dari halaman Cleaner, Registry, atau Debloater. Hasil akan muncul di sini.",
-  "confirmClearScanTitle": "Hapus Riwayat Pemindaian",
   "confirmClearScanDescription": "Ini akan menghapus secara permanen semua entri riwayat pemindaian. Tindakan ini tidak dapat dibatalkan.",
-  "confirmClearLabel": "Hapus Semua",
   "typeLabels": {
     "cleaner": "Pembersihan Sistem",
     "registry": "Perbaikan Registry",
@@ -142,10 +139,8 @@
       "loadMore": "Muat lebih banyak",
       "exportCsv": "Ekspor CSV",
       "openLog": "Buka log",
-      "exported": "{{count}} jalur berhasil diekspor",
       "exportFailed": "Tidak dapat mengekspor daftar file yang dihapus",
       "truncatedBadge": "+{{count}} lagi",
-      "truncatedHint": "Folder ini berisi {{count}} entri tambahan di luar batas daftar per folder. Entri tersebut telah dihapus tetapi tidak dicantumkan satu per satu.",
       "emptyRecorded": "Tidak ada jalur file yang dicatat untuk proses ini.",
       "disabledHint": "Pencatatan penghapusan dinonaktifkan, sehingga jalur individual dari proses ini tidak dicatat. Aktifkan \"Simpan log file yang dihapus\" di Pengaturan → Preferensi Pembersihan agar dicatat mulai sekarang."
     }

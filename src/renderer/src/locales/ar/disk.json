@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "لا توجد محركات أقراص تطابق عامل التصفية الحالي.",
   "trimLastTrimmed": "آخر تشغيل لـ TRIM",
   "trimNeverRecorded": "لم يُسجَّل مطلقًا",
-  "trimConfirmTitle": "تشغيل TRIM؟",
   "trimCompletedToast_one": "اكتمل TRIM على {{count}} محرك أقراص",
   "trimCompletedToast_other": "اكتمل TRIM على {{count}} محركات أقراص",
   "trimThrottledToast_one": "تم تشغيل TRIM على {{count}} محرك أقراص قبل أقل من 24 ساعة — تم التخطي",

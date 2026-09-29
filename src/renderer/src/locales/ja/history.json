@@ -43,7 +43,6 @@
       "empty": "レジストリのバックアップはまだありません。",
       "restore": "復元",
       "showInFolder": "フォルダーに表示",
-      "moreKeys": "+{{count}} 件以上",
       "requiresAdmin": "管理者権限が必要です",
       "confirmTitle": "このレジストリ バックアップを復元しますか？",
       "confirmDescription": "SuperSonicCleaner は以下のキーをインポートします。バックアップの値が現在の値を置き換え、不足しているキーと値は復元されます。それ以外は何も削除されません。ただし、復元前バックアップを復元する場合は、その復元によって元に戻された操作が追加したキーと値も削除されます。インポートする前に、SuperSonicCleaner はこれらのキーの現在の状態を復元前バックアップとして保存します。一部の変更は、サインアウトまたは再起動後にのみ有効になります。",
@@ -114,9 +113,7 @@
   "clearButton": "クリア",
   "emptyStateTitle": "履歴はまだありません",
   "emptyStateDescription": "Cleaner、Registry、または Debloater ページからスキャンを実行してください。結果はここに表示されます。",
-  "confirmClearScanTitle": "スキャン履歴をクリア",
   "confirmClearScanDescription": "これにより、すべてのスキャン履歴エントリが完全に削除されます。この操作は元に戻せません。",
-  "confirmClearLabel": "すべてクリア",
   "typeLabels": {
     "cleaner": "システム クリーン",
     "registry": "レジストリ修復",
@@ -142,10 +139,8 @@
       "loadMore": "さらに読み込む",
       "exportCsv": "CSV をエクスポート",
       "openLog": "ログを開く",
-      "exported": "{{count}} 件のパスをエクスポートしました",
       "exportFailed": "削除されたファイル一覧をエクスポートできませんでした",
       "truncatedBadge": "さらに +{{count}} 件",
-      "truncatedHint": "このフォルダーには、フォルダーごとの一覧表示上限を超える {{count}} 件の追加エントリがありました。これらは削除されましたが、個別には一覧表示されていません。",
       "emptyRecorded": "この実行ではファイル パスは記録されませんでした。",
       "disabledHint": "削除ログがオフになっているため、この実行での個別のパスは記録されませんでした。今後記録するには、設定 → クリーニング設定で「削除されたファイルのログを保持する」をオンにしてください。"
     }

@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "ไม่มีไดรฟ์ที่ตรงกับตัวกรองปัจจุบัน",
   "trimLastTrimmed": "TRIM ล่าสุด",
   "trimNeverRecorded": "ไม่เคยบันทึก",
-  "trimConfirmTitle": "เรียกใช้ TRIM หรือไม่?",
   "trimCompletedToast_one": "TRIM เสร็จสิ้นบน {{count}} ไดรฟ์",
   "trimCompletedToast_other": "TRIM เสร็จสิ้นบน {{count}} ไดรฟ์",
   "trimThrottledToast_one": "{{count}} ไดรฟ์ถูกทำ TRIM ไปแล้วภายใน 24 ชั่วโมงที่ผ่านมา — ข้าม",

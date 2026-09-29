@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Žádné jednotky neodpovídají aktuálnímu filtru.",
   "trimLastTrimmed": "Naposledy TRIM",
   "trimNeverRecorded": "Nikdy nezaznamenáno",
-  "trimConfirmTitle": "Spustit TRIM?",
   "trimCompletedToast_one": "TRIM dokončen na {{count}} jednotce",
   "trimCompletedToast_other": "TRIM dokončen na {{count}} jednotkách",
   "trimThrottledToast_one": "{{count}} jednotka byla ošetřena TRIM před méně než 24 hodinami — přeskočeno",

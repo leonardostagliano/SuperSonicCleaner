@@ -75,7 +75,6 @@
   "trimEmptyFiltered": "Tiada pemacu sepadan dengan penapis semasa.",
   "trimLastTrimmed": "Kali terakhir di-TRIM",
   "trimNeverRecorded": "Tidak pernah direkodkan",
-  "trimConfirmTitle": "Jalankan TRIM?",
   "trimCompletedToast_one": "TRIM selesai pada {{count}} pemacu",
   "trimCompletedToast_other": "TRIM selesai pada {{count}} pemacu",
   "trimThrottledToast_one": "{{count}} pemacu telah di-TRIM kurang daripada 24 jam yang lalu — dilangkau",
