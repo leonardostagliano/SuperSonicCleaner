@@ -76,6 +76,27 @@ describe('desktop notch canvas', () => {
     }
   })
 
+  it('keeps the geometry exact on a small display and on one with negative coordinates', () => {
+    const tiny = { id: 3, workArea: { x: 0, y: 0, width: 300, height: 400 } }
+    for (const display of [tiny, secondary])
+      for (const [x, y] of [
+        [0, 0],
+        [1, 1],
+        [0.5, 0.5]
+      ]) {
+        const position = { displayId: display.id, x, y }
+        const compact = restoreNotchBounds(position, [primary, display], false)
+        const open = restoreNotchBounds(position, [primary, display], true)
+        const { window, tab, panel } = notchLayout(compact, open, true)
+        expect({ ...tab, x: window.x + tab.x, y: window.y + tab.y }).toEqual(compact)
+        expect({ ...panel, x: window.x + panel.x, y: window.y + panel.y }).toEqual(open)
+        expect(panel.x).toBeGreaterThanOrEqual(0)
+        expect(panel.y).toBeGreaterThanOrEqual(0)
+        expect(panel.x + panel.width).toBeLessThanOrEqual(window.width)
+        expect(panel.y + panel.height).toBeLessThanOrEqual(window.height)
+      }
+  })
+
   it('makes the window the panel itself where no region clips input', () => {
     const { compact, open, window, tab, panel } = layout(1, 1, false)
     expect(window).toEqual(open)

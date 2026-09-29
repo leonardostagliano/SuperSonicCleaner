@@ -201,6 +201,13 @@ export function initDesktopNotch(
     config.position = saveNotchPosition(onScreen, screen.getDisplayMatching(onScreen))
     persist()
   }
+  /** Saves a move that has not settled yet (debounce pending or a drag still running). */
+  const flushPosition = () => {
+    if (!moveTimer && !dragging) return
+    if (moveTimer) clearTimeout(moveTimer)
+    moveTimer = null
+    rememberPosition()
+  }
   const settle = () => {
     rememberPosition()
     place()
@@ -396,11 +403,7 @@ export function initDesktopNotch(
     if (visible) create()
     else {
       cancelExpand()
-      if (moveTimer) {
-        clearTimeout(moveTimer)
-        moveTimer = null
-        rememberPosition()
-      }
+      flushPosition()
       win?.close()
       stopMetrics()
     }
@@ -471,10 +474,7 @@ export function initDesktopNotch(
     cancelCollapse()
     cancelExpand()
     cancelShrink()
-    if (moveTimer) {
-      clearTimeout(moveTimer)
-      rememberPosition()
-    }
+    flushPosition()
     stopMetrics()
     win?.destroy()
     if (observedMain) unwatchMainVisibility(observedMain)

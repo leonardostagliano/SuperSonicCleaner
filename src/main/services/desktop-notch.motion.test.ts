@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { BrowserWindow, nativeTheme } from 'electron'
+import { writeFileSync } from 'node:fs'
 import { NOTCH_IPC, NOTCH_MOTION_MS, type NotchState } from '../../shared/desktop-notch'
 import { initDesktopNotch } from './desktop-notch'
 import { perfMonitor } from './perf-monitor'
@@ -322,6 +323,69 @@ describe('desktop notch motion lifecycle', () => {
     expect(shapeOf(window)).toEqual([TAB])
     const state = send.mock.lastCall?.[1] as NotchState
     expect(state.compactOffset).toEqual({ x: 0, y: 0 })
+    dispose()
+  })
+
+  it('treats repeated will-move events as one drag and ends it without moved', () => {
+    vi.useFakeTimers()
+    mocks.position = { displayId: 1, x: 1, y: 1 }
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    const send = vi.mocked(window.webContents.send)
+    const start = window.getBounds()
+    dragTo(window, start.x - 100, start.y)
+    vi.advanceTimersByTime(9000)
+    dragTo(window, start.x - 500, start.y - 300)
+    vi.advanceTimersByTime(9000)
+    // Still one drag: re-armed by the last 'will-move', no region, nothing sent.
+    expect(shapeOf(window)).toEqual([])
+    expect(send).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1000)
+    expect(shapeOf(window)).toEqual([TAB])
+    expect(window.getBounds()).toMatchObject({ x: start.x - 500, y: start.y - 300 })
+    expect((send.mock.lastCall?.[1] as NotchState).compactOffset).toEqual({ x: 0, y: 0 })
+    dispose()
+  })
+
+  it('keeps a dragged position when the notch is hidden before the drag ends', () => {
+    vi.useFakeTimers()
+    mocks.position = { displayId: 1, x: 1, y: 1 }
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    const start = window.getBounds()
+    dragTo(window, start.x - 500, start.y - 300)
+    invoke(NOTCH_IPC.VISIBLE, false)
+    const saved = JSON.parse(String(vi.mocked(writeFileSync).mock.lastCall?.[1]))
+    // The tab was dragged from the bottom-right corner (1856, 838) of a 1920×1040 work area.
+    expect(saved.enabled).toBe(false)
+    expect(saved.position.x).toBeCloseTo((1856 - 500) / (1920 - 64))
+    expect(saved.position.y).toBeCloseTo((838 - 300) / (1040 - 202))
+    dispose()
+  })
+
+  it('tells the renderer where the panel goes after a move without an OS drag', () => {
+    vi.useFakeTimers()
+    mocks.position = { displayId: 1, x: 1, y: 1 }
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    const send = vi.mocked(window.webContents.send)
+    const start = window.getBounds()
+    window.setPosition(start.x - 500, start.y - 300)
+    beginMove(window)
+    vi.advanceTimersByTime(450)
+    const state = send.mock.lastCall?.[1] as NotchState
+    expect(state.compactOffset).toEqual({ x: 0, y: 0 })
+    expect(state.panelOrigin).toEqual({ x: TAB.x, y: TAB.y })
+    expect(window.getBounds()).toMatchObject({ x: start.x - 500, y: start.y - 300 })
     dispose()
   })
 
