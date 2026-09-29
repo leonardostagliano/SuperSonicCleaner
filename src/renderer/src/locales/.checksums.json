@@ -3293,6 +3293,7 @@
       "softwareUpdater.managerScanFailedHint_other": "6382476a3c5fa501a96b0b00fc7d1a36981cb3d9413ec8869d8fd07e53b25914",
       "softwareUpdater.moreApps": "e3d6d4345ad8bde8395491aa9d90d87477e5e590ccbc84aadc7663fb57f9ccdd",
       "softwareUpdater.noAppsMatchFilters": "d5d6c74a6d7a01f86f40a6916f194c46d4cb61a5d54a177a658f8959cc4c3ad3",
+      "softwareUpdater.noUpdatesFrom": "1eb0dffd4e293f8dc513be5f06a976640fedd95ebdc72fe24728a97bb52cff95",
       "softwareUpdater.packageManagerLabel": "6a7ec467cf0a0073e9fb025506ed4dbc8a1d3ee4acf03d3dad046356348cb9f5",
       "softwareUpdater.packageManagerNotFound.aptNotFound": "a9625b7285d184320274ce1fc965940b6ce18f4b316fdaa8cc4c3bd6297bef17",
       "softwareUpdater.packageManagerNotFound.aptRequired": "3f43a8d50b47f2d73afda8d4dc700dcf23b3da1414aa740c292ab0b61b7c001b",
