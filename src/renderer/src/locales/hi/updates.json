@@ -100,6 +100,7 @@
     "allUpToDateTitle": "सब कुछ अद्यतित · {{time}} पर जाँचा गया",
     "allUpToDateTitleNoTime": "सब कुछ अद्यतित",
     "allUpToDateDescription": "शामिल पैकेज मैनेजर द्वारा हैंडल किए गए किसी भी ऐप का नया वर्शन उपलब्ध नहीं है।",
+    "noUpdatesFrom": "कोई अपडेट नहीं: {{managers}}",
     "noAppsMatchFilters": "कोई ऐप आपके फ़िल्टर से मेल नहीं खाता",
     "upToDateSection": "पहले से अद्यतित ({{count}})",
     "updateButton": "अपडेट करें",

@@ -136,6 +136,7 @@
     "allUpToDateTitle": "الكل محدَّث · تم الفحص في {{time}}",
     "allUpToDateTitleNoTime": "الكل محدَّث",
     "allUpToDateDescription": "لا يتوفر إصدار أحدث لأي من التطبيقات التي تديرها مديرات الحزم المضمَّنة.",
+    "noUpdatesFrom": "لا تتوفر تحديثات: {{managers}}",
     "noAppsMatchFilters": "لا توجد تطبيقات تطابق عوامل التصفية",
     "upToDateSection": "محدَّث بالفعل ({{count}})",
     "updateButton": "تحديث",

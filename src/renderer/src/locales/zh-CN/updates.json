@@ -100,6 +100,7 @@
     "allUpToDateTitle": "全部为最新 · 于 {{time}} 检查",
     "allUpToDateTitleNoTime": "全部为最新",
     "allUpToDateDescription": "已包含的软件包管理器所处理的应用中，没有可用的更新版本。",
+    "noUpdatesFrom": "没有来自 {{managers}} 的更新",
     "noAppsMatchFilters": "没有应用符合您的筛选条件",
     "upToDateSection": "已是最新（{{count}}）",
     "updateButton": "更新",

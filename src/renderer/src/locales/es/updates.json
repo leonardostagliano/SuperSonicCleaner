@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Todo actualizado · comprobado a las {{time}}",
     "allUpToDateTitleNoTime": "Todo actualizado",
     "allUpToDateDescription": "Ninguna de las aplicaciones gestionadas por los gestores de paquetes incluidos tiene una versión más reciente disponible.",
+    "noUpdatesFrom": "No hay actualizaciones de {{managers}}",
     "noAppsMatchFilters": "Ninguna aplicación coincide con los filtros",
     "upToDateSection": "Ya actualizadas ({{count}})",
     "updateButton": "Actualizar",

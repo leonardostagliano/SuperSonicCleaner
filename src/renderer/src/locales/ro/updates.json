@@ -109,6 +109,7 @@
     "allUpToDateTitle": "Totul este actualizat · verificat la {{time}}",
     "allUpToDateTitleNoTime": "Totul este actualizat",
     "allUpToDateDescription": "Nicio aplicație gestionată de managerii de pachete incluși nu are o versiune mai nouă disponibilă.",
+    "noUpdatesFrom": "Nicio actualizare de la {{managers}}",
     "noAppsMatchFilters": "Nicio aplicație nu corespunde filtrelor",
     "upToDateSection": "Deja actualizate ({{count}})",
     "updateButton": "Actualizează",

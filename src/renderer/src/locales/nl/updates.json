@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Alles up-to-date · gecontroleerd om {{time}}",
     "allUpToDateTitleNoTime": "Alles up-to-date",
     "allUpToDateDescription": "Geen van de apps die door de opgenomen pakketbeheerders worden beheerd, heeft een nieuwere versie beschikbaar.",
+    "noUpdatesFrom": "Geen updates van {{managers}}",
     "noAppsMatchFilters": "Geen apps komen overeen met uw filters",
     "upToDateSection": "Al up-to-date ({{count}})",
     "updateButton": "Bijwerken",

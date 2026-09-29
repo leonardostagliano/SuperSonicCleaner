@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Kaikki on ajan tasalla · tarkistettu klo {{time}}",
     "allUpToDateTitleNoTime": "Kaikki on ajan tasalla",
     "allUpToDateDescription": "Yhdelläkään sisällytettyjen paketinhallintojen käsittelemällä sovelluksella ei ole uudempaa versiota saatavilla.",
+    "noUpdatesFrom": "Ei päivityksiä seuraavilta: {{managers}}",
     "noAppsMatchFilters": "Yksikään sovellus ei vastaa suodattimia",
     "upToDateSection": "Jo ajan tasalla ({{count}})",
     "updateButton": "Päivitä",

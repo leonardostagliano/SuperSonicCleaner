@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Tout est à jour · vérifié à {{time}}",
     "allUpToDateTitleNoTime": "Tout est à jour",
     "allUpToDateDescription": "Aucune des applications gérées par les gestionnaires de paquets inclus n’a de version plus récente disponible.",
+    "noUpdatesFrom": "Aucune mise à jour de {{managers}}",
     "noAppsMatchFilters": "Aucune application ne correspond à vos filtres",
     "upToDateSection": "Déjà à jour ({{count}})",
     "updateButton": "Mettre à jour",

@@ -118,6 +118,7 @@
     "allUpToDateTitle": "Усе актуально · перевірено о {{time}}",
     "allUpToDateTitleNoTime": "Усе актуально",
     "allUpToDateDescription": "Жодна з програм, які обробляють включені менеджери пакетів, не має новішої версії.",
+    "noUpdatesFrom": "Немає оновлень: {{managers}}",
     "noAppsMatchFilters": "Немає програм, що відповідають вашим фільтрам",
     "upToDateSection": "Уже актуально ({{count}})",
     "updateButton": "Оновити",

@@ -100,6 +100,7 @@
     "allUpToDateTitle": "すべて最新 · {{time}} に確認",
     "allUpToDateTitleNoTime": "すべて最新",
     "allUpToDateDescription": "対象に含まれるパッケージ マネージャーが扱うアプリのうち、新しいバージョンが利用可能なものはありません。",
+    "noUpdatesFrom": "{{managers}} からの更新はありません",
     "noAppsMatchFilters": "フィルターに一致するアプリはありません",
     "upToDateSection": "既に最新（{{count}}）",
     "updateButton": "更新",

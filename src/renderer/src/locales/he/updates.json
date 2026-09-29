@@ -109,6 +109,7 @@
     "allUpToDateTitle": "הכול מעודכן · נבדק ב-{{time}}",
     "allUpToDateTitleNoTime": "הכול מעודכן",
     "allUpToDateDescription": "לאף אחת מהאפליקציות שמנוהלות על ידי מנהלי החבילות הכלולים אין גרסה חדשה יותר זמינה.",
+    "noUpdatesFrom": "אין עדכונים: {{managers}}",
     "noAppsMatchFilters": "אין יישומים התואמים למסננים שבחרתם",
     "upToDateSection": "כבר מעודכן ({{count}})",
     "updateButton": "עדכן",

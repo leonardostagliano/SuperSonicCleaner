@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Semuanya terkini · disemak pada {{time}}",
     "allUpToDateTitleNoTime": "Semuanya terkini",
     "allUpToDateDescription": "Tiada satu pun aplikasi yang dikendalikan oleh pengurus pakej yang disertakan mempunyai versi lebih baharu tersedia.",
+    "noUpdatesFrom": "Tiada kemas kini daripada {{managers}}",
     "noAppsMatchFilters": "Tiada aplikasi sepadan dengan penapis anda",
     "upToDateSection": "Sudah terkini ({{count}})",
     "updateButton": "Kemas kini",

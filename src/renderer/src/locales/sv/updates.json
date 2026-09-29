@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Allt uppdaterat · kontrollerad kl. {{time}}",
     "allUpToDateTitleNoTime": "Allt uppdaterat",
     "allUpToDateDescription": "Ingen av apparna som hanteras av de inkluderade pakethanterarna har en nyare version tillgänglig.",
+    "noUpdatesFrom": "Inga uppdateringar från {{managers}}",
     "noAppsMatchFilters": "Inga appar matchar dina filter",
     "upToDateSection": "Redan uppdaterade ({{count}})",
     "updateButton": "Uppdatera",

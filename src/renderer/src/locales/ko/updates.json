@@ -100,6 +100,7 @@
     "allUpToDateTitle": "모두 최신 상태 · {{time}}에 확인함",
     "allUpToDateTitleNoTime": "모두 최신 상태",
     "allUpToDateDescription": "포함된 패키지 관리자가 관리하는 앱 중 새 버전이 있는 앱이 없습니다.",
+    "noUpdatesFrom": "{{managers}}에서 업데이트가 없습니다",
     "noAppsMatchFilters": "필터와 일치하는 앱이 없습니다",
     "upToDateSection": "이미 최신 상태({{count}})",
     "updateButton": "업데이트",

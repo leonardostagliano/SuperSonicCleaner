@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Semua sudah mutakhir · diperiksa pada {{time}}",
     "allUpToDateTitleNoTime": "Semua sudah mutakhir",
     "allUpToDateDescription": "Tidak ada aplikasi yang ditangani oleh manajer paket yang disertakan yang memiliki versi lebih baru.",
+    "noUpdatesFrom": "Tidak ada pembaruan: {{managers}}",
     "noAppsMatchFilters": "Tidak ada aplikasi yang sesuai dengan filter Anda",
     "upToDateSection": "Sudah mutakhir ({{count}})",
     "updateButton": "Perbarui",

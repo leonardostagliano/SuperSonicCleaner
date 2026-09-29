@@ -118,6 +118,7 @@
     "allUpToDateTitle": "Vše je aktuální · zkontrolováno v {{time}}",
     "allUpToDateTitleNoTime": "Vše je aktuální",
     "allUpToDateDescription": "Žádná z aplikací spravovaných zahrnutými správci balíčků nemá k dispozici novější verzi.",
+    "noUpdatesFrom": "Žádné aktualizace od {{managers}}",
     "noAppsMatchFilters": "Žádné aplikace neodpovídají vašim filtrům",
     "upToDateSection": "Již aktuální ({{count}})",
     "updateButton": "Aktualizovat",

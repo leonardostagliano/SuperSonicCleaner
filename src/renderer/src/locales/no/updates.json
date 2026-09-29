@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Alt er oppdatert · kontrollert kl. {{time}}",
     "allUpToDateTitleNoTime": "Alt er oppdatert",
     "allUpToDateDescription": "Ingen av appene som håndteres av de inkluderte pakkebehandlerne, har en nyere versjon tilgjengelig.",
+    "noUpdatesFrom": "Ingen oppdateringer fra {{managers}}",
     "noAppsMatchFilters": "Ingen apper samsvarer med filtrene",
     "upToDateSection": "Allerede oppdatert ({{count}})",
     "updateButton": "Oppdater",

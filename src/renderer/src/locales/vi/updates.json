@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Tất cả đều mới nhất · đã kiểm tra lúc {{time}}",
     "allUpToDateTitleNoTime": "Tất cả đều mới nhất",
     "allUpToDateDescription": "Không có ứng dụng nào do các trình quản lý gói được đưa vào xử lý có phiên bản mới hơn.",
+    "noUpdatesFrom": "Không có bản cập nhật nào từ {{managers}}",
     "noAppsMatchFilters": "Không có ứng dụng nào khớp với bộ lọc của bạn",
     "upToDateSection": "Đã là mới nhất ({{count}})",
     "updateButton": "Cập nhật",

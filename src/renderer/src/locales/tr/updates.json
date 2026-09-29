@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Her şey güncel · {{time}}'de denetlendi",
     "allUpToDateTitleNoTime": "Her şey güncel",
     "allUpToDateDescription": "Dahil edilen paket yöneticileri tarafından yönetilen uygulamaların hiçbirinin daha yeni bir sürümü yok.",
+    "noUpdatesFrom": "Güncelleme yok: {{managers}}",
     "noAppsMatchFilters": "Hiçbir uygulama filtrelerinizle eşleşmiyor",
     "upToDateSection": "Zaten güncel ({{count}})",
     "updateButton": "Güncelle",

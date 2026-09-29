@@ -118,6 +118,7 @@
     "allUpToDateTitle": "Wszystko aktualne · sprawdzono o {{time}}",
     "allUpToDateTitleNoTime": "Wszystko aktualne",
     "allUpToDateDescription": "Żadna z aplikacji obsługiwanych przez uwzględnione menedżery pakietów nie ma dostępnej nowszej wersji.",
+    "noUpdatesFrom": "Brak aktualizacji od {{managers}}",
     "noAppsMatchFilters": "Żadne aplikacje nie pasują do wybranych filtrów",
     "upToDateSection": "Już aktualne ({{count}})",
     "updateButton": "Aktualizuj",

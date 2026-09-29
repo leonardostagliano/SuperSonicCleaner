@@ -100,6 +100,7 @@
     "allUpToDateTitle": "Alles aktuell · geprüft um {{time}}",
     "allUpToDateTitleNoTime": "Alles aktuell",
     "allUpToDateDescription": "Keine der von den einbezogenen Paketmanagern verwalteten Apps hat eine neuere Version verfügbar.",
+    "noUpdatesFrom": "Keine Updates von {{managers}}",
     "noAppsMatchFilters": "Keine Apps entsprechen Ihren Filtern",
     "upToDateSection": "Bereits aktuell ({{count}})",
     "updateButton": "Aktualisieren",
