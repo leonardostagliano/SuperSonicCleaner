@@ -384,7 +384,10 @@
 .pulizia-menu-item:hover,
 .pulizia-menu-item:focus-visible {
   background: var(--bg-hover);
-  outline: none;
+}
+.pulizia-menu-item:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
 .pulizia-menu-item > span:first-of-type {
   flex: 1 1 auto;

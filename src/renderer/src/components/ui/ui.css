@@ -457,6 +457,44 @@
   cursor: not-allowed;
 }
 
+/* Windows High Contrast resets backgrounds, which is where the checkbox and switch draw
+   their states: paint them with the system colours instead. */
+@media (forced-colors: active) {
+  .ui-checkbox,
+  .ui-switch {
+    forced-color-adjust: none;
+  }
+  .ui-checkbox {
+    --ui-checkbox-bg: Canvas;
+    --ui-checkbox-border: CanvasText;
+  }
+  .ui-checkbox:hover:not(:disabled, :checked, :indeterminate) {
+    --ui-checkbox-border: Highlight;
+  }
+  .ui-checkbox:checked,
+  .ui-checkbox:indeterminate {
+    --ui-checkbox-bg: Highlight;
+    --ui-checkbox-border: Highlight;
+  }
+  .ui-checkbox::before {
+    background: HighlightText;
+  }
+  .ui-switch {
+    --ui-switch-bg: Canvas;
+    --ui-switch-border: CanvasText;
+    --ui-switch-thumb: CanvasText;
+  }
+  .ui-switch[aria-checked='true'] {
+    --ui-switch-bg: Highlight;
+    --ui-switch-border: Highlight;
+    --ui-switch-thumb: HighlightText;
+  }
+  .ui-checkbox:focus-visible,
+  .ui-switch:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
 /* ── EmptyState ─────────────────────────────────────────────────────────── */
 .ui-empty {
   display: grid;
