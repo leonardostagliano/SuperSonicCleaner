@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "プライバシー シールド",
-    "pageDescription": "システム全体のテレメトリ、広告、追跡、データ収集を制御します",
+    "pageDescription": "テレメトリ、広告、検索、同期の設定を読み取り、最もプライバシーに配慮した値と比較します。設定はスイッチを使うか確認したときのみ変更されます。ほとんどは既定に戻せます。",
     "scanButton": "スキャン",
-    "scanProgressPreparing": "スキャンを準備しています...",
-    "applyingProtections": "プライバシー保護を適用しています...",
-    "emptyStateTitle": "プライバシー シールド",
-    "emptyStateDescription": "「スキャン」をクリックしてプライバシーとセキュリティの設定を監査し、推奨される強化を適用します。",
-    "adminWarning": "一部の設定を変更するには管理者権限が必要です。完全な保護を受けるには、管理者として SuperSonicCleaner を実行してください。",
+    "scanProgressPreparing": "スキャンを準備しています",
+    "applyingProtections": "設定を適用しています…",
+    "emptyStateTitle": "設定はまだスキャンされていません",
+    "emptyStateDescription": "スキャンは設定を読み取るだけで、どの設定も変更しません。",
+    "adminWarning": "一部の設定は、SuperSonicCleaner が管理者として実行されている場合にのみ変更できます。その権限がない場合、設定はそのまま変更されません。",
     "scanFailed": "プライバシー スキャンに失敗しました",
-    "applyFailed": "プライバシー設定の適用に失敗しました",
-    "applyFailedDescription": "管理者として実行してみてください",
-    "settingApplyFailed": "「{{label}}」の適用に失敗しました",
-    "settingEnabled": "{{label}} をブロックしました",
+    "applyFailed": "プライバシー設定を適用できませんでした",
+    "applyFailedDescription": "アプリを管理者として実行してみてください",
+    "settingApplyFailed": "「{{label}}」を適用できませんでした",
+    "settingEnabled": "{{label}} を適用しました",
     "settingDisabled": "{{label}} を既定に戻しました",
     "settingRevertFailed": "「{{label}}」を元に戻せませんでした",
     "settingRevertFailedGeneric": "プライバシー設定を元に戻せませんでした",
     "settingApplyFailedGeneric": "プライバシー設定を適用できませんでした",
-    "ipcCallFailed": "IPC 呼び出しに失敗しました — 管理者として実行してみてください",
+    "ipcCallFailed": "呼び出しに失敗しました。管理者として実行してみてください。",
     "allSettingsLabel": "すべての設定",
     "unknownError": "不明なエラー",
     "requiresSettingEnabled": "先に「{{label}}」を有効にしてください",
-    "adminRequired": "管理者として実行してみてください",
-    "settingNotApplied": "システムから変更が報告されませんでした — 再起動が必要な場合があるか、別のプロファイルによって設定が管理されている可能性があります"
+    "adminRequired": "アプリを管理者として実行してみてください",
+    "settingNotApplied": "システムから変更が報告されませんでした。再起動が必要な場合があるか、別のプロファイルによって設定が管理されている可能性があります。",
+    "rescanButton": "再スキャン",
+    "scanningButton": "スキャン中…",
+    "applyRecommended_one": "推奨される変更を {{count}} 件適用",
+    "applyRecommended_other": "推奨される変更を {{count}} 件適用",
+    "summaryTitle_one": "変更が必要な設定が {{count}} 件",
+    "summaryTitle_other": "変更が必要な設定が {{count}} 件",
+    "summaryNone": "{{total}} 件の設定はすべて最もプライバシーに配慮した値になっています",
+    "summaryFacts": "{{total}} 件中 {{protected}} 件が既に最もプライバシーに配慮した値 · {{categories}} カテゴリ",
+    "categoryMeta_one": "変更が必要な項目 {{count}} 件",
+    "categoryMeta_other": "変更が必要な項目 {{count}} 件",
+    "categoryAllSet": "すべて設定済み",
+    "categoryApply_one": "{{count}} 件を適用",
+    "categoryApply_other": "{{count}} 件を適用",
+    "categoryShow": "表示",
+    "categoryHide": "非表示",
+    "adminTag": "管理者が必要",
+    "notReversibleTag": "元に戻せません",
+    "scanProgressTitle": "スキャン中",
+    "scanProgressCount": "{{total}} 件中 {{current}} 件目",
+    "scanProgressCategory": "確認中: {{category}}",
+    "scanProgressLabel": "スキャンの進行状況",
+    "applyingLabel": "適用の進行状況",
+    "receiptTitle": "設定を適用しました",
+    "receiptApplied_one": "{{count}} 件の設定を変更しました",
+    "receiptApplied_other": "{{count}} 件の設定を変更しました",
+    "receiptReversible": "スイッチから復元できます",
+    "receiptFailed_one": "{{count}} 件を適用できませんでした。理由は以下のとおりです。",
+    "receiptFailed_other": "{{count}} 件を適用できませんでした。理由は以下のとおりです。",
+    "receiptFailedAdmin_one": "{{count}} 件を適用できませんでした。アプリを管理者として実行する必要がある場合があります。理由は以下のとおりです。",
+    "receiptFailedAdmin_other": "{{count}} 件を適用できませんでした。アプリを管理者として実行する必要がある場合があります。理由は以下のとおりです。",
+    "failedHeading": "適用されなかった設定",
+    "failedColumnSetting": "設定",
+    "failedColumnReason": "理由",
+    "confirmTitle_one": "{{count}} 件の設定を変更しますか？",
+    "confirmTitle_other": "{{count}} 件の設定を変更しますか？",
+    "confirmDescription": "表示されている設定は最もプライバシーに配慮した値に切り替わります。このページのスイッチから既定に戻すことができます。",
+    "confirmDescriptionIrreversible_one": "表示されている設定は最もプライバシーに配慮した値に切り替わります。{{count}} 件はこのページから既定に戻すことができません。",
+    "confirmDescriptionIrreversible_other": "表示されている設定は最もプライバシーに配慮した値に切り替わります。{{count}} 件はこのページから既定に戻すことができません。",
+    "confirmLabel_one": "{{count}} 件の設定を変更",
+    "confirmLabel_other": "{{count}} 件の設定を変更",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows のテレメトリ",
+        "description": "診断データ収集を最小限(セキュリティレベルのみ)に設定します"
+      },
+      "activity-history": {
+        "label": "アクティビティ履歴",
+        "description": "Windows によるアプリとファイルの使用状況の追跡と同期を停止します"
+      },
+      "publish-activity": {
+        "label": "ユーザー アクティビティの公開",
+        "description": "Windows がアクティビティを Microsoft に公開しないようにします"
+      },
+      "feedback-frequency": {
+        "label": "フィードバックの表示",
+        "description": "Microsoft からの定期的なフィードバックの表示とアンケートをオフにします"
+      },
+      "handwriting-telemetry": {
+        "label": "手書きデータ",
+        "description": "手書きと入力のデータを Microsoft に送信しないようにします"
+      },
+      "input-personalization": {
+        "label": "入力のパーソナライズ",
+        "description": "パーソナライズのための入力とインクのデータ収集を停止します"
+      },
+      "tailored-experiences": {
+        "label": "パーソナライズされたエクスペリエンス",
+        "description": "Microsoft が診断データを使ってヒントや広告をパーソナライズしないようにします"
+      },
+      "app-launch-tracking": {
+        "label": "アプリ起動の追跡",
+        "description": "スタート メニューを調整するために開いたアプリを Windows が追跡しないようにします"
+      },
+      "advertising-id": {
+        "label": "広告 ID",
+        "description": "アプリがあなたを追跡するために使う一意の広告 ID をオフにします"
+      },
+      "suggested-content": {
+        "label": "[設定] のおすすめコンテンツ",
+        "description": "Microsoft が [設定] にアプリの提案や広告を表示しないようにします"
+      },
+      "tips-notifications": {
+        "label": "ヒントと提案",
+        "description": "Windows のヒント、コツ、提案の通知をオフにします"
+      },
+      "start-suggestions": {
+        "label": "スタート メニューの提案",
+        "description": "スタート メニューのアプリの提案(広告)をオフにします"
+      },
+      "lock-screen-spotlight": {
+        "label": "ロック画面の Spotlight",
+        "description": "ロック画面の Microsoft Spotlight の広告や提案をオフにします"
+      },
+      "silently-installed-apps": {
+        "label": "サイレント インストールされるアプリ",
+        "description": "Windows がプロモーション アプリを自動的にインストールしないようにします"
+      },
+      "preinstalled-apps": {
+        "label": "プレインストール アプリの提案",
+        "description": "使ったことのないプレインストール アプリを Windows が提案しないようにします"
+      },
+      "bing-start-menu": {
+        "label": "スタート メニューの Bing",
+        "description": "スタート メニューで入力した検索語句が Bing に送信されないようにします"
+      },
+      "bing-web-search": {
+        "label": "Bing の Web 結果",
+        "description": "Windows 検索の Web 結果をオフにして、検索をこの PC 内にとどめます"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "バックグラウンドで動作しデータを収集する Cortana をオフにします"
+      },
+      "search-highlights": {
+        "label": "検索のハイライト",
+        "description": "検索ボックスの急上昇ワードの提案と Web コンテンツをオフにします"
+      },
+      "store-search-suggestions": {
+        "label": "Store の検索候補",
+        "description": "検索クエリを Microsoft に送信する Microsoft Store の検索候補をオフにします"
+      },
+      "clipboard-sync": {
+        "label": "クリップボードのクラウド同期",
+        "description": "クリップボードのデータがクラウド経由でデバイス間で同期されないようにします"
+      },
+      "clipboard-history": {
+        "label": "クリップボード履歴",
+        "description": "コピーしたテキストや画像を保存するクリップボード履歴をオフにします"
+      },
+      "settings-sync": {
+        "label": "設定の同期",
+        "description": "Windows の設定、テーマ、パスワードを Microsoft アカウントに同期しないようにします"
+      },
+      "find-my-device": {
+        "label": "デバイスを探す",
+        "description": "Microsoft による位置情報に基づくデバイスの追跡をオフにします"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Windows 全体で AI アシスタント Microsoft Copilot をオフにします"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "画面上のすべてを記録する AI スクリーンショット履歴機能、Windows Recall をオフにします"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "画面上のテキストや画像を分析する Click to Do の AI 分析をオフにします"
+      },
+      "ai-service-autostart": {
+        "label": "AI サービスの自動起動",
+        "description": "AI サービスがバックグラウンドで自動的に開始しないようにします"
+      },
+      "edge-ai-features": {
+        "label": "Edge の Compose AI",
+        "description": "Edge の AI 文章作成・書き換え機能をオフにします"
+      },
+      "paint-ai": {
+        "label": "Paint の AI 機能",
+        "description": "Microsoft Paint の AI 画像生成機能をオフにします"
+      },
+      "notepad-ai": {
+        "label": "Notepad の AI 機能",
+        "description": "Microsoft Notepad の AI 文章書き換え機能をオフにします"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack サービス",
+        "description": "Connected User Experiences and Telemetry サービスを無効にします"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push サービス",
+        "description": "テレメトリに使われる WAP Push メッセージ ルーティング サービスを無効にします"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Windows 更新プログラムのピアツーピア共有を無効にし、この PC が更新データを他のデバイスにアップロードしないようにします"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "ほとんどの PC で不要なバックグラウンド サービス、Downloaded Maps Manager を無効にします"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "互換性データを収集する Microsoft のテレメトリ タスクを無効にします"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "プログラムのテレメトリをアップロードするバックグラウンド タスクを無効にします"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "autochk プロキシ経由で行われるテレメトリ収集を無効にします"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Customer Experience Improvement Program のデータアップロードを無効にします"
+      },
+      "task-usb-ceip": {
+        "label": "USB 使用状況データ (CEIP)",
+        "description": "USB デバイスの使用状況テレメトリの収集を無効にします"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "ディスク診断データの収集とアップロードを無効にします"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "フィードバック デバイス管理のテレメトリ タスクを無効にします"
+      },
+      "task-maps-update": {
+        "label": "マップ更新タスク",
+        "description": "バックグラウンドでの地図データの自動ダウンロードを無効にします"
+      },
+      "task-maps-toast": {
+        "label": "マップ通知タスク",
+        "description": "マップの通知タスクを無効にします"
+      },
+      "edge-metrics": {
+        "label": "Edge のメトリック報告",
+        "description": "Edge が使用状況やクラッシュのメトリックを Microsoft に送信しないようにします"
+      },
+      "edge-site-info": {
+        "label": "Edge のサイト情報収集",
+        "description": "Edge が訪問したサイトのアドレスを Microsoft に送信しないようにします"
+      },
+      "edge-personalization": {
+        "label": "Edge のパーソナライズ報告",
+        "description": "Edge が広告のパーソナライズのために閲覧履歴を送信しないようにします"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge Copilot のページアクセス (CDP)",
+        "description": "Copilot が Chrome DevTools Protocol 経由でページ内容を読み取らないようにします"
+      },
+      "edge-copilot-page": {
+        "label": "Edge Copilot のページ コンテキスト",
+        "description": "Copilot がページ コンテキストを使ってコンテンツを分析しないようにします"
+      },
+      "edge-discover": {
+        "label": "Edge Discover のページ スキャン",
+        "description": "Discover 機能がページ内容をスキャンしないようにします"
+      },
+      "edge-sidebar": {
+        "label": "Edge のサイドバー",
+        "description": "Edge のサイドバーとそのバックグラウンドでのデータ収集をオフにします"
+      },
+      "edge-shopping": {
+        "label": "Edge のショッピング アシスタント",
+        "description": "Edge の価格比較トラッカーをオフにします"
+      },
+      "chrome-metrics": {
+        "label": "Chrome のメトリック報告",
+        "description": "Chrome が使用状況やクラッシュのメトリックを Google に送信しないようにします"
+      },
+      "chrome-feedback": {
+        "label": "Chrome のユーザー フィードバック",
+        "description": "Chrome がユーザー フィードバック データを収集して送信しないようにします"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome の拡張セーフ ブラウジング",
+        "description": "Chrome が URL とダウンロードの拡張レポートを Google に送信しないようにします"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox のテレメトリ",
+        "description": "Firefox がテレメトリ データを収集して Mozilla にアップロードしないようにします"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox の既定ブラウザー エージェント",
+        "description": "ブラウザーの使用状況データを Mozilla に報告するバックグラウンド エージェントを無効にします"
+      },
+      "macos-diagnostics": {
+        "label": "診断および使用状況データ",
+        "description": "Apple との診断および使用状況データの共有を停止します"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri の分析情報",
+        "description": "Siri の分析および改善のためのデータ収集を停止します"
+      },
+      "macos-health-data-sharing": {
+        "label": "ヘルスケア データの共有",
+        "description": "研究のために Apple とヘルスケア データを共有しないようにします"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop の検出可能性",
+        "description": "AirDrop を「受信しない」に設定します。システム設定で再度オンにするまで、AirDrop でファイルを受信できなくなります"
+      },
+      "macos-crash-reporter": {
+        "label": "クラッシュ レポーター",
+        "description": "クラッシュ レポーターが自動的にレポートを送信しないようにします"
+      },
+      "macos-ad-tracking": {
+        "label": "パーソナライズされた広告",
+        "description": "Apple による広告トラッキングを制限します"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "App Store の Siri 提案",
+        "description": "App Store の Siri 提案をオフにします"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari の提案",
+        "description": "Apple に送信される Safari の検索候補をオフにします"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight の提案",
+        "description": "Spotlight の Web 提案をオフにします"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari のトップヒットの事前読み込み",
+        "description": "サイトに閲覧データを送信する、Safari によるトップの検索結果の事前読み込みを停止します"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Handoff と Universal Clipboard をオフにします。Apple デバイス間でアクティビティを引き継いだり、コピー & ペーストしたりできなくなります"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud の分析情報",
+        "description": "Apple との iCloud 分析情報の共有を停止します"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari の iCloud タブ",
+        "description": "Safari の iCloud タブ同期をオフにします。他の Apple デバイスで開いているタブが表示されなくなります"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Siri を完全にオフにします。「Hey Siri」、音声コマンド、Siri ショートカットが使えなくなります"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri のディクテーション",
+        "description": "ディクテーションをオフにします。キーボードのマイク キーが使えなくなります"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Apple Intelligence の AI 機能をオフにします (macOS 15 Sequoia 以降)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari の Do Not Track",
+        "description": "Safari で Do Not Track ヘッダーを有効にします"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome のメトリック報告",
+        "description": "Chrome が使用状況のメトリックを Google に送信しないようにします"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome のセーフ ブラウジング レポート",
+        "description": "Chrome が URL とダウンロードの拡張レポートを Google に送信しないようにします"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox のテレメトリ",
+        "description": "Firefox がテレメトリ データを収集して Mozilla にアップロードしないようにします"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "未検証のアプリケーションがブロックされるよう、Gatekeeper がオンになっていることを確認します"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote Apple Events",
+        "description": "Remote Apple Events をオフにして、Mac がリモートで自動操作されないようにします"
+      },
+      "macos-wake-on-network": {
+        "label": "ネットワーク アクセスによるスリープ解除",
+        "description": "ネットワーク アクセスによるスリープ解除をオフにして、Mac がリモートでスリープ解除されないようにします"
+      },
+      "macos-guest-account": {
+        "label": "ゲスト アカウント",
+        "description": "許可されていないローカル アクセスを防ぐため、ゲスト アカウントをオフにします"
+      },
+      "macos-auto-login": {
+        "label": "自動ログイン",
+        "description": "自動ログインをオフにして、起動時に Mac が認証を求めるようにします"
+      },
+      "macos-firewall": {
+        "label": "アプリケーション ファイアウォール",
+        "description": "受信接続を制御するため、macOS のアプリケーション ファイアウォールをオンにします"
+      },
+      "macos-stealth-mode": {
+        "label": "ステルス モード",
+        "description": "ステルス モードをオンにして、Mac がプローブ要求 (ICMP ping) に応答しないようにします"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP 転送を無効にする",
+        "description": "システムがネットワーク インターフェイス間でパケットを転送しないようにします"
+      },
+      "macos-block-signed-auto": {
+        "label": "署名済みアプリの自動許可をブロック",
+        "description": "署名済みアプリケーションがファイアウォールを自動的にバイパスしないようにします"
+      },
+      "macos-remote-login": {
+        "label": "リモート ログイン (SSH) を無効にする",
+        "description": "SSH サーバーを完全にオフにします。SSH アクセスが必要な場合は、これをオフのままにして、代わりに SSH の設定を強化してください"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH の root ログインを無効にする",
+        "description": "SSH 経由の直接の root ログインを禁止します。代わりに通常のアカウントから sudo を使用してください"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH のパスワード認証を無効にする",
+        "description": "SSH の認証を鍵ベースのみに限定します。先に SSH キーを設定してください。設定しないとロックアウトされる可能性があります"
+      },
+      "macos-core-dumps": {
+        "label": "コアダンプを無効にする",
+        "description": "機密性の高いメモリ内容が漏えいする可能性があるコアダンプを防ぎます"
+      },
+      "gnome-usage-stats": {
+        "label": "使用状況の統計",
+        "description": "GNOME の使用状況統計の収集をオフにします"
+      },
+      "gnome-recent-files": {
+        "label": "最近使用したファイルの追跡",
+        "description": "最近使用したファイルの追跡をオフにします"
+      },
+      "gnome-location": {
+        "label": "位置情報サービス",
+        "description": "GNOME の位置情報サービスをオフにします"
+      },
+      "gnome-crash-reporting": {
+        "label": "クラッシュ レポート (Apport)",
+        "description": "クラッシュ レポートの自動送信をオフにします"
+      },
+      "gnome-connectivity-check": {
+        "label": "接続確認",
+        "description": "定期的なネットワーク接続確認をオフにします"
+      },
+      "core-dump-disable": {
+        "label": "コアダンプを無効にする",
+        "description": "機密性の高いメモリ内容が漏えいする可能性があるコアダンプを防ぎます"
+      },
+      "ssh-root-login": {
+        "label": "SSH の root ログインを無効にする",
+        "description": "SSH 経由の直接の root ログインを禁止します。代わりに通常のアカウントから sudo を使用してください"
+      },
+      "ssh-password-auth": {
+        "label": "SSH のパスワード認証を無効にする",
+        "description": "SSH の認証を鍵ベースのみに限定します。先に SSH キーを設定してください。設定しないとロックアウトされる可能性があります"
+      },
+      "kde-usage-stats": {
+        "label": "使用状況の統計",
+        "description": "KDE Plasma のユーザー フィードバックをオフにします"
+      },
+      "kde-recent-files": {
+        "label": "最近使用したファイルの追跡",
+        "description": "最近使用したファイルの KDE アクティビティ履歴をオフにします"
+      },
+      "kde-baloo": {
+        "label": "ファイル インデックス作成 (Baloo)",
+        "description": "Baloo ファイル インデクサーをオフにします"
+      },
+      "kde-crash-reporting": {
+        "label": "クラッシュ レポート (DrKonqi)",
+        "description": "KDE のクラッシュ レポート処理をオフにします"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "テレメトリとデータ収集",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "不要なアプリの削除",
-    "pageDescription": "プレインストールされた Windows アプリと OEM の不要なアプリを削除します",
+    "pageDescription": "Windows とメーカーによってプレインストールされたアプリです。削除すると、Microsoft Store からのみ再インストールできます。",
     "scanButton": "スキャン",
-    "irreversibleWarning": "元に戻せません — 削除したアプリは Microsoft Store からのみ再インストールできます。選択内容をよく確認してください。",
-    "scanningPackages": "インストール済みパッケージをスキャンしています...",
-    "removingProgress": "{{total}} 件中 {{current}} 件目を削除しています",
+    "rescanButton": "再スキャン",
+    "irreversibleWarning": "このアプリからの削除は元に戻せません。確認する前に選択したアプリを確認してください。",
+    "scanningPackages": "インストール済みパッケージをスキャンしています…",
+    "removingProgress": "アプリを削除しています ({{total}} 件中 {{current}} 件目)",
+    "receiptTitle": "削除が完了しました",
+    "removedApps_one": "{{count}} 件のアプリを削除しました",
+    "removedApps_other": "{{count}} 件のアプリを削除しました",
+    "failedCount_one": "{{count}} 件失敗",
+    "failedCount_other": "{{count}} 件失敗",
+    "reinstallFromStore": "Microsoft Store からのみ再インストール可能",
     "selectAll": "すべて選択",
-    "emptyStateTitle": "不要なアプリは検出されませんでした",
-    "emptyStateDescription": "「スキャン」をクリックして、プレインストールされたアプリと OEM の不要なアプリを検索します。",
+    "filterLabel": "カテゴリ",
+    "confirmTitle_one": "{{count}} 件のアプリを削除しますか？",
+    "confirmTitle_other": "{{count}} 件のアプリを削除しますか？",
+    "confirmDescription_one": "アプリは現在のユーザーから削除され、管理者権限がある場合は新規ユーザーからも削除されます。Microsoft Store からのみ再インストールできます。",
+    "confirmDescription_other": "アプリは現在のユーザーから削除され、管理者権限がある場合は新規ユーザーからも削除されます。Microsoft Store からのみ再インストールできます。",
+    "confirmLabel_one": "{{count}} 件のアプリを削除",
+    "confirmLabel_other": "{{count}} 件のアプリを削除",
+    "emptyStateTitle": "まだスキャンされていません",
+    "emptyStateDescription": "このセッションではプレインストール アプリのスキャンをまだ行っていません。",
+    "lastRun_one": "前回の削除: {{date}}、{{count}} 件のアプリを削除しました。",
+    "lastRun_other": "前回の削除: {{date}}、{{count}} 件のアプリを削除しました。",
+    "checkKnownTitle": "既知のアプリ",
+    "checkKnownDetail": "Microsoft とメーカー (OEM) によってプレインストールされたアプリの一覧",
+    "checkInstalledTitle": "インストール済みパッケージ",
+    "checkInstalledDetail": "現在のユーザーのアプリ パッケージを一覧と比較",
+    "checkRemovalTitle": "削除",
+    "checkRemovalDetail": "現在のユーザーに対して実行。管理者権限がある場合は、新規ユーザー用のコピーからも削除されます",
+    "noneFoundTitle": "一覧のアプリはインストールされていません",
+    "noneFoundDescription": "既知のプレインストール アプリは、現在のユーザーには存在しません。",
+    "summaryTitle_one": "{{count}} 件のプレインストール アプリが見つかりました",
+    "summaryTitle_other": "{{count}} 件のプレインストール アプリが見つかりました",
+    "selectedCount_one": "{{count}} 件選択済み",
+    "selectedCount_other": "{{count}} 件選択済み",
+    "removeButton_one": "{{count}} 件のアプリを削除",
+    "removeButton_other": "{{count}} 件のアプリを削除",
+    "removeNone": "選択項目を削除",
     "scanFailedToast": "不要なアプリのスキャンに失敗しました",
     "scanFailedDescription": "PowerShell が利用可能であることを確認してください",
     "scanFailedError": "不要なアプリをスキャンできませんでした。PowerShell が利用可能であることを確認してください。",

@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "回復センター",
-    "limits": "回復の対象は、記録された Windows の DWORD プライバシー/レジストリ値、スケジュールされたタスク、およびサービス構成です。ファイルの完全削除は元に戻せません。古い変更や未対応の変更には、手動バックアップしかない場合があります。一部の復元された設定は再起動が必要です。",
+    "limits": "回復の対象は、プライバシーとシステムの設定、スケジュールされたタスク、サービス構成のために書き込まれたレジストリの DWORD 値です。古い変更や未対応の変更には、手動バックアップしかない場合があります。一部の復元された設定は再起動後に有効になります。",
     "refresh": "更新",
     "export": "回復履歴をエクスポート",
     "loadError": "回復履歴を読み取れませんでした。",
     "failed": "回復に失敗しました。",
-    "empty": "このページには記録された変更はありません。新しい対応済みの変更はここに表示されます。",
+    "empty": "プライバシー シールド、サービス マネージャー、Registry Cleaner による変更が、変更前と変更後の状態とともにここに表示されます。",
+    "summary": {
+      "recorded": "記録された変更",
+      "registryBackups": "レジストリのバックアップ",
+      "backupFiles": "バックアップ ファイル"
+    },
+    "changesTitle": "記録された変更",
+    "range": "{{total}} 件中 {{from}}–{{to}}",
     "gameMode": "ゲーム モードの回復",
     "gameModeDescription": "ゲーム モードには有効または保留中の回復スナップショットがあります。",
-    "openGameMode": "ゲーム モードの回復を開く",
+    "openGameMode": "ゲーム モードを開く",
     "before": "元の状態",
     "after": "SuperSonicCleaner 適用後の状態",
     "restore": "元の状態に復元",
     "previous": "前へ",
     "next": "次へ",
     "backups": "レジストリとコンテキスト メニューのバックアップ",
-    "backupDescription": "これらのバックアップ ファイルには、検証済みの変更後の状態情報は含まれていません。手動で復元する前にバックアップ フォルダーで内容を確認してください。インポートすると新しい設定が上書きされる場合があります。バックアップ ファイルは OS の復元ポイントではありません。",
+    "backupDescription": "これらのバックアップ ファイルには、確認済みの変更後の状態は含まれていません。手動で復元する前にバックアップ フォルダーで内容を確認してください。インポートすると新しい設定が上書きされる場合があります。バックアップ ファイルはオペレーティング システムの復元ポイントではありません。",
     "openBackups": "バックアップ フォルダーを開く",
     "confirmTitle": "この変更を復元しますか？",
-    "confirmDescription": "SuperSonicCleaner は、記録された元の値を復元する前に現在の状態を確認します。競合するより新しい変更は保持されます。管理者権限が必要になる場合があります。",
+    "confirmDescription": "SuperSonicCleaner は、記録された元の値を書き戻す前に現在の状態を確認します。その間に値が再び変更されていた場合は、新しい変更が保持されます。管理者権限が必要になる場合があります。",
     "status": {
-      "pending": "中断 / 保留中",
-      "ready": "利用可能",
+      "pending": "中断または保留中",
+      "ready": "復元可能",
       "restored": "復元済み",
-      "failed": "要確認",
+      "failed": "復元に失敗しました",
       "conflict": "新しい変更を検出"
     },
     "remove": "項目を削除",
-    "removeDescription": "この回復記録をローカル履歴から削除しますか? これによって設定が変更されたり、レジストリのバックアップが削除されたりすることはありません。今後 SuperSonicCleaner はこの変更を復元できなくなります。",
-    "unreadable": "この回復記録を読み取れませんでした。別のユーザー アカウントによって書き込まれたか、ディスク上で破損している可能性があります。",
-    "loading": "回復履歴を読み込み中？",
-    "emptyTitle": "回復履歴はここから始まります",
+    "removeTitle": "この回復エントリを削除しますか？",
+    "removeDescription": "このエントリはローカル履歴から削除され、SuperSonicCleaner はこの変更を元に戻せなくなります。設定とレジストリのバックアップは変更されません。この操作は元に戻せません。",
+    "unreadable": "この回復エントリを読み取れませんでした。別のユーザー アカウントによって書き込まれたか、ディスク上で破損している可能性があります。",
+    "loading": "回復履歴を読み込んでいます…",
+    "emptyTitle": "復元可能な変更はありません",
     "source": {
       "privacy": "Privacy Shield",
       "services": "Service Manager",
       "registry": "Registry Cleaner"
+    },
+    "value": {
+      "absent": "値は存在しませんでした",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "タスクが有効",
+      "taskDisabled": "タスクが無効",
+      "start": {
+        "boot": "ブート起動",
+        "system": "システム起動",
+        "automatic": "自動起動",
+        "manual": "手動起動",
+        "disabled": "無効"
+      },
+      "delayed": "遅延",
+      "running": "実行中",
+      "stopped": "停止",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "レジストリのバックアップ",
@@ -64,8 +89,12 @@
         "empty": "レジストリ キーが含まれていません。",
         "unreadable": "読み取れませんでした。",
         "classes-root": "HKEY_CLASSES_ROOT のキーが含まれています。これはマシンとユーザーごとのクラスを統合したものであるため、SuperSonicCleaner はどちらに復元すべきか判断できません。このバックアップは確認のみ可能です。",
-        "unverified": "このバックアップは検証できません — SuperSonicCleaner が書き込んだ後に変更された可能性があるため、確認のみ可能です。"
-      }
+        "unverified": "このバックアップは検証できません。SuperSonicCleaner が書き込んだ後に変更された可能性があるため、確認のみ可能です。"
+      },
+      "moreKeys_one": "+1 件のキー",
+      "moreKeys_other": "+{{formatted}} 件のキー",
+      "confirmLabel_one": "1 件のキーをインポート",
+      "confirmLabel_other": "{{formatted}} 件のキーをインポート"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "これらのカテゴリ内のキャッシュ済みエントリ: {{found}} · この操作で未選択: {{unselected}}",
     "title": "クリーンアップの記録",
     "description": "削除時点で記録されます。各記録は 1 回のクリーンアップ操作またはバッチに対応します。",
-    "empty": "クリーンアップの記録はまだありません。クリーンアップを実行すると結果が記録されます。",
+    "empty": "クリーンアップのレシートはありません",
     "loadError": "クリーンアップの記録を読み取れませんでした。既存のデータは保持されています。",
     "actionError": "記録の操作に失敗しました。",
     "saveError": "クリーンアップは完了しましたが、その記録を保存できませんでした。",
@@ -91,7 +120,7 @@
     "retryOf": "再試行元",
     "export": "記録をエクスポート",
     "retry": "再試行可能な失敗を再実行 ({{count}})",
-    "rescan": "新しくスキャンを実行",
+    "rescan": "新しいスキャン",
     "retryLifetime": "再試行では、引き続きキャッシュされている選択項目を最大 30 分間使用します。除外設定と経過時間の保護は再度確認されます。有効期限切れまたは再起動後は、新しくスキャンを実行してください。",
     "pathsOff": "この実行ではパスの記録が無効でした。カテゴリと結果のみ保持されました。",
     "item": "項目 / カテゴリ",
@@ -106,18 +135,26 @@
     "retryConfirm": "クリーンアップを再試行",
     "clearTitle": "クリーンアップの記録を消去しますか？",
     "clearDescription": "保存された記録とその再試行情報を完全に削除します。スキャン履歴と別個の削除ログは変更されません。",
-    "loading": "Loading cleanup receipts?"
+    "loading": "クリーンアップのレシートを読み込んでいます…"
   },
-  "pageTitle": "スキャン履歴",
+  "pageTitle": "アクティビティ",
+  "viewLabel": "表示",
   "viewOverview": "概要",
+  "viewList": "リスト",
+  "viewReceipts": "レシート",
   "clearButton": "クリア",
-  "emptyStateTitle": "履歴はまだありません",
-  "emptyStateDescription": "Cleaner、Registry、または Debloater ページからスキャンを実行してください。結果はここに表示されます。",
-  "confirmClearScanDescription": "これにより、すべてのスキャン履歴エントリが完全に削除されます。この操作は元に戻せません。",
+  "clearHistory": "履歴をクリア",
+  "emptyStateTitle": "記録されたアクティビティはありません",
+  "emptyStateDescription": "スキャンとクリーンアップは、初回実行後に日付、所要時間、結果とともにここに表示されます。クリーンアップのレシートは「レシート」表示にあります。",
+  "confirmClearScanTitle_one": "履歴を 1 件消去しますか？",
+  "confirmClearScanTitle_other": "履歴を {{count}} 件消去しますか？",
+  "confirmClearScanDescription": "削除されたファイルのログ内のパスも消去されます。クリーンアップのレシートは保持されます。この操作は元に戻せません。",
+  "confirmClearLabel_one": "1 件を消去",
+  "confirmClearLabel_other": "{{count}} 件を消去",
   "typeLabels": {
-    "cleaner": "システム クリーン",
-    "registry": "レジストリ修復",
-    "debloater": "Debloater",
+    "cleaner": "システム クリーンアップ",
+    "registry": "レジストリ クリーンアップ",
+    "debloater": "プリインストール アプリの削除",
     "network": "ネットワーク クリーンアップ",
     "drivers": "ドライバー クリーンアップ",
     "malware": "マルウェア スキャン",
@@ -125,29 +162,88 @@
     "startup": "スタートアップ マネージャー",
     "services": "サービス マネージャー",
     "softwareUpdate": "ソフトウェア更新",
-    "cveScan": "CVE スキャン"
+    "cveScan": "脆弱性スキャン（CVE）"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} を解放",
+    "noSpace": "解放された容量はありません",
+    "entries_one": "1 件",
+    "entries_other": "{{formatted}} 件",
+    "items_one": "1 件処理",
+    "items_other": "{{formatted}} 件処理",
+    "averageDuration": "平均所要時間 {{duration}}",
+    "errors_one": "1 件のエラー",
+    "errors_other": "{{formatted}} 件のエラー",
+    "noErrors": "エラーなし",
+    "range": "{{from}} から {{to}}",
+    "sameDay": "{{date}}"
   },
   "overview": {
-    "tooltipSpace": "容量"
+    "spaceOverTime": "1 日あたりの解放容量",
+    "spaceSentence_one": "アクティビティのあった 1 日で {{size}} を解放しました。",
+    "spaceSentence_other": "アクティビティのあった {{count}} 日間で {{size}} を解放しました。",
+    "noSpaceSentence": "容量を解放した記録済みのアクティビティはありません。",
+    "chartLabel_one": "1 日で解放された容量",
+    "chartLabel_other": "{{count}} 日間で解放された容量",
+    "tooltipSpace": "{{size}} を解放",
+    "byType": "種類別",
+    "topCategories": "最も多くの容量を解放したカテゴリ",
+    "recent": "最近のアクティビティ",
+    "showAll": "すべての一覧"
+  },
+  "columns": {
+    "type": "種類",
+    "date": "日付",
+    "entries": "件数",
+    "items": "項目",
+    "space": "容量",
+    "duration": "所要時間",
+    "outcome": "結果",
+    "category": "カテゴリ"
+  },
+  "list": {
+    "title": "すべてのアクティビティ",
+    "count_one": "1 件",
+    "count_other": "{{formatted}} 件",
+    "filterLabel": "種類",
+    "filterAll": "すべての種類",
+    "scheduled": "スケジュール済み",
+    "noErrors": "エラーなし"
   },
   "detail": {
+    "close": "閉じる",
+    "outcomeDone": "完了",
+    "outcomeErrors_one": "1 件のエラーで完了",
+    "outcomeErrors_other": "{{formatted}} 件のエラーで完了",
+    "found_one": "1 件見つかりました",
+    "found_other": "{{formatted}} 件見つかりました",
+    "processed_one": "1 件処理済み",
+    "processed_other": "{{formatted}} 件処理済み",
+    "skipped_one": "1 件スキップしました。",
+    "skipped_other": "{{formatted}} 件スキップしました。",
+    "scheduled": "スケジュール済み",
+    "scheduledBy": "スケジュール: {{name}}",
     "categoriesLabel": "カテゴリ",
     "deletedFiles": {
       "title": "削除されたファイル",
-      "loading": "読み込み中…",
+      "loading": "削除ログを読み込んでいます…",
       "shownCount": "{{total}} 件中 {{shown}} 件を表示",
       "loadMore": "さらに読み込む",
       "exportCsv": "CSV をエクスポート",
       "openLog": "ログを開く",
-      "exportFailed": "削除されたファイル一覧をエクスポートできませんでした",
-      "truncatedBadge": "さらに +{{count}} 件",
-      "emptyRecorded": "この実行ではファイル パスは記録されませんでした。",
-      "disabledHint": "削除ログがオフになっているため、この実行での個別のパスは記録されませんでした。今後記録するには、設定 → クリーニング設定で「削除されたファイルのログを保持する」をオンにしてください。"
+      "exported_one": "1 件のパスをエクスポートしました",
+      "exported_other": "{{formatted}} 件のパスをエクスポートしました",
+      "exportFailed": "削除されたファイルの一覧をエクスポートできませんでした。",
+      "truncatedBadge": "+{{formatted}} 件は一覧に含まれません",
+      "truncatedHint_one": "このフォルダーには、フォルダーごとの一覧表示上限を超える項目がさらに 1 件ありました。削除されましたが一覧には表示されていません。",
+      "truncatedHint_other": "このフォルダーには、フォルダーごとの一覧表示上限を超える項目がさらに {{formatted}} 件ありました。削除されましたが個別には一覧に表示されていません。",
+      "emptyRecorded": "この実行ではパスは記録されませんでした。",
+      "disabledHint": "削除ログがオフになっていたため、この実行のパスは記録されませんでした。今後記録するには、環境設定 › クリーンアップ設定 で「削除したファイルのログを保持」をオンにしてください。"
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1秒",
-    "seconds": "{{count}}秒",
-    "minutesAndSeconds": "{{minutes}}分 {{seconds}}秒"
+    "lessThanOneSecond": "1 秒未満",
+    "seconds": "{{count}} 秒",
+    "minutesAndSeconds": "{{minutes}} 分 {{seconds}} 秒"
   }
 }

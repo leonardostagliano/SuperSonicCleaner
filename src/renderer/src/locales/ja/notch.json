@@ -15,6 +15,7 @@
   "cpuDetail": "現在のプロセッサ使用率",
   "sample": "最新のサンプル",
   "used": "{{total}} GB 中 {{used}} 使用",
+  "free": "空き {{free}} GB",
   "waiting": "ライブ データを待機しています",
   "unavailable": "ディスク データを利用できません",
   "live": "システムのライブ メトリック",

@@ -10,5 +10,7 @@
   "history": "アクティビティ",
   "settings": "環境設定",
   "gameMode": "ゲーム モード",
-  "firewallAudit": "ファイアウォール監査"
+  "firewallAudit": "ファイアウォール監査",
+  "updateBadge": "更新",
+  "mainNavigation": "メイン ナビゲーション"
 }
