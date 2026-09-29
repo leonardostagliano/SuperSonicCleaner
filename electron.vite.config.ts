@@ -35,7 +35,8 @@ export default defineConfig({
         output: {
           manualChunks(id) {
             const locale = id.replace(/\\/g, '/').match(/\/locales\/([^/]+)\/[^/]+\.json$/)?.[1]
-            if (locale && locale !== 'en') return `locale-${locale}`
+            // One chunk per language, English included: each is loaded on demand.
+            if (locale) return `locale-${locale}`
           }
         },
         input: {

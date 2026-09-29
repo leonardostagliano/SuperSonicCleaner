@@ -1,10 +1,11 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { resources, namespaces, localeBackend } from './locales'
+import { namespaces, localeBackend } from './locales'
 import { matchLocaleToLanguage } from '@shared/languages'
 
 // Start loading the OS language while the app initializes. A persisted choice
-// wins before first paint, and English remains available as the fallback.
+// wins before first paint. Init resolves once the UI language and the English
+// fallback are both loaded, so the first render never shows raw keys.
 const initialLanguage = matchLocaleToLanguage(
   typeof navigator !== 'undefined' ? navigator.language : 'en'
 )
@@ -13,8 +14,6 @@ const initialized = i18n
   .use(localeBackend)
   .use(initReactI18next)
   .init({
-    resources,
-    partialBundledLanguages: true,
     lng: initialLanguage,
     fallbackLng: 'en',
     ns: new URLSearchParams(window.location.search).has('desktop-notch') ? ['notch'] : namespaces,
@@ -34,7 +33,7 @@ export const i18nReady = initialized.then(async () => {
     if (settings?.language && settings.language !== i18n.language)
       await i18n.changeLanguage(settings.language)
   } catch {
-    // OS language and bundled English remain usable if settings are unavailable.
+    // The OS language and the English fallback remain usable if settings are unavailable.
   }
 })
 

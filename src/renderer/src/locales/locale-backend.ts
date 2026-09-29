@@ -12,7 +12,7 @@ export function createLocaleBackend(loaders: Loaders): BackendModule {
       const key = `./${language}/${namespace}.json`
       const load = Object.hasOwn(loaders, key) ? loaders[key] : undefined
       if (!load) {
-        // Untranslated namespaces use the bundled English fallback.
+        // An untranslated namespace falls back to English.
         callback(null, {})
         return
       }

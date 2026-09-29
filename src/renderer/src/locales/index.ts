@@ -1,20 +1,15 @@
 import { createLocaleBackend } from './locale-backend'
 
-// Keep the fallback ready, but do not parse every supported language in every
-// window. Vite emits local chunks for the selected language; no network service.
-const english = import.meta.glob('./en/*.json', { eager: true, import: 'default' }) as Record<
-  string,
-  Record<string, unknown>
->
-const localized = import.meta.glob(['./*/*.json', '!./en/*.json'], { import: 'default' }) as Record<
+// Every language, English included, is a local chunk loaded on demand: the UI language is
+// only known at runtime (the OS language, then the saved setting), so none is bundled.
+// Vite emits one chunk per file; nothing is fetched from a network service.
+const loaders = import.meta.glob('./*/*.json', { import: 'default' }) as Record<
   string,
   () => Promise<Record<string, unknown>>
 >
 
-export const resources = {
-  en: Object.fromEntries(
-    Object.entries(english).map(([path, data]) => [path.split('/')[2].replace('.json', ''), data])
-  )
-}
-export const namespaces = Object.keys(resources.en)
-export const localeBackend = createLocaleBackend(localized)
+/** Every namespace, named after the English files, which every language translates. */
+export const namespaces = Object.keys(loaders)
+  .filter((file) => file.startsWith('./en/'))
+  .map((file) => file.slice('./en/'.length, -'.json'.length))
+export const localeBackend = createLocaleBackend(loaders)
