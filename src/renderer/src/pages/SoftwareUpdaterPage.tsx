@@ -17,6 +17,7 @@ import {
   SummaryCard
 } from '@/components/software/SoftwareBlocks'
 import { formatClock, formatDateTime, joinFacts } from '@/components/software/format'
+import { noUpdatesState } from '@/lib/updates-view'
 import { UpdateProgressPanel } from '@/components/updates/UpdateProgressPanel'
 import { UpdateSummaryBanner } from '@/components/updates/UpdateSummaryBanner'
 import {
@@ -321,6 +322,14 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
 
   const count = (severity: UpdateSeverity) => apps.filter((a) => a.severity === severity).length
   const checkedTime = lastCheckedAt ? formatClock(lastCheckedAt, i18n.language) : ''
+  const noUpdates = noUpdatesState({
+    checked: hasChecked,
+    loading,
+    packageManagerAvailable,
+    pending: apps.length,
+    ignored: ignoredApps.length,
+    managers
+  })
   const lastRun = history.find((entry) => entry.type === 'software-update')
   const missingManager =
     hasChecked && !packageManagerAvailable
@@ -485,21 +494,28 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
         )}
 
         {/* Nothing to update among the apps the included managers know */}
-        {hasChecked &&
-          !loading &&
-          apps.length === 0 &&
-          ignoredApps.length === 0 &&
-          packageManagerAvailable && (
-            <EmptyState
-              icon={icons.allUpToDate}
-              title={
-                checkedTime
-                  ? t('softwareUpdater.allUpToDateTitle', { time: checkedTime })
-                  : t('softwareUpdater.allUpToDateTitleNoTime')
-              }
-              description={t('softwareUpdater.allUpToDateDescription')}
-            />
-          )}
+        {noUpdates?.kind === 'upToDate' && (
+          <EmptyState
+            icon={icons.allUpToDate}
+            title={
+              checkedTime
+                ? t('softwareUpdater.allUpToDateTitle', { time: checkedTime })
+                : t('softwareUpdater.allUpToDateTitleNoTime')
+            }
+            description={t('softwareUpdater.allUpToDateDescription')}
+          />
+        )}
+        {/* A manager failed: say only what the others found, next to its note */}
+        {noUpdates?.kind === 'partial' && (
+          <EmptyState
+            title={joinFacts([
+              t('softwareUpdater.noUpdatesFrom', {
+                managers: listFormat(noUpdates.checked.map(managerLabel), i18n.language)
+              }),
+              checkedTime && t('softwareUpdater.checkedAt', { time: checkedTime })
+            ])}
+          />
+        )}
 
         {/* One summary line in place of the four stat cards */}
         {hasChecked && !loading && packageManagerAvailable && apps.length > 0 && (
