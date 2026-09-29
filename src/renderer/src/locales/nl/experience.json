@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Zie wat er is gewijzigd, wat is hersteld en wat nog een keer bekeken moet worden. Elke voltooide taak laat een overzicht achter.",
-    "settings": "Laat SuperSonicCleaner goed bij u passen. Stel uw uiterlijk, meldingen, uitsluitingen en voorkeuren voor opschonen in.",
-    "about": "Open source, met zorg gemaakt. Vind uw versie, controleer op updates en leer het project kennen.",
-    "recovery": "Een duidelijke weg terug. Bekijk ondersteunde wijzigingen en hersteldetails voordat u iets ongedaan maakt."
+    "history": "De laatste 100 scans en opschoningen die op deze pc zijn uitgevoerd, met datum, duur, verwerkte items en vrijgemaakte ruimte, en het bewijs van elke opschoning.",
+    "settings": "Uiterlijk, taal, opstarten, meldingen, updates, back-ups, opschoningsvoorkeuren en uitsluitingen. Elke wijziging wordt direct opgeslagen.",
+    "about": "Geïnstalleerde versie, updates, MIT-licentie en het oorspronkelijke project (Kudu).",
+    "recovery": "Wijzigingen aan het register, services en geplande taken die door SuperSonicCleaner zijn aangebracht, met de back-ups om ze ongedaan te maken. Verwijderde bestanden kunnen niet worden hersteld."
   },
   "storageTrend": {
     "title": "Opslag in de loop van de tijd",

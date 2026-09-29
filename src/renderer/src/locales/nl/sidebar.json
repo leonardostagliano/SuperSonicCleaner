@@ -10,5 +10,7 @@
   "history": "Activiteit",
   "settings": "Voorkeuren",
   "gameMode": "Spelmodus",
-  "firewallAudit": "Firewall-audit"
+  "firewallAudit": "Firewall-audit",
+  "updateBadge": "Update",
+  "mainNavigation": "Hoofdnavigatie"
 }

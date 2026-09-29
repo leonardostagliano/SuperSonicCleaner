@@ -15,6 +15,7 @@
   "cpuDetail": "Huidig processorgebruik",
   "sample": "Laatste meting",
   "used": "{{used}} van {{total}} GB gebruikt",
+  "free": "{{free}} GB vrij",
   "waiting": "Wachten op livegegevens",
   "unavailable": "Schijfgegevens niet beschikbaar",
   "live": "Livesysteemstatistieken",

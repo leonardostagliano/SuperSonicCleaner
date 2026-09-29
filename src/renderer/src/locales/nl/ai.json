@@ -1,7 +1,7 @@
 {
   "title": "AI-analyse",
   "description": "Vraag een tweede mening over deze scanresultaten.",
-  "hubDescription": "Een tweede mening over scans en prestatieopnames, via uw Codex-aanmelding.",
+  "hubDescription": "Verstuurt alleen scanmetadata of opnamemetingen naar Codex, onder uw aanmelding, en alleen wanneer u een analyse start vanuit een tool.",
   "hubPrivacy": "Scans delen alleen anonieme bestandsmetadata. Opnames delen numerieke CPU-, geheugen- en schijfmetingen met tijdelijke proces-ID's. Namen, paden, notities en bestandsinhoud blijven op dit apparaat.",
   "connectionTitle": "Codex-verbinding",
   "connectionIntro": "Gebruik Codex op deze computer. Controleer de verbinding en kies vervolgens hieronder een hulpmiddel.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Voltooi een scan of sla een prestatieopname op, schakel de AI-analyse ervan in en start deze vervolgens met de bijbehorende knop. Er wordt niets automatisch verzonden.",
   "tools": {
     "cleaner": {
-      "title": "Systeemopschoning"
+      "title": "Systeemopschoning",
+      "dataSent": "Tijdelijke ID's, bestandstype, grootte en geschatte leeftijd. Privacysporen uitgesloten."
     },
     "largeFiles": {
-      "title": "Grote bestanden"
+      "title": "Grote bestanden",
+      "dataSent": "Tijdelijke ID's, bestandstype, grootte en geschatte leeftijd."
     },
     "duplicates": {
-      "title": "Dubbele bestanden"
+      "title": "Dubbele bestanden",
+      "dataSent": "Tijdelijke ID's, bestandstype, grootte, geschatte leeftijd en duplicaatgroep."
     },
     "disk": {
-      "title": "Schijfanalyse"
+      "title": "Schijfanalyse",
+      "dataSent": "Tijdelijke ID's, totale mapgrootte en geschatte leeftijd."
     },
     "performance": {
-      "title": "Prestatieopnames"
+      "title": "Prestatieopnames",
+      "dataSent": "Numerieke metingen van cpu, geheugen en schijf, met tijdelijke proces-ID's."
     }
   },
   "enable": "AI-analyse voor deze weergave inschakelen",
@@ -51,5 +56,23 @@
     "low": "Lage prioriteit",
     "medium": "Gemiddelde prioriteit",
     "high": "Hoge prioriteit"
+  },
+  "toolsTitle": "Tools",
+  "columns": {
+    "tool": "Tool",
+    "dataSent": "Verzonden gegevens",
+    "lastRun": "Laatst uitgevoerd",
+    "state": "Status"
+  },
+  "lastRun": {
+    "running": "Wordt uitgevoerd",
+    "done": "Voltooid in deze sessie",
+    "failed": "Mislukt",
+    "none": "Geen in deze sessie",
+    "perRecording": "Opgeslagen bij elke geanalyseerde opname"
+  },
+  "state": {
+    "on": "Aan",
+    "off": "Uit"
   }
 }

@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Privacyschild",
-    "pageDescription": "Beheer telemetrie, advertenties, tracking en gegevensverzameling op uw hele systeem",
+    "pageDescription": "Leest de telemetrie-, advertentie-, zoek- en synchronisatie-instellingen en vergelijkt ze met de meest privacyvriendelijke waarde. Een instelling wijzigt alleen als u de schakelaar gebruikt of bevestigt; de meeste kunnen worden teruggezet naar de standaardwaarde.",
     "scanButton": "Scannen",
-    "scanProgressPreparing": "Scan voorbereiden...",
-    "applyingProtections": "Privacybescherming toepassen...",
-    "emptyStateTitle": "Privacyschild",
-    "emptyStateDescription": "Klik op \"Scannen\" om uw privacy- en beveiligingsinstellingen te controleren en aanbevolen hardening toe te passen.",
-    "adminWarning": "Voor sommige instellingen zijn beheerdersrechten vereist om ze te wijzigen. Voer SuperSonicCleaner uit als administrator voor volledige bescherming.",
+    "scanProgressPreparing": "De scan wordt voorbereid",
+    "applyingProtections": "Instellingen worden toegepast…",
+    "emptyStateTitle": "Instellingen nog niet gescand",
+    "emptyStateDescription": "De scan leest de instellingen en wijzigt er geen.",
+    "adminWarning": "Sommige instellingen kunnen alleen worden gewijzigd wanneer SuperSonicCleaner als administrator wordt uitgevoerd; zonder die rechten blijven ze ongewijzigd.",
     "scanFailed": "Privacyscan mislukt",
-    "applyFailed": "Toepassen van privacy-instellingen mislukt",
-    "applyFailedDescription": "Probeer uit te voeren als administrator",
-    "settingApplyFailed": "Toepassen van \"{{label}}\" mislukt",
-    "settingEnabled": "{{label}} geblokkeerd",
-    "settingDisabled": "{{label}} hersteld naar standaard",
-    "settingRevertFailed": "Terugdraaien van \"{{label}}\" mislukt",
+    "applyFailed": "Kan de privacy-instellingen niet toepassen",
+    "applyFailedDescription": "Probeer de app als administrator uit te voeren",
+    "settingApplyFailed": "Kan \"{{label}}\" niet toepassen",
+    "settingEnabled": "Toegepast: {{label}}",
+    "settingDisabled": "Teruggezet naar standaard: {{label}}",
+    "settingRevertFailed": "Kan \"{{label}}\" niet herstellen",
     "settingRevertFailedGeneric": "Terugdraaien van privacy-instelling mislukt",
     "settingApplyFailedGeneric": "Toepassen van privacy-instelling mislukt",
-    "ipcCallFailed": "IPC-aanroep mislukt — probeer uit te voeren als administrator",
+    "ipcCallFailed": "De aanroep is mislukt: probeer de app als administrator uit te voeren",
     "allSettingsLabel": "Alle instellingen",
     "unknownError": "Onbekende fout",
     "requiresSettingEnabled": "Schakel eerst \"{{label}}\" in",
-    "adminRequired": "Probeer uit te voeren als administrator",
-    "settingNotApplied": "Het systeem heeft de wijziging niet gemeld — mogelijk is een herstart nodig, of wordt de instelling beheerd door een ander profiel"
+    "adminRequired": "Probeer de app als administrator uit te voeren",
+    "settingNotApplied": "Het systeem heeft de wijziging niet gemeld: mogelijk is een herstart nodig, of de instelling wordt beheerd door een ander profiel.",
+    "rescanButton": "Opnieuw scannen",
+    "scanningButton": "Bezig met scannen…",
+    "applyRecommended_one": "{{count}} aanbevolen wijziging toepassen",
+    "applyRecommended_other": "{{count}} aanbevolen wijzigingen toepassen",
+    "summaryTitle_one": "{{count}} instelling te wijzigen",
+    "summaryTitle_other": "{{count}} instellingen te wijzigen",
+    "summaryNone": "Alle {{total}} instellingen hebben al de meest privacyvriendelijke waarde",
+    "summaryFacts": "{{protected}} van {{total}} al op de meest privacyvriendelijke waarde · {{categories}} categorieën",
+    "categoryMeta_one": "{{count}} te wijzigen",
+    "categoryMeta_other": "{{count}} te wijzigen",
+    "categoryAllSet": "alle al ingesteld",
+    "categoryApply_one": "{{count}} toepassen",
+    "categoryApply_other": "{{count}} toepassen",
+    "categoryShow": "Tonen",
+    "categoryHide": "Verbergen",
+    "adminTag": "Vereist administrator",
+    "notReversibleTag": "Niet omkeerbaar",
+    "scanProgressTitle": "Scan bezig",
+    "scanProgressCount": "{{current}} van {{total}}",
+    "scanProgressCategory": "Bezig met controleren: {{category}}",
+    "scanProgressLabel": "Scanvoortgang",
+    "applyingLabel": "Voortgang van toepassen",
+    "receiptTitle": "Instellingen toegepast",
+    "receiptApplied_one": "{{count}} instelling gewijzigd",
+    "receiptApplied_other": "{{count}} instellingen gewijzigd",
+    "receiptReversible": "kan worden hersteld via de schakelaars",
+    "receiptFailed_one": "{{count}} niet toegepast: de reden staat hieronder.",
+    "receiptFailed_other": "{{count}} niet toegepast: de redenen staan hieronder.",
+    "receiptFailedAdmin_one": "{{count}} niet toegepast: mogelijk moet de app als administrator worden uitgevoerd. De reden staat hieronder.",
+    "receiptFailedAdmin_other": "{{count}} niet toegepast: mogelijk moet de app als administrator worden uitgevoerd. De redenen staan hieronder.",
+    "failedHeading": "Instellingen niet toegepast",
+    "failedColumnSetting": "Instelling",
+    "failedColumnReason": "Reden",
+    "confirmTitle_one": "{{count}} instelling wijzigen?",
+    "confirmTitle_other": "{{count}} instellingen wijzigen?",
+    "confirmDescription": "De vermelde instellingen worden gewijzigd naar de meest privacyvriendelijke waarde. Ze kunnen via de schakelaars op deze pagina worden teruggezet naar de standaardwaarde.",
+    "confirmDescriptionIrreversible_one": "De vermelde instellingen worden gewijzigd naar de meest privacyvriendelijke waarde. {{count}} kan vanaf deze pagina niet worden teruggezet naar de standaardwaarde.",
+    "confirmDescriptionIrreversible_other": "De vermelde instellingen worden gewijzigd naar de meest privacyvriendelijke waarde. {{count}} kunnen vanaf deze pagina niet worden teruggezet naar de standaardwaarde.",
+    "confirmLabel_one": "{{count}} instelling wijzigen",
+    "confirmLabel_other": "{{count}} instellingen wijzigen",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows-telemetrie",
+        "description": "Zet de verzameling van diagnostische gegevens op het minimum (alleen beveiligingsniveau)"
+      },
+      "activity-history": {
+        "label": "Activiteitengeschiedenis",
+        "description": "Voorkomt dat Windows het gebruik van uw apps en bestanden bijhoudt en synchroniseert"
+      },
+      "publish-activity": {
+        "label": "Publiceren van gebruikersactiviteiten",
+        "description": "Voorkomt dat Windows uw activiteiten publiceert naar Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Feedbackverzoeken",
+        "description": "Schakelt de periodieke feedbackverzoeken en enquêtes van Microsoft uit"
+      },
+      "handwriting-telemetry": {
+        "label": "Handschriftgegevens",
+        "description": "Stopt het verzenden van handschrift- en typegegevens naar Microsoft"
+      },
+      "input-personalization": {
+        "label": "Invoerpersonalisatie",
+        "description": "Stopt het verzamelen van typ- en inktgegevens voor personalisatie"
+      },
+      "tailored-experiences": {
+        "label": "Aanbevolen ervaringen",
+        "description": "Voorkomt dat Microsoft diagnostische gegevens gebruikt om tips en advertenties te personaliseren"
+      },
+      "app-launch-tracking": {
+        "label": "Bijhouden van app-opstarten",
+        "description": "Voorkomt dat Windows bijhoudt welke apps u opent om het menu Start af te stemmen"
+      },
+      "advertising-id": {
+        "label": "Advertentie-ID",
+        "description": "Schakelt de unieke advertentie-ID uit die apps gebruiken om u te volgen"
+      },
+      "suggested-content": {
+        "label": "Aanbevolen inhoud in Instellingen",
+        "description": "Voorkomt dat Microsoft app-suggesties en advertenties toont in Instellingen"
+      },
+      "tips-notifications": {
+        "label": "Tips en suggesties",
+        "description": "Schakelt Windows-tips, trucs en suggestiemeldingen uit"
+      },
+      "start-suggestions": {
+        "label": "Suggesties in het menu Start",
+        "description": "Schakelt app-suggesties (advertenties) in het menu Start uit"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight op het vergrendelscherm",
+        "description": "Schakelt Microsoft Spotlight-advertenties en -suggesties op het vergrendelscherm uit"
+      },
+      "silently-installed-apps": {
+        "label": "Stilzwijgend geïnstalleerde apps",
+        "description": "Voorkomt dat Windows automatisch gepromote apps installeert"
+      },
+      "preinstalled-apps": {
+        "label": "Suggesties voor vooraf geïnstalleerde apps",
+        "description": "Voorkomt dat Windows vooraf geïnstalleerde apps voorstelt die u niet hebt gebruikt"
+      },
+      "bing-start-menu": {
+        "label": "Bing in het menu Start",
+        "description": "Voorkomt dat zoekopdrachten in het menu Start naar Bing worden verzonden"
+      },
+      "bing-web-search": {
+        "label": "Bing-webresultaten",
+        "description": "Schakelt webresultaten in Windows Zoeken uit, zodat zoekopdrachten op deze pc blijven"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Schakelt Cortana uit, die op de achtergrond draait en gegevens verzamelt"
+      },
+      "search-highlights": {
+        "label": "Zoekhoogtepunten",
+        "description": "Schakelt trending zoeksuggesties en webinhoud in het zoekvak uit"
+      },
+      "store-search-suggestions": {
+        "label": "Zoeksuggesties van de Store",
+        "description": "Schakelt zoeksuggesties van de Microsoft Store uit, die uw zoekopdrachten naar Microsoft verzenden"
+      },
+      "clipboard-sync": {
+        "label": "Cloudsynchronisatie van klembord",
+        "description": "Voorkomt dat klembordgegevens via de cloud tussen apparaten worden gesynchroniseerd"
+      },
+      "clipboard-history": {
+        "label": "Klembordgeschiedenis",
+        "description": "Schakelt de klembordgeschiedenis uit die gekopieerde tekst en afbeeldingen opslaat"
+      },
+      "settings-sync": {
+        "label": "Synchronisatie van instellingen",
+        "description": "Stopt de synchronisatie van Windows-instellingen, thema's en wachtwoorden met uw Microsoft-account"
+      },
+      "find-my-device": {
+        "label": "Mijn apparaat zoeken",
+        "description": "Schakelt locatiegebaseerde apparaattracking door Microsoft uit"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Schakelt de AI-assistent Microsoft Copilot in heel Windows uit"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Schakelt Windows Recall uit, de AI-schermopnamegeschiedenis die alles vastlegt wat op het scherm verschijnt"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Schakelt de AI-analyse van Click to Do van tekst en afbeeldingen op het scherm uit"
+      },
+      "ai-service-autostart": {
+        "label": "Automatisch starten van AI-services",
+        "description": "Voorkomt dat AI-services automatisch op de achtergrond starten"
+      },
+      "edge-ai-features": {
+        "label": "AI-tekstopstelling van Edge",
+        "description": "Schakelt de AI-functies van Edge voor het opstellen en herschrijven van tekst uit"
+      },
+      "paint-ai": {
+        "label": "AI-functies van Paint",
+        "description": "Schakelt de AI-beeldgeneratiefuncties van Microsoft Paint uit"
+      },
+      "notepad-ai": {
+        "label": "AI-functies van Kladblok",
+        "description": "Schakelt de AI-tekstherschrijffuncties van Microsoft Kladblok uit"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack-service",
+        "description": "Schakelt de service Verbonden gebruikerservaringen en telemetrie uit"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push-service",
+        "description": "Schakelt de WAP Push-berichtroteringsservice uit die voor telemetrie wordt gebruikt"
+      },
+      "service-delivery-optimization": {
+        "label": "Optimalisatie van leveringen",
+        "description": "Schakelt peer-to-peer-delen van Windows-updates uit, zodat deze pc geen update-gegevens uploadt naar andere apparaten"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Schakelt Downloaded Maps Manager uit, een achtergrondservice die de meeste pc's niet nodig hebben"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Schakelt de Microsoft-telemetrietaak uit die compatibiliteitsgegevens verzamelt"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Schakelt de achtergrondtaak uit die programmatemetrie uploadt"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Schakelt de telemetrieverzameling via de autochk-proxy uit"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Schakelt het uploaden van gegevens van het Customer Experience Improvement Program uit"
+      },
+      "task-usb-ceip": {
+        "label": "USB-gebruiksgegevens (CEIP)",
+        "description": "Schakelt de verzameling van USB-apparaatgebruiktelemetrie uit"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Schakelt de verzameling en upload van schijfdiagnosegegevens uit"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Schakelt de telemetrietaak voor apparaatbeheer voor feedback uit"
+      },
+      "task-maps-update": {
+        "label": "Taak voor kaartupdates",
+        "description": "Schakelt automatische downloads van kaartgegevens op de achtergrond uit"
+      },
+      "task-maps-toast": {
+        "label": "Taak voor kaartmeldingen",
+        "description": "Schakelt de taak voor kaartmeldingen uit"
+      },
+      "edge-metrics": {
+        "label": "Rapportage van Edge-metrieken",
+        "description": "Voorkomt dat Edge gebruiks- en crashmetrieken naar Microsoft verzendt"
+      },
+      "edge-site-info": {
+        "label": "Verzameling van sitegegevens door Edge",
+        "description": "Voorkomt dat Edge de adressen van de sites die u bezoekt naar Microsoft verzendt"
+      },
+      "edge-personalization": {
+        "label": "Personalisatierapportage van Edge",
+        "description": "Voorkomt dat Edge uw browsegeschiedenis verzendt voor advertentiepersonalisatie"
+      },
+      "edge-copilot-cdp": {
+        "label": "Paginatoegang van Copilot (CDP) in Edge",
+        "description": "Voorkomt dat Copilot pagina-inhoud leest via het Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Paginacontext voor Copilot in Edge",
+        "description": "Voorkomt dat Copilot de paginacontext gebruikt om inhoud te analyseren"
+      },
+      "edge-discover": {
+        "label": "Paginascan door Discover in Edge",
+        "description": "Voorkomt dat de functie Discover pagina-inhoud scant"
+      },
+      "edge-sidebar": {
+        "label": "Zijbalk van Edge",
+        "description": "Schakelt de zijbalk van Edge en de bijbehorende gegevensverzameling op de achtergrond uit"
+      },
+      "edge-shopping": {
+        "label": "Winkelassistent van Edge",
+        "description": "Schakelt de prijsvergelijkingstracker in Edge uit"
+      },
+      "chrome-metrics": {
+        "label": "Rapportage van Chrome-metrieken",
+        "description": "Voorkomt dat Chrome gebruiks- en crashmetrieken naar Google verzendt"
+      },
+      "chrome-feedback": {
+        "label": "Gebruikersfeedback van Chrome",
+        "description": "Voorkomt dat Chrome gebruikersfeedbackgegevens verzamelt en verzendt"
+      },
+      "chrome-extended-reporting": {
+        "label": "Uitgebreid Veilig browsen van Chrome",
+        "description": "Voorkomt dat Chrome uitgebreide URL- en downloadrapporten naar Google verzendt"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetrie van Firefox",
+        "description": "Voorkomt dat Firefox telemetriegegevens verzamelt en uploadt naar Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Standaardbrowseragent van Firefox",
+        "description": "Schakelt de achtergrondagent uit die browsergebruiksgegevens rapporteert aan Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnostische gegevens en gebruiksgegevens",
+        "description": "Stopt het delen van diagnostische gegevens en gebruiksgegevens met Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri-analyse",
+        "description": "Stopt de verzameling van Siri-analyse- en verbeteringsgegevens"
+      },
+      "macos-health-data-sharing": {
+        "label": "Delen van gezondheidsgegevens",
+        "description": "Stopt het delen van gezondheidsgegevens met Apple voor onderzoek"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Zichtbaarheid van AirDrop",
+        "description": "Zet AirDrop op Niemand: u kunt geen bestanden meer ontvangen via AirDrop totdat u het weer inschakelt in Systeeminstellingen"
+      },
+      "macos-crash-reporter": {
+        "label": "Crashrapportage",
+        "description": "Voorkomt dat de crashrapportage automatisch rapporten verzendt"
+      },
+      "macos-ad-tracking": {
+        "label": "Gepersonaliseerde advertenties",
+        "description": "Beperkt advertentietracking door Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Siri-suggesties in de App Store",
+        "description": "Schakelt Siri-suggesties in de App Store uit"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari-suggesties",
+        "description": "Schakelt de Safari-zoeksuggesties die naar Apple worden verzonden uit"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight-suggesties",
+        "description": "Schakelt web-suggesties van Spotlight uit"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Vooraf laden van beste Safari-resultaat",
+        "description": "Voorkomt dat Safari het beste zoekresultaat vooraf laadt, waardoor browsegegevens naar sites worden verzonden"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Schakelt Handoff en het universele klembord uit: u kunt activiteiten niet meer voortzetten of kopiëren en plakken tussen Apple-apparaten"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud-analyse",
+        "description": "Stopt het delen van iCloud-analysegegevens met Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "iCloud-tabbladen van Safari",
+        "description": "Schakelt synchronisatie van iCloud-tabbladen in Safari uit: u ziet de tabbladen op uw andere Apple-apparaten niet meer"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Schakelt Siri volledig uit: \"Hey Siri\", spraakopdrachten en Siri-snelkoppelingen werken dan niet meer"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri-dictaat",
+        "description": "Schakelt dicteren uit: de microfoontoets op uw toetsenbord werkt dan niet meer"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Schakelt de AI-functies van Apple Intelligence uit (macOS 15 Sequoia en later)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Niet volgen",
+        "description": "Schakelt de Niet volgen-header in Safari in"
+      },
+      "macos-chrome-metrics": {
+        "label": "Rapportage van Chrome-metrieken",
+        "description": "Voorkomt dat Chrome gebruiksmetrieken naar Google verzendt"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Rapporten van Veilig browsen van Chrome",
+        "description": "Voorkomt dat Chrome uitgebreide URL- en downloadrapporten naar Google verzendt"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetrie van Firefox",
+        "description": "Voorkomt dat Firefox telemetriegegevens verzamelt en uploadt naar Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Zorgt dat Gatekeeper is ingeschakeld, zodat niet-geverifieerde toepassingen worden geblokkeerd"
+      },
+      "macos-remote-apple-events": {
+        "label": "Externe Apple-gebeurtenissen",
+        "description": "Schakelt externe Apple-gebeurtenissen uit, zodat uw Mac niet op afstand kan worden geautomatiseerd"
+      },
+      "macos-wake-on-network": {
+        "label": "Activeren bij netwerktoegang",
+        "description": "Schakelt activeren bij netwerktoegang uit, zodat uw Mac niet op afstand kan worden geactiveerd"
+      },
+      "macos-guest-account": {
+        "label": "Gastaccount",
+        "description": "Schakelt het gastaccount uit om ongeautoriseerde lokale toegang te voorkomen"
+      },
+      "macos-auto-login": {
+        "label": "Automatisch inloggen",
+        "description": "Schakelt automatisch inloggen uit, zodat de Mac bij het opstarten om verificatie vraagt"
+      },
+      "macos-firewall": {
+        "label": "Toepassingsfirewall",
+        "description": "Schakelt de toepassingsfirewall van macOS in om inkomende verbindingen te controleren"
+      },
+      "macos-stealth-mode": {
+        "label": "Stealthmodus",
+        "description": "Schakelt de stealthmodus in, zodat uw Mac niet reageert op sondeverzoeken (ICMP-ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP-forwarding uitschakelen",
+        "description": "Voorkomt dat het systeem pakketten tussen netwerkinterfaces doorstuurt"
+      },
+      "macos-block-signed-auto": {
+        "label": "Automatische toestemming voor ondertekende apps blokkeren",
+        "description": "Voorkomt dat ondertekende toepassingen de firewall automatisch omzeilen"
+      },
+      "macos-remote-login": {
+        "label": "Externe aanmelding (SSH) uitschakelen",
+        "description": "Schakelt de SSH-server volledig uit. Als u SSH-toegang nodig hebt, laat dit dan uit en beveilig in plaats daarvan de SSH-instellingen"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH-rootaanmelding uitschakelen",
+        "description": "Voorkomt directe root-aanmelding via SSH; gebruik in plaats daarvan sudo vanaf een normaal account"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH-wachtwoordverificatie uitschakelen",
+        "description": "Staat alleen sleutelgebaseerde SSH-verificatie toe. Stel eerst SSH-sleutels in, anders kunt u buitengesloten raken"
+      },
+      "macos-core-dumps": {
+        "label": "Coredumps uitschakelen",
+        "description": "Voorkomt coredumps, die gevoelige geheugeninhoud kunnen lekken"
+      },
+      "gnome-usage-stats": {
+        "label": "Gebruiksstatistieken",
+        "description": "Schakelt de verzameling van GNOME-gebruiksstatistieken uit"
+      },
+      "gnome-recent-files": {
+        "label": "Bijhouden van recente bestanden",
+        "description": "Schakelt het bijhouden van recent gebruikte bestanden uit"
+      },
+      "gnome-location": {
+        "label": "Locatieservices",
+        "description": "Schakelt GNOME-locatieservices uit"
+      },
+      "gnome-crash-reporting": {
+        "label": "Crashrapportage (Apport)",
+        "description": "Schakelt het automatisch indienen van crashrapporten uit"
+      },
+      "gnome-connectivity-check": {
+        "label": "Connectiviteitscontrole",
+        "description": "Schakelt de periodieke controles van netwerkconnectiviteit uit"
+      },
+      "core-dump-disable": {
+        "label": "Coredumps uitschakelen",
+        "description": "Voorkomt coredumps, die gevoelige geheugeninhoud kunnen lekken"
+      },
+      "ssh-root-login": {
+        "label": "SSH-rootaanmelding uitschakelen",
+        "description": "Voorkomt directe root-aanmelding via SSH; gebruik in plaats daarvan sudo vanaf een normaal account"
+      },
+      "ssh-password-auth": {
+        "label": "SSH-wachtwoordverificatie uitschakelen",
+        "description": "Staat alleen sleutelgebaseerde SSH-verificatie toe. Stel eerst SSH-sleutels in, anders kunt u buitengesloten raken"
+      },
+      "kde-usage-stats": {
+        "label": "Gebruiksstatistieken",
+        "description": "Schakelt KDE Plasma-gebruikersfeedback uit"
+      },
+      "kde-recent-files": {
+        "label": "Bijhouden van recente bestanden",
+        "description": "Schakelt de KDE-activiteitengeschiedenis van recente bestanden uit"
+      },
+      "kde-baloo": {
+        "label": "Bestandsindexering (Baloo)",
+        "description": "Schakelt de Baloo-bestandsindexer uit"
+      },
+      "kde-crash-reporting": {
+        "label": "Crashrapportage (DrKonqi)",
+        "description": "Schakelt de KDE-crashrapportageafhandeling uit"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetrie en gegevensverzameling",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Debloater",
-    "pageDescription": "Verwijder vooraf geïnstalleerde Windows-apps en OEM-bloatware",
+    "pageDescription": "Apps die vooraf zijn geïnstalleerd door Windows en de fabrikant. Eenmaal verwijderd, kunnen ze alleen opnieuw worden geïnstalleerd via de Microsoft Store.",
     "scanButton": "Scannen",
-    "irreversibleWarning": "Onomkeerbaar — verwijderde apps kunnen alleen opnieuw worden geïnstalleerd vanuit de Microsoft Store. Controleer uw selectie zorgvuldig.",
-    "scanningPackages": "Geïnstalleerde pakketten scannen...",
-    "removingProgress": "Bezig met verwijderen van {{current}} van {{total}}",
+    "rescanButton": "Opnieuw scannen",
+    "irreversibleWarning": "Verwijderen kan niet ongedaan worden gemaakt in de app: controleer de geselecteerde apps voordat u bevestigt.",
+    "scanningPackages": "Geïnstalleerde pakketten worden gescand…",
+    "removingProgress": "Apps worden verwijderd ({{current}} van {{total}})",
+    "receiptTitle": "Verwijderen voltooid",
+    "removedApps_one": "{{count}} app verwijderd",
+    "removedApps_other": "{{count}} apps verwijderd",
+    "failedCount_one": "{{count}} mislukt",
+    "failedCount_other": "{{count}} mislukt",
+    "reinstallFromStore": "alleen opnieuw te installeren via de Microsoft Store",
     "selectAll": "Alles selecteren",
-    "emptyStateTitle": "Geen bloatware gedetecteerd",
-    "emptyStateDescription": "Klik op \"Scannen\" om vooraf geïnstalleerde apps en OEM-bloatware te vinden.",
+    "filterLabel": "Categorie",
+    "confirmTitle_one": "{{count}} app verwijderen?",
+    "confirmTitle_other": "{{count}} apps verwijderen?",
+    "confirmDescription_one": "De app wordt verwijderd voor uw gebruiker en, met beheerdersrechten, ook voor nieuwe gebruikers. Ze kan alleen opnieuw worden geïnstalleerd via de Microsoft Store.",
+    "confirmDescription_other": "De apps worden verwijderd voor uw gebruiker en, met beheerdersrechten, ook voor nieuwe gebruikers. Ze kunnen alleen opnieuw worden geïnstalleerd via de Microsoft Store.",
+    "confirmLabel_one": "{{count}} app verwijderen",
+    "confirmLabel_other": "{{count}} apps verwijderen",
+    "emptyStateTitle": "Nog niet gescand",
+    "emptyStateDescription": "Geen scan van vooraf geïnstalleerde apps in deze sessie.",
+    "lastRun_one": "Laatste verwijdering: {{date}}, {{count}} app verwijderd.",
+    "lastRun_other": "Laatste verwijdering: {{date}}, {{count}} apps verwijderd.",
+    "checkKnownTitle": "Bekende apps",
+    "checkKnownDetail": "Een lijst met apps die vooraf zijn geïnstalleerd door Microsoft en door fabrikanten (OEM)",
+    "checkInstalledTitle": "Geïnstalleerde pakketten",
+    "checkInstalledDetail": "De app-pakketten van uw gebruiker, vergeleken met de lijst",
+    "checkRemovalTitle": "Verwijdering",
+    "checkRemovalDetail": "Voor uw gebruiker; met beheerdersrechten ook uit de kopie die voor nieuwe gebruikers wordt gebruikt",
+    "noneFoundTitle": "Geen van de vermelde apps is geïnstalleerd",
+    "noneFoundDescription": "De bekende vooraf geïnstalleerde apps zijn niet aanwezig voor uw gebruiker.",
+    "summaryTitle_one": "{{count}} vooraf geïnstalleerde app gevonden",
+    "summaryTitle_other": "{{count}} vooraf geïnstalleerde apps gevonden",
+    "selectedCount_one": "{{count}} geselecteerd",
+    "selectedCount_other": "{{count}} geselecteerd",
+    "removeButton_one": "{{count}} app verwijderen",
+    "removeButton_other": "{{count}} apps verwijderen",
+    "removeNone": "Selectie verwijderen",
     "scanFailedToast": "Bloatware-scan mislukt",
     "scanFailedDescription": "Controleer of PowerShell beschikbaar is",
     "scanFailedError": "Scannen op bloatware mislukt. Controleer of PowerShell beschikbaar is.",
