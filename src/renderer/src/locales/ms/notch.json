@@ -15,6 +15,7 @@
   "cpuDetail": "Penggunaan pemproses semasa",
   "sample": "Sampel terakhir",
   "used": "{{used}} daripada {{total}} GB digunakan",
+  "free": "{{free}} GB kosong",
   "waiting": "Menunggu data langsung",
   "unavailable": "Data cakera tidak tersedia",
   "live": "Metrik sistem langsung",

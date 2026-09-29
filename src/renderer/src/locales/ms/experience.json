@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Lihat perkara yang berubah, yang dipulihkan dan yang memerlukan semakan semula. Setiap tugas yang selesai meninggalkan rekod.",
-    "settings": "Sesuaikan SuperSonicCleaner mengikut citarasa anda. Tetapkan penampilan, pemberitahuan, pengecualian dan keutamaan pembersihan anda.",
-    "about": "Sumber terbuka, dibangunkan dengan teliti. Cari versi anda, semak kemas kini dan kenali projek ini.",
-    "recovery": "Cara yang jelas untuk kembali. Semak perubahan yang disokong dan butiran pemulihan sebelum membatalkan apa-apa."
+    "history": "100 imbasan dan pembersihan terakhir yang dijalankan pada PC ini, dengan tarikh, tempoh, item yang diproses dan ruang yang dibebaskan, serta resit bagi setiap pembersihan.",
+    "settings": "Penampilan, bahasa, permulaan, pemberitahuan, kemas kini, sandaran, keutamaan pembersihan dan pengecualian. Setiap perubahan disimpan serta-merta.",
+    "about": "Versi yang dipasang, kemas kini, lesen MIT dan projek asal (Kudu).",
+    "recovery": "Perubahan pada registry, perkhidmatan dan tugas berjadual yang dibuat oleh SuperSonicCleaner, berserta sandaran untuk membatalkannya. Fail yang dipadam tidak boleh dipulihkan."
   },
   "storageTrend": {
     "title": "Storan dari semasa ke semasa",
