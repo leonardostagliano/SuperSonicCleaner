@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "개인 정보 보호",
-    "pageDescription": "시스템 전반의 텔레메트리, 광고, 추적 및 데이터 수집을 제어합니다",
+    "pageDescription": "텔레메트리, 광고, 검색 및 동기화 설정을 읽고 가장 개인 정보를 보호하는 값과 비교합니다. 설정은 스위치를 사용하거나 확인할 때만 변경되며, 대부분 기본값으로 되돌릴 수 있습니다.",
     "scanButton": "검사",
-    "scanProgressPreparing": "검사 준비 중...",
-    "applyingProtections": "개인 정보 보호 설정 적용 중...",
-    "emptyStateTitle": "개인 정보 보호",
-    "emptyStateDescription": "\"검사\"를 클릭하여 개인 정보 및 보안 설정을 점검하고 권장 강화 설정을 적용하세요.",
-    "adminWarning": "일부 설정을 변경하려면 관리자 권한이 필요합니다. 완전한 보호를 받으려면 관리자 권한으로 SuperSonicCleaner를 실행하세요.",
+    "scanProgressPreparing": "검사 준비 중",
+    "applyingProtections": "설정 적용 중…",
+    "emptyStateTitle": "설정을 아직 검사하지 않음",
+    "emptyStateDescription": "검사는 설정을 읽기만 하며 어떤 설정도 변경하지 않습니다.",
+    "adminWarning": "일부 설정은 SuperSonicCleaner가 관리자 권한으로 실행될 때만 변경할 수 있습니다. 해당 권한이 없으면 설정은 그대로 유지됩니다.",
     "scanFailed": "개인 정보 검사 실패",
-    "applyFailed": "개인 정보 설정을 적용하지 못했습니다",
-    "applyFailedDescription": "관리자 권한으로 실행해 보세요",
-    "settingApplyFailed": "\"{{label}}\"을(를) 적용하지 못했습니다",
-    "settingEnabled": "{{label}} 차단됨",
+    "applyFailed": "개인 정보 설정을 적용할 수 없습니다",
+    "applyFailedDescription": "앱을 관리자 권한으로 실행해 보세요",
+    "settingApplyFailed": "\"{{label}}\"을(를) 적용할 수 없습니다",
+    "settingEnabled": "{{label}} 적용됨",
     "settingDisabled": "{{label}} 기본값으로 복원됨",
-    "settingRevertFailed": "\"{{label}}\"을(를) 되돌리지 못했습니다",
+    "settingRevertFailed": "\"{{label}}\"을(를) 복원하지 못했습니다",
     "settingRevertFailedGeneric": "개인 정보 설정을 되돌리지 못했습니다",
     "settingApplyFailedGeneric": "개인 정보 설정을 적용하지 못했습니다",
-    "ipcCallFailed": "IPC 호출 실패 — 관리자 권한으로 실행해 보세요",
+    "ipcCallFailed": "호출이 실패했습니다. 앱을 관리자 권한으로 실행해 보세요.",
     "allSettingsLabel": "모든 설정",
     "unknownError": "알 수 없는 오류",
     "requiresSettingEnabled": "먼저 \"{{label}}\"을(를) 사용하도록 설정하세요",
-    "adminRequired": "관리자 권한으로 실행해 보세요",
-    "settingNotApplied": "시스템에서 변경 사항을 보고하지 않았습니다 — 다시 시작이 필요하거나 다른 프로필에서 이 설정을 관리하고 있을 수 있습니다"
+    "adminRequired": "앱을 관리자 권한으로 실행해 보세요",
+    "settingNotApplied": "시스템에서 변경 사항을 보고하지 않았습니다. 다시 시작이 필요하거나 다른 프로필에서 이 설정을 관리하고 있을 수 있습니다.",
+    "rescanButton": "다시 검사",
+    "scanningButton": "검사 중…",
+    "applyRecommended_one": "권장 변경 사항 {{count}}개 적용",
+    "applyRecommended_other": "권장 변경 사항 {{count}}개 적용",
+    "summaryTitle_one": "변경할 설정 {{count}}개",
+    "summaryTitle_other": "변경할 설정 {{count}}개",
+    "summaryNone": "전체 {{total}}개 설정이 이미 가장 개인 정보를 보호하는 값으로 되어 있습니다",
+    "summaryFacts": "{{total}}개 중 {{protected}}개가 이미 가장 개인 정보를 보호하는 값 · {{categories}}개 범주",
+    "categoryMeta_one": "변경할 항목 {{count}}개",
+    "categoryMeta_other": "변경할 항목 {{count}}개",
+    "categoryAllSet": "모두 이미 설정됨",
+    "categoryApply_one": "{{count}}개 적용",
+    "categoryApply_other": "{{count}}개 적용",
+    "categoryShow": "표시",
+    "categoryHide": "숨기기",
+    "adminTag": "관리자 권한 필요",
+    "notReversibleTag": "되돌릴 수 없음",
+    "scanProgressTitle": "검사 진행 중",
+    "scanProgressCount": "{{total}}개 중 {{current}}개",
+    "scanProgressCategory": "확인 중: {{category}}",
+    "scanProgressLabel": "검사 진행률",
+    "applyingLabel": "적용 진행률",
+    "receiptTitle": "설정을 적용했습니다",
+    "receiptApplied_one": "{{count}}개 설정 변경됨",
+    "receiptApplied_other": "{{count}}개 설정 변경됨",
+    "receiptReversible": "스위치에서 복원할 수 있음",
+    "receiptFailed_one": "{{count}}개가 적용되지 않았습니다. 이유는 아래에 나와 있습니다.",
+    "receiptFailed_other": "{{count}}개가 적용되지 않았습니다. 이유는 아래에 나와 있습니다.",
+    "receiptFailedAdmin_one": "{{count}}개가 적용되지 않았습니다. 앱을 관리자 권한으로 실행해야 할 수 있습니다. 이유는 아래에 나와 있습니다.",
+    "receiptFailedAdmin_other": "{{count}}개가 적용되지 않았습니다. 앱을 관리자 권한으로 실행해야 할 수 있습니다. 이유는 아래에 나와 있습니다.",
+    "failedHeading": "적용되지 않은 설정",
+    "failedColumnSetting": "설정",
+    "failedColumnReason": "이유",
+    "confirmTitle_one": "설정 {{count}}개를 변경하시겠습니까?",
+    "confirmTitle_other": "설정 {{count}}개를 변경하시겠습니까?",
+    "confirmDescription": "나열된 설정이 가장 개인 정보를 보호하는 값으로 전환됩니다. 이 페이지의 스위치에서 기본값으로 되돌릴 수 있습니다.",
+    "confirmDescriptionIrreversible_one": "나열된 설정이 가장 개인 정보를 보호하는 값으로 전환됩니다. {{count}}개는 이 페이지에서 기본값으로 되돌릴 수 없습니다.",
+    "confirmDescriptionIrreversible_other": "나열된 설정이 가장 개인 정보를 보호하는 값으로 전환됩니다. {{count}}개는 이 페이지에서 기본값으로 되돌릴 수 없습니다.",
+    "confirmLabel_one": "설정 {{count}}개 변경",
+    "confirmLabel_other": "설정 {{count}}개 변경",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows 텔레메트리",
+        "description": "진단 데이터 수집을 최소 수준(보안 수준만)으로 설정합니다"
+      },
+      "activity-history": {
+        "label": "활동 기록",
+        "description": "Windows가 앱 및 파일 사용 내역을 추적하고 동기화하지 않도록 합니다"
+      },
+      "publish-activity": {
+        "label": "사용자 활동 게시",
+        "description": "Windows가 활동을 Microsoft에 게시하지 않도록 합니다"
+      },
+      "feedback-frequency": {
+        "label": "피드백 요청",
+        "description": "Microsoft의 정기적인 피드백 요청과 설문조사를 끕니다"
+      },
+      "handwriting-telemetry": {
+        "label": "필기 데이터",
+        "description": "필기 및 입력 데이터를 Microsoft로 보내지 않도록 합니다"
+      },
+      "input-personalization": {
+        "label": "입력 개인 설정",
+        "description": "개인 설정을 위한 입력 및 필기 데이터 수집을 중지합니다"
+      },
+      "tailored-experiences": {
+        "label": "맞춤형 환경",
+        "description": "Microsoft가 진단 데이터로 팁과 광고를 맞춤화하지 않도록 합니다"
+      },
+      "app-launch-tracking": {
+        "label": "앱 실행 추적",
+        "description": "시작 메뉴를 조정하기 위해 여는 앱을 Windows가 추적하지 않도록 합니다"
+      },
+      "advertising-id": {
+        "label": "광고 ID",
+        "description": "앱이 사용자를 추적하는 데 사용하는 고유 광고 ID를 끕니다"
+      },
+      "suggested-content": {
+        "label": "설정의 추천 콘텐츠",
+        "description": "Microsoft가 설정에 앱 추천과 광고를 표시하지 않도록 합니다"
+      },
+      "tips-notifications": {
+        "label": "팁 및 제안",
+        "description": "Windows 팁, 요령, 제안 알림을 끕니다"
+      },
+      "start-suggestions": {
+        "label": "시작 메뉴 제안",
+        "description": "시작 메뉴의 앱 제안(광고)을 끕니다"
+      },
+      "lock-screen-spotlight": {
+        "label": "잠금 화면 Spotlight",
+        "description": "잠금 화면의 Microsoft Spotlight 광고와 제안을 끕니다"
+      },
+      "silently-installed-apps": {
+        "label": "자동으로 설치되는 앱",
+        "description": "Windows가 홍보 앱을 자동으로 설치하지 않도록 합니다"
+      },
+      "preinstalled-apps": {
+        "label": "사전 설치 앱 제안",
+        "description": "사용한 적 없는 사전 설치 앱을 Windows가 제안하지 않도록 합니다"
+      },
+      "bing-start-menu": {
+        "label": "시작 메뉴의 Bing",
+        "description": "시작 메뉴에 입력한 검색어가 Bing으로 전송되지 않도록 합니다"
+      },
+      "bing-web-search": {
+        "label": "Bing 웹 결과",
+        "description": "Windows 검색의 웹 결과를 꺼서 검색이 이 PC 내에서만 이루어지도록 합니다"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "백그라운드에서 실행되며 데이터를 수집하는 Cortana를 끕니다"
+      },
+      "search-highlights": {
+        "label": "검색 하이라이트",
+        "description": "검색창의 인기 검색어 제안과 웹 콘텐츠를 끕니다"
+      },
+      "store-search-suggestions": {
+        "label": "Store 검색 제안",
+        "description": "검색어를 Microsoft로 전송하는 Microsoft Store 검색 제안을 끕니다"
+      },
+      "clipboard-sync": {
+        "label": "클립보드 클라우드 동기화",
+        "description": "클립보드 데이터가 클라우드를 통해 기기 간에 동기화되지 않도록 합니다"
+      },
+      "clipboard-history": {
+        "label": "클립보드 기록",
+        "description": "복사한 텍스트와 이미지를 저장하는 클립보드 기록을 끕니다"
+      },
+      "settings-sync": {
+        "label": "설정 동기화",
+        "description": "Windows 설정, 테마, 암호를 Microsoft 계정에 동기화하지 않도록 합니다"
+      },
+      "find-my-device": {
+        "label": "내 디바이스 찾기",
+        "description": "Microsoft의 위치 기반 디바이스 추적을 끕니다"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Windows 전반의 AI 도우미 Microsoft Copilot을 끕니다"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "화면의 모든 내용을 기록하는 AI 스크린샷 기록 기능인 Windows Recall을 끕니다"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "화면의 텍스트와 이미지를 분석하는 Click to Do의 AI 분석을 끕니다"
+      },
+      "ai-service-autostart": {
+        "label": "AI 서비스 자동 시작",
+        "description": "AI 서비스가 백그라운드에서 자동으로 시작되지 않도록 합니다"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Edge의 AI 문서 작성 및 다시 쓰기 기능을 끕니다"
+      },
+      "paint-ai": {
+        "label": "Paint의 AI 기능",
+        "description": "Microsoft Paint의 AI 이미지 생성 기능을 끕니다"
+      },
+      "notepad-ai": {
+        "label": "Notepad의 AI 기능",
+        "description": "Microsoft Notepad의 AI 다시 쓰기 기능을 끕니다"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack 서비스",
+        "description": "Connected User Experiences and Telemetry 서비스를 사용하지 않도록 설정합니다"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push 서비스",
+        "description": "텔레메트리에 사용되는 WAP Push 메시지 라우팅 서비스를 사용하지 않도록 설정합니다"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Windows 업데이트의 P2P 공유를 사용하지 않도록 설정하여 이 PC가 다른 기기로 업데이트 데이터를 업로드하지 않도록 합니다"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "대부분의 PC에서 필요하지 않은 백그라운드 서비스인 Downloaded Maps Manager를 사용하지 않도록 설정합니다"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "호환성 데이터를 수집하는 Microsoft 텔레메트리 작업을 사용하지 않도록 설정합니다"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "프로그램 텔레메트리를 업로드하는 백그라운드 작업을 사용하지 않도록 설정합니다"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "autochk 프록시를 통해 이루어지는 텔레메트리 수집을 사용하지 않도록 설정합니다"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Customer Experience Improvement Program 데이터 업로드를 사용하지 않도록 설정합니다"
+      },
+      "task-usb-ceip": {
+        "label": "USB 사용 데이터(CEIP)",
+        "description": "USB 기기 사용 텔레메트리 수집을 사용하지 않도록 설정합니다"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "디스크 진단 데이터 수집 및 업로드를 사용하지 않도록 설정합니다"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "피드백 디바이스 관리 텔레메트리 작업을 사용하지 않도록 설정합니다"
+      },
+      "task-maps-update": {
+        "label": "지도 업데이트 작업",
+        "description": "백그라운드에서 지도 데이터를 자동으로 다운로드하지 않도록 합니다"
+      },
+      "task-maps-toast": {
+        "label": "지도 알림 작업",
+        "description": "지도 알림 작업을 사용하지 않도록 설정합니다"
+      },
+      "edge-metrics": {
+        "label": "Edge 측정 항목 보고",
+        "description": "Edge가 사용 및 충돌 측정 항목을 Microsoft로 보내지 않도록 합니다"
+      },
+      "edge-site-info": {
+        "label": "Edge 사이트 정보 수집",
+        "description": "Edge가 방문한 사이트 주소를 Microsoft로 보내지 않도록 합니다"
+      },
+      "edge-personalization": {
+        "label": "Edge 개인화 보고",
+        "description": "Edge가 광고 개인화를 위해 방문 기록을 보내지 않도록 합니다"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge Copilot 페이지 액세스(CDP)",
+        "description": "Copilot이 Chrome DevTools Protocol을 통해 페이지 내용을 읽지 않도록 합니다"
+      },
+      "edge-copilot-page": {
+        "label": "Edge Copilot 페이지 컨텍스트",
+        "description": "Copilot이 페이지 컨텍스트를 사용해 콘텐츠를 분석하지 않도록 합니다"
+      },
+      "edge-discover": {
+        "label": "Edge Discover 페이지 검색",
+        "description": "Discover 기능이 페이지 내용을 검색하지 않도록 합니다"
+      },
+      "edge-sidebar": {
+        "label": "Edge 사이드바",
+        "description": "Edge 사이드바와 이로 인한 백그라운드 데이터 수집을 끕니다"
+      },
+      "edge-shopping": {
+        "label": "Edge 쇼핑 도우미",
+        "description": "Edge의 가격 비교 추적 기능을 끕니다"
+      },
+      "chrome-metrics": {
+        "label": "Chrome 측정 항목 보고",
+        "description": "Chrome이 사용 및 충돌 측정 항목을 Google로 보내지 않도록 합니다"
+      },
+      "chrome-feedback": {
+        "label": "Chrome 사용자 피드백",
+        "description": "Chrome이 사용자 피드백 데이터를 수집하여 전송하지 않도록 합니다"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome 확장 Safe Browsing",
+        "description": "Chrome이 URL 및 다운로드 확장 보고서를 Google로 보내지 않도록 합니다"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox 텔레메트리",
+        "description": "Firefox가 텔레메트리 데이터를 수집하여 Mozilla에 업로드하지 않도록 합니다"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox 기본 브라우저 에이전트",
+        "description": "브라우저 사용 데이터를 Mozilla에 보고하는 백그라운드 에이전트를 사용하지 않도록 설정합니다"
+      },
+      "macos-diagnostics": {
+        "label": "진단 및 사용 데이터",
+        "description": "Apple과 진단 및 사용 데이터를 공유하지 않도록 합니다"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri 분석",
+        "description": "Siri 분석 및 개선 데이터 수집을 중지합니다"
+      },
+      "macos-health-data-sharing": {
+        "label": "건강 데이터 공유",
+        "description": "연구를 위한 Apple과의 건강 데이터 공유를 중지합니다"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop 검색 허용",
+        "description": "AirDrop을 받지 않음으로 설정합니다. 시스템 설정에서 다시 켤 때까지 AirDrop으로 파일을 받을 수 없습니다"
+      },
+      "macos-crash-reporter": {
+        "label": "충돌 보고서",
+        "description": "충돌 보고서가 자동으로 전송되지 않도록 합니다"
+      },
+      "macos-ad-tracking": {
+        "label": "맞춤 광고",
+        "description": "Apple의 광고 추적을 제한합니다"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "App Store의 Siri 제안",
+        "description": "App Store의 Siri 제안을 끕니다"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari 제안",
+        "description": "Apple로 전송되는 Safari 검색 제안을 끕니다"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight 제안",
+        "description": "Spotlight 웹 제안을 끕니다"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari 상위 검색 결과 미리 로드",
+        "description": "사이트로 방문 데이터를 보내는 Safari의 상위 검색 결과 미리 로드를 중지합니다"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Handoff와 Universal Clipboard를 끕니다. Apple 기기 간에 작업을 이어서 하거나 복사 및 붙여넣기를 할 수 없게 됩니다"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud 분석",
+        "description": "Apple과 iCloud 분석 공유를 중지합니다"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari iCloud 탭",
+        "description": "Safari iCloud 탭 동기화를 끕니다. 다른 Apple 기기에서 열려 있는 탭이 더 이상 표시되지 않습니다"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Siri를 완전히 끕니다. Hey Siri, 음성 명령, Siri 단축어가 작동하지 않습니다"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri 받아쓰기",
+        "description": "받아쓰기를 끕니다. 키보드의 마이크 키가 작동하지 않습니다"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Apple Intelligence AI 기능을 끕니다(macOS 15 Sequoia 이상)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari 추적 금지",
+        "description": "Safari에서 추적 금지(Do Not Track) 헤더를 켭니다"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome 측정 항목 보고",
+        "description": "Chrome이 사용 측정 항목을 Google로 보내지 않도록 합니다"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Safe Browsing 보고서",
+        "description": "Chrome이 URL 및 다운로드 확장 보고서를 Google로 보내지 않도록 합니다"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox 텔레메트리",
+        "description": "Firefox가 텔레메트리 데이터를 수집하여 Mozilla에 업로드하지 않도록 합니다"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "확인되지 않은 애플리케이션이 차단되도록 Gatekeeper가 켜져 있는지 확인합니다"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote Apple Events",
+        "description": "Remote Apple Events를 꺼서 Mac이 원격으로 자동화되지 않도록 합니다"
+      },
+      "macos-wake-on-network": {
+        "label": "네트워크 액세스 시 깨우기",
+        "description": "네트워크 액세스 시 깨우기를 꺼서 Mac이 원격으로 깨워지지 않도록 합니다"
+      },
+      "macos-guest-account": {
+        "label": "게스트 계정",
+        "description": "무단 로컬 액세스를 방지하기 위해 게스트 계정을 끕니다"
+      },
+      "macos-auto-login": {
+        "label": "자동 로그인",
+        "description": "자동 로그인을 꺼서 시작 시 Mac이 인증을 요구하도록 합니다"
+      },
+      "macos-firewall": {
+        "label": "애플리케이션 방화벽",
+        "description": "들어오는 연결을 제어하도록 macOS 애플리케이션 방화벽을 켭니다"
+      },
+      "macos-stealth-mode": {
+        "label": "스텔스 모드",
+        "description": "스텔스 모드를 켜서 Mac이 프로브 요청(ICMP ping)에 응답하지 않도록 합니다"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP 전달 사용 안 함",
+        "description": "시스템이 네트워크 인터페이스 간에 패킷을 전달하지 않도록 합니다"
+      },
+      "macos-block-signed-auto": {
+        "label": "서명된 앱의 자동 허용 차단",
+        "description": "서명된 애플리케이션이 방화벽을 자동으로 우회하지 않도록 합니다"
+      },
+      "macos-remote-login": {
+        "label": "원격 로그인(SSH) 사용 안 함",
+        "description": "SSH 서버를 완전히 끕니다. SSH 액세스가 필요하면 이 설정을 끈 상태로 두고 대신 SSH 설정을 강화하세요"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH root 로그인 사용 안 함",
+        "description": "SSH를 통한 직접 root 로그인을 금지합니다. 대신 일반 계정에서 sudo를 사용하세요"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH 암호 인증 사용 안 함",
+        "description": "키 기반 SSH 인증만 허용합니다. 먼저 SSH 키를 설정하세요. 그렇지 않으면 접근할 수 없게 될 수 있습니다"
+      },
+      "macos-core-dumps": {
+        "label": "코어 덤프 사용 안 함",
+        "description": "민감한 메모리 내용이 유출될 수 있는 코어 덤프를 방지합니다"
+      },
+      "gnome-usage-stats": {
+        "label": "사용 통계",
+        "description": "GNOME 사용 통계 수집을 끕니다"
+      },
+      "gnome-recent-files": {
+        "label": "최근 파일 추적",
+        "description": "최근 사용한 파일 추적을 끕니다"
+      },
+      "gnome-location": {
+        "label": "위치 서비스",
+        "description": "GNOME 위치 서비스를 끕니다"
+      },
+      "gnome-crash-reporting": {
+        "label": "충돌 보고(Apport)",
+        "description": "자동 충돌 보고서 전송을 끕니다"
+      },
+      "gnome-connectivity-check": {
+        "label": "연결 확인",
+        "description": "정기적인 네트워크 연결 확인을 끕니다"
+      },
+      "core-dump-disable": {
+        "label": "코어 덤프 사용 안 함",
+        "description": "민감한 메모리 내용이 유출될 수 있는 코어 덤프를 방지합니다"
+      },
+      "ssh-root-login": {
+        "label": "SSH root 로그인 사용 안 함",
+        "description": "SSH를 통한 직접 root 로그인을 금지합니다. 대신 일반 계정에서 sudo를 사용하세요"
+      },
+      "ssh-password-auth": {
+        "label": "SSH 암호 인증 사용 안 함",
+        "description": "키 기반 SSH 인증만 허용합니다. 먼저 SSH 키를 설정하세요. 그렇지 않으면 접근할 수 없게 될 수 있습니다"
+      },
+      "kde-usage-stats": {
+        "label": "사용 통계",
+        "description": "KDE Plasma 사용자 피드백을 끕니다"
+      },
+      "kde-recent-files": {
+        "label": "최근 파일 추적",
+        "description": "최근 파일에 대한 KDE 활동 기록을 끕니다"
+      },
+      "kde-baloo": {
+        "label": "파일 색인(Baloo)",
+        "description": "Baloo 파일 색인기를 끕니다"
+      },
+      "kde-crash-reporting": {
+        "label": "충돌 보고(DrKonqi)",
+        "description": "KDE 충돌 보고 처리기를 끕니다"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "텔레메트리 및 데이터 수집",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "불필요한 기본 앱 제거",
-    "pageDescription": "사전 설치된 Windows 앱과 OEM 불필요한 기본 앱을 제거합니다",
+    "pageDescription": "Windows와 제조사가 사전 설치한 앱입니다. 제거하면 Microsoft Store에서만 다시 설치할 수 있습니다.",
     "scanButton": "검사",
-    "irreversibleWarning": "되돌릴 수 없음 — 제거된 앱은 Microsoft Store에서만 다시 설치할 수 있습니다. 선택 항목을 신중하게 검토하세요.",
-    "scanningPackages": "설치된 패키지 검사 중...",
-    "removingProgress": "{{total}}개 중 {{current}}개 제거 중",
+    "rescanButton": "다시 검사",
+    "irreversibleWarning": "이 앱에서는 제거를 되돌릴 수 없습니다. 확인하기 전에 선택한 앱을 확인하세요.",
+    "scanningPackages": "설치된 패키지 검사 중…",
+    "removingProgress": "앱 제거 중({{total}}개 중 {{current}}개)",
+    "receiptTitle": "제거 완료",
+    "removedApps_one": "앱 {{count}}개 제거됨",
+    "removedApps_other": "앱 {{count}}개 제거됨",
+    "failedCount_one": "{{count}}개 실패",
+    "failedCount_other": "{{count}}개 실패",
+    "reinstallFromStore": "Microsoft Store에서만 다시 설치 가능",
     "selectAll": "모두 선택",
-    "emptyStateTitle": "불필요한 기본 앱이 감지되지 않았습니다",
-    "emptyStateDescription": "\"검사\"를 클릭하여 사전 설치된 앱과 OEM 불필요한 기본 앱을 찾으세요.",
+    "filterLabel": "범주",
+    "confirmTitle_one": "앱 {{count}}개를 제거하시겠습니까?",
+    "confirmTitle_other": "앱 {{count}}개를 제거하시겠습니까?",
+    "confirmDescription_one": "앱이 사용자에서 제거되며, 관리자 권한이 있으면 새 사용자에서도 제거됩니다. Microsoft Store에서만 다시 설치할 수 있습니다.",
+    "confirmDescription_other": "앱이 사용자에서 제거되며, 관리자 권한이 있으면 새 사용자에서도 제거됩니다. Microsoft Store에서만 다시 설치할 수 있습니다.",
+    "confirmLabel_one": "앱 {{count}}개 제거",
+    "confirmLabel_other": "앱 {{count}}개 제거",
+    "emptyStateTitle": "아직 검사하지 않음",
+    "emptyStateDescription": "이 세션에서는 사전 설치 앱을 검사하지 않았습니다.",
+    "lastRun_one": "마지막 제거: {{date}}, 앱 {{count}}개 제거됨.",
+    "lastRun_other": "마지막 제거: {{date}}, 앱 {{count}}개 제거됨.",
+    "checkKnownTitle": "알려진 앱",
+    "checkKnownDetail": "Microsoft 및 제조사(OEM)가 사전 설치한 앱 목록",
+    "checkInstalledTitle": "설치된 패키지",
+    "checkInstalledDetail": "사용자의 앱 패키지를 목록과 비교",
+    "checkRemovalTitle": "제거",
+    "checkRemovalDetail": "사용자에 대해; 관리자 권한이 있으면 새 사용자용 복사본에서도 제거",
+    "noneFoundTitle": "목록에 있는 앱이 설치되어 있지 않음",
+    "noneFoundDescription": "알려진 사전 설치 앱이 사용자에게 없습니다.",
+    "summaryTitle_one": "사전 설치 앱 {{count}}개 발견됨",
+    "summaryTitle_other": "사전 설치 앱 {{count}}개 발견됨",
+    "selectedCount_one": "{{count}}개 선택됨",
+    "selectedCount_other": "{{count}}개 선택됨",
+    "removeButton_one": "앱 {{count}}개 제거",
+    "removeButton_other": "앱 {{count}}개 제거",
+    "removeNone": "선택 항목 제거",
     "scanFailedToast": "불필요한 기본 앱 검사 실패",
     "scanFailedDescription": "PowerShell을 사용할 수 있는지 확인하세요",
     "scanFailedError": "불필요한 기본 앱을 검사하지 못했습니다. PowerShell을 사용할 수 있는지 확인하세요.",

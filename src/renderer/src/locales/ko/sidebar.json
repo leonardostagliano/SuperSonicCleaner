@@ -10,5 +10,7 @@
   "history": "활동",
   "settings": "기본 설정",
   "gameMode": "게임 모드",
-  "firewallAudit": "방화벽 감사"
+  "firewallAudit": "방화벽 감사",
+  "updateBadge": "업데이트",
+  "mainNavigation": "기본 탐색"
 }
