@@ -15,6 +15,7 @@
   "cpuDetail": "目前的處理器使用率",
   "sample": "最近一次取樣",
   "used": "已用 {{used}}，共 {{total}} GB",
+  "free": "可用 {{free}} GB",
   "waiting": "正在等待即時資料",
   "unavailable": "沒有磁碟資料",
   "live": "即時系統指標",

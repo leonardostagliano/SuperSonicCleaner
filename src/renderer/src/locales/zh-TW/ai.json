@@ -1,7 +1,7 @@
 {
   "title": "AI 分析",
   "description": "取得關於此次掃描結果的第二意見。",
-  "hubDescription": "使用您已登入的 Codex 帳戶，取得關於掃描與效能記錄的第二意見。",
+  "hubDescription": "僅在您從工具中開始分析時，使用您已登入的帳戶，向 Codex 傳送掃描中繼資料或記錄測量值。",
   "hubPrivacy": "掃描僅會共用匿名的檔案中繼資料。記錄會共用 CPU、記憶體與磁碟的數值測量資料，以及暫時性的處理程序 ID。名稱、路徑、備註與檔案內容都會保留在此裝置上。",
   "connectionTitle": "Codex 連線",
   "connectionIntro": "在此電腦上使用 Codex。請先檢查連線狀態，再於下方選擇工具。",
@@ -13,19 +13,24 @@
   "hubInstructions": "完成一次掃描或儲存一次效能記錄，啟用其 AI 分析，然後使用專用按鈕開始。不會自動傳送任何內容。",
   "tools": {
     "cleaner": {
-      "title": "系統清理"
+      "title": "系統清理",
+      "dataSent": "暫時性 ID、檔案類型、大小和大致存在時間。不包含隱私痕跡。"
     },
     "largeFiles": {
-      "title": "大型檔案"
+      "title": "大型檔案",
+      "dataSent": "暫時性 ID、檔案類型、大小和大致存在時間。"
     },
     "duplicates": {
-      "title": "重複檔案"
+      "title": "重複檔案",
+      "dataSent": "暫時性 ID、檔案類型、大小、大致存在時間和重複檔案群組。"
     },
     "disk": {
-      "title": "磁碟分析"
+      "title": "磁碟分析",
+      "dataSent": "暫時性 ID、資料夾總大小和大致存在時間。"
     },
     "performance": {
-      "title": "效能記錄"
+      "title": "效能記錄",
+      "dataSent": "CPU、記憶體與磁碟的數值測量資料，以及暫時性的處理程序 ID。"
     }
   },
   "enable": "為此畫面啟用 AI 分析",
@@ -51,5 +56,23 @@
     "low": "低優先順序",
     "medium": "中優先順序",
     "high": "高優先順序"
+  },
+  "toolsTitle": "工具",
+  "columns": {
+    "tool": "工具",
+    "dataSent": "已傳送的資料",
+    "lastRun": "上次執行",
+    "state": "狀態"
+  },
+  "lastRun": {
+    "running": "正在執行",
+    "done": "已在本次工作階段中完成",
+    "failed": "失敗",
+    "none": "本次工作階段中無",
+    "perRecording": "隨每次已分析的記錄一併儲存"
+  },
+  "state": {
+    "on": "開啟",
+    "off": "關閉"
   }
 }

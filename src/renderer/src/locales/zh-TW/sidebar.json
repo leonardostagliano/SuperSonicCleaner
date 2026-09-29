@@ -10,5 +10,7 @@
   "history": "活動",
   "settings": "偏好設定",
   "gameMode": "遊戲模式",
-  "firewallAudit": "防火牆稽核"
+  "firewallAudit": "防火牆稽核",
+  "updateBadge": "更新",
+  "mainNavigation": "主要導覽"
 }

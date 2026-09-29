@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "隱私防護",
-    "pageDescription": "控制整個系統中的遙測、廣告、追蹤與資料收集",
+    "pageDescription": "讀取遙測、廣告、搜尋與同步設定，並與最隱私的值進行比較。僅在您使用開關或確認時，設定才會變更；大多數可還原為預設值。",
     "scanButton": "掃描",
-    "scanProgressPreparing": "正在準備掃描...",
-    "applyingProtections": "正在套用隱私保護...",
-    "emptyStateTitle": "隱私防護",
-    "emptyStateDescription": "按一下「掃描」以稽核您的隱私與安全性設定，並套用建議的強化項目。",
-    "adminWarning": "部分設定需要系統管理員權限才能修改。請以系統管理員身分執行 SuperSonicCleaner 以取得完整保護。",
+    "scanProgressPreparing": "正在準備掃描",
+    "applyingProtections": "正在套用設定…",
+    "emptyStateTitle": "尚未掃描設定",
+    "emptyStateDescription": "掃描會讀取設定，但不會變更其中任何一項。",
+    "adminWarning": "只有當 SuperSonicCleaner 以系統管理員身分執行時，部分設定才能變更；沒有該權限時，這些設定將維持不變。",
     "scanFailed": "隱私掃描失敗",
     "applyFailed": "無法套用隱私設定",
-    "applyFailedDescription": "請嘗試以系統管理員身分執行",
+    "applyFailedDescription": "請嘗試以系統管理員身分執行此應用程式",
     "settingApplyFailed": "無法套用「{{label}}」",
-    "settingEnabled": "已封鎖 {{label}}",
+    "settingEnabled": "已套用 {{label}}",
     "settingDisabled": "已將 {{label}} 還原為預設值",
     "settingRevertFailed": "無法還原「{{label}}」",
     "settingRevertFailedGeneric": "無法還原隱私設定",
     "settingApplyFailedGeneric": "無法套用隱私設定",
-    "ipcCallFailed": "IPC 呼叫失敗 — 請嘗試以系統管理員身分執行",
+    "ipcCallFailed": "呼叫失敗：請嘗試以系統管理員身分執行此應用程式",
     "allSettingsLabel": "所有設定",
     "unknownError": "未知錯誤",
     "requiresSettingEnabled": "請先啟用「{{label}}」",
-    "adminRequired": "請嘗試以系統管理員身分執行",
-    "settingNotApplied": "系統未回報此變更 — 可能需要重新啟動，或此設定由其他設定檔管理"
+    "adminRequired": "請嘗試以系統管理員身分執行此應用程式",
+    "settingNotApplied": "系統未回報此變更：可能需要重新啟動，或此設定由其他設定檔管理",
+    "rescanButton": "重新掃描",
+    "scanningButton": "正在掃描…",
+    "applyRecommended_one": "套用 {{count}} 項建議變更",
+    "applyRecommended_other": "套用 {{count}} 項建議變更",
+    "summaryTitle_one": "{{count}} 項設定待變更",
+    "summaryTitle_other": "{{count}} 項設定待變更",
+    "summaryNone": "全部 {{total}} 項設定已是最隱私的值",
+    "summaryFacts": "{{total}} 項中已有 {{protected}} 項為最隱私的值 · {{categories}} 個類別",
+    "categoryMeta_one": "{{count}} 項待變更",
+    "categoryMeta_other": "{{count}} 項待變更",
+    "categoryAllSet": "已全部設定",
+    "categoryApply_one": "套用 {{count}} 項",
+    "categoryApply_other": "套用 {{count}} 項",
+    "categoryShow": "顯示",
+    "categoryHide": "隱藏",
+    "adminTag": "需要系統管理員權限",
+    "notReversibleTag": "無法復原",
+    "scanProgressTitle": "正在掃描",
+    "scanProgressCount": "{{total}} 項中的第 {{current}} 項",
+    "scanProgressCategory": "正在檢查：{{category}}",
+    "scanProgressLabel": "掃描進度",
+    "applyingLabel": "套用進度",
+    "receiptTitle": "已套用設定",
+    "receiptApplied_one": "已變更 {{count}} 項設定",
+    "receiptApplied_other": "已變更 {{count}} 項設定",
+    "receiptReversible": "可從開關處還原",
+    "receiptFailed_one": "{{count}} 項未套用：原因如下。",
+    "receiptFailed_other": "{{count}} 項未套用：原因如下。",
+    "receiptFailedAdmin_one": "{{count}} 項未套用：可能需要以系統管理員身分執行此應用程式。原因如下。",
+    "receiptFailedAdmin_other": "{{count}} 項未套用：可能需要以系統管理員身分執行此應用程式。原因如下。",
+    "failedHeading": "未套用的設定",
+    "failedColumnSetting": "設定",
+    "failedColumnReason": "原因",
+    "confirmTitle_one": "要變更 {{count}} 項設定嗎？",
+    "confirmTitle_other": "要變更 {{count}} 項設定嗎？",
+    "confirmDescription": "列出的設定將切換為最隱私的值。您可以在此頁面的開關處將其還原為預設值。",
+    "confirmDescriptionIrreversible_one": "列出的設定將切換為最隱私的值。其中 {{count}} 項無法從此頁面還原為預設值。",
+    "confirmDescriptionIrreversible_other": "列出的設定將切換為最隱私的值。其中 {{count}} 項無法從此頁面還原為預設值。",
+    "confirmLabel_one": "變更 {{count}} 項設定",
+    "confirmLabel_other": "變更 {{count}} 項設定",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows 遙測",
+        "description": "將診斷資料收集設為最低層級(僅安全性層級)"
+      },
+      "activity-history": {
+        "label": "活動歷程記錄",
+        "description": "阻止 Windows 追蹤並同步您的應用程式與檔案使用情形"
+      },
+      "publish-activity": {
+        "label": "發布使用者活動",
+        "description": "阻止 Windows 將您的活動發布給 Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "意見反應提示",
+        "description": "關閉 Microsoft 的定期意見反應提示與問卷調查"
+      },
+      "handwriting-telemetry": {
+        "label": "手寫資料",
+        "description": "停止將手寫與輸入資料傳送給 Microsoft"
+      },
+      "input-personalization": {
+        "label": "輸入個人化",
+        "description": "停止收集用於個人化的輸入與手寫資料"
+      },
+      "tailored-experiences": {
+        "label": "個人化體驗",
+        "description": "阻止 Microsoft 使用診斷資料個人化提示與廣告"
+      },
+      "app-launch-tracking": {
+        "label": "應用程式啟動追蹤",
+        "description": "阻止 Windows 追蹤您開啟的應用程式以調整開始功能表"
+      },
+      "advertising-id": {
+        "label": "廣告識別碼",
+        "description": "關閉應用程式用來追蹤您的專屬廣告識別碼"
+      },
+      "suggested-content": {
+        "label": "[設定] 中的推薦內容",
+        "description": "阻止 Microsoft 在 [設定] 中顯示應用程式建議與廣告"
+      },
+      "tips-notifications": {
+        "label": "提示與建議",
+        "description": "關閉 Windows 提示、訣竅與建議通知"
+      },
+      "start-suggestions": {
+        "label": "開始功能表建議",
+        "description": "關閉開始功能表中的應用程式建議(廣告)"
+      },
+      "lock-screen-spotlight": {
+        "label": "鎖定畫面 Spotlight",
+        "description": "關閉鎖定畫面上的 Microsoft Spotlight 廣告與建議"
+      },
+      "silently-installed-apps": {
+        "label": "靜默安裝的應用程式",
+        "description": "阻止 Windows 自動安裝推廣應用程式"
+      },
+      "preinstalled-apps": {
+        "label": "預先安裝應用程式建議",
+        "description": "阻止 Windows 建議您尚未使用過的預先安裝應用程式"
+      },
+      "bing-start-menu": {
+        "label": "開始功能表中的 Bing",
+        "description": "阻止在開始功能表中輸入的搜尋字詞傳送給 Bing"
+      },
+      "bing-web-search": {
+        "label": "Bing 網頁結果",
+        "description": "關閉 Windows 搜尋中的網頁結果，讓搜尋僅在此電腦上進行"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "關閉在背景執行並收集資料的 Cortana"
+      },
+      "search-highlights": {
+        "label": "搜尋精選",
+        "description": "關閉搜尋方塊中的熱門搜尋建議與網頁內容"
+      },
+      "store-search-suggestions": {
+        "label": "Store 搜尋建議",
+        "description": "關閉會將您的查詢傳送給 Microsoft 的 Microsoft Store 搜尋建議"
+      },
+      "clipboard-sync": {
+        "label": "剪貼簿雲端同步",
+        "description": "阻止剪貼簿資料透過雲端在裝置間同步"
+      },
+      "clipboard-history": {
+        "label": "剪貼簿歷程記錄",
+        "description": "關閉儲存已複製文字與影像的剪貼簿歷程記錄"
+      },
+      "settings-sync": {
+        "label": "設定同步",
+        "description": "停止將 Windows 設定、佈景主題與密碼同步至您的 Microsoft 帳戶"
+      },
+      "find-my-device": {
+        "label": "尋找我的裝置",
+        "description": "關閉 Microsoft 依位置追蹤裝置的功能"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "關閉 Windows 全域的 AI 助理 Microsoft Copilot"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "關閉 Windows Recall，即記錄畫面上所有內容的 AI 螢幕擷取歷程功能"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "關閉 Click to Do 對畫面文字與影像的 AI 分析"
+      },
+      "ai-service-autostart": {
+        "label": "AI 服務自動啟動",
+        "description": "阻止 AI 服務在背景自動啟動"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "關閉 Edge 的 AI 撰寫與改寫功能"
+      },
+      "paint-ai": {
+        "label": "Paint 的 AI 功能",
+        "description": "關閉 Microsoft Paint 中的 AI 影像產生功能"
+      },
+      "notepad-ai": {
+        "label": "Notepad 的 AI 功能",
+        "description": "關閉 Microsoft Notepad 中的 AI 改寫功能"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack 服務",
+        "description": "停用 Connected User Experiences and Telemetry 服務"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push 服務",
+        "description": "停用用於遙測的 WAP Push 訊息路由服務"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "停用 Windows 更新的點對點共用，讓此電腦不會將更新資料上傳給其他裝置"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "停用大多數電腦都不需要的背景服務 Downloaded Maps Manager"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "停用收集相容性資料的 Microsoft 遙測工作"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "停用上傳程式遙測資料的背景工作"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "停用透過 autochk Proxy 進行的遙測收集"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "停用客戶經驗改進計畫的資料上傳"
+      },
+      "task-usb-ceip": {
+        "label": "USB 使用資料(CEIP)",
+        "description": "停用 USB 裝置使用情形遙測的收集"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "停用磁碟診斷資料的收集與上傳"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "停用意見反應裝置管理遙測工作"
+      },
+      "task-maps-update": {
+        "label": "地圖更新工作",
+        "description": "停用背景自動下載地圖資料"
+      },
+      "task-maps-toast": {
+        "label": "地圖通知工作",
+        "description": "停用地圖通知工作"
+      },
+      "edge-metrics": {
+        "label": "Edge 指標回報",
+        "description": "阻止 Edge 將使用情形與當機指標傳送給 Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Edge 網站資訊收集",
+        "description": "阻止 Edge 將您造訪的網站位址傳送給 Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Edge 個人化回報",
+        "description": "阻止 Edge 傳送您的瀏覽記錄用於廣告個人化"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge Copilot 頁面存取(CDP)",
+        "description": "阻止 Copilot 透過 Chrome DevTools Protocol 讀取頁面內容"
+      },
+      "edge-copilot-page": {
+        "label": "Edge Copilot 頁面內容脈絡",
+        "description": "阻止 Copilot 使用頁面內容脈絡分析內容"
+      },
+      "edge-discover": {
+        "label": "Edge Discover 頁面掃描",
+        "description": "阻止 Discover 功能掃描頁面內容"
+      },
+      "edge-sidebar": {
+        "label": "Edge 側邊欄",
+        "description": "關閉 Edge 側邊欄及其背景資料收集"
+      },
+      "edge-shopping": {
+        "label": "Edge 購物助理",
+        "description": "關閉 Edge 中的比價追蹤功能"
+      },
+      "chrome-metrics": {
+        "label": "Chrome 指標回報",
+        "description": "阻止 Chrome 將使用情形與當機指標傳送給 Google"
+      },
+      "chrome-feedback": {
+        "label": "Chrome 使用者意見反應",
+        "description": "阻止 Chrome 收集並傳送使用者意見反應資料"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome 擴充 Safe Browsing",
+        "description": "阻止 Chrome 將擴充的 URL 與下載報告傳送給 Google"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox 遙測",
+        "description": "阻止 Firefox 收集遙測資料並上傳至 Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox 預設瀏覽器代理程式",
+        "description": "停用向 Mozilla 回報瀏覽器使用資料的背景代理程式"
+      },
+      "macos-diagnostics": {
+        "label": "診斷與使用資料",
+        "description": "停止與 Apple 共用診斷與使用資料"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri 分析",
+        "description": "停止收集 Siri 分析與改進資料"
+      },
+      "macos-health-data-sharing": {
+        "label": "健康資料共用",
+        "description": "停止為研究目的與 Apple 共用健康資料"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop 可探索性",
+        "description": "將 AirDrop 設為「沒有人」：在系統設定中重新開啟之前，您將無法透過 AirDrop 接收檔案"
+      },
+      "macos-crash-reporter": {
+        "label": "當機報告工具",
+        "description": "阻止當機報告工具自動傳送報告"
+      },
+      "macos-ad-tracking": {
+        "label": "個人化廣告",
+        "description": "限制 Apple 的廣告追蹤"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "App Store 中的 Siri 建議",
+        "description": "關閉 App Store 中的 Siri 建議"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari 建議",
+        "description": "關閉傳送給 Apple 的 Safari 搜尋建議"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight 建議",
+        "description": "關閉 Spotlight 網頁建議"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari 預先載入最佳結果",
+        "description": "阻止 Safari 預先載入最佳搜尋結果，此行為會將瀏覽資料傳送給網站"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "關閉 Handoff 與 Universal Clipboard：您將無法在 Apple 裝置之間接續活動或進行複製貼上"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud 分析",
+        "description": "停止與 Apple 共用 iCloud 分析資料"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari iCloud 分頁",
+        "description": "關閉 Safari iCloud 分頁同步：您將不再看到在其他 Apple 裝置上開啟的分頁"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "完全關閉 Siri：Hey Siri、語音指令與 Siri 捷徑都將停止運作"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri 口述聽寫",
+        "description": "關閉口述聽寫功能：鍵盤上的麥克風鍵將停止運作"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "關閉 Apple Intelligence 的 AI 功能(macOS 15 Sequoia 及更新版本)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari 請勿追蹤",
+        "description": "在 Safari 中開啟「請勿追蹤」(Do Not Track) 標頭"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome 指標回報",
+        "description": "阻止 Chrome 將使用情形指標傳送給 Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Safe Browsing 報告",
+        "description": "阻止 Chrome 將擴充的 URL 與下載報告傳送給 Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox 遙測",
+        "description": "阻止 Firefox 收集遙測資料並上傳至 Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "確保 Gatekeeper 已開啟，以封鎖未經驗證的應用程式"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote Apple Events",
+        "description": "關閉 Remote Apple Events，讓您的 Mac 無法被遠端自動化操作"
+      },
+      "macos-wake-on-network": {
+        "label": "網路存取喚醒",
+        "description": "關閉網路存取喚醒，讓您的 Mac 無法被遠端喚醒"
+      },
+      "macos-guest-account": {
+        "label": "訪客帳戶",
+        "description": "關閉訪客帳戶以防止未經授權的本機存取"
+      },
+      "macos-auto-login": {
+        "label": "自動登入",
+        "description": "關閉自動登入，讓 Mac 在啟動時要求進行驗證"
+      },
+      "macos-firewall": {
+        "label": "應用程式防火牆",
+        "description": "開啟 macOS 應用程式防火牆以控制連入連線"
+      },
+      "macos-stealth-mode": {
+        "label": "隱形模式",
+        "description": "開啟隱形模式，讓您的 Mac 不回應探測要求(ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "停用 IP 轉送",
+        "description": "阻止系統在網路介面之間轉送封包"
+      },
+      "macos-block-signed-auto": {
+        "label": "封鎖已簽署應用程式的自動允許",
+        "description": "阻止已簽署的應用程式自動繞過防火牆"
+      },
+      "macos-remote-login": {
+        "label": "停用遠端登入(SSH)",
+        "description": "完全關閉 SSH 伺服器。如果您需要 SSH 存取，請保持此項關閉，並改為強化 SSH 設定"
+      },
+      "macos-ssh-root-login": {
+        "label": "停用 SSH root 登入",
+        "description": "阻止透過 SSH 直接以 root 身分登入；請改用一般帳戶的 sudo"
+      },
+      "macos-ssh-password-auth": {
+        "label": "停用 SSH 密碼驗證",
+        "description": "僅允許以金鑰為基礎的 SSH 驗證。請先設定 SSH 金鑰，否則您可能無法存取系統"
+      },
+      "macos-core-dumps": {
+        "label": "停用核心傾印",
+        "description": "阻止可能洩漏敏感記憶體內容的核心傾印"
+      },
+      "gnome-usage-stats": {
+        "label": "使用統計資料",
+        "description": "關閉 GNOME 使用統計資料的收集"
+      },
+      "gnome-recent-files": {
+        "label": "最近檔案追蹤",
+        "description": "關閉對最近使用檔案的追蹤"
+      },
+      "gnome-location": {
+        "label": "位置服務",
+        "description": "關閉 GNOME 位置服務"
+      },
+      "gnome-crash-reporting": {
+        "label": "當機回報(Apport)",
+        "description": "關閉自動提交當機報告"
+      },
+      "gnome-connectivity-check": {
+        "label": "連線檢查",
+        "description": "關閉定期的網路連線檢查"
+      },
+      "core-dump-disable": {
+        "label": "停用核心傾印",
+        "description": "阻止可能洩漏敏感記憶體內容的核心傾印"
+      },
+      "ssh-root-login": {
+        "label": "停用 SSH root 登入",
+        "description": "阻止透過 SSH 直接以 root 身分登入；請改用一般帳戶的 sudo"
+      },
+      "ssh-password-auth": {
+        "label": "停用 SSH 密碼驗證",
+        "description": "僅允許以金鑰為基礎的 SSH 驗證。請先設定 SSH 金鑰，否則您可能無法存取系統"
+      },
+      "kde-usage-stats": {
+        "label": "使用統計資料",
+        "description": "關閉 KDE Plasma 使用者意見反應"
+      },
+      "kde-recent-files": {
+        "label": "最近檔案追蹤",
+        "description": "關閉 KDE 最近檔案的活動歷程記錄"
+      },
+      "kde-baloo": {
+        "label": "檔案索引(Baloo)",
+        "description": "關閉 Baloo 檔案索引器"
+      },
+      "kde-crash-reporting": {
+        "label": "當機回報(DrKonqi)",
+        "description": "關閉 KDE 當機回報處理程式"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "遙測與資料收集",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "移除多餘軟體",
-    "pageDescription": "移除預先安裝的 Windows 應用程式和 OEM 多餘軟體",
+    "pageDescription": "由 Windows 與製造商預先安裝的應用程式。移除後，只能從 Microsoft Store 重新安裝。",
     "scanButton": "掃描",
-    "irreversibleWarning": "此操作無法復原 — 已移除的應用程式只能從 Microsoft Store 重新安裝。請仔細檢查您的選擇。",
-    "scanningPackages": "正在掃描已安裝的套件...",
-    "removingProgress": "正在移除第 {{current}} 個，共 {{total}} 個",
+    "rescanButton": "重新掃描",
+    "irreversibleWarning": "此應用程式無法復原移除操作：請在確認前檢查所選的應用程式。",
+    "scanningPackages": "正在掃描已安裝的套件…",
+    "removingProgress": "正在移除應用程式({{current}}/{{total}})",
+    "receiptTitle": "移除完成",
+    "removedApps_one": "已移除 {{count}} 個應用程式",
+    "removedApps_other": "已移除 {{count}} 個應用程式",
+    "failedCount_one": "{{count}} 個失敗",
+    "failedCount_other": "{{count}} 個失敗",
+    "reinstallFromStore": "僅可從 Microsoft Store 重新安裝",
     "selectAll": "全選",
-    "emptyStateTitle": "未偵測到多餘軟體",
-    "emptyStateDescription": "按一下「掃描」以尋找預先安裝的應用程式和 OEM 多餘軟體。",
+    "filterLabel": "類別",
+    "confirmTitle_one": "要移除 {{count}} 個應用程式嗎？",
+    "confirmTitle_other": "要移除 {{count}} 個應用程式嗎？",
+    "confirmDescription_one": "此應用程式將從您的使用者中移除；如具備系統管理員權限，也會從新使用者中移除。只能從 Microsoft Store 重新安裝。",
+    "confirmDescription_other": "這些應用程式將從您的使用者中移除；如具備系統管理員權限，也會從新使用者中移除。只能從 Microsoft Store 重新安裝。",
+    "confirmLabel_one": "移除 {{count}} 個應用程式",
+    "confirmLabel_other": "移除 {{count}} 個應用程式",
+    "emptyStateTitle": "尚未掃描",
+    "emptyStateDescription": "本次工作階段尚未掃描預先安裝的應用程式。",
+    "lastRun_one": "上次移除：{{date}}，已移除 {{count}} 個應用程式。",
+    "lastRun_other": "上次移除：{{date}}，已移除 {{count}} 個應用程式。",
+    "checkKnownTitle": "已知應用程式",
+    "checkKnownDetail": "由 Microsoft 與製造商(OEM) 預先安裝的應用程式清單",
+    "checkInstalledTitle": "已安裝的套件",
+    "checkInstalledDetail": "將您使用者的應用程式套件與清單進行比較",
+    "checkRemovalTitle": "移除",
+    "checkRemovalDetail": "針對您的使用者；如具備系統管理員權限，也會從供新使用者使用的副本中移除",
+    "noneFoundTitle": "清單中的應用程式均未安裝",
+    "noneFoundDescription": "已知的預先安裝應用程式在您的使用者下不存在。",
+    "summaryTitle_one": "找到 {{count}} 個預先安裝的應用程式",
+    "summaryTitle_other": "找到 {{count}} 個預先安裝的應用程式",
+    "selectedCount_one": "已選取 {{count}} 個",
+    "selectedCount_other": "已選取 {{count}} 個",
+    "removeButton_one": "移除 {{count}} 個應用程式",
+    "removeButton_other": "移除 {{count}} 個應用程式",
+    "removeNone": "移除所選項目",
     "scanFailedToast": "多餘軟體掃描失敗",
     "scanFailedDescription": "請確認 PowerShell 可用",
     "scanFailedError": "無法掃描多餘軟體。請確認 PowerShell 可用。",
