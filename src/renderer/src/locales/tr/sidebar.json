@@ -10,5 +10,7 @@
   "history": "Etkinlik",
   "settings": "Tercihler",
   "gameMode": "Oyun Modu",
-  "firewallAudit": "Güvenlik Duvarı Denetimi"
+  "firewallAudit": "Güvenlik Duvarı Denetimi",
+  "updateBadge": "Güncelleme",
+  "mainNavigation": "Ana gezinme"
 }

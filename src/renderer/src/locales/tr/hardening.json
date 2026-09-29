@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Gizlilik Kalkanı",
-    "pageDescription": "Sistem genelinde telemetriyi, reklamları, izlemeyi ve veri toplamayı denetleyin",
+    "pageDescription": "Telemetri, reklam, arama ve senkronizasyon ayarlarını okur ve bunları en gizli değerle karşılaştırır. Bir ayar yalnızca siz anahtarını kullandığınızda veya onayladığınızda değişir; çoğu varsayılana geri döndürülebilir.",
     "scanButton": "Tara",
-    "scanProgressPreparing": "Tarama hazırlanıyor...",
-    "applyingProtections": "Gizlilik korumaları uygulanıyor...",
-    "emptyStateTitle": "Gizlilik Kalkanı",
-    "emptyStateDescription": "\"Tara\" seçeneğine tıklayarak gizlilik ve güvenlik ayarlarınızı denetleyin ve önerilen güçlendirmeleri uygulayın.",
-    "adminWarning": "Bazı ayarları değiştirmek için yönetici ayrıcalıkları gerekir. Tam koruma için SuperSonicCleaner'yu yönetici olarak çalıştırın.",
+    "scanProgressPreparing": "Tarama hazırlanıyor",
+    "applyingProtections": "Ayarlar uygulanıyor…",
+    "emptyStateTitle": "Ayarlar henüz taranmadı",
+    "emptyStateDescription": "Tarama, ayarları okur ve hiçbirini değiştirmez.",
+    "adminWarning": "Bazı ayarlar yalnızca SuperSonicCleaner yönetici olarak çalışırken değiştirilebilir; bu haklar olmadan oldukları gibi kalırlar.",
     "scanFailed": "Gizlilik taraması başarısız oldu",
     "applyFailed": "Gizlilik ayarları uygulanamadı",
-    "applyFailedDescription": "Yönetici olarak çalıştırmayı deneyin",
-    "settingApplyFailed": "\"{{label}}\" uygulanamadı",
-    "settingEnabled": "{{label}} engellendi",
-    "settingDisabled": "{{label}} varsayılana geri yüklendi",
-    "settingRevertFailed": "\"{{label}}\" geri alınamadı",
+    "applyFailedDescription": "Uygulamayı yönetici olarak çalıştırmayı deneyin",
+    "settingApplyFailed": "“{{label}}” uygulanamadı",
+    "settingEnabled": "Uygulandı: {{label}}",
+    "settingDisabled": "Varsayılana geri döndürüldü: {{label}}",
+    "settingRevertFailed": "“{{label}}” geri yüklenemedi",
     "settingRevertFailedGeneric": "Gizlilik ayarı geri alınamadı",
     "settingApplyFailedGeneric": "Gizlilik ayarı uygulanamadı",
-    "ipcCallFailed": "IPC çağrısı başarısız oldu — yönetici olarak çalıştırmayı deneyin",
+    "ipcCallFailed": "Çağrı başarısız oldu: uygulamayı yönetici olarak çalıştırmayı deneyin",
     "allSettingsLabel": "Tüm ayarlar",
     "unknownError": "Bilinmeyen hata",
-    "requiresSettingEnabled": "Önce \"{{label}}\" etkinleştirin",
-    "adminRequired": "Yönetici olarak çalıştırmayı deneyin",
-    "settingNotApplied": "Sistem değişikliği bildirmedi — yeniden başlatma gerekebilir veya ayar başka bir profil tarafından yönetiliyor olabilir"
+    "requiresSettingEnabled": "Önce “{{label}}” ayarını açın",
+    "adminRequired": "Uygulamayı yönetici olarak çalıştırmayı deneyin",
+    "settingNotApplied": "Sistem değişikliği bildirmedi: yeniden başlatma gerekebilir veya ayar başka bir profil tarafından yönetiliyor olabilir.",
+    "rescanButton": "Yeniden tara",
+    "scanningButton": "Taranıyor…",
+    "applyRecommended_one": "{{count}} önerilen değişikliği uygula",
+    "applyRecommended_other": "{{count}} önerilen değişikliği uygula",
+    "summaryTitle_one": "Değiştirilecek {{count}} ayar",
+    "summaryTitle_other": "Değiştirilecek {{count}} ayar",
+    "summaryNone": "{{total}} ayarın tümü zaten en gizli değere sahip",
+    "summaryFacts": "{{total}} ayardan {{protected}} tanesi zaten en gizli değerde · {{categories}} kategori",
+    "categoryMeta_one": "Değiştirilecek: {{count}}",
+    "categoryMeta_other": "Değiştirilecek: {{count}}",
+    "categoryAllSet": "hepsi zaten ayarlı",
+    "categoryApply_one": "Uygula: {{count}}",
+    "categoryApply_other": "Uygula: {{count}}",
+    "categoryShow": "Göster",
+    "categoryHide": "Gizle",
+    "adminTag": "Yönetici gerektirir",
+    "notReversibleTag": "Geri alınamaz",
+    "scanProgressTitle": "Tarama sürüyor",
+    "scanProgressCount": "{{total}} içinden {{current}}",
+    "scanProgressCategory": "Denetleniyor: {{category}}",
+    "scanProgressLabel": "Tarama ilerlemesi",
+    "applyingLabel": "Uygulama ilerlemesi",
+    "receiptTitle": "Ayarlar uygulandı",
+    "receiptApplied_one": "{{count}} ayar değiştirildi",
+    "receiptApplied_other": "{{count}} ayar değiştirildi",
+    "receiptReversible": "anahtarlardan geri yüklenebilir",
+    "receiptFailed_one": "{{count}} tanesi uygulanmadı: neden aşağıda listelenmiştir.",
+    "receiptFailed_other": "{{count}} tanesi uygulanmadı: nedenler aşağıda listelenmiştir.",
+    "receiptFailedAdmin_one": "{{count}} tanesi uygulanmadı: uygulamanın yönetici olarak çalıştırılması gerekebilir. Neden aşağıda listelenmiştir.",
+    "receiptFailedAdmin_other": "{{count}} tanesi uygulanmadı: uygulamanın yönetici olarak çalıştırılması gerekebilir. Nedenler aşağıda listelenmiştir.",
+    "failedHeading": "Uygulanmayan ayarlar",
+    "failedColumnSetting": "Ayar",
+    "failedColumnReason": "Neden",
+    "confirmTitle_one": "{{count}} ayar değiştirilsin mi?",
+    "confirmTitle_other": "{{count}} ayar değiştirilsin mi?",
+    "confirmDescription": "Listelenen ayarlar en gizli değere geçirilir. Bu sayfadaki anahtarlardan varsayılana geri döndürülebilirler.",
+    "confirmDescriptionIrreversible_one": "Listelenen ayarlar en gizli değere geçirilir. {{count}} tanesi bu sayfadan varsayılana geri döndürülemez.",
+    "confirmDescriptionIrreversible_other": "Listelenen ayarlar en gizli değere geçirilir. {{count}} tanesi bu sayfadan varsayılana geri döndürülemez.",
+    "confirmLabel_one": "{{count}} ayarı değiştir",
+    "confirmLabel_other": "{{count}} ayarı değiştir",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows telemetrisi",
+        "description": "Tanılama verisi toplamayı en aza indirir (yalnızca Güvenlik düzeyi)"
+      },
+      "activity-history": {
+        "label": "Etkinlik geçmişi",
+        "description": "Windows'un uygulama ve dosya kullanımınızı izlemesini ve senkronize etmesini durdurur"
+      },
+      "publish-activity": {
+        "label": "Kullanıcı etkinliklerini yayınlama",
+        "description": "Windows'un etkinliklerinizi Microsoft'a yayınlamasını engeller"
+      },
+      "feedback-frequency": {
+        "label": "Geri bildirim istekleri",
+        "description": "Periyodik Microsoft geri bildirim istemlerini ve anketlerini kapatır"
+      },
+      "handwriting-telemetry": {
+        "label": "El yazısı verileri",
+        "description": "El yazısı ve yazma verilerinin Microsoft'a gönderilmesini durdurur"
+      },
+      "input-personalization": {
+        "label": "Girdi kişiselleştirmesi",
+        "description": "Kişiselleştirme için yazma ve mürekkep verisi toplamayı durdurur"
+      },
+      "tailored-experiences": {
+        "label": "Kişiye özel deneyimler",
+        "description": "Microsoft'un ipuçlarını ve reklamları kişiselleştirmek için tanılama verilerini kullanmasını durdurur"
+      },
+      "app-launch-tracking": {
+        "label": "Uygulama başlatma izleme",
+        "description": "Başlat menüsünü ayarlamak için Windows'un hangi uygulamaları açtığınızı izlemesini durdurur"
+      },
+      "advertising-id": {
+        "label": "Reklam kimliği",
+        "description": "Uygulamaların sizi izlemek için kullandığı benzersiz reklam kimliğini kapatır"
+      },
+      "suggested-content": {
+        "label": "Ayarlar'da önerilen içerik",
+        "description": "Microsoft'un Ayarlar'da uygulama önerileri ve reklamlar göstermesini durdurur"
+      },
+      "tips-notifications": {
+        "label": "İpuçları ve öneriler",
+        "description": "Windows ipuçları, püf noktaları ve öneri bildirimlerini kapatır"
+      },
+      "start-suggestions": {
+        "label": "Başlat menüsü önerileri",
+        "description": "Başlat menüsündeki uygulama önerilerini (reklamları) kapatır"
+      },
+      "lock-screen-spotlight": {
+        "label": "Kilit ekranı Spotlight",
+        "description": "Kilit ekranındaki Microsoft Spotlight reklamlarını ve önerilerini kapatır"
+      },
+      "silently-installed-apps": {
+        "label": "Sessizce yüklenen uygulamalar",
+        "description": "Windows'un tanıtılan uygulamaları otomatik olarak yüklemesini engeller"
+      },
+      "preinstalled-apps": {
+        "label": "Önceden yüklenmiş uygulama önerileri",
+        "description": "Windows'un kullanmadığınız önceden yüklenmiş uygulamaları önermesini durdurur"
+      },
+      "bing-start-menu": {
+        "label": "Başlat menüsünde Bing",
+        "description": "Başlat menüsüne yazılan arama sorgularının Bing'e gönderilmesini durdurur"
+      },
+      "bing-web-search": {
+        "label": "Bing web sonuçları",
+        "description": "Windows Arama'daki web sonuçlarını kapatır, böylece aramalar bu bilgisayarda kalır"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Arka planda çalışan ve veri toplayan Cortana'yı kapatır"
+      },
+      "search-highlights": {
+        "label": "Arama vurguları",
+        "description": "Arama kutusundaki trend arama önerilerini ve web içeriğini kapatır"
+      },
+      "store-search-suggestions": {
+        "label": "Store arama önerileri",
+        "description": "Sorgularınızı Microsoft'a gönderen Microsoft Store arama önerilerini kapatır"
+      },
+      "clipboard-sync": {
+        "label": "Pano bulut senkronizasyonu",
+        "description": "Pano verilerinin bulut üzerinden cihazlar arasında senkronize edilmesini engeller"
+      },
+      "clipboard-history": {
+        "label": "Pano geçmişi",
+        "description": "Kopyalanan metin ve görselleri saklayan pano geçmişini kapatır"
+      },
+      "settings-sync": {
+        "label": "Ayar senkronizasyonu",
+        "description": "Windows ayarlarının, temalarının ve parolalarının Microsoft hesabınızla senkronize edilmesini durdurur"
+      },
+      "find-my-device": {
+        "label": "Cihazımı bul",
+        "description": "Microsoft tarafından konum tabanlı cihaz izlemeyi kapatır"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Windows genelinde Microsoft Copilot yapay zekâ asistanını kapatır"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Ekrandaki her şeyi kaydeden yapay zekâ ekran görüntüsü geçmişi olan Windows Recall'ı kapatır"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Click to Do'nun ekrandaki metin ve görselleri yapay zekâ ile analiz etmesini kapatır"
+      },
+      "ai-service-autostart": {
+        "label": "Yapay zekâ hizmeti otomatik başlatma",
+        "description": "Yapay zekâ hizmetlerinin arka planda otomatik olarak başlamasını engeller"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Edge'in yapay zekâ ile metin oluşturma ve yeniden yazma özelliklerini kapatır"
+      },
+      "paint-ai": {
+        "label": "Paint yapay zekâ özellikleri",
+        "description": "Microsoft Paint'teki yapay zekâ görsel oluşturma özelliklerini kapatır"
+      },
+      "notepad-ai": {
+        "label": "Not Defteri yapay zekâ özellikleri",
+        "description": "Microsoft Not Defteri'ndeki yapay zekâ metin yeniden yazma özelliklerini kapatır"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack hizmeti",
+        "description": "Bağlı Kullanıcı Deneyimleri ve Telemetri hizmetini devre dışı bırakır"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push hizmeti",
+        "description": "Telemetri için kullanılan WAP Push ileti yönlendirme hizmetini devre dışı bırakır"
+      },
+      "service-delivery-optimization": {
+        "label": "Teslim Optimizasyonu",
+        "description": "Windows güncellemelerinin eşler arası paylaşımını devre dışı bırakır, böylece bu bilgisayar güncelleme verilerini başka cihazlara yüklemez"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Çoğu bilgisayarın ihtiyaç duymadığı bir arka plan hizmeti olan İndirilen Haritalar Yöneticisi'ni devre dışı bırakır"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Uyumluluk Değerlendiricisi",
+        "description": "Uyumluluk verilerini toplayan Microsoft telemetri görevini devre dışı bırakır"
+      },
+      "task-program-data-updater": {
+        "label": "Program Verisi Güncelleyicisi",
+        "description": "Program telemetrisini yükleyen arka plan görevini devre dışı bırakır"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Autochk proxy üzerinden yapılan telemetri toplamayı devre dışı bırakır"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Birleştirici",
+        "description": "Müşteri Deneyimini İyileştirme Programı veri yüklemesini devre dışı bırakır"
+      },
+      "task-usb-ceip": {
+        "label": "USB kullanım verileri (CEIP)",
+        "description": "USB cihaz kullanım telemetrisi toplamayı devre dışı bırakır"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Tanılama Toplayıcısı",
+        "description": "Disk tanılama verilerinin toplanmasını ve yüklenmesini devre dışı bırakır"
+      },
+      "task-feedback-dm": {
+        "label": "Geri Bildirim DM İstemcisi",
+        "description": "Geri bildirim cihaz yönetimi telemetri görevini devre dışı bırakır"
+      },
+      "task-maps-update": {
+        "label": "Harita güncelleme görevi",
+        "description": "Arka planda otomatik harita verisi indirmelerini devre dışı bırakır"
+      },
+      "task-maps-toast": {
+        "label": "Harita bildirim görevi",
+        "description": "Haritalar bildirim görevini devre dışı bırakır"
+      },
+      "edge-metrics": {
+        "label": "Edge ölçüm raporlaması",
+        "description": "Edge'in kullanım ve çökme ölçümlerini Microsoft'a göndermesini durdurur"
+      },
+      "edge-site-info": {
+        "label": "Edge site bilgisi toplama",
+        "description": "Edge'in ziyaret ettiğiniz sitelerin adreslerini Microsoft'a göndermesini durdurur"
+      },
+      "edge-personalization": {
+        "label": "Edge kişiselleştirme raporlaması",
+        "description": "Edge'in reklam kişiselleştirme için tarama geçmişinizi göndermesini durdurur"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge Copilot sayfa erişimi (CDP)",
+        "description": "Copilot'un Chrome DevTools Protocol üzerinden sayfa içeriğini okumasını engeller"
+      },
+      "edge-copilot-page": {
+        "label": "Edge Copilot sayfa bağlamı",
+        "description": "Copilot'un içeriği analiz etmek için sayfa bağlamını kullanmasını engeller"
+      },
+      "edge-discover": {
+        "label": "Edge Discover sayfa taraması",
+        "description": "Discover özelliğinin sayfa içeriğini taramasını durdurur"
+      },
+      "edge-sidebar": {
+        "label": "Edge kenar çubuğu",
+        "description": "Edge kenar çubuğunu ve arka plan veri toplamasını kapatır"
+      },
+      "edge-shopping": {
+        "label": "Edge alışveriş asistanı",
+        "description": "Edge'deki fiyat karşılaştırma izleyicisini kapatır"
+      },
+      "chrome-metrics": {
+        "label": "Chrome ölçüm raporlaması",
+        "description": "Chrome'un kullanım ve çökme ölçümlerini Google'a göndermesini durdurur"
+      },
+      "chrome-feedback": {
+        "label": "Chrome kullanıcı geri bildirimi",
+        "description": "Chrome'un kullanıcı geri bildirim verilerini toplamasını ve göndermesini engeller"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome gelişmiş Güvenli Tarama",
+        "description": "Chrome'un genişletilmiş URL ve indirme raporlarını Google'a göndermesini durdurur"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox telemetrisi",
+        "description": "Firefox'un telemetri verisi toplamasını ve Mozilla'ya yüklemesini durdurur"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox varsayılan tarayıcı aracısı",
+        "description": "Tarayıcı kullanım verilerini Mozilla'ya raporlayan arka plan aracısını devre dışı bırakır"
+      },
+      "macos-diagnostics": {
+        "label": "Tanılama ve kullanım verileri",
+        "description": "Tanılama ve kullanım verilerinin Apple ile paylaşılmasını durdurur"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri analitiği",
+        "description": "Siri analiz ve iyileştirme verisi toplamayı durdurur"
+      },
+      "macos-health-data-sharing": {
+        "label": "Sağlık verisi paylaşımı",
+        "description": "Araştırma amacıyla sağlık verilerinin Apple ile paylaşılmasını durdurur"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop görünürlüğü",
+        "description": "AirDrop'u Hiç Kimse olarak ayarlar: Sistem Ayarları'ndan tekrar açana kadar AirDrop ile dosya alamazsınız"
+      },
+      "macos-crash-reporter": {
+        "label": "Çökme raporlayıcı",
+        "description": "Çökme raporlayıcının raporları otomatik olarak göndermesini durdurur"
+      },
+      "macos-ad-tracking": {
+        "label": "Kişiselleştirilmiş reklamlar",
+        "description": "Apple'ın reklam izlemesini sınırlar"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "App Store'da Siri önerileri",
+        "description": "App Store'daki Siri önerilerini kapatır"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari önerileri",
+        "description": "Apple'a gönderilen Safari arama önerilerini kapatır"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight önerileri",
+        "description": "Spotlight web önerilerini kapatır"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari en iyi sonucu önceden yükleme",
+        "description": "Safari'nin, tarama verilerini sitelere gönderen en iyi arama sonucunu önceden yüklemesini durdurur"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Handoff ve Evrensel Pano'yu kapatır: artık etkinliklere devam edemez veya Apple cihazları arasında kopyalayıp yapıştıramazsınız"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud analitiği",
+        "description": "iCloud analitiğinin Apple ile paylaşılmasını durdurur"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari iCloud sekmeleri",
+        "description": "Safari iCloud sekme senkronizasyonunu kapatır: diğer Apple cihazlarınızda açık olan sekmeleri artık göremezsiniz"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Siri'yi tamamen kapatır: Hey Siri, sesli komutlar ve Siri Kısayolları çalışmayı durdurur"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri dikte",
+        "description": "Dikteyi kapatır: klavyenizdeki mikrofon tuşu çalışmayı durdurur"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Apple Intelligence yapay zekâ özelliklerini kapatır (macOS 15 Sequoia ve üzeri)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari İzleme (Do Not Track)",
+        "description": "Safari'de Do Not Track başlığını açar"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome ölçüm raporlaması",
+        "description": "Chrome'un kullanım ölçümlerini Google'a göndermesini durdurur"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Güvenli Tarama raporları",
+        "description": "Chrome'un genişletilmiş URL ve indirme raporlarını Google'a göndermesini durdurur"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox telemetrisi",
+        "description": "Firefox'un telemetri verisi toplamasını ve Mozilla'ya yüklemesini durdurur"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Doğrulanmamış uygulamaların engellenmesi için Gatekeeper'ın açık olduğundan emin olur"
+      },
+      "macos-remote-apple-events": {
+        "label": "Uzaktan Apple Events",
+        "description": "Uzaktan Apple Events'i kapatır, böylece Mac'iniz uzaktan otomatikleştirilemez"
+      },
+      "macos-wake-on-network": {
+        "label": "Ağ erişimi için uyandırma",
+        "description": "Ağ erişimi için uyandırmayı kapatır, böylece Mac'iniz uzaktan uyandırılamaz"
+      },
+      "macos-guest-account": {
+        "label": "Konuk hesabı",
+        "description": "Yetkisiz yerel erişimi önlemek için konuk hesabını kapatır"
+      },
+      "macos-auto-login": {
+        "label": "Otomatik oturum açma",
+        "description": "Otomatik oturum açmayı kapatır, böylece Mac başlangıçta kimlik doğrulama ister"
+      },
+      "macos-firewall": {
+        "label": "Uygulama güvenlik duvarı",
+        "description": "Gelen bağlantıları denetlemek için macOS uygulama güvenlik duvarını açar"
+      },
+      "macos-stealth-mode": {
+        "label": "Gizli mod",
+        "description": "Gizli modu açar, böylece Mac'iniz sondaj isteklerine (ICMP ping) yanıt vermez"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP yönlendirmeyi devre dışı bırak",
+        "description": "Sistemin ağ arabirimleri arasında paket yönlendirmesini engeller"
+      },
+      "macos-block-signed-auto": {
+        "label": "İmzalı uygulamalar için otomatik izni engelle",
+        "description": "İmzalı uygulamaların güvenlik duvarını otomatik olarak atlamasını engeller"
+      },
+      "macos-remote-login": {
+        "label": "Uzaktan oturum açmayı devre dışı bırak (SSH)",
+        "description": "SSH sunucusunu tamamen kapatır. SSH erişimine ihtiyacınız varsa bunu kapalı bırakın ve bunun yerine SSH ayarlarını güçlendirin"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH root oturum açmayı devre dışı bırak",
+        "description": "SSH üzerinden doğrudan root oturum açmayı engeller; bunun yerine normal bir hesaptan sudo kullanın"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH parola kimlik doğrulamasını devre dışı bırak",
+        "description": "Yalnızca anahtar tabanlı SSH kimlik doğrulamasına izin verir. Önce SSH anahtarlarını kurun, aksi hâlde erişiminiz kilitlenebilir"
+      },
+      "macos-core-dumps": {
+        "label": "Çekirdek dökümlerini devre dışı bırak",
+        "description": "Hassas bellek içeriğini sızdırabilecek çekirdek dökümlerini engeller"
+      },
+      "gnome-usage-stats": {
+        "label": "Kullanım istatistikleri",
+        "description": "GNOME kullanım istatistiği toplamayı kapatır"
+      },
+      "gnome-recent-files": {
+        "label": "Son kullanılan dosya izleme",
+        "description": "Son kullanılan dosyaların izlenmesini kapatır"
+      },
+      "gnome-location": {
+        "label": "Konum hizmetleri",
+        "description": "GNOME konum hizmetlerini kapatır"
+      },
+      "gnome-crash-reporting": {
+        "label": "Çökme raporlama (Apport)",
+        "description": "Otomatik çökme raporu gönderimini kapatır"
+      },
+      "gnome-connectivity-check": {
+        "label": "Bağlantı denetimi",
+        "description": "Periyodik ağ bağlantısı denetimlerini kapatır"
+      },
+      "core-dump-disable": {
+        "label": "Çekirdek dökümlerini devre dışı bırak",
+        "description": "Hassas bellek içeriğini sızdırabilecek çekirdek dökümlerini engeller"
+      },
+      "ssh-root-login": {
+        "label": "SSH root oturum açmayı devre dışı bırak",
+        "description": "SSH üzerinden doğrudan root oturum açmayı engeller; bunun yerine normal bir hesaptan sudo kullanın"
+      },
+      "ssh-password-auth": {
+        "label": "SSH parola kimlik doğrulamasını devre dışı bırak",
+        "description": "Yalnızca anahtar tabanlı SSH kimlik doğrulamasına izin verir. Önce SSH anahtarlarını kurun, aksi hâlde erişiminiz kilitlenebilir"
+      },
+      "kde-usage-stats": {
+        "label": "Kullanım istatistikleri",
+        "description": "KDE Plasma kullanıcı geri bildirimini kapatır"
+      },
+      "kde-recent-files": {
+        "label": "Son kullanılan dosya izleme",
+        "description": "KDE'nin son dosyalara ilişkin etkinlik geçmişini kapatır"
+      },
+      "kde-baloo": {
+        "label": "Dosya dizinleme (Baloo)",
+        "description": "Baloo dosya dizinleyicisini kapatır"
+      },
+      "kde-crash-reporting": {
+        "label": "Çökme raporlama (DrKonqi)",
+        "description": "KDE çökme raporu işleyicisini kapatır"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetri ve Veri Toplama",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Gereksiz Yazılım Temizleyici",
-    "pageDescription": "Önceden yüklenmiş Windows uygulamalarını ve OEM gereksiz yazılımlarını kaldırın",
+    "pageDescription": "Windows ve üretici tarafından önceden yüklenmiş uygulamalar. Kaldırıldıktan sonra yalnızca Microsoft Store'dan yeniden yüklenebilirler.",
     "scanButton": "Tara",
-    "irreversibleWarning": "Geri alınamaz — Kaldırılan uygulamalar yalnızca Microsoft Store üzerinden yeniden yüklenebilir. Seçimlerinizi dikkatle gözden geçirin.",
-    "scanningPackages": "Yüklü paketler taranıyor...",
-    "removingProgress": "{{total}} uygulamadan {{current}} kaldırılıyor",
-    "selectAll": "Tümünü Seç",
-    "emptyStateTitle": "Gereksiz yazılım algılanmadı",
-    "emptyStateDescription": "\"Tara\" seçeneğine tıklayarak önceden yüklenmiş uygulamaları ve OEM gereksiz yazılımlarını bulun.",
+    "rescanButton": "Yeniden tara",
+    "irreversibleWarning": "Kaldırma işlemi uygulamadan geri alınamaz: onaylamadan önce seçilen uygulamaları kontrol edin.",
+    "scanningPackages": "Yüklü paketler taranıyor…",
+    "removingProgress": "Uygulamalar kaldırılıyor ({{total}} içinden {{current}})",
+    "receiptTitle": "Kaldırma tamamlandı",
+    "removedApps_one": "{{count}} uygulama kaldırıldı",
+    "removedApps_other": "{{count}} uygulama kaldırıldı",
+    "failedCount_one": "{{count}} başarısız",
+    "failedCount_other": "{{count}} başarısız",
+    "reinstallFromStore": "yalnızca Microsoft Store'dan yeniden yüklenebilir",
+    "selectAll": "Tümünü seç",
+    "filterLabel": "Kategori",
+    "confirmTitle_one": "{{count}} uygulama kaldırılsın mı?",
+    "confirmTitle_other": "{{count}} uygulama kaldırılsın mı?",
+    "confirmDescription_one": "Uygulama, kullanıcınız için ve yönetici haklarıyla yeni kullanıcılar için de kaldırılır. Yalnızca Microsoft Store'dan yeniden yüklenebilir.",
+    "confirmDescription_other": "Uygulamalar, kullanıcınız için ve yönetici haklarıyla yeni kullanıcılar için de kaldırılır. Yalnızca Microsoft Store'dan yeniden yüklenebilirler.",
+    "confirmLabel_one": "{{count}} uygulamayı kaldır",
+    "confirmLabel_other": "{{count}} uygulamayı kaldır",
+    "emptyStateTitle": "Henüz taranmadı",
+    "emptyStateDescription": "Bu oturumda önceden yüklenmiş uygulamalar taranmadı.",
+    "lastRun_one": "Son kaldırma: {{date}}, {{count}} uygulama kaldırıldı.",
+    "lastRun_other": "Son kaldırma: {{date}}, {{count}} uygulama kaldırıldı.",
+    "checkKnownTitle": "Bilinen uygulamalar",
+    "checkKnownDetail": "Microsoft ve üreticiler (OEM) tarafından önceden yüklenen uygulamaların listesi",
+    "checkInstalledTitle": "Yüklü paketler",
+    "checkInstalledDetail": "Kullanıcınızın uygulama paketleri, listeyle karşılaştırılır",
+    "checkRemovalTitle": "Kaldırma",
+    "checkRemovalDetail": "Kullanıcınız için; yönetici haklarıyla, yeni kullanıcılar için kullanılan kopyadan da",
+    "noneFoundTitle": "Listelenen uygulamalardan hiçbiri yüklü değil",
+    "noneFoundDescription": "Bilinen önceden yüklenmiş uygulamalar kullanıcınızda bulunmuyor.",
+    "summaryTitle_one": "{{count}} önceden yüklenmiş uygulama bulundu",
+    "summaryTitle_other": "{{count}} önceden yüklenmiş uygulama bulundu",
+    "selectedCount_one": "{{count}} seçildi",
+    "selectedCount_other": "{{count}} seçildi",
+    "removeButton_one": "{{count}} uygulamayı kaldır",
+    "removeButton_other": "{{count}} uygulamayı kaldır",
+    "removeNone": "Seçilenleri kaldır",
     "scanFailedToast": "Gereksiz yazılım taraması başarısız oldu",
     "scanFailedDescription": "PowerShell'in kullanılabilir olduğundan emin olun",
     "scanFailedError": "Gereksiz yazılımlar taranamadı. PowerShell'in kullanılabilir olduğundan emin olun.",

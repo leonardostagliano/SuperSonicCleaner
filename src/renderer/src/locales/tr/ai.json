@@ -1,7 +1,7 @@
 {
   "title": "AI analizi",
   "description": "Bu tarama sonuçları hakkında ikinci bir görüş alın.",
-  "hubDescription": "Codex oturum açma bilginizi kullanarak taramalar ve performans kayıtları hakkında ikinci bir görüş.",
+  "hubDescription": "Codex'e oturumunuz üzerinden yalnızca tarama meta verilerini veya kayıt ölçümlerini gönderir, yalnızca bir araçtan analiz başlattığınızda.",
   "hubPrivacy": "Taramalar yalnızca anonim dosya meta verilerini paylaşır. Kayıtlar, geçici işlem kimlikleriyle birlikte sayısal CPU, bellek ve disk ölçümlerini paylaşır. Adlar, yollar, notlar ve dosya içerikleri bu cihazda kalır.",
   "connectionTitle": "Codex bağlantısı",
   "connectionIntro": "Bu bilgisayarda Codex'i kullanın. Bağlantıyı kontrol edin, ardından aşağıdan bir araç seçin.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Bir tarama tamamlayın veya bir performans kaydı kaydedin, AI analizini etkinleştirin, ardından özel düğmeyle başlatın. Hiçbir şey otomatik olarak gönderilmez.",
   "tools": {
     "cleaner": {
-      "title": "Sistem temizliği"
+      "title": "Sistem temizliği",
+      "dataSent": "Geçici kimlikler, dosya türü, boyut ve yaklaşık yaş. Gizlilik izleri hariç tutulur."
     },
     "largeFiles": {
-      "title": "Büyük dosyalar"
+      "title": "Büyük dosyalar",
+      "dataSent": "Geçici kimlikler, dosya türü, boyut ve yaklaşık yaş."
     },
     "duplicates": {
-      "title": "Yinelenen dosyalar"
+      "title": "Yinelenen dosyalar",
+      "dataSent": "Geçici kimlikler, dosya türü, boyut, yaklaşık yaş ve yinelenen dosya grubu."
     },
     "disk": {
-      "title": "Disk analizi"
+      "title": "Disk analizi",
+      "dataSent": "Geçici kimlikler, toplam klasör boyutu ve yaklaşık yaş."
     },
     "performance": {
-      "title": "Performans kayıtları"
+      "title": "Performans kayıtları",
+      "dataSent": "Geçici işlem kimlikleriyle birlikte sayısal CPU, bellek ve disk ölçümleri."
     }
   },
   "enable": "Bu görünüm için AI analizini etkinleştir",
@@ -51,5 +56,23 @@
     "low": "Düşük öncelik",
     "medium": "Orta öncelik",
     "high": "Yüksek öncelik"
+  },
+  "toolsTitle": "Araçlar",
+  "columns": {
+    "tool": "Araç",
+    "dataSent": "Gönderilen veri",
+    "lastRun": "Son çalıştırma",
+    "state": "Durum"
+  },
+  "lastRun": {
+    "running": "Çalışıyor",
+    "done": "Bu oturumda tamamlandı",
+    "failed": "Başarısız",
+    "none": "Bu oturumda yok",
+    "perRecording": "Analiz edilen her kayıtla birlikte kaydedilir"
+  },
+  "state": {
+    "on": "Açık",
+    "off": "Kapalı"
   }
 }

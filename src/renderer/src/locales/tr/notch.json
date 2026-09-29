@@ -15,6 +15,7 @@
   "cpuDetail": "Mevcut işlemci kullanımı",
   "sample": "Son örnek",
   "used": "{{total}} GB üzerinden {{used}} GB kullanıldı",
+  "free": "{{free}} GB boş",
   "waiting": "Canlı veri bekleniyor",
   "unavailable": "Disk verisi kullanılamıyor",
   "live": "Canlı sistem metrikleri",

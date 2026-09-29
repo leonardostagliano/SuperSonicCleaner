@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Nelerin değiştiğini, nelerin kurtarıldığını ve nelere yeniden bakılması gerektiğini görün. Tamamlanan her görev bir kayıt bırakır.",
-    "settings": "SuperSonicCleaner'yu size uygun hale getirin. Görünüm, bildirimler, hariç tutmalar ve temizleme tercihlerinizi ayarlayın.",
-    "about": "Açık kaynaklı, özenle hazırlanmış. Sürümünüzü bulun, güncellemeleri denetleyin ve projeyi tanıyın.",
-    "recovery": "Geri dönüş için açık bir yol. Herhangi bir şeyi geri almadan önce desteklenen değişiklikleri ve geri yükleme ayrıntılarını gözden geçirin."
+    "history": "Bu bilgisayarda çalıştırılan son 100 tarama ve temizlik; tarih, süre, işlenen öğe sayısı, boşaltılan alan ve her temizliğin makbuzuyla birlikte.",
+    "settings": "Görünüm, dil, başlangıç, bildirimler, güncellemeler, yedeklemeler, temizleme tercihleri ve hariç tutmalar. Her değişiklik anında kaydedilir.",
+    "about": "Yüklü sürüm, güncellemeler, MIT lisansı ve orijinal proje (Kudu).",
+    "recovery": "SuperSonicCleaner tarafından kayıt defterinde, hizmetlerde ve zamanlanmış görevlerde yapılan değişiklikler, bunları geri almak için yedeklerle birlikte. Silinen dosyalar kurtarılamaz."
   },
   "storageTrend": {
     "title": "Zaman içindeki depolama",
