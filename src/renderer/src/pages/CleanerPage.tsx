@@ -19,12 +19,12 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { CleanSummary } from '@/components/cleaner/CleanSummary'
 import { ReportNotice } from '@/components/cleaner/ReportNotice'
+import { LiveProgress } from '@/components/cleaner/LiveProgress'
 import '@/components/cleaner/pulizia.css'
 import {
   Button,
   Card,
   Checkbox,
-  ProgressBar,
   Section,
   Table,
   TableCell,
@@ -51,6 +51,7 @@ import {
   selectionState,
   selectionTotals,
   sortBySize,
+  tenPercentStep,
   type SizeSort
 } from '@/lib/cleaner-report'
 import { cleanInBatches } from '@/lib/cleaner-batches'
@@ -268,17 +269,15 @@ function CleanerProgress({ scanCategories }: { scanCategories: CategoryDef[] }) 
         ) : undefined
       }
     >
-      <div className="pulizia-progress" aria-live="polite">
-        <ProgressBar
-          value={value}
-          label={scanning ? t('progress.scanning') : t('progress.cleaning')}
-        />
-        {step && <p className="pulizia-progress-step">{step}</p>}
-        {detail && (
-          <p className="pulizia-progress-path" title={detail}>
-            {detail}
-          </p>
-        )}
+      <LiveProgress
+        value={value}
+        label={scanning ? t('progress.scanning') : t('progress.cleaning')}
+        step={step}
+        announcedPercent={
+          progress ? formatPercent(tenPercentStep(progress.progress), i18n.language) : undefined
+        }
+        detail={detail}
+      >
         {progress && (
           <p className="pulizia-progress-counts">
             {scanning
@@ -291,7 +290,7 @@ function CleanerProgress({ scanCategories }: { scanCategories: CategoryDef[] }) 
           </p>
         )}
         {cancelRequested && <p className="pulizia-progress-counts">{t('scanCancelPending')}</p>}
-      </div>
+      </LiveProgress>
     </Section>
   )
 }

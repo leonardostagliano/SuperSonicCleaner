@@ -9,12 +9,12 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { Receipt } from '@/components/shared/Receipt'
 import { ReportNotice } from '@/components/cleaner/ReportNotice'
+import { LiveProgress } from '@/components/cleaner/LiveProgress'
 import '@/components/cleaner/pulizia.css'
 import {
   Button,
   Card,
   Checkbox,
-  ProgressBar,
   Section,
   Table,
   TableCell,
@@ -23,7 +23,14 @@ import {
   TableRow,
   Tag
 } from '@/components/ui'
-import { formatDateTime, formatList, formatTime, latestEntry } from '@/lib/cleaner-report'
+import {
+  formatDateTime,
+  formatList,
+  formatPercent,
+  formatTime,
+  latestEntry,
+  tenPercentStep
+} from '@/lib/cleaner-report'
 import { formatNumber, NO_VALUE } from '@/lib/utils'
 import { useHistoryStore } from '@/stores/history-store'
 import { useRegistryStore } from '@/stores/registry-store'
@@ -304,10 +311,7 @@ function RegistryPageContent() {
             </Button>
           }
         >
-          <div className="pulizia-progress" aria-live="polite">
-            <ProgressBar indeterminate label={t('scanningTitle')} />
-            <p className="pulizia-progress-step">{t('scanningDetail')}</p>
-          </div>
+          <LiveProgress label={t('scanningTitle')} step={t('scanningDetail')} />
         </Section>
       )}
 
@@ -324,17 +328,19 @@ function RegistryPageContent() {
             </Button>
           }
         >
-          <div className="pulizia-progress" aria-live="polite">
-            <ProgressBar
-              value={fixProgress.total > 0 ? fixProgress.current / fixProgress.total : undefined}
-              label={t('fixingTitle')}
-            />
-            {fixProgress.currentEntry && (
-              <p className="pulizia-progress-path" title={fixProgress.currentEntry}>
-                {fixProgress.currentEntry}
-              </p>
-            )}
-          </div>
+          <LiveProgress
+            value={fixProgress.total > 0 ? fixProgress.current / fixProgress.total : undefined}
+            label={t('fixingTitle')}
+            announcedPercent={
+              fixProgress.total > 0
+                ? formatPercent(
+                    tenPercentStep((fixProgress.current / fixProgress.total) * 100),
+                    i18n.language
+                  )
+                : undefined
+            }
+            detail={fixProgress.currentEntry || undefined}
+          />
         </Section>
       )}
 

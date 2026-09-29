@@ -17,7 +17,8 @@ import {
   nextSizeSort,
   selectionState,
   selectionTotals,
-  sortBySize
+  sortBySize,
+  tenPercentStep
 } from './cleaner-report'
 
 const item = (id: string, patch: Partial<ScanItem> = {}): ScanItem => ({
@@ -197,6 +198,15 @@ describe('formatting', () => {
     expect(formatPercent(140, 'en')).toBe('100%')
     expect(formatPercent(Number.NaN, 'en')).toBe('0%')
     expect(formatPercent(50, 'ar')).toMatch(/50/)
+  })
+
+  it('rounds a progress down to a step of ten for announcements', () => {
+    expect(tenPercentStep(0)).toBe(0)
+    expect(tenPercentStep(9.9)).toBe(0)
+    expect(tenPercentStep(43)).toBe(40)
+    expect(tenPercentStep(100)).toBe(100)
+    expect(tenPercentStep(140)).toBe(100)
+    expect(tenPercentStep(Number.NaN)).toBe(0)
   })
 
   it('writes how long an operation took, at least one second', () => {

@@ -66,6 +66,12 @@ export function entryTotal(results: ScanResult[]): number | null {
   return items.reduce((sum, item) => sum + (item.entryCount ?? 0), 0)
 }
 
+/** A 0..100 progress rounded down to a step of ten: what a live region announces. */
+export function tenPercentStep(progress: number): number {
+  if (!Number.isFinite(progress)) return 0
+  return Math.min(100, Math.max(0, Math.floor(progress / 10) * 10))
+}
+
 /** The result a scanner returns in place of a category it skipped for lack of rights. */
 export const ELEVATION_MARKER = '__elevation_required'
 
