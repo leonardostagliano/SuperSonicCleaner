@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { icons } from '@/lib/icons'
@@ -10,6 +10,7 @@ import { useGameModeStore } from '@/stores/game-mode-store'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useSettingsStore } from '@/stores/settings-store'
 import { activeGroupFor, toggleGroup, withActiveGroup } from '@/lib/sidebar-groups'
+import { navFade } from '@/lib/nav-fade'
 import { useCompactSidebar } from '@/hooks/useCompactSidebar'
 import { prefetchRoute } from '@/routes'
 
@@ -65,7 +66,7 @@ export function Sidebar() {
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set())
   const [flyout, setFlyout] = useState<string | null>(null)
   const navRef = useRef<HTMLElement>(null)
-  const [fade, setFade] = useState('')
+  const [fade, setFade] = useState({ top: 0, bottom: 0 })
 
   // Filter nav items based on platform features.
   const filteredNavGroups = navGroups.map((group) => ({
@@ -122,9 +123,10 @@ export function Sidebar() {
     const nav = navRef.current
     if (!nav) return
     const update = () => {
-      const top = nav.scrollTop > 2
-      const bottom = nav.scrollTop + nav.clientHeight < nav.scrollHeight - 2
-      setFade([top && 'top', bottom && 'bottom'].filter(Boolean).join(' '))
+      const next = navFade(nav)
+      setFade((current) =>
+        current.top === next.top && current.bottom === next.bottom ? current : next
+      )
     }
     update()
     nav.addEventListener('scroll', update, { passive: true })
@@ -172,7 +174,16 @@ export function Sidebar() {
       {/* Nav items */}
       <nav
         ref={navRef}
-        data-fade={fade || undefined}
+        data-fade={
+          [fade.top > 0 && 'top', fade.bottom > 0 && 'bottom'].filter(Boolean).join(' ') ||
+          undefined
+        }
+        style={
+          {
+            '--nav-fade-top': `${fade.top}px`,
+            '--nav-fade-bottom': `${fade.bottom}px`
+          } as CSSProperties
+        }
         className="min-h-0 flex-1 overflow-y-auto px-3 pb-2 pt-4"
         aria-label={t('mainNavigation', 'Main navigation')}
       >

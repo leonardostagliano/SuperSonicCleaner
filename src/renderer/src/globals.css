@@ -296,19 +296,15 @@ code {
 .kudu-sidebar nav::-webkit-scrollbar {
   display: none;
 }
-/* More items above or below: fade that edge instead of cutting a row in half. The masks only
-   set transparency and paint no colour, so the design check allows them. */
-.kudu-sidebar nav[data-fade='top'] {
-  mask-image: /* design-allow */ linear-gradient(transparent, black 22px);
-}
-.kudu-sidebar nav[data-fade='bottom'] {
-  mask-image: /* design-allow */ linear-gradient(to top, transparent, black 22px);
-}
-.kudu-sidebar nav[data-fade='top bottom'] {
+/* More items above or below: fade that edge instead of cutting a row in half. Sidebar.tsx sets
+   each fade's length (lib/nav-fade.ts): none while only the rest of the last row is hidden, up
+   to 22px beyond. The mask only sets transparency and paints no colour, so the design check
+   allows it. */
+.kudu-sidebar nav[data-fade] {
   mask-image: /* design-allow */ linear-gradient(
     transparent,
-    black 22px,
-    black calc(100% - 22px),
+    black var(--nav-fade-top, 0px),
+    black calc(100% - var(--nav-fade-bottom, 0px)),
     transparent
   );
 }
