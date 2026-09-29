@@ -15,6 +15,7 @@
   "cpuDetail": "Utilizarea curentă a procesorului",
   "sample": "Ultimul eșantion",
   "used": "{{used}} din {{total}} GB folosiți",
+  "free": "{{free}} GB liberi",
   "waiting": "Se așteaptă date în timp real",
   "unavailable": "Datele despre disc nu sunt disponibile",
   "live": "Metrici de sistem în timp real",

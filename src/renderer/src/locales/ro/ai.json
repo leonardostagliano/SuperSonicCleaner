@@ -1,7 +1,7 @@
 {
   "title": "Analiză AI",
   "description": "Solicitați o a doua opinie despre aceste rezultate ale scanării.",
-  "hubDescription": "O a doua opinie despre scanări și înregistrări de performanță, folosind autentificarea dvs. Codex.",
+  "hubDescription": "Trimite către Codex, sub autentificarea dvs., doar metadatele scanării sau măsurătorile înregistrării, și doar atunci când porniți o analiză dintr-un instrument.",
   "hubPrivacy": "Scanările partajează doar metadate anonime ale fișierelor. Înregistrările partajează măsurători numerice ale CPU, memoriei și discului, cu ID-uri temporare de proces. Numele, căile, notele și conținutul fișierelor rămân pe acest dispozitiv.",
   "connectionTitle": "Conexiune Codex",
   "connectionIntro": "Folosiți Codex pe acest computer. Verificați conexiunea, apoi alegeți un instrument mai jos.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Finalizați o scanare sau salvați o înregistrare de performanță, activați analiza AI pentru aceasta, apoi porniți-o cu butonul dedicat. Nimic nu este trimis automat.",
   "tools": {
     "cleaner": {
-      "title": "Curățarea sistemului"
+      "title": "Curățarea sistemului",
+      "dataSent": "Identificatori temporari, tipul fișierului, dimensiunea și vârsta aproximativă. Urmele de confidențialitate sunt excluse."
     },
     "largeFiles": {
-      "title": "Fișiere mari"
+      "title": "Fișiere mari",
+      "dataSent": "Identificatori temporari, tipul fișierului, dimensiunea și vârsta aproximativă."
     },
     "duplicates": {
-      "title": "Fișiere duplicate"
+      "title": "Fișiere duplicate",
+      "dataSent": "Identificatori temporari, tipul fișierului, dimensiunea, vârsta aproximativă și grupul de duplicate."
     },
     "disk": {
-      "title": "Analiza discului"
+      "title": "Analiza discului",
+      "dataSent": "Identificatori temporari, dimensiunea totală a folderului și vârsta aproximativă."
     },
     "performance": {
-      "title": "Înregistrări de performanță"
+      "title": "Înregistrări de performanță",
+      "dataSent": "Măsurători numerice ale CPU, memoriei și discului, cu identificatori temporari de proces."
     }
   },
   "enable": "Activați analiza AI pentru acest ecran",
@@ -51,5 +56,23 @@
     "low": "Prioritate scăzută",
     "medium": "Prioritate medie",
     "high": "Prioritate ridicată"
+  },
+  "toolsTitle": "Instrumente",
+  "columns": {
+    "tool": "Instrument",
+    "dataSent": "Date trimise",
+    "lastRun": "Ultima rulare",
+    "state": "Stare"
+  },
+  "lastRun": {
+    "running": "În curs de rulare",
+    "done": "Finalizată în această sesiune",
+    "failed": "Eșuată",
+    "none": "Nicio rulare în această sesiune",
+    "perRecording": "Salvată la fiecare înregistrare analizată"
+  },
+  "state": {
+    "on": "Activat",
+    "off": "Dezactivat"
   }
 }

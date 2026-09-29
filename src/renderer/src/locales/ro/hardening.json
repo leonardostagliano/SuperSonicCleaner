@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Scut de confidențialitate",
-    "pageDescription": "Controlați telemetria, reclamele, urmărirea și colectarea datelor în întregul sistem",
+    "pageDescription": "Citește setările de telemetrie, publicitate, căutare și sincronizare și le compară cu cea mai privată valoare. O setare se schimbă doar atunci când folosiți comutatorul ei sau confirmați; majoritatea pot fi readuse la valoarea implicită.",
     "scanButton": "Scanați",
-    "scanProgressPreparing": "Se pregătește scanarea...",
-    "applyingProtections": "Se aplică protecțiile de confidențialitate...",
-    "emptyStateTitle": "Scut de confidențialitate",
-    "emptyStateDescription": "Faceți clic pe „Scanați” pentru a audita setările de confidențialitate și securitate și pentru a aplica măsurile recomandate de consolidare.",
-    "adminWarning": "Unele setări necesită privilegii de administrator pentru a fi modificate. Rulați SuperSonicCleaner ca administrator pentru protecție completă.",
+    "scanProgressPreparing": "Se pregătește scanarea",
+    "applyingProtections": "Se aplică setările…",
+    "emptyStateTitle": "Setările nu au fost încă scanate",
+    "emptyStateDescription": "Scanarea citește setările și nu modifică niciuna dintre ele.",
+    "adminWarning": "Unele setări pot fi modificate doar atunci când SuperSonicCleaner rulează ca administrator; fără aceste drepturi, rămân neschimbate.",
     "scanFailed": "Scanarea confidențialității a eșuat",
     "applyFailed": "Aplicarea setărilor de confidențialitate a eșuat",
-    "applyFailedDescription": "Încercați să rulați ca administrator",
-    "settingApplyFailed": "Aplicarea „{{label}}” a eșuat",
-    "settingEnabled": "{{label}} blocat",
-    "settingDisabled": "{{label}} restaurat la valorile implicite",
-    "settingRevertFailed": "Revenirea pentru „{{label}}” a eșuat",
+    "applyFailedDescription": "Încercați să rulați aplicația ca administrator",
+    "settingApplyFailed": "Nu s-a putut aplica „{{label}}”",
+    "settingEnabled": "Aplicat: {{label}}",
+    "settingDisabled": "Readus la valoarea implicită: {{label}}",
+    "settingRevertFailed": "Nu s-a putut restaura „{{label}}”",
     "settingRevertFailedGeneric": "Revenirea setării de confidențialitate a eșuat",
     "settingApplyFailedGeneric": "Aplicarea setării de confidențialitate a eșuat",
-    "ipcCallFailed": "Apelul IPC a eșuat — încercați să rulați ca administrator",
+    "ipcCallFailed": "Apelul a eșuat: încercați să rulați aplicația ca administrator",
     "allSettingsLabel": "Toate setările",
     "unknownError": "Eroare necunoscută",
     "requiresSettingEnabled": "Activați mai întâi „{{label}}”",
-    "adminRequired": "Încercați să rulați ca administrator",
-    "settingNotApplied": "Sistemul nu a raportat modificarea — poate fi necesară o repornire sau setarea poate fi gestionată de alt profil"
+    "adminRequired": "Încercați să rulați aplicația ca administrator",
+    "settingNotApplied": "Sistemul nu a confirmat modificarea: poate fi necesară o repornire sau setarea este gestionată de alt profil.",
+    "rescanButton": "Scanați din nou",
+    "scanningButton": "Se scanează…",
+    "applyRecommended_one": "Aplicați {{count}} modificare recomandată",
+    "applyRecommended_other": "Aplicați {{count}} modificări recomandate",
+    "summaryTitle_one": "{{count}} setare de modificat",
+    "summaryTitle_other": "{{count}} setări de modificat",
+    "summaryNone": "Toate cele {{total}} setări au deja cea mai privată valoare",
+    "summaryFacts": "{{protected}} din {{total}} au deja cea mai privată valoare · {{categories}} categorii",
+    "categoryMeta_one": "{{count}} de modificat",
+    "categoryMeta_other": "{{count}} de modificat",
+    "categoryAllSet": "toate sunt deja setate",
+    "categoryApply_one": "Aplicați {{count}}",
+    "categoryApply_other": "Aplicați {{count}}",
+    "categoryShow": "Afișați",
+    "categoryHide": "Ascundeți",
+    "adminTag": "Necesită administrator",
+    "notReversibleTag": "Ireversibil",
+    "scanProgressTitle": "Scanare în curs",
+    "scanProgressCount": "{{current}} din {{total}}",
+    "scanProgressCategory": "Se verifică: {{category}}",
+    "scanProgressLabel": "Progresul scanării",
+    "applyingLabel": "Progresul aplicării",
+    "receiptTitle": "Setări aplicate",
+    "receiptApplied_one": "{{count}} setare modificată",
+    "receiptApplied_other": "{{count}} setări modificate",
+    "receiptReversible": "poate fi restaurată din comutatoare",
+    "receiptFailed_one": "{{count}} neaplicată: motivul este indicat mai jos.",
+    "receiptFailed_other": "{{count}} neaplicate: motivele sunt indicate mai jos.",
+    "receiptFailedAdmin_one": "{{count}} neaplicată: poate fi necesar ca aplicația să ruleze ca administrator. Motivul este indicat mai jos.",
+    "receiptFailedAdmin_other": "{{count}} neaplicate: poate fi necesar ca aplicația să ruleze ca administrator. Motivele sunt indicate mai jos.",
+    "failedHeading": "Setări neaplicate",
+    "failedColumnSetting": "Setare",
+    "failedColumnReason": "Motiv",
+    "confirmTitle_one": "Modificați {{count}} setare?",
+    "confirmTitle_other": "Modificați {{count}} setări?",
+    "confirmDescription": "Setările listate trec la cea mai privată valoare. Pot fi readuse la valoarea implicită din comutatoarele acestei pagini.",
+    "confirmDescriptionIrreversible_one": "Setările listate trec la cea mai privată valoare. {{count}} nu poate fi readusă la valoarea implicită din această pagină.",
+    "confirmDescriptionIrreversible_other": "Setările listate trec la cea mai privată valoare. {{count}} nu pot fi readuse la valoarea implicită din această pagină.",
+    "confirmLabel_one": "Modificați {{count}} setare",
+    "confirmLabel_other": "Modificați {{count}} setări",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetria Windows",
+        "description": "Setați colectarea datelor de diagnosticare la minim (doar nivelul de securitate)"
+      },
+      "activity-history": {
+        "label": "Istoricul activității",
+        "description": "Împiedicați Windows să urmărească și să sincronizeze utilizarea aplicațiilor și fișierelor"
+      },
+      "publish-activity": {
+        "label": "Publicarea activităților utilizatorului",
+        "description": "Împiedicați Windows să publice activitățile dvs. către Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Solicitări de feedback",
+        "description": "Dezactivați solicitările periodice de feedback și sondajele Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Date de scriere de mână",
+        "description": "Opriți trimiterea datelor de scriere de mână și de tastare către Microsoft"
+      },
+      "input-personalization": {
+        "label": "Personalizarea introducerii de date",
+        "description": "Opriți colectarea datelor de tastare și scriere pentru personalizare"
+      },
+      "tailored-experiences": {
+        "label": "Experiențe personalizate",
+        "description": "Împiedicați Microsoft să folosească date de diagnosticare pentru a personaliza sfaturi și reclame"
+      },
+      "app-launch-tracking": {
+        "label": "Urmărirea lansării aplicațiilor",
+        "description": "Împiedicați Windows să urmărească aplicațiile pe care le deschideți, pentru a ajusta meniul Start"
+      },
+      "advertising-id": {
+        "label": "ID de publicitate",
+        "description": "Dezactivați ID-ul unic de publicitate pe care aplicațiile îl folosesc pentru a vă urmări"
+      },
+      "suggested-content": {
+        "label": "Conținut sugerat în Setări",
+        "description": "Împiedicați Microsoft să afișeze sugestii de aplicații și reclame în Setări"
+      },
+      "tips-notifications": {
+        "label": "Sfaturi și sugestii",
+        "description": "Dezactivați notificările Windows cu sfaturi, trucuri și sugestii"
+      },
+      "start-suggestions": {
+        "label": "Sugestii în meniul Start",
+        "description": "Dezactivați sugestiile de aplicații (reclame) din meniul Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight pe ecranul de blocare",
+        "description": "Dezactivați reclamele și sugestiile Microsoft Spotlight de pe ecranul de blocare"
+      },
+      "silently-installed-apps": {
+        "label": "Aplicații instalate silențios",
+        "description": "Împiedicați Windows să instaleze automat aplicații promovate"
+      },
+      "preinstalled-apps": {
+        "label": "Sugestii de aplicații preinstalate",
+        "description": "Împiedicați Windows să sugereze aplicații preinstalate pe care nu le-ați folosit"
+      },
+      "bing-start-menu": {
+        "label": "Bing în meniul Start",
+        "description": "Împiedicați trimiterea către Bing a căutărilor tastate în meniul Start"
+      },
+      "bing-web-search": {
+        "label": "Rezultate web Bing",
+        "description": "Dezactivați rezultatele web din Căutare Windows, astfel încât căutările să rămână pe acest PC"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Dezactivați Cortana, care rulează în fundal și colectează date"
+      },
+      "search-highlights": {
+        "label": "Recomandări de căutare",
+        "description": "Dezactivați sugestiile de căutări populare și conținutul web din câmpul de căutare"
+      },
+      "store-search-suggestions": {
+        "label": "Sugestii de căutare în Store",
+        "description": "Dezactivați sugestiile de căutare Microsoft Store, care trimit căutările dvs. către Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Sincronizarea clipboard-ului în cloud",
+        "description": "Împiedicați sincronizarea datelor din clipboard între dispozitive prin cloud"
+      },
+      "clipboard-history": {
+        "label": "Istoricul clipboard-ului",
+        "description": "Dezactivați istoricul clipboard-ului, care stochează textul și imaginile copiate"
+      },
+      "settings-sync": {
+        "label": "Sincronizarea setărilor",
+        "description": "Opriți sincronizarea setărilor, temelor și parolelor Windows cu contul dvs. Microsoft"
+      },
+      "find-my-device": {
+        "label": "Găsește dispozitivul meu",
+        "description": "Dezactivați urmărirea dispozitivului pe bază de locație de către Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Dezactivați asistentul IA Microsoft Copilot din tot sistemul Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Dezactivați Windows Recall, istoricul de capturi de ecran bazat pe IA, care înregistrează tot ce apare pe ecran"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Dezactivați analiza IA a textului și imaginilor de pe ecran efectuată de Click to Do"
+      },
+      "ai-service-autostart": {
+        "label": "Pornirea automată a serviciilor IA",
+        "description": "Împiedicați serviciile IA să pornească automat în fundal"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose IA",
+        "description": "Dezactivați funcțiile IA din Edge pentru redactarea și rescrierea textului"
+      },
+      "paint-ai": {
+        "label": "Funcții IA în Paint",
+        "description": "Dezactivați funcțiile de generare de imagini prin IA din Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Funcții IA în Notepad",
+        "description": "Dezactivați funcțiile de rescriere a textului prin IA din Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "Serviciul DiagTrack",
+        "description": "Dezactivați serviciul Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "Serviciul WAP Push",
+        "description": "Dezactivați serviciul de rutare a mesajelor WAP Push folosit pentru telemetrie"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Dezactivați partajarea de la egal la egal a actualizărilor Windows, astfel încât acest PC să nu încarce date de actualizare către alte dispozitive"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Dezactivați Downloaded Maps Manager, un serviciu de fundal de care majoritatea PC-urilor nu au nevoie"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Dezactivați sarcina de telemetrie Microsoft care colectează date de compatibilitate"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Dezactivați sarcina de fundal care încarcă telemetria programelor"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Dezactivați colectarea de telemetrie realizată prin proxy-ul autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Dezactivați încărcarea datelor programului Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "Date de utilizare USB (CEIP)",
+        "description": "Dezactivați colectarea de telemetrie privind utilizarea dispozitivelor USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Dezactivați colectarea și încărcarea datelor de diagnosticare a discului"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Dezactivați sarcina de telemetrie pentru gestionarea dispozitivelor de feedback"
+      },
+      "task-maps-update": {
+        "label": "Sarcina de actualizare a hărților",
+        "description": "Dezactivați descărcarea automată a datelor de hărți în fundal"
+      },
+      "task-maps-toast": {
+        "label": "Sarcina de notificări pentru hărți",
+        "description": "Dezactivați sarcina de notificări pentru hărți"
+      },
+      "edge-metrics": {
+        "label": "Raportarea utilizării în Edge",
+        "description": "Împiedicați Edge să trimită măsurători de utilizare și blocări către Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Colectarea informațiilor despre site-uri în Edge",
+        "description": "Împiedicați Edge să trimită adresele site-urilor vizitate către Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Raportarea personalizării în Edge",
+        "description": "Împiedicați Edge să trimită istoricul de navigare pentru personalizarea reclamelor"
+      },
+      "edge-copilot-cdp": {
+        "label": "Accesul Copilot la pagină în Edge (CDP)",
+        "description": "Împiedicați Copilot să citească conținutul paginii prin Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Contextul paginii pentru Copilot în Edge",
+        "description": "Împiedicați Copilot să folosească contextul paginii pentru a analiza conținutul"
+      },
+      "edge-discover": {
+        "label": "Scanarea paginilor de către Edge Discover",
+        "description": "Opriți funcția Discover din scanarea conținutului paginii"
+      },
+      "edge-sidebar": {
+        "label": "Bara laterală Edge",
+        "description": "Dezactivați bara laterală Edge și colectarea de date pe care o face în fundal"
+      },
+      "edge-shopping": {
+        "label": "Asistentul de cumpărături în Edge",
+        "description": "Dezactivați urmărirea comparării prețurilor în Edge"
+      },
+      "chrome-metrics": {
+        "label": "Raportarea utilizării în Chrome",
+        "description": "Împiedicați Chrome să trimită măsurători de utilizare și blocări către Google"
+      },
+      "chrome-feedback": {
+        "label": "Feedback-ul utilizatorilor Chrome",
+        "description": "Împiedicați Chrome să colecteze și să trimită date de feedback ale utilizatorilor"
+      },
+      "chrome-extended-reporting": {
+        "label": "Safe Browsing extins în Chrome",
+        "description": "Împiedicați Chrome să trimită rapoarte extinse de URL-uri și descărcări către Google"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetria Firefox",
+        "description": "Împiedicați Firefox să colecteze date de telemetrie și să le încarce către Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Agentul de browser implicit Firefox",
+        "description": "Dezactivați agentul de fundal care raportează date de utilizare a browserului către Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Date de diagnosticare și utilizare",
+        "description": "Opriți partajarea datelor de diagnosticare și utilizare cu Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Analiza Siri",
+        "description": "Opriți colectarea datelor de analiză și îmbunătățire Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Partajarea datelor de sănătate",
+        "description": "Opriți partajarea datelor de sănătate cu Apple în scopuri de cercetare"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Vizibilitatea AirDrop",
+        "description": "Setați AirDrop pe Nimeni: nu puteți primi fișiere prin AirDrop până nu îl reactivați din Configurări sistem"
+      },
+      "macos-crash-reporter": {
+        "label": "Raportarea blocărilor",
+        "description": "Opriți trimiterea automată de rapoarte de către instrumentul de raportare a blocărilor"
+      },
+      "macos-ad-tracking": {
+        "label": "Reclame personalizate",
+        "description": "Limitați urmărirea publicitară efectuată de Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Sugestii Siri în App Store",
+        "description": "Dezactivați sugestiile Siri din App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Sugestii de căutare Safari",
+        "description": "Dezactivați sugestiile de căutare Safari trimise către Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Sugestii Spotlight",
+        "description": "Dezactivați sugestiile web Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Preîncărcarea primului rezultat în Safari",
+        "description": "Împiedicați Safari să preîncarce cel mai bun rezultat de căutare, ceea ce trimite date de navigare către site-uri"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Dezactivați Handoff și clipboard-ul universal: nu mai puteți continua activitățile sau copia și lipi între dispozitivele Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Analiza iCloud",
+        "description": "Opriți partajarea analizei iCloud cu Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "File iCloud în Safari",
+        "description": "Dezactivați sincronizarea filelor iCloud în Safari: nu mai vedeți filele deschise pe celelalte dispozitive Apple"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Dezactivați complet Siri: Hey Siri, comenzile vocale și comenzile rapide Siri încetează să funcționeze"
+      },
+      "macos-siri-dictation": {
+        "label": "Dictarea Siri",
+        "description": "Dezactivați dictarea: tasta de microfon de pe tastatură încetează să funcționeze"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Dezactivați funcțiile IA din Apple Intelligence (macOS 15 Sequoia și versiuni ulterioare)"
+      },
+      "macos-safari-dnt": {
+        "label": "Do Not Track în Safari",
+        "description": "Activați antetul Do Not Track (nu urmări) în Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Raportarea utilizării în Chrome",
+        "description": "Împiedicați Chrome să trimită măsurători de utilizare către Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Rapoarte Safe Browsing în Chrome",
+        "description": "Împiedicați Chrome să trimită rapoarte extinse de URL-uri și descărcări către Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetria Firefox",
+        "description": "Împiedicați Firefox să colecteze date de telemetrie și să le încarce către Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Asigurați-vă că Gatekeeper este activat, pentru ca aplicațiile neverificate să fie blocate"
+      },
+      "macos-remote-apple-events": {
+        "label": "Evenimente Apple la distanță",
+        "description": "Dezactivați evenimentele Apple la distanță, astfel încât Mac-ul dvs. să nu poată fi automatizat de la distanță"
+      },
+      "macos-wake-on-network": {
+        "label": "Trezire prin rețea",
+        "description": "Dezactivați trezirea prin rețea, astfel încât Mac-ul dvs. să nu poată fi trezit de la distanță"
+      },
+      "macos-guest-account": {
+        "label": "Cont de invitat",
+        "description": "Dezactivați contul de invitat pentru a preveni accesul local neautorizat"
+      },
+      "macos-auto-login": {
+        "label": "Conectare automată",
+        "description": "Dezactivați conectarea automată, astfel încât Mac-ul să solicite autentificare la pornire"
+      },
+      "macos-firewall": {
+        "label": "Firewall pentru aplicații",
+        "description": "Activați firewallul pentru aplicații al macOS pentru a controla conexiunile de intrare"
+      },
+      "macos-stealth-mode": {
+        "label": "Mod invizibil",
+        "description": "Activați modul invizibil, astfel încât Mac-ul să nu răspundă la cereri de sondare (ping ICMP)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Dezactivați redirecționarea IP",
+        "description": "Împiedicați sistemul să redirecționeze pachete între interfețele de rețea"
+      },
+      "macos-block-signed-auto": {
+        "label": "Blocați permisiunea automată pentru aplicații semnate",
+        "description": "Împiedicați aplicațiile semnate să ocolească automat firewallul"
+      },
+      "macos-remote-login": {
+        "label": "Dezactivați conectarea la distanță (SSH)",
+        "description": "Dezactivați complet serverul SSH. Dacă aveți nevoie de acces SSH, lăsați-l dezactivat și securizați în schimb setările SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Dezactivați conectarea root prin SSH",
+        "description": "Împiedicați conectarea directă ca root prin SSH; folosiți în schimb sudo dintr-un cont obișnuit"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Dezactivați autentificarea prin parolă SSH",
+        "description": "Permiteți doar autentificarea SSH pe bază de chei. Configurați mai întâi cheile SSH, altfel puteți rămâne blocat în afară"
+      },
+      "macos-core-dumps": {
+        "label": "Dezactivați core dump-urile",
+        "description": "Împiedicați core dump-urile, care pot expune conținut sensibil din memorie"
+      },
+      "gnome-usage-stats": {
+        "label": "Statistici de utilizare",
+        "description": "Dezactivați colectarea statisticilor de utilizare GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Urmărirea fișierelor recente",
+        "description": "Dezactivați urmărirea fișierelor folosite recent"
+      },
+      "gnome-location": {
+        "label": "Servicii de localizare",
+        "description": "Dezactivați serviciile de localizare GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Raportarea blocărilor (Apport)",
+        "description": "Dezactivați trimiterea automată a rapoartelor de blocare"
+      },
+      "gnome-connectivity-check": {
+        "label": "Verificarea conectivității",
+        "description": "Dezactivați verificările periodice ale conectivității la rețea"
+      },
+      "core-dump-disable": {
+        "label": "Dezactivați core dump-urile",
+        "description": "Împiedicați core dump-urile, care pot expune conținut sensibil din memorie"
+      },
+      "ssh-root-login": {
+        "label": "Dezactivați conectarea root prin SSH",
+        "description": "Împiedicați conectarea directă ca root prin SSH; folosiți în schimb sudo dintr-un cont obișnuit"
+      },
+      "ssh-password-auth": {
+        "label": "Dezactivați autentificarea prin parolă SSH",
+        "description": "Permiteți doar autentificarea SSH pe bază de chei. Configurați mai întâi cheile SSH, altfel puteți rămâne blocat în afară"
+      },
+      "kde-usage-stats": {
+        "label": "Statistici de utilizare",
+        "description": "Dezactivați feedbackul utilizatorilor KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Urmărirea fișierelor recente",
+        "description": "Dezactivați istoricul de activitate al fișierelor recente din KDE"
+      },
+      "kde-baloo": {
+        "label": "Indexarea fișierelor (Baloo)",
+        "description": "Dezactivați indexatorul de fișiere Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Raportarea blocărilor (DrKonqi)",
+        "description": "Dezactivați gestionarul de rapoarte de blocare KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetrie și colectare de date",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Eliminare aplicații inutile",
-    "pageDescription": "Eliminați aplicațiile Windows preinstalate și aplicațiile inutile OEM",
+    "pageDescription": "Aplicații preinstalate de Windows și de producător. Odată eliminate, pot fi reinstalate doar din Microsoft Store.",
     "scanButton": "Scanați",
-    "irreversibleWarning": "Ireversibil — aplicațiile eliminate pot fi reinstalate doar din Microsoft Store. Verificați cu atenție selecțiile.",
-    "scanningPackages": "Se scanează pachetele instalate...",
-    "removingProgress": "Se elimină {{current}} din {{total}}",
+    "rescanButton": "Scanați din nou",
+    "irreversibleWarning": "Eliminarea nu poate fi anulată din aplicație: verificați aplicațiile selectate înainte de a confirma.",
+    "scanningPackages": "Se scanează pachetele instalate…",
+    "removingProgress": "Se elimină aplicațiile ({{current}} din {{total}})",
+    "receiptTitle": "Eliminare finalizată",
+    "removedApps_one": "{{count}} aplicație eliminată",
+    "removedApps_other": "{{count}} aplicații eliminate",
+    "failedCount_one": "{{count}} eșuată",
+    "failedCount_other": "{{count}} eșuate",
+    "reinstallFromStore": "poate fi reinstalată doar din Microsoft Store",
     "selectAll": "Selectați tot",
-    "emptyStateTitle": "Nu au fost detectate aplicații inutile",
-    "emptyStateDescription": "Faceți clic pe „Scanați” pentru a găsi aplicații preinstalate și aplicații inutile OEM.",
+    "filterLabel": "Categorie",
+    "confirmTitle_one": "Eliminați {{count}} aplicație?",
+    "confirmTitle_other": "Eliminați {{count}} aplicații?",
+    "confirmDescription_one": "Aplicația este eliminată pentru utilizatorul dvs. și, cu drepturi de administrator, și pentru utilizatorii noi. Poate fi reinstalată doar din Microsoft Store.",
+    "confirmDescription_other": "Aplicațiile sunt eliminate pentru utilizatorul dvs. și, cu drepturi de administrator, și pentru utilizatorii noi. Pot fi reinstalate doar din Microsoft Store.",
+    "confirmLabel_one": "Eliminați {{count}} aplicație",
+    "confirmLabel_other": "Eliminați {{count}} aplicații",
+    "emptyStateTitle": "Nescanat încă",
+    "emptyStateDescription": "Nicio scanare a aplicațiilor preinstalate în această sesiune.",
+    "lastRun_one": "Ultima eliminare: {{date}}, {{count}} aplicație eliminată.",
+    "lastRun_other": "Ultima eliminare: {{date}}, {{count}} aplicații eliminate.",
+    "checkKnownTitle": "Aplicații cunoscute",
+    "checkKnownDetail": "O listă de aplicații preinstalate de Microsoft și de producători (OEM)",
+    "checkInstalledTitle": "Pachete instalate",
+    "checkInstalledDetail": "Pachetele de aplicații ale utilizatorului dvs., comparate cu lista",
+    "checkRemovalTitle": "Eliminare",
+    "checkRemovalDetail": "Pentru utilizatorul dvs.; cu drepturi de administrator, și din copia folosită pentru utilizatorii noi",
+    "noneFoundTitle": "Nicio aplicație din listă nu este instalată",
+    "noneFoundDescription": "Aplicațiile preinstalate cunoscute nu sunt prezente pentru utilizatorul dvs.",
+    "summaryTitle_one": "{{count}} aplicație preinstalată găsită",
+    "summaryTitle_other": "{{count}} aplicații preinstalate găsite",
+    "selectedCount_one": "{{count}} selectată",
+    "selectedCount_other": "{{count}} selectate",
+    "removeButton_one": "Eliminați {{count}} aplicație",
+    "removeButton_other": "Eliminați {{count}} aplicații",
+    "removeNone": "Eliminați selecția",
     "scanFailedToast": "Scanarea aplicațiilor inutile a eșuat",
     "scanFailedDescription": "Asigurați-vă că PowerShell este disponibil",
     "scanFailedError": "Scanarea pentru aplicații inutile a eșuat. Asigurați-vă că PowerShell este disponibil.",

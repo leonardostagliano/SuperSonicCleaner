@@ -10,5 +10,7 @@
   "history": "Activitate",
   "settings": "Preferințe",
   "gameMode": "Mod joc",
-  "firewallAudit": "Audit firewall"
+  "firewallAudit": "Audit firewall",
+  "updateBadge": "Actualizare",
+  "mainNavigation": "Navigare principală"
 }

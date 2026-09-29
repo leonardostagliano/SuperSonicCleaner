@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Vedeți ce s-a schimbat, ce a fost recuperat și ce mai necesită o verificare. Fiecare sarcină finalizată lasă o înregistrare.",
-    "settings": "Adaptați SuperSonicCleaner după preferințele dvs. Setați aspectul, notificările, excluderile și preferințele de curățare.",
-    "about": "Open source, realizat cu grijă. Găsiți versiunea dvs., verificați actualizările și descoperiți proiectul.",
-    "recovery": "O cale clară de întoarcere. Examinați modificările acceptate și detaliile restaurării înainte de a anula ceva."
+    "history": "Ultimele 100 de scanări și curățări efectuate pe acest PC, cu data, durata, elementele procesate și spațiul eliberat, precum și chitanța fiecărei curățări.",
+    "settings": "Aspect, limbă, pornire, notificări, actualizări, copii de siguranță, preferințe de curățare și excluderi. Fiecare modificare este salvată imediat.",
+    "about": "Versiunea instalată, actualizările, licența MIT și proiectul original (Kudu).",
+    "recovery": "Modificările aduse registry-ului, serviciilor și sarcinilor programate de SuperSonicCleaner, împreună cu copiile de siguranță pentru anularea lor. Fișierele șterse nu pot fi recuperate."
   },
   "storageTrend": {
     "title": "Spațiu de stocare în timp",
