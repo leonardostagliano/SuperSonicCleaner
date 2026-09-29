@@ -8,6 +8,8 @@ import { perfMonitor } from './perf-monitor'
 const mocks = vi.hoisted(() => ({
   current: null as unknown,
   position: null as { displayId: number; x: number; y: number } | null,
+  /** The tallest window the mocked OS lets the constructor create. */
+  maxHeight: Infinity,
   stopSnapshots: vi.fn(),
   handlers: new Map<string, (event: unknown, ...args: unknown[]) => unknown>()
 }))
@@ -42,7 +44,9 @@ vi.mock('electron', () => {
       on: vi.fn()
     }
     constructor(bounds: { x: number; y: number; width: number; height: number }) {
-      this.bounds = { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height }
+      // Like Electron on Windows and Linux, a window taller than the work area is shrunk.
+      const height = Math.min(bounds.height, mocks.maxHeight)
+      this.bounds = { x: bounds.x, y: bounds.y, width: bounds.width, height }
       mocks.current = this
     }
     on(name: string, callback: () => void) {
@@ -135,6 +139,11 @@ const emit = (window: BrowserWindow, name: string) => {
   target.listeners.get(name)?.()
 }
 const beginMove = (window: BrowserWindow) => emit(window, 'move')
+/**
+ * A 'move' right after placing the window is the placement's own; the window is shown, and
+ * can be moved by the user, long after that.
+ */
+const waitForPlacement = () => vi.advanceTimersByTime(200)
 /** The OS move loop of a drag by the grip on Windows: 'will-move' … 'move' … 'moved'. */
 const dragTo = (window: BrowserWindow, x: number, y: number) => {
   emit(window, 'will-move')
@@ -156,6 +165,7 @@ afterEach(() => {
   mocks.handlers.clear()
   mocks.current = null
   mocks.position = null
+  mocks.maxHeight = Infinity
   vi.clearAllMocks()
 })
 
@@ -212,6 +222,24 @@ describe('desktop notch motion lifecycle', () => {
     dispose()
   })
 
+  it('gives the window its full canvas when the OS created it shorter', () => {
+    vi.useFakeTimers()
+    mocks.maxHeight = 600
+    const dispose = initDesktopNotch(
+      () => null,
+      () => {}
+    )
+    const window = mocks.current as InstanceType<typeof BrowserWindow>
+    expect(window.getBounds()).toMatchObject(CANVAS)
+    expect(shapeOf(window)).toEqual([TAB])
+    // The resize reports a move: it is not a drag, so nothing is settled or saved.
+    beginMove(window)
+    vi.advanceTimersByTime(1000)
+    expect(writeFileSync).not.toHaveBeenCalled()
+    expect(window.webContents.send).not.toHaveBeenCalled()
+    dispose()
+  })
+
   it('cancels a pending shrink when hover opens the notch again', () => {
     vi.useFakeTimers()
     const dispose = initDesktopNotch(
@@ -241,6 +269,7 @@ describe('desktop notch motion lifecycle', () => {
     expect(offset.x).toBeGreaterThan(0)
     expect(offset.y).toBeGreaterThan(0)
     expect(shapeOf(window)).toEqual([TAB])
+    waitForPlacement()
     beginMove(window)
     invoke(NOTCH_IPC.EXPANDED, true)
     expect(window.getBounds()).toMatchObject(CANVAS)
@@ -260,6 +289,7 @@ describe('desktop notch motion lifecycle', () => {
       () => {}
     )
     const window = mocks.current as InstanceType<typeof BrowserWindow>
+    waitForPlacement()
     beginMove(window)
     invoke(NOTCH_IPC.EXPANDED, true)
     invoke(NOTCH_IPC.EXPANDED, false)
@@ -379,6 +409,7 @@ describe('desktop notch motion lifecycle', () => {
     const window = mocks.current as InstanceType<typeof BrowserWindow>
     const send = vi.mocked(window.webContents.send)
     const start = window.getBounds()
+    waitForPlacement()
     window.setPosition(start.x - 500, start.y - 300)
     beginMove(window)
     vi.advanceTimersByTime(450)

@@ -331,7 +331,9 @@ export function initDesktopNotch(
         additionalArguments: ['--kudu-desktop-notch']
       }
     })
-    shapeWindow()
+    // The OS shrinks a new window that is taller than the work area and a non-resizable
+    // window keeps that size, so the full canvas is set again once it exists.
+    place()
     win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
     win.webContents.on('will-navigate', (event) => event.preventDefault())
     win.on('ready-to-show', () => {
