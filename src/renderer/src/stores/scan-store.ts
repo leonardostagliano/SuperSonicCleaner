@@ -57,6 +57,10 @@ interface ScanState {
   scanCancelRequested: boolean
   /** When the last scan finished (ms since epoch); null before a scan or while one runs. */
   scannedAt: number | null
+  /** The categories the last scan read; empty ones among them found nothing. */
+  scannedCategories: CleanerType[]
+  /** The last scan was cancelled before every category was read. */
+  stoppedEarly: boolean
 
   setStatus: (status: ScanStatus) => void
   setResults: (results: ScanResult[]) => void
@@ -69,6 +73,8 @@ interface ScanState {
   setElevationSkipped: (categories: string[]) => void
   setScanCancelRequested: (requested: boolean) => void
   setScannedAt: (time: number | null) => void
+  setScannedCategories: (categories: CleanerType[]) => void
+  setStoppedEarly: (stopped: boolean) => void
   toggleItem: (id: string) => void
   toggleSubcategory: (result: ScanResult) => void
   selectAll: (category: string) => void
@@ -93,6 +99,8 @@ export const useScanStore = create<ScanState>((set, get) => ({
   elevationSkipped: [],
   scanCancelRequested: false,
   scannedAt: null,
+  scannedCategories: [],
+  stoppedEarly: false,
 
   setStatus: (status) => set({ status }),
   setResults: (results) => {
@@ -124,6 +132,8 @@ export const useScanStore = create<ScanState>((set, get) => ({
   setElevationSkipped: (elevationSkipped) => set({ elevationSkipped }),
   setScanCancelRequested: (scanCancelRequested) => set({ scanCancelRequested }),
   setScannedAt: (scannedAt) => set({ scannedAt }),
+  setScannedCategories: (scannedCategories) => set({ scannedCategories }),
+  setStoppedEarly: (stoppedEarly) => set({ stoppedEarly }),
   toggleItem: (id) =>
     set((s) => {
       const next = new Set(s.selectedItems)
@@ -218,6 +228,8 @@ export const useScanStore = create<ScanState>((set, get) => ({
       failedCategories: [],
       elevationSkipped: [],
       scanCancelRequested: false,
-      scannedAt: null
+      scannedAt: null,
+      scannedCategories: [],
+      stoppedEarly: false
     })
 }))

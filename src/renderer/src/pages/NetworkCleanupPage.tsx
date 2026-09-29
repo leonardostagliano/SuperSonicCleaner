@@ -71,12 +71,11 @@ export function NetworkCleanupPage() {
   const selectedIds = useNetworkStore((s) => s.selectedIds)
   const status = useNetworkStore((s) => s.status)
   const cleanResult = useNetworkStore((s) => s.cleanResult)
+  const scannedAt = useNetworkStore((s) => s.scannedAt)
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
   const [openCategories, setOpenCategories] = useState<Set<NetworkCategory>>(new Set())
-  // When the list on screen was read; not kept across visits (the store has no clock).
-  const [scannedAt, setScannedAt] = useState<number | null>(null)
   const addHistoryEntry = useHistoryStore((s) => s.addEntry)
   const historyEntries = useHistoryStore((s) => s.entries)
 
@@ -86,6 +85,7 @@ export function NetworkCleanupPage() {
     store.setItems([])
     store.setSelectedIds(new Set())
     store.setCleanResult(null)
+    store.setScannedAt(null)
     setShowDetails(false)
     try {
       const result = await window.kudu.networkScan()
@@ -93,8 +93,8 @@ export function NetworkCleanupPage() {
       s.setItems(result)
       const preSelected = new Set(result.filter((i) => i.selected).map((i) => i.id))
       s.setSelectedIds(preSelected)
+      s.setScannedAt(Date.now())
       s.setStatus('complete')
-      setScannedAt(Date.now())
     } catch {
       toast.error(t('scanFailedToast'))
       useNetworkStore.getState().setStatus('idle')
@@ -150,7 +150,7 @@ export function NetworkCleanupPage() {
         const ns = useNetworkStore.getState()
         ns.setItems(freshItems)
         ns.setSelectedIds(new Set())
-        setScannedAt(Date.now())
+        ns.setScannedAt(Date.now())
       } catch {
         /* re-scan is best-effort */
       }

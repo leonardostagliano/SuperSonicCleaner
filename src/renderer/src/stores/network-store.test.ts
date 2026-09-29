@@ -18,6 +18,13 @@ describe('network-store', () => {
     expect(state.selectedIds.size).toBe(0)
   })
 
+  it('keeps when the list was read until reset', () => {
+    useNetworkStore.getState().setScannedAt(1000)
+    expect(useNetworkStore.getState().scannedAt).toBe(1000)
+    useNetworkStore.getState().reset()
+    expect(useNetworkStore.getState().scannedAt).toBeNull()
+  })
+
   it('toggleItem adds and removes from selection', () => {
     useNetworkStore.getState().toggleItem('x')
     expect(useNetworkStore.getState().selectedIds.has('x')).toBe(true)

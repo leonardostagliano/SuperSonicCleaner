@@ -2,7 +2,15 @@ import { beforeEach, afterEach, expect, it, vi } from 'vitest'
 const mocks = vi.hoisted(() => ({
   createRestorePoint: false,
   history: vi.fn(),
-  state: { setStatus: vi.fn(), setResults: vi.fn(), addResults: vi.fn(), setProgress: vi.fn() }
+  state: {
+    setStatus: vi.fn(),
+    setResults: vi.fn(),
+    addResults: vi.fn(),
+    setProgress: vi.fn(),
+    setScannedAt: vi.fn(),
+    setScannedCategories: vi.fn(),
+    setStoppedEarly: vi.fn()
+  }
 }))
 vi.mock('@/stores/scan-store', () => ({ useScanStore: { getState: () => mocks.state } }))
 vi.mock('@/stores/settings-store', () => ({
@@ -21,6 +29,7 @@ vi.mock('@/stores/history-store', () => ({
 vi.mock('sonner', () => ({
   toast: { info: vi.fn(), success: vi.fn(), warning: vi.fn(), error: vi.fn() }
 }))
+import { CleanerType } from '@shared/enums'
 import { runSchedule } from './useScheduledScan'
 const payload = {
   scheduleId: 'one',
@@ -68,11 +77,32 @@ it('runs tasks in the saved order and restricts cleanup to fresh matching catego
   expect(api.systemClean).toHaveBeenCalledWith(['two'])
   expect(api.scheduleRunComplete).toHaveBeenCalledWith('one', 'success', 'run-token')
 })
+it('records the cleaner categories it read and when it finished', async () => {
+  api.registryScan.mockRejectedValue(new Error('boom'))
+  await runSchedule({ ...payload, tasks: ['cleaner:system', 'registry'] })
+  expect(mocks.state.setScannedAt).toHaveBeenNthCalledWith(1, null)
+  expect(mocks.state.setScannedAt).toHaveBeenLastCalledWith(expect.any(Number))
+  expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([CleanerType.System])
+  expect(mocks.state.setStoppedEarly).toHaveBeenLastCalledWith(false)
+})
+it('marks the results as partial when the conditions change during the run', async () => {
+  api.scheduleAuthorize
+    .mockResolvedValueOnce({ allowed: true })
+    .mockResolvedValueOnce({ allowed: true })
+    .mockResolvedValue({ allowed: false, reason: 'game-mode' })
+  await runSchedule(payload)
+  expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([CleanerType.System])
+  expect(mocks.state.setStoppedEarly).toHaveBeenLastCalledWith(true)
+  expect(mocks.state.setScannedAt).toHaveBeenLastCalledWith(expect.any(Number))
+})
 it('defers a queued run if eligibility changes before execution', async () => {
   api.scheduleAuthorize.mockResolvedValue({ allowed: false, reason: 'power' })
   await runSchedule(payload)
   expect(api.systemScan).not.toHaveBeenCalled()
   expect(api.scheduleRunComplete).toHaveBeenCalledWith('one', 'deferred', 'run-token')
+  // A deferred run never touched the Cleaner's last results.
+  expect(mocks.state.setScannedCategories).not.toHaveBeenCalled()
+  expect(mocks.state.setStoppedEarly).not.toHaveBeenCalled()
 })
 it('rechecks immediately before mutation and records partial work without cleaning', async () => {
   api.scheduleAuthorize

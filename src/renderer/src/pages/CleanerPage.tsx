@@ -38,6 +38,7 @@ import { icons } from '@/lib/icons'
 import { formatBytes, formatNumber } from '@/lib/utils'
 import { progressText } from '@/lib/progress-label'
 import {
+  emptyScannedGroups,
   entryTotal,
   formatDateTime,
   formatList,
@@ -678,7 +679,10 @@ export function CleanerPage() {
     [categoryResults, protectRecycleBin]
   )
   const foundGroups = groups.filter((group) => group.results.length > 0)
-  const emptyGroups = groups.filter((group) => group.results.length === 0)
+  // Only categories this scan read: a cancelled, failed or scheduled scan leaves some unread.
+  const emptyGroups = emptyScannedGroups(groups, store.scannedCategories, (group) =>
+    group.def.type === AI_TOOLS_VIEW ? CleanerType.App : group.def.type
+  )
 
   const totals = useMemo(
     () => selectionTotals(store.results, store.selectedItems),
@@ -812,6 +816,8 @@ export function CleanerPage() {
   // that did not run is not a threat, and red is kept for failed deletions.
   const notices: ReactElement[] = []
   if (settled && !store.cleanSummary) {
+    if (store.stoppedEarly && store.status === ScanStatus.Complete)
+      notices.push(<ReportNotice key="stopped" title={t('scanStoppedPartial')} />)
     if (!checkingBlockers && blockers.length > 0)
       notices.push(
         <ReportNotice
@@ -1093,7 +1099,7 @@ export function CleanerPage() {
               </p>
               {totals.count > 0 && (
                 <p className="pulizia-summary-meta">
-                  {t('summaryMeta', {
+                  {t(scannedAtText ? 'summaryMeta' : 'summaryMetaUntimed', {
                     items: t('summaryItems', {
                       count: totals.count,
                       n: formatNumber(totals.count)

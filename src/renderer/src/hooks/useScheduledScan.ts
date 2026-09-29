@@ -4,10 +4,11 @@ import { useScanStore } from '@/stores/scan-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { useSettingsStore, refreshSettings } from '@/stores/settings-store'
 import { useUpdaterStore } from '@/stores/updater-store'
-import { ScanStatus } from '@shared/enums'
+import { CleanerType, ScanStatus } from '@shared/enums'
 import type { ScanResult, ScheduleEntry } from '@shared/types'
 import { formatBytes, formatNumber } from '@/lib/utils'
 import { buildUpdateSummary } from '@/lib/update-summary'
+import { categoryWasRead } from '@/lib/cleaner-report'
 import { showUpdateSummaryToast } from '@/components/updates/UpdateSummaryToast'
 
 class ScheduleConditionChanged extends Error {}
@@ -25,37 +26,44 @@ const CLEANER_TASKS: Record<
   string,
   {
     label: string
+    type: CleanerType
     scan: () => Promise<ScanResult[]>
     clean: (ids: string[]) => Promise<any>
   }
 > = {
   'cleaner:system': {
     label: 'System',
+    type: CleanerType.System,
     scan: () => window.kudu.systemScan(),
     clean: (ids) => window.kudu.systemClean(ids)
   },
   'cleaner:browsers': {
     label: 'Browsers',
+    type: CleanerType.Browser,
     scan: () => window.kudu.browserScan(),
     clean: (ids) => window.kudu.browserClean(ids)
   },
   'cleaner:apps': {
     label: 'Applications',
+    type: CleanerType.App,
     scan: () => window.kudu.appScan(),
     clean: (ids) => window.kudu.appClean(ids)
   },
   'cleaner:gaming': {
     label: 'Gaming',
+    type: CleanerType.Gaming,
     scan: () => window.kudu.gamingScan(),
     clean: (ids) => window.kudu.gamingClean(ids)
   },
   'cleaner:recycleBin': {
     label: 'Recycle Bin',
+    type: CleanerType.RecycleBin,
     scan: () => window.kudu.recycleBinScan(),
     clean: () => window.kudu.recycleBinClean()
   },
   'cleaner:databases': {
     label: 'Databases',
+    type: CleanerType.Database,
     scan: () => window.kudu.databaseScan(),
     clean: (ids) => window.kudu.databaseClean(ids)
   }
@@ -84,6 +92,10 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
   let totalCleaned = 0
   let totalSpaceSaved = 0
   const categoryResults: Record<string, { found: number; cleaned: number; size: number }> = {}
+  // The cleaner categories this run read, for the Cleaner page's "nothing found in" list.
+  const scannedCategories: CleanerType[] = []
+  // Whether this run replaced the Cleaner's last results; a deferred run leaves them alone.
+  let replacedResults = false
 
   const recordHistory = async () => {
     // Pick the most representative history type based on tasks that actually started; a
@@ -130,6 +142,10 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
     toast.info(`Running "${payload.scheduleName}"`, { description: 'Scheduled task started...' })
     store.setStatus(ScanStatus.Scanning)
     store.setResults([])
+    store.setScannedAt(null)
+    store.setScannedCategories([])
+    store.setStoppedEarly(false)
+    replacedResults = true
     // ── Restore point before the first auto-apply clean ──
     // Created lazily so a run that ends up cleaning nothing (e.g. a scope of
     // only opt-in cache resets) never pays for a restore point.
@@ -160,6 +176,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
         try {
           const scanned = await task.scan()
           markStarted(taskType)
+          if (categoryWasRead(scanned)) scannedCategories.push(task.type)
           const scope =
             payload.cleanerSubcategories?.[
               taskType as keyof NonNullable<ScheduleEntry['cleanerSubcategories']>
@@ -300,6 +317,8 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
         }
       }
     }
+    store.setScannedCategories(scannedCategories)
+    store.setScannedAt(Date.now())
     store.setStatus(ScanStatus.Complete)
     store.setProgress(null)
 
@@ -318,6 +337,11 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
     else toast.warning(`"${payload.scheduleName}" completed with issues`, { description: desc })
   } catch (error) {
     if (error instanceof ScheduleConditionChanged) {
+      if (replacedResults) {
+        store.setScannedCategories(scannedCategories)
+        store.setStoppedEarly(true)
+        if (started) store.setScannedAt(Date.now())
+      }
       store.setStatus(ScanStatus.Complete)
       store.setProgress(null)
       status = started ? 'partial' : 'skipped'

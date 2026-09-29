@@ -66,6 +66,27 @@ export function entryTotal(results: ScanResult[]): number | null {
   return items.reduce((sum, item) => sum + (item.entryCount ?? 0), 0)
 }
 
+/** The result a scanner returns in place of a category it skipped for lack of rights. */
+export const ELEVATION_MARKER = '__elevation_required'
+
+/** Whether a scanner that resolved read its category: not when it only reports the skip. */
+export function categoryWasRead(results: readonly ScanResult[]): boolean {
+  return results.length === 0 || results.some((result) => result.subcategory !== ELEVATION_MARKER)
+}
+
+/**
+ * The groups to list as "nothing found": empty and read by this scan. A category that was
+ * not read (cancelled before it, outside a scheduled scan, failed or skipped for rights)
+ * found nothing only because nothing looked.
+ */
+export function emptyScannedGroups<T extends { results: readonly unknown[] }>(
+  groups: readonly T[],
+  scanned: readonly string[],
+  scannerOf: (group: T) => string
+): T[] {
+  return groups.filter((group) => group.results.length === 0 && scanned.includes(scannerOf(group)))
+}
+
 export type SizeSort = 'default' | 'size-desc' | 'size-asc'
 
 /** The next sort when the size column header is pressed: default, largest, smallest. */

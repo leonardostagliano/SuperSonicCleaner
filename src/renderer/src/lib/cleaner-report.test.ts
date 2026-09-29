@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { ScanHistoryEntry, ScanItem, ScanResult } from '@shared/types'
 import {
+  categoryWasRead,
+  emptyScannedGroups,
   entryTotal,
   formatDateTime,
   formatDelay,
@@ -107,6 +109,36 @@ describe('entry totals', () => {
     ).toBe(3)
     expect(entryTotal([result('mixed', [item('a', { entryCount: 3 }), item('b')])])).toBeNull()
     expect(entryTotal([])).toBeNull()
+  })
+})
+
+describe('scanned categories', () => {
+  it('counts a category as read unless its scan returned only the elevation marker', () => {
+    expect(categoryWasRead([])).toBe(true)
+    expect(categoryWasRead([result('temp', [item('a')])])).toBe(true)
+    expect(categoryWasRead([result('__elevation_required', [])])).toBe(false)
+    expect(categoryWasRead([result('__elevation_required', []), result('temp', [item('a')])])).toBe(
+      true
+    )
+  })
+
+  it('lists as empty only the categories that were read and found nothing', () => {
+    const group = (type: string, found: number, scanner = type) => ({
+      type,
+      scanner,
+      results: found > 0 ? [result(type, [item(type)])] : []
+    })
+    const groups = [
+      group('system', 0),
+      group('browser', 0),
+      group('app', 1),
+      group('aiTools', 0, 'app'),
+      group('gaming', 0)
+    ]
+    expect(
+      emptyScannedGroups(groups, ['system', 'app'], (g) => g.scanner).map((g) => g.type)
+    ).toEqual(['system', 'aiTools'])
+    expect(emptyScannedGroups(groups, [], (g) => g.scanner)).toEqual([])
   })
 })
 

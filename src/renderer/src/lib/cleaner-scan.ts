@@ -2,6 +2,7 @@ import { CleanerType, ScanStatus } from '@shared/enums'
 import type { ProgressData, ScanResult } from '@shared/types'
 import { useScanStore } from '@/stores/scan-store'
 import { recordCheckRun } from '@/stores/check-runs-store'
+import { categoryWasRead, ELEVATION_MARKER } from './cleaner-report'
 
 export interface CleanerScanCategory {
   type: CleanerType
@@ -44,9 +45,13 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
   state.setElevationSkipped([])
   state.setScanCancelRequested(false)
   state.setScannedAt(null)
+  state.setScannedCategories([])
+  state.setStoppedEarly(false)
 
   const run = async (): Promise<void> => {
     const failed: string[] = []
+    const scanned: CleanerType[] = []
+    let stoppedEarly = false
     const skippedForElevation: string[] = []
     const total = categories.length
     let current: CleanerScanCategory | null = null
@@ -91,7 +96,10 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
       })
 
       for (const category of categories) {
-        if (cancelRequested) break
+        if (cancelRequested) {
+          stoppedEarly = true
+          break
+        }
         current = category
         useScanStore.getState().setScanningCategory(category.type)
         report()
@@ -99,15 +107,14 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
           const scan = scanFns[category.type]
           if (!scan) throw new Error('Unsupported cleaner category')
           const results = await scan()
-          const elevationMarker = results.find(
-            (result) => result.subcategory === '__elevation_required'
-          )
+          const elevationMarker = results.find((result) => result.subcategory === ELEVATION_MARKER)
           if (elevationMarker?.group) {
             skippedForElevation.push(...elevationMarker.group.split(', '))
           }
+          if (categoryWasRead(results)) scanned.push(category.type)
           useScanStore
             .getState()
-            .addResults(results.filter((result) => result.subcategory !== '__elevation_required'))
+            .addResults(results.filter((result) => result.subcategory !== ELEVATION_MARKER))
         } catch {
           failed.push(category.label)
         }
@@ -124,6 +131,8 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
       const currentState = useScanStore.getState()
       currentState.setFailedCategories(failed)
       currentState.setElevationSkipped(skippedForElevation)
+      currentState.setScannedCategories(scanned)
+      currentState.setStoppedEarly(stoppedEarly)
       if (completed > 0) currentState.setScannedAt(Date.now())
       const finished = completed === 0 && cancelRequested ? ScanStatus.Idle : ScanStatus.Complete
       currentState.setStatus(finished)

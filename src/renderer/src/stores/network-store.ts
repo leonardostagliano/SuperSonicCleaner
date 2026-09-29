@@ -9,12 +9,15 @@ interface NetworkState {
   status: 'idle' | 'scanning' | 'cleaning' | 'complete'
   cleanResult: NetworkCleanResult | null
   activeCategory: NetworkCategory
+  /** When the list on screen was read (ms since epoch); null before a scan. */
+  scannedAt: number | null
 
   setItems: (items: NetworkItem[]) => void
   setSelectedIds: (ids: Set<string>) => void
   setStatus: (status: 'idle' | 'scanning' | 'cleaning' | 'complete') => void
   setCleanResult: (result: NetworkCleanResult | null) => void
   setActiveCategory: (category: NetworkCategory) => void
+  setScannedAt: (time: number | null) => void
   toggleItem: (id: string) => void
   toggleCategory: (type: NetworkCategory) => void
   reset: () => void
@@ -26,12 +29,14 @@ export const useNetworkStore = create<NetworkState>((set) => ({
   status: 'idle',
   cleanResult: null,
   activeCategory: 'dns-cache',
+  scannedAt: null,
 
   setItems: (items) => set({ items }),
   setSelectedIds: (selectedIds) => set({ selectedIds }),
   setStatus: (status) => set({ status }),
   setCleanResult: (cleanResult) => set({ cleanResult }),
   setActiveCategory: (activeCategory) => set({ activeCategory }),
+  setScannedAt: (scannedAt) => set({ scannedAt }),
   toggleItem: (id) =>
     set((s) => {
       const next = new Set(s.selectedIds)
@@ -55,6 +60,7 @@ export const useNetworkStore = create<NetworkState>((set) => ({
       items: [],
       selectedIds: new Set<string>(),
       status: 'idle',
-      cleanResult: null
+      cleanResult: null,
+      scannedAt: null
     })
 }))

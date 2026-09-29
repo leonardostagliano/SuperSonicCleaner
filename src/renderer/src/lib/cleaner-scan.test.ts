@@ -179,6 +179,39 @@ describe('cleaner scan lifecycle', () => {
     expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
   })
 
+  it('keeps the categories read before a cancel and marks the results as partial', async () => {
+    const system = deferred<ScanResult[]>()
+    systemScan.mockReturnValueOnce(system.promise)
+    const running = startCleanerScan(categories)
+    await Promise.resolve()
+    cancelCleanerScan()
+    system.resolve(result(CleanerType.System, 'only'))
+    await running
+    expect(useScanStore.getState().scannedCategories).toEqual([CleanerType.System])
+    expect(useScanStore.getState().stoppedEarly).toBe(true)
+  })
+
+  it('leaves out a category whose scanner failed or needed administrator rights', async () => {
+    systemScan.mockRejectedValue(new Error('boom'))
+    browserScan.mockResolvedValue([
+      {
+        category: CleanerType.Browser,
+        subcategory: '__elevation_required',
+        group: 'Edge',
+        items: [],
+        totalSize: 0,
+        itemCount: 0
+      }
+    ])
+    await startCleanerScan(categories)
+    expect(useScanStore.getState().scannedCategories).toEqual([])
+    expect(useScanStore.getState().stoppedEarly).toBe(false)
+
+    browserScan.mockResolvedValue([])
+    await startCleanerScan(categories)
+    expect(useScanStore.getState().scannedCategories).toEqual([CleanerType.Browser])
+  })
+
   it('records a completed cleanup check when the analysis finds a real result', async () => {
     await startCleanerScan(categories)
     expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
