@@ -79,9 +79,15 @@
   "diskFactPowerOn": "{{value}} hodin provozu",
   "diskFactLife": "{{value}} zbývající životnosti",
   "diskFactReadErrors_one": "{{count}} chyba čtení",
+  "diskFactReadErrors_few": "{{count}} chyby čtení",
+  "diskFactReadErrors_many": "{{count}} chyb čtení",
   "diskFactReadErrors_other": "{{count}} chyb čtení",
   "diskFactWriteErrors_one": "{{count}} chyba zápisu",
+  "diskFactWriteErrors_few": "{{count}} chyby zápisu",
+  "diskFactWriteErrors_many": "{{count}} chyb zápisu",
   "diskFactWriteErrors_other": "{{count}} chyb zápisu",
   "diskFactReallocated_one": "{{count}} přemapovaný sektor",
+  "diskFactReallocated_few": "{{count}} přemapované sektory",
+  "diskFactReallocated_many": "{{count}} přemapovaných sektorů",
   "diskFactReallocated_other": "{{count}} přemapovaných sektorů"
 }

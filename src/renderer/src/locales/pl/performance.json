@@ -79,9 +79,15 @@
   "diskFactPowerOn": "{{value}} godzin pracy",
   "diskFactLife": "{{value}} pozostałej żywotności",
   "diskFactReadErrors_one": "{{count}} błąd odczytu",
+  "diskFactReadErrors_few": "{{count}} błędy odczytu",
+  "diskFactReadErrors_many": "{{count}} błędów odczytu",
   "diskFactReadErrors_other": "{{count}} błędów odczytu",
   "diskFactWriteErrors_one": "{{count}} błąd zapisu",
+  "diskFactWriteErrors_few": "{{count}} błędy zapisu",
+  "diskFactWriteErrors_many": "{{count}} błędów zapisu",
   "diskFactWriteErrors_other": "{{count}} błędów zapisu",
   "diskFactReallocated_one": "{{count}} realokowany sektor",
+  "diskFactReallocated_few": "{{count}} realokowane sektory",
+  "diskFactReallocated_many": "{{count}} realokowanych sektorów",
   "diskFactReallocated_other": "{{count}} realokowanych sektorów"
 }

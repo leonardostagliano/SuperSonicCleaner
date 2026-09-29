@@ -6,6 +6,8 @@
   "emptyStateDescription": "Tworzone przez Ciebie harmonogramy pojawią się tutaj wraz z kolejnym uruchomieniem i wynikiem ostatniego.",
   "upcomingTitle": "Najbliższe uruchomienia",
   "enabledCount_one": "{{count}} aktywny",
+  "enabledCount_few": "{{count}} aktywne",
+  "enabledCount_many": "{{count}} aktywnych",
   "enabledCount_other": "{{count}} aktywnych",
   "upcomingNote": "Zaplanowane godziny: warunki uruchomienia mogą opóźnić uruchomienie.",
   "listTitle": "Twoje harmonogramy",
@@ -101,6 +103,8 @@
     "todayAt": "dzisiaj o {{time}}",
     "tomorrowAt": "jutro o {{time}}",
     "inDaysAt_one": "za {{count}} dzień o {{time}}",
+    "inDaysAt_few": "za {{count}} dni o {{time}}",
+    "inDaysAt_many": "za {{count}} dni o {{time}}",
     "inDaysAt_other": "za {{count}} dni o {{time}}",
     "dateAt": "{{date}} o {{time}}"
   },

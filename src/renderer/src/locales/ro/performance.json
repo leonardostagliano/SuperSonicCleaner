@@ -79,9 +79,12 @@
   "diskFactPowerOn": "{{value}} ore de funcționare",
   "diskFactLife": "{{value}} durată de viață rămasă",
   "diskFactReadErrors_one": "{{count}} eroare de citire",
-  "diskFactReadErrors_other": "{{count}} erori de citire",
+  "diskFactReadErrors_few": "{{count}} erori de citire",
+  "diskFactReadErrors_other": "{{count}} de erori de citire",
   "diskFactWriteErrors_one": "{{count}} eroare de scriere",
-  "diskFactWriteErrors_other": "{{count}} erori de scriere",
+  "diskFactWriteErrors_few": "{{count}} erori de scriere",
+  "diskFactWriteErrors_other": "{{count}} de erori de scriere",
   "diskFactReallocated_one": "{{count}} sector realocat",
-  "diskFactReallocated_other": "{{count}} sectoare realocate"
+  "diskFactReallocated_few": "{{count}} sectoare realocate",
+  "diskFactReallocated_other": "{{count}} de sectoare realocate"
 }

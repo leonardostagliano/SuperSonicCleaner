@@ -5,6 +5,8 @@
   "localFirst": "Spusťte záznam a poté zopakujte zpomalení: CPU, paměť a disk se měří pouze na tomto zařízení.",
   "duration": "Délka záznamu",
   "minutes_one": "{{count}} minuta",
+  "minutes_few": "{{count}} minuty",
+  "minutes_many": "{{count}} minut",
   "minutes_other": "{{count}} minut",
   "collectProcesses": "Zahrnout nejvytíženější procesy (názvy zůstávají na tomto zařízení)",
   "stop": "Zastavit a uložit",

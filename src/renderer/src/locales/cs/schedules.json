@@ -6,6 +6,8 @@
   "emptyStateDescription": "Vámi vytvořené plány se zobrazí zde spolu s dalším spuštěním a výsledkem posledního.",
   "upcomingTitle": "Nejbližší spuštění",
   "enabledCount_one": "{{count}} aktivní",
+  "enabledCount_few": "{{count}} aktivních",
+  "enabledCount_many": "{{count}} aktivních",
   "enabledCount_other": "{{count}} aktivních",
   "upcomingNote": "Naplánované časy: podmínky spuštění mohou spuštění odložit.",
   "listTitle": "Vaše plány",
@@ -101,6 +103,8 @@
     "todayAt": "dnes v {{time}}",
     "tomorrowAt": "zítra v {{time}}",
     "inDaysAt_one": "za {{count}} den v {{time}}",
+    "inDaysAt_few": "za {{count}} dny v {{time}}",
+    "inDaysAt_many": "za {{count}} dní v {{time}}",
     "inDaysAt_other": "za {{count}} dní v {{time}}",
     "dateAt": "{{date}} v {{time}}"
   },

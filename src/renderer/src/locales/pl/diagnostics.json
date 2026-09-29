@@ -5,6 +5,8 @@
   "localFirst": "Rozpocznij nagrywanie, a następnie odtwórz spowolnienie: CPU, pamięć i dysk są mierzone tylko na tym urządzeniu.",
   "duration": "Długość nagrania",
   "minutes_one": "{{count}} minuta",
+  "minutes_few": "{{count}} minuty",
+  "minutes_many": "{{count}} minut",
   "minutes_other": "{{count}} minut",
   "collectProcesses": "Uwzględnij najbardziej obciążające procesy (nazwy pozostają na tym urządzeniu)",
   "stop": "Zatrzymaj i zapisz",

@@ -6,6 +6,7 @@
   "emptyStateDescription": "Programările pe care le creați apar aici, cu următoarea rulare și rezultatul ultimei.",
   "upcomingTitle": "Următoarele rulări",
   "enabledCount_one": "{{count}} activă",
+  "enabledCount_few": "{{count}} active",
   "enabledCount_other": "{{count}} active",
   "upcomingNote": "Momente programate: condițiile de rulare pot amâna o rulare.",
   "listTitle": "Programările dvs.",
@@ -101,7 +102,8 @@
     "todayAt": "astăzi la {{time}}",
     "tomorrowAt": "mâine la {{time}}",
     "inDaysAt_one": "peste {{count}} zi la {{time}}",
-    "inDaysAt_other": "peste {{count}} zile la {{time}}",
+    "inDaysAt_few": "peste {{count}} zile la {{time}}",
+    "inDaysAt_other": "peste {{count}} de zile la {{time}}",
     "dateAt": "{{date}} la {{time}}"
   },
   "lastRun": {
