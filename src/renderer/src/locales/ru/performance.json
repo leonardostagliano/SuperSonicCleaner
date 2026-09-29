@@ -79,9 +79,15 @@
   "diskFactPowerOn": "{{value}} ч работы",
   "diskFactLife": "Остаточный ресурс: {{value}}",
   "diskFactReadErrors_one": "{{count}} ошибка чтения",
+  "diskFactReadErrors_few": "{{count}} ошибки чтения",
+  "diskFactReadErrors_many": "{{count}} ошибок чтения",
   "diskFactReadErrors_other": "{{count}} ошибок чтения",
   "diskFactWriteErrors_one": "{{count}} ошибка записи",
+  "diskFactWriteErrors_few": "{{count}} ошибки записи",
+  "diskFactWriteErrors_many": "{{count}} ошибок записи",
   "diskFactWriteErrors_other": "{{count}} ошибок записи",
   "diskFactReallocated_one": "{{count}} переназначенный сектор",
+  "diskFactReallocated_few": "{{count}} переназначенных сектора",
+  "diskFactReallocated_many": "{{count}} переназначенных секторов",
   "diskFactReallocated_other": "{{count}} переназначенных секторов"
 }

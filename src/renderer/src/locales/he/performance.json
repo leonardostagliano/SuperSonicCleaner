@@ -79,9 +79,12 @@
   "diskFactPowerOn": "{{value}} שעות פעולה",
   "diskFactLife": "אורך חיים שנותר: {{value}}",
   "diskFactReadErrors_one": "{{count}} שגיאת קריאה",
+  "diskFactReadErrors_two": "{{count}} שגיאות קריאה",
   "diskFactReadErrors_other": "{{count}} שגיאות קריאה",
   "diskFactWriteErrors_one": "{{count}} שגיאת כתיבה",
+  "diskFactWriteErrors_two": "{{count}} שגיאות כתיבה",
   "diskFactWriteErrors_other": "{{count}} שגיאות כתיבה",
   "diskFactReallocated_one": "{{count}} סקטור שהוקצה מחדש",
+  "diskFactReallocated_two": "{{count}} סקטורים שהוקצו מחדש",
   "diskFactReallocated_other": "{{count}} סקטורים שהוקצו מחדש"
 }

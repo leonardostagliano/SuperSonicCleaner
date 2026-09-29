@@ -5,7 +5,11 @@
   "emptyStateTitle": "لا توجد جداول بعد",
   "emptyStateDescription": "تظهر هنا الجداول التي تنشئها، مع موعد تشغيلها التالي ونتيجة آخر تشغيل.",
   "upcomingTitle": "عمليات التشغيل القادمة",
+  "enabledCount_zero": "{{count}} نشطة",
   "enabledCount_one": "{{count}} نشط",
+  "enabledCount_two": "{{count}} نشطة",
+  "enabledCount_few": "{{count}} نشطة",
+  "enabledCount_many": "{{count}} نشط",
   "enabledCount_other": "{{count}} نشطة",
   "upcomingNote": "الأوقات المجدولة: يمكن لشروط التشغيل تأجيل التشغيل.",
   "listTitle": "جداولك",
@@ -100,7 +104,11 @@
   "nextRun": {
     "todayAt": "اليوم في {{time}}",
     "tomorrowAt": "غدًا في {{time}}",
+    "inDaysAt_zero": "خلال {{count}} أيام الساعة {{time}}",
     "inDaysAt_one": "خلال {{count}} يوم الساعة {{time}}",
+    "inDaysAt_two": "خلال {{count}} يومين الساعة {{time}}",
+    "inDaysAt_few": "خلال {{count}} أيام الساعة {{time}}",
+    "inDaysAt_many": "خلال {{count}} يوم الساعة {{time}}",
     "inDaysAt_other": "خلال {{count}} أيام الساعة {{time}}",
     "dateAt": "{{date}} في {{time}}"
   },

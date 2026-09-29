@@ -6,6 +6,8 @@
   "emptyStateDescription": "Созданные вами расписания появятся здесь вместе с временем следующего запуска и результатом последнего.",
   "upcomingTitle": "Ближайшие запуски",
   "enabledCount_one": "{{count}} активно",
+  "enabledCount_few": "{{count}} активно",
+  "enabledCount_many": "{{count}} активно",
   "enabledCount_other": "{{count}} активно",
   "upcomingNote": "Запланированное время: условия запуска могут отложить выполнение.",
   "listTitle": "Ваши расписания",
@@ -101,6 +103,8 @@
     "todayAt": "Сегодня в {{time}}",
     "tomorrowAt": "Завтра в {{time}}",
     "inDaysAt_one": "через {{count}} день в {{time}}",
+    "inDaysAt_few": "через {{count}} дня в {{time}}",
+    "inDaysAt_many": "через {{count}} дней в {{time}}",
     "inDaysAt_other": "через {{count}} дней в {{time}}",
     "dateAt": "{{date}} в {{time}}"
   },

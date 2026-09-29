@@ -79,9 +79,15 @@
   "diskFactPowerOn": "{{value}} год роботи",
   "diskFactLife": "Залишковий ресурс: {{value}}",
   "diskFactReadErrors_one": "{{count}} помилка читання",
+  "diskFactReadErrors_few": "{{count}} помилки читання",
+  "diskFactReadErrors_many": "{{count}} помилок читання",
   "diskFactReadErrors_other": "{{count}} помилок читання",
   "diskFactWriteErrors_one": "{{count}} помилка запису",
+  "diskFactWriteErrors_few": "{{count}} помилки запису",
+  "diskFactWriteErrors_many": "{{count}} помилок запису",
   "diskFactWriteErrors_other": "{{count}} помилок запису",
   "diskFactReallocated_one": "{{count}} переміщений сектор",
+  "diskFactReallocated_few": "{{count}} переміщених сектора",
+  "diskFactReallocated_many": "{{count}} переміщених секторів",
   "diskFactReallocated_other": "{{count}} переміщених секторів"
 }

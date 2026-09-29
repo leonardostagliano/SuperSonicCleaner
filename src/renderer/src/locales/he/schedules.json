@@ -6,6 +6,7 @@
   "emptyStateDescription": "התזמונים שתיצור יופיעו כאן, יחד עם ההרצה הבאה שלהם ותוצאת ההרצה האחרונה.",
   "upcomingTitle": "הפעלות הבאות",
   "enabledCount_one": "{{count}} פעיל",
+  "enabledCount_two": "{{count}} פעילים",
   "enabledCount_other": "{{count}} פעילים",
   "upcomingNote": "זמנים מתוזמנים: תנאי הרצה עשויים לדחות הרצה.",
   "listTitle": "התזמונים שלך",
@@ -101,6 +102,7 @@
     "todayAt": "היום בשעה {{time}}",
     "tomorrowAt": "מחר בשעה {{time}}",
     "inDaysAt_one": "בעוד {{count}} יום בשעה {{time}}",
+    "inDaysAt_two": "בעוד יומיים בשעה {{time}}",
     "inDaysAt_other": "בעוד {{count}} ימים בשעה {{time}}",
     "dateAt": "{{date}} בשעה {{time}}"
   },

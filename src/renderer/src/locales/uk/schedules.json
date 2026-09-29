@@ -6,6 +6,8 @@
   "emptyStateDescription": "Створені вами розклади з’являться тут разом із часом наступного запуску та результатом останнього.",
   "upcomingTitle": "Найближчі запуски",
   "enabledCount_one": "{{count}} активно",
+  "enabledCount_few": "{{count}} активно",
+  "enabledCount_many": "{{count}} активно",
   "enabledCount_other": "{{count}} активно",
   "upcomingNote": "Заплановані часи: умови запуску можуть відкласти виконання.",
   "listTitle": "Ваші розклади",
@@ -101,6 +103,8 @@
     "todayAt": "Сьогодні о {{time}}",
     "tomorrowAt": "Завтра о {{time}}",
     "inDaysAt_one": "через {{count}} день о {{time}}",
+    "inDaysAt_few": "через {{count}} дня о {{time}}",
+    "inDaysAt_many": "через {{count}} днів о {{time}}",
     "inDaysAt_other": "через {{count}} днів о {{time}}",
     "dateAt": "{{date}} о {{time}}"
   },
