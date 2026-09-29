@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "Wiederherstellungscenter",
-    "limits": "Die Wiederherstellung umfasst aufgezeichnete Windows-DWORD-Datenschutz-/Registrierungswerte, geplante Aufgaben und Dienstkonfigurationen. Das dauerhafte Löschen von Dateien kann nicht rückgängig gemacht werden. Ältere oder nicht unterstützte Änderungen verfügen möglicherweise nur über eine manuelle Sicherung. Einige wiederhergestellte Einstellungen erfordern einen Neustart.",
+    "limits": "Die Wiederherstellung umfasst die für Datenschutz- und Systemeinstellungen geschriebenen Registrierungs-DWORD-Werte, geplante Aufgaben und Dienstkonfigurationen. Ältere oder nicht unterstützte Änderungen verfügen möglicherweise nur über eine manuelle Sicherung. Einige wiederhergestellte Einstellungen wirken erst nach einem Neustart.",
     "refresh": "Aktualisieren",
     "export": "Wiederherstellungsverlauf exportieren",
     "loadError": "Der Wiederherstellungsverlauf konnte nicht gelesen werden.",
     "failed": "Wiederherstellung fehlgeschlagen.",
-    "empty": "Auf dieser Seite sind keine aufgezeichneten Änderungen vorhanden. Neue unterstützte Änderungen werden hier angezeigt.",
+    "empty": "Änderungen von Privacy Shield, Service Manager und Registry Cleaner werden hier mit ihrem ursprünglichen und späteren Zustand angezeigt.",
+    "summary": {
+      "recorded": "Aufgezeichnete Änderungen",
+      "registryBackups": "Registrierungssicherungen",
+      "backupFiles": "Sicherungsdateien"
+    },
+    "changesTitle": "Aufgezeichnete Änderungen",
+    "range": "{{from}}–{{to}} von {{total}}",
     "gameMode": "Game Mode-Wiederherstellung",
     "gameModeDescription": "Für Game Mode ist ein aktiver oder ausstehender Wiederherstellungsschnappschuss vorhanden.",
-    "openGameMode": "Game Mode-Wiederherstellung öffnen",
+    "openGameMode": "Spielmodus öffnen",
     "before": "Ursprünglicher Zustand",
     "after": "Zustand nach SuperSonicCleaner",
     "restore": "Ursprünglichen Zustand wiederherstellen",
     "previous": "Zurück",
     "next": "Weiter",
     "backups": "Registrierungs- und Kontextmenü-Sicherungen",
-    "backupDescription": "Diese Sicherungsdateien enthalten keine verifizierten Informationen zum nachfolgenden Zustand. Prüfen Sie sie im Sicherungsordner, bevor Sie sie manuell wiederherstellen; beim Importieren können neuere Einstellungen überschrieben werden. Eine Sicherungsdatei ist kein OS-Wiederherstellungspunkt.",
+    "backupDescription": "Diese Sicherungsdateien enthalten keinen verifizierten späteren Zustand. Prüfen Sie sie im Sicherungsordner, bevor Sie sie manuell wiederherstellen: Beim Importieren können neuere Einstellungen überschrieben werden. Eine Sicherungsdatei ist kein Wiederherstellungspunkt des Betriebssystems.",
     "openBackups": "Sicherungsordner öffnen",
     "confirmTitle": "Diese Änderung wiederherstellen?",
-    "confirmDescription": "SuperSonicCleaner überprüft den aktuellen Zustand, bevor der aufgezeichnete ursprüngliche Wert wiederhergestellt wird. Neuere widersprüchliche Änderungen bleiben erhalten. Administratorrechte können erforderlich sein.",
+    "confirmDescription": "SuperSonicCleaner überprüft den aktuellen Zustand, bevor der aufgezeichnete ursprüngliche Wert zurückgeschrieben wird. Wenn der Wert in der Zwischenzeit erneut geändert wurde, bleibt die neuere Änderung erhalten. Administratorrechte können erforderlich sein.",
     "status": {
-      "pending": "Unterbrochen / ausstehend",
-      "ready": "Verfügbar",
+      "pending": "Unterbrochen oder ausstehend",
+      "ready": "Wiederherstellbar",
       "restored": "Wiederhergestellt",
-      "failed": "Erfordert Aufmerksamkeit",
+      "failed": "Wiederherstellung fehlgeschlagen",
       "conflict": "Neuere Änderung erkannt"
     },
     "remove": "Eintrag entfernen",
-    "removeDescription": "Diesen Wiederherstellungseintrag aus dem lokalen Verlauf entfernen? Dadurch werden Ihre Einstellungen nicht geändert und Registrierungs-Sicherungen nicht gelöscht. SuperSonicCleaner kann diese Änderung dann nicht mehr für Sie wiederherstellen.",
-    "unreadable": "Dieser Wiederherstellungseintrag konnte nicht gelesen werden. Er wurde möglicherweise von einem anderen Benutzerkonto geschrieben oder auf dem Datenträger beschädigt.",
-    "loading": "Wiederherstellungsverlauf wird geladen?",
-    "emptyTitle": "Ihr Wiederherstellungsverlauf beginnt hier",
+    "removeTitle": "Diesen Wiederherstellungseintrag entfernen?",
+    "removeDescription": "Der Eintrag wird aus dem lokalen Verlauf entfernt, und SuperSonicCleaner kann diese Änderung nicht mehr rückgängig machen. Einstellungen und Registrierungssicherungen werden nicht geändert. Dies kann nicht rückgängig gemacht werden.",
+    "unreadable": "Dieser Wiederherstellungseintrag konnte nicht gelesen werden: Er wurde möglicherweise von einem anderen Benutzerkonto geschrieben oder ist auf dem Datenträger beschädigt.",
+    "loading": "Wiederherstellungsverlauf wird gelesen…",
+    "emptyTitle": "Keine wiederherstellbaren Änderungen",
     "source": {
       "privacy": "Privacy Shield",
       "services": "Service Manager",
       "registry": "Registry Cleaner"
+    },
+    "value": {
+      "absent": "Der Wert existierte nicht",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Aufgabe aktiviert",
+      "taskDisabled": "Aufgabe deaktiviert",
+      "start": {
+        "boot": "Bootstart",
+        "system": "Systemstart",
+        "automatic": "Automatischer Start",
+        "manual": "Manueller Start",
+        "disabled": "Deaktiviert"
+      },
+      "delayed": "verzögert",
+      "running": "wird ausgeführt",
+      "stopped": "angehalten",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Registrierungs-Backups",
@@ -43,7 +68,7 @@
       "empty": "Noch keine Registrierungs-Backups.",
       "restore": "Wiederherstellen",
       "showInFolder": "Im Ordner anzeigen",
-      "requiresAdmin": "Administrator erforderlich",
+      "requiresAdmin": "Erfordert Administratorrechte",
       "confirmTitle": "Dieses Registrierungs-Backup wiederherstellen?",
       "confirmDescription": "SuperSonicCleaner importiert die unten aufgeführten Schlüssel. Werte aus der Sicherung ersetzen die aktuellen, und fehlende Schlüssel und Werte werden wieder hinzugefügt. Nichts anderes wird gelöscht, außer dass beim Wiederherstellen einer Sicherung vor der Wiederherstellung auch die Schlüssel und Werte entfernt werden, die durch die damit rückgängig gemachte Wiederherstellung hinzugefügt wurden. Vor dem Importieren speichert SuperSonicCleaner den aktuellen Zustand dieser Schlüssel als Sicherung vor der Wiederherstellung. Einige Änderungen werden erst nach dem Abmelden oder einem Neustart wirksam.",
       "restored": "Wiederhergestellt. Der vorherige Zustand wurde in {{file}} gespeichert.",
@@ -64,8 +89,12 @@
         "empty": "Enthält keine Registrierungsschlüssel.",
         "unreadable": "Konnte nicht gelesen werden.",
         "classes-root": "Enthält HKEY_CLASSES_ROOT-Schlüssel, die die Klassen des Computers und die benutzerspezifischen Klassen zusammenführen, sodass SuperSonicCleaner nicht erkennen kann, an welchen Ort sie wiederhergestellt werden sollen. Sie können nur überprüft werden.",
-        "unverified": "Diese Sicherung kann nicht verifiziert werden — sie wurde möglicherweise geändert, seit SuperSonicCleaner sie erstellt hat, und kann daher nur geprüft werden."
-      }
+        "unverified": "Diese Sicherung kann nicht verifiziert werden: Sie wurde möglicherweise geändert, seit SuperSonicCleaner sie erstellt hat, und kann daher nur geprüft werden."
+      },
+      "moreKeys_one": "+1 weiterer Schlüssel",
+      "moreKeys_other": "+{{formatted}} weitere Schlüssel",
+      "confirmLabel_one": "1 Schlüssel importieren",
+      "confirmLabel_other": "{{formatted}} Schlüssel importieren"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "Zwischengespeicherte Einträge in diesen Kategorien: {{found}} · In diesem Vorgang nicht ausgewählt: {{unselected}}",
     "title": "Bereinigungsbelege",
     "description": "Zum Zeitpunkt des Löschens aufgezeichnet. Jeder Beleg umfasst einen Bereinigungsvorgang oder ein Paket.",
-    "empty": "Noch keine Bereinigungsbelege vorhanden. Führen Sie eine Bereinigung aus, um die Ergebnisse zu protokollieren.",
+    "empty": "Keine Bereinigungsbelege",
     "loadError": "Bereinigungsbelege konnten nicht gelesen werden. Vorhandene Daten wurden beibehalten.",
     "actionError": "Die Belegaktion ist fehlgeschlagen.",
     "saveError": "Die Bereinigung wurde abgeschlossen, aber der Beleg konnte nicht gespeichert werden.",
@@ -91,7 +120,7 @@
     "retryOf": "Wiederholung von",
     "export": "Beleg exportieren",
     "retry": "Geeignete fehlgeschlagene Einträge wiederholen ({{count}})",
-    "rescan": "Erneut scannen",
+    "rescan": "Neuer Scan",
     "retryLifetime": "Wiederholungen verwenden bis zu 30 Minuten lang weiterhin zwischengespeicherte Auswahlen. Ausschlüsse und Altersschutz werden erneut geprüft. Nach Ablauf oder einem Neustart führen Sie einen neuen Scan aus.",
     "pathsOff": "Die Pfadprotokollierung war für diesen Durchlauf deaktiviert. Es wurden nur Kategorien und Ergebnisse gespeichert.",
     "item": "Element / Kategorie",
@@ -106,18 +135,26 @@
     "retryConfirm": "Bereinigung wiederholen",
     "clearTitle": "Bereinigungsbelege löschen?",
     "clearDescription": "Dadurch werden gespeicherte Belege und ihre Wiederholungsinformationen dauerhaft entfernt. Der Scanverlauf und das separate Löschprotokoll bleiben unverändert.",
-    "loading": "Loading cleanup receipts?"
+    "loading": "Bereinigungsbelege werden gelesen…"
   },
-  "pageTitle": "Scanverlauf",
+  "pageTitle": "Aktivität",
+  "viewLabel": "Ansicht",
   "viewOverview": "Übersicht",
+  "viewList": "Liste",
+  "viewReceipts": "Belege",
   "clearButton": "Löschen",
-  "emptyStateTitle": "Noch kein Verlauf",
-  "emptyStateDescription": "Führen Sie einen Scan auf den Seiten „Cleaner“, „Registry“ oder „Debloater“ aus. Die Ergebnisse werden hier angezeigt.",
-  "confirmClearScanDescription": "Dadurch werden alle Einträge im Scanverlauf dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+  "clearHistory": "Verlauf löschen",
+  "emptyStateTitle": "Keine Aktivität aufgezeichnet",
+  "emptyStateDescription": "Scans und Bereinigungen werden hier nach ihrer ersten Ausführung angezeigt, mit Datum, Dauer und Ergebnis. Bereinigungsbelege finden Sie in der Ansicht „Belege“.",
+  "confirmClearScanTitle_one": "1 Verlaufseintrag löschen?",
+  "confirmClearScanTitle_other": "{{count}} Verlaufseinträge löschen?",
+  "confirmClearScanDescription": "Die Pfade im Löschprotokoll werden ebenfalls gelöscht. Bereinigungsbelege bleiben erhalten. Dies kann nicht rückgängig gemacht werden.",
+  "confirmClearLabel_one": "1 Eintrag löschen",
+  "confirmClearLabel_other": "{{count}} Einträge löschen",
   "typeLabels": {
     "cleaner": "Systembereinigung",
-    "registry": "Registry-Reparatur",
-    "debloater": "Debloater",
+    "registry": "Registrierungsbereinigung",
+    "debloater": "Bloatware-Entfernung",
     "network": "Netzwerkbereinigung",
     "drivers": "Treiberbereinigung",
     "malware": "Malware-Scan",
@@ -125,29 +162,88 @@
     "startup": "Autostart-Manager",
     "services": "Dienst-Manager",
     "softwareUpdate": "Software-Update",
-    "cveScan": "CVE-Scan"
+    "cveScan": "Sicherheitslückenscan (CVE)"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} freigegeben",
+    "noSpace": "Kein Speicherplatz freigegeben",
+    "entries_one": "1 Eintrag",
+    "entries_other": "{{formatted}} Einträge",
+    "items_one": "1 Element verarbeitet",
+    "items_other": "{{formatted}} Elemente verarbeitet",
+    "averageDuration": "durchschnittliche Dauer {{duration}}",
+    "errors_one": "1 Fehler",
+    "errors_other": "{{formatted}} Fehler",
+    "noErrors": "keine Fehler",
+    "range": "von {{from}} bis {{to}}",
+    "sameDay": "am {{date}}"
   },
   "overview": {
-    "tooltipSpace": "Speicherplatz"
+    "spaceOverTime": "Freigegebener Speicherplatz pro Tag",
+    "spaceSentence_one": "{{size}} an 1 Tag mit Aktivität freigegeben.",
+    "spaceSentence_other": "{{size}} an {{count}} Tagen mit Aktivität freigegeben.",
+    "noSpaceSentence": "Keine aufgezeichnete Aktivität hat Speicherplatz freigegeben.",
+    "chartLabel_one": "Freigegebener Speicherplatz an 1 Tag",
+    "chartLabel_other": "Freigegebener Speicherplatz an {{count}} Tagen",
+    "tooltipSpace": "{{size}} freigegeben",
+    "byType": "Nach Typ",
+    "topCategories": "Kategorien mit dem meisten freigegebenen Speicherplatz",
+    "recent": "Letzte Aktivität",
+    "showAll": "Vollständige Liste"
+  },
+  "columns": {
+    "type": "Typ",
+    "date": "Datum",
+    "entries": "Einträge",
+    "items": "Elemente",
+    "space": "Speicherplatz",
+    "duration": "Dauer",
+    "outcome": "Ergebnis",
+    "category": "Kategorie"
+  },
+  "list": {
+    "title": "Alle Aktivitäten",
+    "count_one": "1 Eintrag",
+    "count_other": "{{formatted}} Einträge",
+    "filterLabel": "Typ",
+    "filterAll": "Alle Typen",
+    "scheduled": "Geplant",
+    "noErrors": "Keine Fehler"
   },
   "detail": {
+    "close": "Schließen",
+    "outcomeDone": "Abgeschlossen",
+    "outcomeErrors_one": "Abgeschlossen mit 1 Fehler",
+    "outcomeErrors_other": "Abgeschlossen mit {{formatted}} Fehlern",
+    "found_one": "1 Element gefunden",
+    "found_other": "{{formatted}} Elemente gefunden",
+    "processed_one": "1 verarbeitet",
+    "processed_other": "{{formatted}} verarbeitet",
+    "skipped_one": "1 Element übersprungen.",
+    "skipped_other": "{{formatted}} Elemente übersprungen.",
+    "scheduled": "geplant",
+    "scheduledBy": "geplant: {{name}}",
     "categoriesLabel": "Kategorien",
     "deletedFiles": {
       "title": "Gelöschte Dateien",
-      "loading": "Wird geladen…",
+      "loading": "Das Löschprotokoll wird gelesen…",
       "shownCount": "{{shown}} von {{total}}",
       "loadMore": "Mehr laden",
       "exportCsv": "CSV exportieren",
       "openLog": "Protokoll öffnen",
-      "exportFailed": "Die Liste der gelöschten Dateien konnte nicht exportiert werden",
-      "truncatedBadge": "+{{count}} weitere",
+      "exported_one": "1 Pfad exportiert",
+      "exported_other": "{{formatted}} Pfade exportiert",
+      "exportFailed": "Die Liste der gelöschten Dateien konnte nicht exportiert werden.",
+      "truncatedBadge": "+{{formatted}} nicht aufgeführt",
+      "truncatedHint_one": "Dieser Ordner enthielt 1 weiteren Eintrag über dem Anzeigelimit pro Ordner. Er wurde gelöscht, aber nicht aufgeführt.",
+      "truncatedHint_other": "Dieser Ordner enthielt {{formatted}} weitere Einträge über dem Anzeigelimit pro Ordner. Sie wurden gelöscht, aber nicht einzeln aufgeführt.",
       "emptyRecorded": "Für diesen Durchlauf wurden keine Dateipfade aufgezeichnet.",
-      "disabledHint": "Die Protokollierung von Löschvorgängen ist deaktiviert, daher wurden die einzelnen Pfade dieses Durchlaufs nicht aufgezeichnet. Aktivieren Sie in Einstellungen → Bereinigungseinstellungen „Protokoll gelöschter Dateien führen“, um sie ab jetzt aufzuzeichnen."
+      "disabledHint": "Die Protokollierung gelöschter Dateien war deaktiviert, daher wurden die Pfade dieses Durchlaufs nicht aufgezeichnet. Um sie ab jetzt aufzuzeichnen, aktivieren Sie „Protokoll gelöschter Dateien aufbewahren“ unter Einstellungen › Bereinigungseinstellungen."
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1s",
-    "seconds": "{{count}}s",
-    "minutesAndSeconds": "{{minutes}}m {{seconds}}s"
+    "lessThanOneSecond": "unter 1 s",
+    "seconds": "{{count}} s",
+    "minutesAndSeconds": "{{minutes}} min {{seconds}} s"
   }
 }

@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Sehen Sie, was sich geändert hat, was wiederhergestellt wurde und was noch einmal geprüft werden sollte. Jede abgeschlossene Aufgabe hinterlässt einen Eintrag.",
-    "settings": "Passen Sie SuperSonicCleaner an Ihre Bedürfnisse an. Legen Sie Darstellung, Benachrichtigungen, Ausschlüsse und Bereinigungseinstellungen fest.",
-    "about": "Open Source und mit Sorgfalt entwickelt. Finden Sie Ihre Version, suchen Sie nach Updates und lernen Sie das Projekt kennen.",
-    "recovery": "Ein klarer Weg zurück. Prüfen Sie unterstützte Änderungen und Wiederherstellungsdetails, bevor Sie etwas rückgängig machen."
+    "history": "Die letzten 100 auf diesem PC ausgeführten Scans und Bereinigungen, mit Datum, Dauer, verarbeiteten Elementen und freigegebenem Speicherplatz, sowie dem Beleg jeder Bereinigung.",
+    "settings": "Darstellung, Sprache, Start, Benachrichtigungen, Updates, Sicherungen, Bereinigungseinstellungen und Ausschlüsse. Jede Änderung wird sofort gespeichert.",
+    "about": "Installierte Version, Updates, MIT-Lizenz und das ursprüngliche Projekt (Kudu).",
+    "recovery": "Änderungen an der Registrierung, an Diensten und geplanten Aufgaben, die von SuperSonicCleaner vorgenommen wurden, mit den Sicherungen zum Rückgängigmachen. Gelöschte Dateien können nicht wiederhergestellt werden."
   },
   "storageTrend": {
     "title": "Speicher im Zeitverlauf",

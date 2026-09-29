@@ -1,7 +1,7 @@
 {
   "title": "AI-Analyse",
   "description": "Holen Sie eine zweite Meinung zu diesen Scan-Ergebnissen ein.",
-  "hubDescription": "Eine zweite Meinung zu Scans und Leistungsaufzeichnungen, über Ihre Codex-Anmeldung.",
+  "hubDescription": "Sendet an Codex, unter Ihrer Anmeldung, nur Scan-Metadaten oder Aufzeichnungsmesswerte, und nur, wenn Sie eine Analyse über ein Tool starten.",
   "hubPrivacy": "Scans übermitteln nur anonyme Dateimetadaten. Aufzeichnungen übermitteln numerische CPU-, Arbeitsspeicher- und Datenträgermesswerte mit temporären Prozess-IDs. Namen, Pfade, Notizen und Dateiinhalte verbleiben auf diesem Gerät.",
   "connectionTitle": "Codex-Verbindung",
   "connectionIntro": "Verwenden Sie Codex auf diesem Computer. Prüfen Sie die Verbindung, und wählen Sie dann unten ein Werkzeug aus.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Schließen Sie einen Scan ab, oder speichern Sie eine Leistungsaufzeichnung, aktivieren Sie deren AI-Analyse, und starten Sie sie dann über die entsprechende Schaltfläche. Es wird nichts automatisch gesendet.",
   "tools": {
     "cleaner": {
-      "title": "Systembereinigung"
+      "title": "Systembereinigung",
+      "dataSent": "Temporäre IDs, Dateityp, Größe und ungefähres Alter. Datenschutzspuren ausgeschlossen."
     },
     "largeFiles": {
-      "title": "Große Dateien"
+      "title": "Große Dateien",
+      "dataSent": "Temporäre IDs, Dateityp, Größe und ungefähres Alter."
     },
     "duplicates": {
-      "title": "Duplikate"
+      "title": "Duplikate",
+      "dataSent": "Temporäre IDs, Dateityp, Größe, ungefähres Alter und Duplikatgruppe."
     },
     "disk": {
-      "title": "Datenträgeranalyse"
+      "title": "Datenträgeranalyse",
+      "dataSent": "Temporäre IDs, Gesamtgröße des Ordners und ungefähres Alter."
     },
     "performance": {
-      "title": "Leistungsaufzeichnungen"
+      "title": "Leistungsaufzeichnungen",
+      "dataSent": "Numerische Messwerte für CPU, Arbeitsspeicher und Datenträger, mit temporären Prozess-IDs."
     }
   },
   "enable": "AI-Analyse für diese Ansicht aktivieren",
@@ -51,5 +56,23 @@
     "low": "Niedrige Priorität",
     "medium": "Mittlere Priorität",
     "high": "Hohe Priorität"
+  },
+  "toolsTitle": "Werkzeuge",
+  "columns": {
+    "tool": "Werkzeug",
+    "dataSent": "Gesendete Daten",
+    "lastRun": "Zuletzt ausgeführt",
+    "state": "Status"
+  },
+  "lastRun": {
+    "running": "Wird ausgeführt",
+    "done": "In dieser Sitzung abgeschlossen",
+    "failed": "Fehlgeschlagen",
+    "none": "Keine in dieser Sitzung",
+    "perRecording": "Wird bei jeder analysierten Aufzeichnung gespeichert"
+  },
+  "state": {
+    "on": "Ein",
+    "off": "Aus"
   }
 }

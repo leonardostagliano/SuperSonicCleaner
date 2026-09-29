@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Datenschutzschild",
-    "pageDescription": "Steuern Sie Telemetrie, Werbung, Nachverfolgung und Datenerfassung auf Ihrem gesamten System",
+    "pageDescription": "Liest die Telemetrie-, Werbe-, Such- und Synchronisierungseinstellungen und vergleicht sie mit dem datenschutzfreundlichsten Wert. Eine Einstellung ändert sich nur, wenn Sie den Schalter verwenden oder bestätigen; die meisten können auf den Standardwert zurückgesetzt werden.",
     "scanButton": "Scannen",
-    "scanProgressPreparing": "Scan wird vorbereitet...",
-    "applyingProtections": "Datenschutzmaßnahmen werden angewendet...",
-    "emptyStateTitle": "Datenschutzschild",
-    "emptyStateDescription": "Klicken Sie auf „Scannen“, um Ihre Datenschutz- und Sicherheitseinstellungen zu prüfen und empfohlene Härtungen anzuwenden.",
-    "adminWarning": "Einige Einstellungen erfordern Administratorrechte, um geändert zu werden. Führen Sie SuperSonicCleaner als Administrator aus, um vollständigen Schutz zu erhalten.",
+    "scanProgressPreparing": "Der Scan wird vorbereitet",
+    "applyingProtections": "Die Einstellungen werden angewendet…",
+    "emptyStateTitle": "Einstellungen noch nicht gescannt",
+    "emptyStateDescription": "Der Scan liest die Einstellungen und ändert keine davon.",
+    "adminWarning": "Einige Einstellungen können nur geändert werden, wenn SuperSonicCleaner als Administrator ausgeführt wird; ohne diese Rechte bleiben sie unverändert.",
     "scanFailed": "Datenschutzscan fehlgeschlagen",
-    "applyFailed": "Datenschutzeinstellungen konnten nicht angewendet werden",
-    "applyFailedDescription": "Versuchen Sie, das Programm als Administrator auszuführen",
+    "applyFailed": "Die Datenschutzeinstellungen konnten nicht angewendet werden",
+    "applyFailedDescription": "Versuchen Sie, die App als Administrator auszuführen",
     "settingApplyFailed": "„{{label}}“ konnte nicht angewendet werden",
-    "settingEnabled": "{{label}} blockiert",
-    "settingDisabled": "{{label}} auf Standard zurückgesetzt",
-    "settingRevertFailed": "„{{label}}“ konnte nicht zurückgesetzt werden",
+    "settingEnabled": "Angewendet: {{label}}",
+    "settingDisabled": "Auf Standard zurückgesetzt: {{label}}",
+    "settingRevertFailed": "„{{label}}“ konnte nicht wiederhergestellt werden",
     "settingRevertFailedGeneric": "Datenschutzeinstellung konnte nicht zurückgesetzt werden",
     "settingApplyFailedGeneric": "Datenschutzeinstellung konnte nicht angewendet werden",
-    "ipcCallFailed": "IPC-Aufruf fehlgeschlagen — versuchen Sie, das Programm als Administrator auszuführen",
+    "ipcCallFailed": "Der Aufruf ist fehlgeschlagen: Versuchen Sie, die App als Administrator auszuführen",
     "allSettingsLabel": "Alle Einstellungen",
     "unknownError": "Unbekannter Fehler",
-    "requiresSettingEnabled": "Aktivieren Sie zuerst „{{label}}“",
-    "adminRequired": "Versuchen Sie, das Programm als Administrator auszuführen",
-    "settingNotApplied": "Das System hat die Änderung nicht bestätigt — möglicherweise ist ein Neustart erforderlich oder die Einstellung wird von einem anderen Profil verwaltet"
+    "requiresSettingEnabled": "Schalten Sie zuerst „{{label}}“ ein",
+    "adminRequired": "Versuchen Sie, die App als Administrator auszuführen",
+    "settingNotApplied": "Das System hat die Änderung nicht gemeldet: Möglicherweise ist ein Neustart erforderlich, oder die Einstellung wird von einem anderen Profil verwaltet.",
+    "rescanButton": "Erneut scannen",
+    "scanningButton": "Wird gescannt…",
+    "applyRecommended_one": "{{count}} empfohlene Änderung anwenden",
+    "applyRecommended_other": "{{count}} empfohlene Änderungen anwenden",
+    "summaryTitle_one": "{{count}} Einstellung zu ändern",
+    "summaryTitle_other": "{{count}} Einstellungen zu ändern",
+    "summaryNone": "Alle {{total}} Einstellungen haben bereits den datenschutzfreundlichsten Wert",
+    "summaryFacts": "{{protected}} von {{total}} bereits auf dem datenschutzfreundlichsten Wert · {{categories}} Kategorien",
+    "categoryMeta_one": "{{count}} zu ändern",
+    "categoryMeta_other": "{{count}} zu ändern",
+    "categoryAllSet": "alle bereits festgelegt",
+    "categoryApply_one": "{{count}} anwenden",
+    "categoryApply_other": "{{count}} anwenden",
+    "categoryShow": "Anzeigen",
+    "categoryHide": "Ausblenden",
+    "adminTag": "Erfordert Administrator",
+    "notReversibleTag": "Nicht rückgängig zu machen",
+    "scanProgressTitle": "Scan läuft",
+    "scanProgressCount": "{{current}} von {{total}}",
+    "scanProgressCategory": "Wird geprüft: {{category}}",
+    "scanProgressLabel": "Scanfortschritt",
+    "applyingLabel": "Anwendungsfortschritt",
+    "receiptTitle": "Einstellungen angewendet",
+    "receiptApplied_one": "{{count}} Einstellung geändert",
+    "receiptApplied_other": "{{count}} Einstellungen geändert",
+    "receiptReversible": "kann über die Schalter wiederhergestellt werden",
+    "receiptFailed_one": "{{count}} nicht angewendet: Der Grund steht unten.",
+    "receiptFailed_other": "{{count}} nicht angewendet: Die Gründe stehen unten.",
+    "receiptFailedAdmin_one": "{{count}} nicht angewendet: Möglicherweise muss die App als Administrator ausgeführt werden. Der Grund steht unten.",
+    "receiptFailedAdmin_other": "{{count}} nicht angewendet: Möglicherweise muss die App als Administrator ausgeführt werden. Die Gründe stehen unten.",
+    "failedHeading": "Nicht angewendete Einstellungen",
+    "failedColumnSetting": "Einstellung",
+    "failedColumnReason": "Grund",
+    "confirmTitle_one": "{{count}} Einstellung ändern?",
+    "confirmTitle_other": "{{count}} Einstellungen ändern?",
+    "confirmDescription": "Die aufgeführten Einstellungen wechseln zum datenschutzfreundlichsten Wert. Sie können über die Schalter auf dieser Seite auf den Standardwert zurückgesetzt werden.",
+    "confirmDescriptionIrreversible_one": "Die aufgeführten Einstellungen wechseln zum datenschutzfreundlichsten Wert. {{count}} kann von dieser Seite aus nicht auf den Standardwert zurückgesetzt werden.",
+    "confirmDescriptionIrreversible_other": "Die aufgeführten Einstellungen wechseln zum datenschutzfreundlichsten Wert. {{count}} kann von dieser Seite aus nicht auf den Standardwert zurückgesetzt werden.",
+    "confirmLabel_one": "{{count}} Einstellung ändern",
+    "confirmLabel_other": "{{count}} Einstellungen ändern",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows-Telemetrie",
+        "description": "Legt die Diagnosedatenerfassung auf das Minimum fest (nur Sicherheitsstufe)"
+      },
+      "activity-history": {
+        "label": "Aktivitätsverlauf",
+        "description": "Verhindert, dass Windows Ihre App- und Dateinutzung nachverfolgt und synchronisiert"
+      },
+      "publish-activity": {
+        "label": "Benutzeraktivitäten veröffentlichen",
+        "description": "Verhindert, dass Windows Ihre Aktivitäten an Microsoft veröffentlicht"
+      },
+      "feedback-frequency": {
+        "label": "Feedback-Aufforderungen",
+        "description": "Schaltet die regelmäßigen Microsoft-Feedback-Aufforderungen und -Umfragen aus"
+      },
+      "handwriting-telemetry": {
+        "label": "Handschriftdaten",
+        "description": "Beendet das Senden von Handschrift- und Tippdaten an Microsoft"
+      },
+      "input-personalization": {
+        "label": "Eingabepersonalisierung",
+        "description": "Beendet das Erfassen von Tipp- und Handschriftdaten zur Personalisierung"
+      },
+      "tailored-experiences": {
+        "label": "Personalisierte Erlebnisse",
+        "description": "Verhindert, dass Microsoft Diagnosedaten zur Personalisierung von Tipps und Werbung verwendet"
+      },
+      "app-launch-tracking": {
+        "label": "Nachverfolgung von App-Starts",
+        "description": "Verhindert, dass Windows nachverfolgt, welche Apps Sie öffnen, um das Startmenü anzupassen"
+      },
+      "advertising-id": {
+        "label": "Werbe-ID",
+        "description": "Schaltet die eindeutige Werbe-ID aus, mit der Apps Sie nachverfolgen"
+      },
+      "suggested-content": {
+        "label": "Vorgeschlagene Inhalte in den Einstellungen",
+        "description": "Verhindert, dass Microsoft App-Vorschläge und Werbung in den Einstellungen anzeigt"
+      },
+      "tips-notifications": {
+        "label": "Tipps und Vorschläge",
+        "description": "Schaltet Windows-Tipps, Tricks und Vorschlagsbenachrichtigungen aus"
+      },
+      "start-suggestions": {
+        "label": "Startmenü-Vorschläge",
+        "description": "Schaltet App-Vorschläge (Werbung) im Startmenü aus"
+      },
+      "lock-screen-spotlight": {
+        "label": "Sperrbildschirm-Spotlight",
+        "description": "Schaltet Microsoft-Spotlight-Werbung und -Vorschläge auf dem Sperrbildschirm aus"
+      },
+      "silently-installed-apps": {
+        "label": "Automatisch installierte Apps",
+        "description": "Verhindert, dass Windows beworbene Apps automatisch installiert"
+      },
+      "preinstalled-apps": {
+        "label": "Vorschläge für vorinstallierte Apps",
+        "description": "Verhindert, dass Windows vorinstallierte Apps vorschlägt, die Sie nicht verwendet haben"
+      },
+      "bing-start-menu": {
+        "label": "Bing im Startmenü",
+        "description": "Verhindert, dass im Startmenü eingegebene Suchanfragen an Bing gesendet werden"
+      },
+      "bing-web-search": {
+        "label": "Bing-Webergebnisse",
+        "description": "Schaltet Webergebnisse in der Windows-Suche aus, sodass Suchen auf diesem PC bleiben"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Schaltet Cortana aus, das im Hintergrund läuft und Daten sammelt"
+      },
+      "search-highlights": {
+        "label": "Such-Highlights",
+        "description": "Schaltet Trend-Suchvorschläge und Webinhalte im Suchfeld aus"
+      },
+      "store-search-suggestions": {
+        "label": "Store-Suchvorschläge",
+        "description": "Schaltet Microsoft-Store-Suchvorschläge aus, die Ihre Suchanfragen an Microsoft senden"
+      },
+      "clipboard-sync": {
+        "label": "Zwischenablage-Cloud-Synchronisierung",
+        "description": "Verhindert, dass Zwischenablagedaten über die Cloud geräteübergreifend synchronisiert werden"
+      },
+      "clipboard-history": {
+        "label": "Zwischenablageverlauf",
+        "description": "Schaltet den Zwischenablageverlauf aus, der kopierten Text und Bilder speichert"
+      },
+      "settings-sync": {
+        "label": "Einstellungssynchronisierung",
+        "description": "Beendet die Synchronisierung von Windows-Einstellungen, Designs und Kennwörtern mit Ihrem Microsoft-Konto"
+      },
+      "find-my-device": {
+        "label": "Mein Gerät suchen",
+        "description": "Schaltet die standortbasierte Geräteverfolgung durch Microsoft aus"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Schaltet den AI-Assistenten Microsoft Copilot in ganz Windows aus"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Schaltet Windows Recall aus, den AI-Screenshot-Verlauf, der alles auf dem Bildschirm erfasst"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Schaltet die AI-Analyse von Text und Bildern auf dem Bildschirm durch Click to Do aus"
+      },
+      "ai-service-autostart": {
+        "label": "Automatischer Start von AI-Diensten",
+        "description": "Verhindert, dass AI-Dienste automatisch im Hintergrund starten"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Schaltet die AI-Textverfassungs- und Umschreibungsfunktionen von Edge aus"
+      },
+      "paint-ai": {
+        "label": "Paint-AI-Funktionen",
+        "description": "Schaltet die AI-Bildgenerierungsfunktionen in Microsoft Paint aus"
+      },
+      "notepad-ai": {
+        "label": "Editor-AI-Funktionen",
+        "description": "Schaltet die AI-Textumschreibungsfunktionen im Microsoft-Editor aus"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack-Dienst",
+        "description": "Deaktiviert den Dienst „Connected User Experiences and Telemetry“"
+      },
+      "service-dmwappush": {
+        "label": "WAP-Push-Dienst",
+        "description": "Deaktiviert den WAP-Push-Nachrichtenweiterleitungsdienst, der für Telemetrie verwendet wird"
+      },
+      "service-delivery-optimization": {
+        "label": "Übermittlungsoptimierung",
+        "description": "Deaktiviert die Peer-to-Peer-Freigabe von Windows-Updates, sodass dieser PC keine Updatedaten an andere Geräte hochlädt"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Deaktiviert den Downloaded Maps Manager, einen Hintergrunddienst, den die meisten PCs nicht benötigen"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Kompatibilitätsbewertung",
+        "description": "Deaktiviert die Microsoft-Telemetrieaufgabe, die Kompatibilitätsdaten sammelt"
+      },
+      "task-program-data-updater": {
+        "label": "Programmdaten-Updater",
+        "description": "Deaktiviert die Hintergrundaufgabe, die Programmtelemetrie hochlädt"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk-Proxy",
+        "description": "Deaktiviert die Telemetrieerfassung über den Autochk-Proxy"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP-Konsolidierer",
+        "description": "Deaktiviert den Datenupload des Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "USB-Nutzungsdaten (CEIP)",
+        "description": "Deaktiviert die Erfassung von Telemetriedaten zur USB-Gerätenutzung"
+      },
+      "task-disk-diagnostic": {
+        "label": "Datenträgerdiagnose-Sammler",
+        "description": "Deaktiviert die Erfassung und den Upload von Datenträgerdiagnosedaten"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback-DM-Client",
+        "description": "Deaktiviert die Telemetrieaufgabe der Feedback-Geräteverwaltung"
+      },
+      "task-maps-update": {
+        "label": "Karten-Update-Aufgabe",
+        "description": "Deaktiviert automatische Kartendaten-Downloads im Hintergrund"
+      },
+      "task-maps-toast": {
+        "label": "Karten-Benachrichtigungsaufgabe",
+        "description": "Deaktiviert die Kartenbenachrichtigungsaufgabe"
+      },
+      "edge-metrics": {
+        "label": "Edge-Metrikberichte",
+        "description": "Verhindert, dass Edge Nutzungs- und Absturzmetriken an Microsoft sendet"
+      },
+      "edge-site-info": {
+        "label": "Edge-Website-Informationserfassung",
+        "description": "Verhindert, dass Edge die Adressen der von Ihnen besuchten Websites an Microsoft sendet"
+      },
+      "edge-personalization": {
+        "label": "Edge-Personalisierungsberichte",
+        "description": "Verhindert, dass Edge Ihren Browserverlauf zur Werbepersonalisierung sendet"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge-Copilot-Seitenzugriff (CDP)",
+        "description": "Verhindert, dass Copilot über das Chrome DevTools Protocol auf Seiteninhalte zugreift"
+      },
+      "edge-copilot-page": {
+        "label": "Edge-Copilot-Seitenkontext",
+        "description": "Verhindert, dass Copilot den Seitenkontext zur Inhaltsanalyse verwendet"
+      },
+      "edge-discover": {
+        "label": "Edge-Discover-Seitenscan",
+        "description": "Verhindert, dass die Discover-Funktion Seiteninhalte scannt"
+      },
+      "edge-sidebar": {
+        "label": "Edge-Seitenleiste",
+        "description": "Schaltet die Edge-Seitenleiste und ihre Hintergrund-Datenerfassung aus"
+      },
+      "edge-shopping": {
+        "label": "Edge-Einkaufsassistent",
+        "description": "Schaltet den Preisvergleichs-Tracker in Edge aus"
+      },
+      "chrome-metrics": {
+        "label": "Chrome-Metrikberichte",
+        "description": "Verhindert, dass Chrome Nutzungs- und Absturzmetriken an Google sendet"
+      },
+      "chrome-feedback": {
+        "label": "Chrome-Nutzerfeedback",
+        "description": "Verhindert, dass Chrome Nutzerfeedbackdaten sammelt und sendet"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome erweitertes Safe Browsing",
+        "description": "Verhindert, dass Chrome erweiterte URL- und Download-Berichte an Google sendet"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox-Telemetrie",
+        "description": "Verhindert, dass Firefox Telemetriedaten sammelt und an Mozilla hochlädt"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox-Standardbrowser-Agent",
+        "description": "Deaktiviert den Hintergrundagenten, der Browsernutzungsdaten an Mozilla meldet"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnose- und Nutzungsdaten",
+        "description": "Beendet die Freigabe von Diagnose- und Nutzungsdaten an Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri-Analyse",
+        "description": "Beendet die Erfassung von Siri-Analyse- und Verbesserungsdaten"
+      },
+      "macos-health-data-sharing": {
+        "label": "Freigabe von Gesundheitsdaten",
+        "description": "Beendet die Freigabe von Gesundheitsdaten an Apple für Forschungszwecke"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop-Sichtbarkeit",
+        "description": "Setzt AirDrop auf „Niemand“: Sie können keine Dateien über AirDrop empfangen, bis Sie es in den Systemeinstellungen wieder aktivieren"
+      },
+      "macos-crash-reporter": {
+        "label": "Absturzbericht-Tool",
+        "description": "Verhindert, dass das Absturzbericht-Tool Berichte automatisch sendet"
+      },
+      "macos-ad-tracking": {
+        "label": "Personalisierte Werbung",
+        "description": "Schränkt die Werbeverfolgung durch Apple ein"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Siri-Vorschläge im App Store",
+        "description": "Schaltet Siri-Vorschläge im App Store aus"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari-Vorschläge",
+        "description": "Schaltet die an Apple gesendeten Safari-Suchvorschläge aus"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight-Vorschläge",
+        "description": "Schaltet Spotlight-Websuchvorschläge aus"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari Top-Treffer vorladen",
+        "description": "Verhindert, dass Safari den obersten Suchtreffer vorlädt, wodurch Browserdaten an Websites gesendet werden"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Schaltet Handoff und die universelle Zwischenablage aus: Sie können Aktivitäten nicht mehr fortsetzen oder zwischen Apple-Geräten kopieren und einfügen"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud-Analyse",
+        "description": "Beendet die Freigabe von iCloud-Analysedaten an Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari-iCloud-Tabs",
+        "description": "Schaltet die Safari-iCloud-Tab-Synchronisierung aus: Sie sehen die auf anderen Apple-Geräten geöffneten Tabs nicht mehr"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Schaltet Siri vollständig aus: „Hey Siri“, Sprachbefehle und Siri-Kurzbefehle funktionieren nicht mehr"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri-Diktat",
+        "description": "Schaltet das Diktat aus: Die Mikrofontaste auf Ihrer Tastatur funktioniert dann nicht mehr"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Schaltet die AI-Funktionen von Apple Intelligence aus (macOS 15 Sequoia und höher)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari „Nicht verfolgen“",
+        "description": "Schaltet den „Nicht verfolgen“-Header in Safari ein"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome-Metrikberichte",
+        "description": "Verhindert, dass Chrome Nutzungsmetriken an Google sendet"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Safe-Browsing-Berichte",
+        "description": "Verhindert, dass Chrome erweiterte URL- und Download-Berichte an Google sendet"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox-Telemetrie",
+        "description": "Verhindert, dass Firefox Telemetriedaten sammelt und an Mozilla hochlädt"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Stellt sicher, dass Gatekeeper aktiviert ist, sodass nicht verifizierte Anwendungen blockiert werden"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote-Apple-Events",
+        "description": "Schaltet Remote-Apple-Events aus, sodass Ihr Mac nicht remote automatisiert werden kann"
+      },
+      "macos-wake-on-network": {
+        "label": "Aktivierung bei Netzwerkzugriff",
+        "description": "Schaltet die Aktivierung bei Netzwerkzugriff aus, sodass Ihr Mac nicht remote geweckt werden kann"
+      },
+      "macos-guest-account": {
+        "label": "Gastkonto",
+        "description": "Schaltet das Gastkonto aus, um unbefugten lokalen Zugriff zu verhindern"
+      },
+      "macos-auto-login": {
+        "label": "Automatische Anmeldung",
+        "description": "Schaltet die automatische Anmeldung aus, sodass der Mac beim Start eine Authentifizierung anfordert"
+      },
+      "macos-firewall": {
+        "label": "Anwendungs-Firewall",
+        "description": "Schaltet die macOS-Anwendungs-Firewall ein, um eingehende Verbindungen zu kontrollieren"
+      },
+      "macos-stealth-mode": {
+        "label": "Tarnmodus",
+        "description": "Schaltet den Tarnmodus ein, sodass Ihr Mac nicht auf Abfrageanforderungen (ICMP-Ping) antwortet"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP-Weiterleitung deaktivieren",
+        "description": "Verhindert, dass das System Pakete zwischen Netzwerkschnittstellen weiterleitet"
+      },
+      "macos-block-signed-auto": {
+        "label": "Automatische Zulassung für signierte Apps blockieren",
+        "description": "Verhindert, dass signierte Anwendungen die Firewall automatisch umgehen"
+      },
+      "macos-remote-login": {
+        "label": "Remote-Anmeldung deaktivieren (SSH)",
+        "description": "Schaltet den SSH-Server vollständig aus. Wenn Sie SSH-Zugriff benötigen, lassen Sie dies deaktiviert und härten Sie stattdessen die SSH-Einstellungen"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH-Root-Anmeldung deaktivieren",
+        "description": "Verhindert die direkte Root-Anmeldung über SSH; verwenden Sie stattdessen sudo von einem regulären Konto aus"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH-Kennwortauthentifizierung deaktivieren",
+        "description": "Erlaubt nur schlüsselbasierte SSH-Authentifizierung. Richten Sie zuerst SSH-Schlüssel ein, sonst könnten Sie ausgesperrt werden"
+      },
+      "macos-core-dumps": {
+        "label": "Core Dumps deaktivieren",
+        "description": "Verhindert Core Dumps, die vertrauliche Speicherinhalte preisgeben können"
+      },
+      "gnome-usage-stats": {
+        "label": "Nutzungsstatistiken",
+        "description": "Schaltet die Erfassung von GNOME-Nutzungsstatistiken aus"
+      },
+      "gnome-recent-files": {
+        "label": "Nachverfolgung zuletzt verwendeter Dateien",
+        "description": "Schaltet die Nachverfolgung kürzlich verwendeter Dateien aus"
+      },
+      "gnome-location": {
+        "label": "Standortdienste",
+        "description": "Schaltet die GNOME-Standortdienste aus"
+      },
+      "gnome-crash-reporting": {
+        "label": "Absturzberichte (Apport)",
+        "description": "Schaltet die automatische Übermittlung von Absturzberichten aus"
+      },
+      "gnome-connectivity-check": {
+        "label": "Verbindungsprüfung",
+        "description": "Schaltet die regelmäßigen Netzwerkverbindungsprüfungen aus"
+      },
+      "core-dump-disable": {
+        "label": "Core Dumps deaktivieren",
+        "description": "Verhindert Core Dumps, die vertrauliche Speicherinhalte preisgeben können"
+      },
+      "ssh-root-login": {
+        "label": "SSH-Root-Anmeldung deaktivieren",
+        "description": "Verhindert die direkte Root-Anmeldung über SSH; verwenden Sie stattdessen sudo von einem regulären Konto aus"
+      },
+      "ssh-password-auth": {
+        "label": "SSH-Kennwortauthentifizierung deaktivieren",
+        "description": "Erlaubt nur schlüsselbasierte SSH-Authentifizierung. Richten Sie zuerst SSH-Schlüssel ein, sonst könnten Sie ausgesperrt werden"
+      },
+      "kde-usage-stats": {
+        "label": "Nutzungsstatistiken",
+        "description": "Schaltet das KDE-Plasma-Nutzerfeedback aus"
+      },
+      "kde-recent-files": {
+        "label": "Nachverfolgung zuletzt verwendeter Dateien",
+        "description": "Schaltet den KDE-Aktivitätsverlauf zuletzt verwendeter Dateien aus"
+      },
+      "kde-baloo": {
+        "label": "Dateiindizierung (Baloo)",
+        "description": "Schaltet den Baloo-Dateiindexer aus"
+      },
+      "kde-crash-reporting": {
+        "label": "Absturzberichte (DrKonqi)",
+        "description": "Schaltet den KDE-Absturzberichts-Handler aus"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetrie & Datenerfassung",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Debloater",
-    "pageDescription": "Vorinstallierte Windows-Apps und OEM-Bloatware entfernen",
+    "pageDescription": "Von Windows und dem Hersteller vorinstallierte Apps. Nach dem Entfernen können sie nur über den Microsoft Store neu installiert werden.",
     "scanButton": "Scannen",
-    "irreversibleWarning": "Nicht umkehrbar — Entfernte Apps können nur über den Microsoft Store erneut installiert werden. Prüfen Sie Ihre Auswahl sorgfältig.",
-    "scanningPackages": "Installierte Pakete werden gescannt...",
-    "removingProgress": "{{current}} von {{total}} wird entfernt",
+    "rescanButton": "Erneut scannen",
+    "irreversibleWarning": "Das Entfernen kann in der App nicht rückgängig gemacht werden: Überprüfen Sie die ausgewählten Apps, bevor Sie bestätigen.",
+    "scanningPackages": "Installierte Pakete werden gescannt…",
+    "removingProgress": "Apps werden entfernt ({{current}} von {{total}})",
+    "receiptTitle": "Entfernung abgeschlossen",
+    "removedApps_one": "{{count}} App entfernt",
+    "removedApps_other": "{{count}} Apps entfernt",
+    "failedCount_one": "{{count}} fehlgeschlagen",
+    "failedCount_other": "{{count}} fehlgeschlagen",
+    "reinstallFromStore": "nur über den Microsoft Store neu installierbar",
     "selectAll": "Alle auswählen",
-    "emptyStateTitle": "Keine Bloatware erkannt",
-    "emptyStateDescription": "Klicken Sie auf „Scannen“, um vorinstallierte Apps und OEM-Bloatware zu finden.",
+    "filterLabel": "Kategorie",
+    "confirmTitle_one": "{{count}} App entfernen?",
+    "confirmTitle_other": "{{count}} Apps entfernen?",
+    "confirmDescription_one": "Die App wird für Ihr Benutzerkonto entfernt und, mit Administratorrechten, auch für neue Benutzer. Sie kann nur über den Microsoft Store neu installiert werden.",
+    "confirmDescription_other": "Die Apps werden für Ihr Benutzerkonto entfernt und, mit Administratorrechten, auch für neue Benutzer. Sie können nur über den Microsoft Store neu installiert werden.",
+    "confirmLabel_one": "{{count}} App entfernen",
+    "confirmLabel_other": "{{count}} Apps entfernen",
+    "emptyStateTitle": "Noch nicht gescannt",
+    "emptyStateDescription": "Kein Scan vorinstallierter Apps in dieser Sitzung.",
+    "lastRun_one": "Letzte Entfernung: {{date}}, {{count}} App entfernt.",
+    "lastRun_other": "Letzte Entfernung: {{date}}, {{count}} Apps entfernt.",
+    "checkKnownTitle": "Bekannte Apps",
+    "checkKnownDetail": "Eine Liste von Apps, die von Microsoft und von Herstellern (OEM) vorinstalliert werden",
+    "checkInstalledTitle": "Installierte Pakete",
+    "checkInstalledDetail": "Die App-Pakete Ihres Benutzerkontos, verglichen mit der Liste",
+    "checkRemovalTitle": "Entfernung",
+    "checkRemovalDetail": "Für Ihr Benutzerkonto; mit Administratorrechten auch aus der Kopie, die für neue Benutzer verwendet wird",
+    "noneFoundTitle": "Keine der aufgeführten Apps ist installiert",
+    "noneFoundDescription": "Die bekannten vorinstallierten Apps sind für Ihr Benutzerkonto nicht vorhanden.",
+    "summaryTitle_one": "{{count}} vorinstallierte App gefunden",
+    "summaryTitle_other": "{{count}} vorinstallierte Apps gefunden",
+    "selectedCount_one": "{{count}} ausgewählt",
+    "selectedCount_other": "{{count}} ausgewählt",
+    "removeButton_one": "{{count}} App entfernen",
+    "removeButton_other": "{{count}} Apps entfernen",
+    "removeNone": "Ausgewählte entfernen",
     "scanFailedToast": "Bloatware-Scan fehlgeschlagen",
     "scanFailedDescription": "Stellen Sie sicher, dass PowerShell verfügbar ist",
     "scanFailedError": "Die Suche nach Bloatware ist fehlgeschlagen. Stellen Sie sicher, dass PowerShell verfügbar ist.",

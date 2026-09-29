@@ -10,5 +10,7 @@
   "history": "Aktivität",
   "settings": "Einstellungen",
   "gameMode": "Spielmodus",
-  "firewallAudit": "Firewall-Überprüfung"
+  "firewallAudit": "Firewall-Überprüfung",
+  "updateBadge": "Update",
+  "mainNavigation": "Hauptnavigation"
 }

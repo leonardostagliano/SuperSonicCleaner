@@ -15,6 +15,7 @@
   "cpuDetail": "Aktuelle Prozessorauslastung",
   "sample": "Letzte Messung",
   "used": "{{used}} von {{total}} GB verwendet",
+  "free": "{{free}} GB frei",
   "waiting": "Warten auf Live-Daten",
   "unavailable": "Datenträgerdaten nicht verfügbar",
   "live": "Live-Systemmesswerte",
