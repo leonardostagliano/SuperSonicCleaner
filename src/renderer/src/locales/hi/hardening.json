@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "गोपनीयता शील्ड",
-    "pageDescription": "अपने पूरे सिस्टम में telemetry, विज्ञापन, ट्रैकिंग और डेटा संग्रह को नियंत्रित करें",
+    "pageDescription": "टेलीमेट्री, विज्ञापन, खोज और सिंक सेटिंग्स पढ़ता है और उनकी तुलना सबसे निजी मान से करता है। कोई सेटिंग तभी बदलती है जब आप उसका स्विच उपयोग करें या पुष्टि करें; अधिकांश को डिफ़ॉल्ट पर वापस सेट किया जा सकता है।",
     "scanButton": "स्कैन करें",
-    "scanProgressPreparing": "स्कैन तैयार किया जा रहा है...",
-    "applyingProtections": "गोपनीयता सुरक्षा लागू की जा रही है...",
-    "emptyStateTitle": "गोपनीयता शील्ड",
-    "emptyStateDescription": "\"स्कैन करें\" पर क्लिक करके अपनी गोपनीयता और सुरक्षा सेटिंग्स का ऑडिट करें और अनुशंसित हार्डनिंग लागू करें।",
-    "adminWarning": "कुछ सेटिंग्स बदलने के लिए administrator विशेषाधिकार आवश्यक हैं। पूर्ण सुरक्षा के लिए SuperSonicCleaner को administrator के रूप में चलाएँ।",
+    "scanProgressPreparing": "स्कैन तैयार किया जा रहा है",
+    "applyingProtections": "सेटिंग्स लागू की जा रही हैं…",
+    "emptyStateTitle": "सेटिंग्स अभी तक स्कैन नहीं की गई हैं",
+    "emptyStateDescription": "स्कैन सेटिंग्स को पढ़ता है और उनमें से किसी को भी नहीं बदलता।",
+    "adminWarning": "कुछ सेटिंग्स तभी बदली जा सकती हैं जब SuperSonicCleaner व्यवस्थापक के रूप में चल रहा हो; इन अधिकारों के बिना वे जैसी हैं वैसी ही रहती हैं।",
     "scanFailed": "गोपनीयता स्कैन विफल हुआ",
     "applyFailed": "गोपनीयता सेटिंग्स लागू नहीं की जा सकीं",
-    "applyFailedDescription": "प्रशासक के रूप में चलाने का प्रयास करें",
-    "settingApplyFailed": "\"{{label}}\" लागू नहीं किया जा सका",
-    "settingEnabled": "{{label}} अवरुद्ध किया गया",
-    "settingDisabled": "{{label}} को डिफ़ॉल्ट पर पुनर्स्थापित किया गया",
-    "settingRevertFailed": "\"{{label}}\" को पूर्ववत नहीं किया जा सका",
+    "applyFailedDescription": "ऐप को व्यवस्थापक के रूप में चलाने का प्रयास करें",
+    "settingApplyFailed": "“{{label}}” लागू नहीं किया जा सका",
+    "settingEnabled": "लागू किया गया: {{label}}",
+    "settingDisabled": "डिफ़ॉल्ट पर वापस सेट किया गया: {{label}}",
+    "settingRevertFailed": "“{{label}}” को पुनर्स्थापित नहीं किया जा सका",
     "settingRevertFailedGeneric": "गोपनीयता सेटिंग पूर्ववत नहीं की जा सकी",
     "settingApplyFailedGeneric": "गोपनीयता सेटिंग लागू नहीं की जा सकी",
-    "ipcCallFailed": "IPC कॉल विफल हुई — प्रशासक के रूप में चलाने का प्रयास करें",
+    "ipcCallFailed": "कॉल विफल हुई: ऐप को व्यवस्थापक के रूप में चलाने का प्रयास करें",
     "allSettingsLabel": "सभी सेटिंग्स",
     "unknownError": "अज्ञात त्रुटि",
-    "requiresSettingEnabled": "पहले \"{{label}}\" सक्षम करें",
-    "adminRequired": "प्रशासक के रूप में चलाने का प्रयास करें",
-    "settingNotApplied": "सिस्टम ने परिवर्तन की पुष्टि नहीं की — हो सकता है पुनरारंभ की आवश्यकता हो, या यह सेटिंग किसी अन्य प्रोफ़ाइल द्वारा प्रबंधित हो"
+    "requiresSettingEnabled": "पहले “{{label}}” चालू करें",
+    "adminRequired": "ऐप को व्यवस्थापक के रूप में चलाने का प्रयास करें",
+    "settingNotApplied": "सिस्टम ने बदलाव की रिपोर्ट नहीं दी: पुनः आरंभ की आवश्यकता हो सकती है, या सेटिंग किसी अन्य प्रोफ़ाइल द्वारा प्रबंधित है।",
+    "rescanButton": "फिर से स्कैन करें",
+    "scanningButton": "स्कैन हो रहा है…",
+    "applyRecommended_one": "{{count}} अनुशंसित बदलाव लागू करें",
+    "applyRecommended_other": "{{count}} अनुशंसित बदलाव लागू करें",
+    "summaryTitle_one": "बदलने के लिए {{count}} सेटिंग",
+    "summaryTitle_other": "बदलने के लिए {{count}} सेटिंग्स",
+    "summaryNone": "सभी {{total}} सेटिंग्स पहले से ही सबसे निजी मान पर हैं",
+    "summaryFacts": "{{total}} में से {{protected}} पहले से ही सबसे निजी मान पर · {{categories}} श्रेणियाँ",
+    "categoryMeta_one": "बदलने के लिए {{count}}",
+    "categoryMeta_other": "बदलने के लिए {{count}}",
+    "categoryAllSet": "सभी पहले से सेट हैं",
+    "categoryApply_one": "{{count}} लागू करें",
+    "categoryApply_other": "{{count}} लागू करें",
+    "categoryShow": "दिखाएँ",
+    "categoryHide": "छिपाएँ",
+    "adminTag": "व्यवस्थापक आवश्यक",
+    "notReversibleTag": "अपरिवर्तनीय",
+    "scanProgressTitle": "स्कैन प्रगति पर है",
+    "scanProgressCount": "{{total}} में से {{current}}",
+    "scanProgressCategory": "जाँच की जा रही है: {{category}}",
+    "scanProgressLabel": "स्कैन प्रगति",
+    "applyingLabel": "लागू करने की प्रगति",
+    "receiptTitle": "सेटिंग्स लागू की गईं",
+    "receiptApplied_one": "{{count}} सेटिंग बदली गई",
+    "receiptApplied_other": "{{count}} सेटिंग्स बदली गईं",
+    "receiptReversible": "स्विच से पुनर्स्थापित किया जा सकता है",
+    "receiptFailed_one": "{{count}} लागू नहीं हुआ: कारण नीचे दिया गया है।",
+    "receiptFailed_other": "{{count}} लागू नहीं हुए: कारण नीचे दिए गए हैं।",
+    "receiptFailedAdmin_one": "{{count}} लागू नहीं हुआ: हो सकता है ऐप को व्यवस्थापक के रूप में चलाना पड़े। कारण नीचे दिया गया है।",
+    "receiptFailedAdmin_other": "{{count}} लागू नहीं हुए: हो सकता है ऐप को व्यवस्थापक के रूप में चलाना पड़े। कारण नीचे दिए गए हैं।",
+    "failedHeading": "सेटिंग्स लागू नहीं हुईं",
+    "failedColumnSetting": "सेटिंग",
+    "failedColumnReason": "कारण",
+    "confirmTitle_one": "{{count}} सेटिंग बदलें?",
+    "confirmTitle_other": "{{count}} सेटिंग्स बदलें?",
+    "confirmDescription": "सूचीबद्ध सेटिंग्स सबसे निजी मान पर स्विच हो जाती हैं। इस पेज पर मौजूद स्विच से उन्हें डिफ़ॉल्ट पर वापस सेट किया जा सकता है।",
+    "confirmDescriptionIrreversible_one": "सूचीबद्ध सेटिंग्स सबसे निजी मान पर स्विच हो जाती हैं। {{count}} को इस पेज से डिफ़ॉल्ट पर वापस नहीं सेट किया जा सकता।",
+    "confirmDescriptionIrreversible_other": "सूचीबद्ध सेटिंग्स सबसे निजी मान पर स्विच हो जाती हैं। {{count}} को इस पेज से डिफ़ॉल्ट पर वापस नहीं सेट किया जा सकता।",
+    "confirmLabel_one": "{{count}} सेटिंग बदलें",
+    "confirmLabel_other": "{{count}} सेटिंग्स बदलें",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows टेलीमेट्री",
+        "description": "डायग्नोस्टिक डेटा संग्रह को न्यूनतम पर सेट करता है (केवल सुरक्षा स्तर)"
+      },
+      "activity-history": {
+        "label": "गतिविधि इतिहास",
+        "description": "Windows को आपके ऐप और फ़ाइल उपयोग को ट्रैक और सिंक करने से रोकता है"
+      },
+      "publish-activity": {
+        "label": "उपयोगकर्ता गतिविधियाँ प्रकाशित करना",
+        "description": "Windows को आपकी गतिविधियाँ Microsoft को भेजने से रोकता है"
+      },
+      "feedback-frequency": {
+        "label": "फ़ीडबैक प्रॉम्प्ट",
+        "description": "Microsoft के आवधिक फ़ीडबैक प्रॉम्प्ट और सर्वेक्षण बंद करता है"
+      },
+      "handwriting-telemetry": {
+        "label": "हस्तलेखन डेटा",
+        "description": "Microsoft को हस्तलेखन और टाइपिंग डेटा भेजना बंद करता है"
+      },
+      "input-personalization": {
+        "label": "इनपुट वैयक्तिकरण",
+        "description": "वैयक्तिकरण के लिए टाइपिंग और इंकिंग डेटा एकत्र करना बंद करता है"
+      },
+      "tailored-experiences": {
+        "label": "अनुकूलित अनुभव",
+        "description": "Microsoft को सुझाव और विज्ञापन वैयक्तिकृत करने के लिए डायग्नोस्टिक डेटा उपयोग करने से रोकता है"
+      },
+      "app-launch-tracking": {
+        "label": "ऐप लॉन्च ट्रैकिंग",
+        "description": "स्टार्ट मेनू को ट्यून करने के लिए आप कौन-से ऐप खोलते हैं, यह Windows को ट्रैक करने से रोकता है"
+      },
+      "advertising-id": {
+        "label": "विज्ञापन ID",
+        "description": "वह अद्वितीय विज्ञापन ID बंद करता है जिसका उपयोग ऐप्स आपको ट्रैक करने के लिए करते हैं"
+      },
+      "suggested-content": {
+        "label": "सेटिंग्स में सुझाया गया कॉन्टेंट",
+        "description": "Microsoft को सेटिंग्स में ऐप सुझाव और विज्ञापन दिखाने से रोकता है"
+      },
+      "tips-notifications": {
+        "label": "टिप्स और सुझाव",
+        "description": "Windows की टिप्स, ट्रिक्स और सुझाव सूचनाएँ बंद करता है"
+      },
+      "start-suggestions": {
+        "label": "स्टार्ट मेनू सुझाव",
+        "description": "स्टार्ट मेनू में ऐप सुझाव (विज्ञापन) बंद करता है"
+      },
+      "lock-screen-spotlight": {
+        "label": "लॉक स्क्रीन Spotlight",
+        "description": "लॉक स्क्रीन पर Microsoft Spotlight विज्ञापन और सुझाव बंद करता है"
+      },
+      "silently-installed-apps": {
+        "label": "साइलेंटली इंस्टॉल होने वाले ऐप्स",
+        "description": "Windows को प्रचारित ऐप्स स्वचालित रूप से इंस्टॉल करने से रोकता है"
+      },
+      "preinstalled-apps": {
+        "label": "पूर्व-स्थापित ऐप सुझाव",
+        "description": "Windows को आपके द्वारा उपयोग न किए गए पूर्व-स्थापित ऐप्स सुझाने से रोकता है"
+      },
+      "bing-start-menu": {
+        "label": "स्टार्ट मेनू में Bing",
+        "description": "स्टार्ट मेनू में टाइप की गई खोज क्वेरी को Bing पर भेजा जाना बंद करता है"
+      },
+      "bing-web-search": {
+        "label": "Bing वेब परिणाम",
+        "description": "Windows खोज में वेब परिणाम बंद करता है, ताकि खोजें इसी PC पर रहें"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Cortana को बंद करता है, जो बैकग्राउंड में चलता है और डेटा एकत्र करता है"
+      },
+      "search-highlights": {
+        "label": "सर्च हाइलाइट्स",
+        "description": "खोज बॉक्स में ट्रेंडिंग खोज सुझाव और वेब कॉन्टेंट बंद करता है"
+      },
+      "store-search-suggestions": {
+        "label": "स्टोर खोज सुझाव",
+        "description": "Microsoft Store खोज सुझाव बंद करता है, जो आपकी क्वेरी Microsoft को भेजते हैं"
+      },
+      "clipboard-sync": {
+        "label": "क्लिपबोर्ड क्लाउड सिंक",
+        "description": "क्लाउड के माध्यम से डिवाइसों के बीच क्लिपबोर्ड डेटा सिंक होने से रोकता है"
+      },
+      "clipboard-history": {
+        "label": "क्लिपबोर्ड इतिहास",
+        "description": "कॉपी किए गए टेक्स्ट और इमेज को संग्रहीत करने वाला क्लिपबोर्ड इतिहास बंद करता है"
+      },
+      "settings-sync": {
+        "label": "सेटिंग्स सिंक",
+        "description": "Windows सेटिंग्स, थीम और पासवर्ड को आपके Microsoft खाते से सिंक होना बंद करता है"
+      },
+      "find-my-device": {
+        "label": "मेरा डिवाइस खोजें",
+        "description": "Microsoft द्वारा स्थान-आधारित डिवाइस ट्रैकिंग बंद करता है"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "पूरे Windows में Microsoft Copilot AI सहायक बंद करता है"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Windows Recall बंद करता है, वह AI स्क्रीनशॉट इतिहास जो स्क्रीन पर सब कुछ कैप्चर करता है"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "स्क्रीन पर टेक्स्ट और इमेज के Click to Do AI विश्लेषण को बंद करता है"
+      },
+      "ai-service-autostart": {
+        "label": "AI सेवा ऑटो-स्टार्ट",
+        "description": "AI सेवाओं को बैकग्राउंड में स्वचालित रूप से शुरू होने से रोकता है"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Edge की AI टेक्स्ट रचना और पुनर्लेखन सुविधाएँ बंद करता है"
+      },
+      "paint-ai": {
+        "label": "Paint AI सुविधाएँ",
+        "description": "Microsoft Paint में AI इमेज जनरेशन सुविधाएँ बंद करता है"
+      },
+      "notepad-ai": {
+        "label": "Notepad AI सुविधाएँ",
+        "description": "Microsoft Notepad में AI टेक्स्ट पुनर्लेखन सुविधाएँ बंद करता है"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack सेवा",
+        "description": "Connected User Experiences and Telemetry सेवा को अक्षम करता है"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push सेवा",
+        "description": "टेलीमेट्री के लिए उपयोग की जाने वाली WAP Push संदेश रूटिंग सेवा को अक्षम करता है"
+      },
+      "service-delivery-optimization": {
+        "label": "डिलीवरी ऑप्टिमाइज़ेशन",
+        "description": "Windows अपडेट के पीयर-टू-पीयर शेयरिंग को अक्षम करता है, ताकि यह PC अपडेट डेटा अन्य डिवाइसों पर अपलोड न करे"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "डाउनलोड किए गए मैप्स मैनेजर को अक्षम करता है, यह एक बैकग्राउंड सेवा है जिसकी अधिकांश PC को आवश्यकता नहीं होती"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Microsoft की वह टेलीमेट्री टास्क अक्षम करता है जो अनुकूलता डेटा एकत्र करती है"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "प्रोग्राम टेलीमेट्री अपलोड करने वाली बैकग्राउंड टास्क को अक्षम करता है"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "autochk प्रॉक्सी के माध्यम से होने वाला टेलीमेट्री संग्रह अक्षम करता है"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Customer Experience Improvement Program डेटा अपलोड अक्षम करता है"
+      },
+      "task-usb-ceip": {
+        "label": "USB उपयोग डेटा (CEIP)",
+        "description": "USB डिवाइस उपयोग टेलीमेट्री का संग्रह अक्षम करता है"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "डिस्क डायग्नोस्टिक डेटा का संग्रह और अपलोड अक्षम करता है"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "फ़ीडबैक डिवाइस प्रबंधन टेलीमेट्री टास्क अक्षम करता है"
+      },
+      "task-maps-update": {
+        "label": "मैप्स अपडेट टास्क",
+        "description": "बैकग्राउंड में स्वचालित मैप डेटा डाउनलोड अक्षम करता है"
+      },
+      "task-maps-toast": {
+        "label": "मैप्स सूचना टास्क",
+        "description": "मैप्स सूचना टास्क अक्षम करता है"
+      },
+      "edge-metrics": {
+        "label": "Edge मेट्रिक्स रिपोर्टिंग",
+        "description": "Edge को Microsoft को उपयोग और क्रैश मेट्रिक्स भेजने से रोकता है"
+      },
+      "edge-site-info": {
+        "label": "Edge साइट जानकारी संग्रह",
+        "description": "आपके द्वारा विज़िट की गई साइटों के पते Microsoft को भेजे जाने से Edge को रोकता है"
+      },
+      "edge-personalization": {
+        "label": "Edge वैयक्तिकरण रिपोर्टिंग",
+        "description": "विज्ञापन वैयक्तिकरण के लिए आपका ब्राउज़िंग इतिहास भेजे जाने से Edge को रोकता है"
+      },
+      "edge-copilot-cdp": {
+        "label": "Edge Copilot पेज एक्सेस (CDP)",
+        "description": "Chrome DevTools Protocol के माध्यम से पेज कॉन्टेंट पढ़ने से Copilot को रोकता है"
+      },
+      "edge-copilot-page": {
+        "label": "Edge Copilot पेज संदर्भ",
+        "description": "कॉन्टेंट का विश्लेषण करने के लिए पेज संदर्भ का उपयोग करने से Copilot को रोकता है"
+      },
+      "edge-discover": {
+        "label": "Edge Discover पेज स्कैनिंग",
+        "description": "Discover सुविधा को पेज कॉन्टेंट स्कैन करने से रोकता है"
+      },
+      "edge-sidebar": {
+        "label": "Edge साइडबार",
+        "description": "Edge साइडबार और उसका बैकग्राउंड डेटा संग्रह बंद करता है"
+      },
+      "edge-shopping": {
+        "label": "Edge शॉपिंग असिस्टेंट",
+        "description": "Edge में मूल्य तुलना ट्रैकर बंद करता है"
+      },
+      "chrome-metrics": {
+        "label": "Chrome मेट्रिक्स रिपोर्टिंग",
+        "description": "Chrome को Google को उपयोग और क्रैश मेट्रिक्स भेजने से रोकता है"
+      },
+      "chrome-feedback": {
+        "label": "Chrome उपयोगकर्ता फ़ीडबैक",
+        "description": "उपयोगकर्ता फ़ीडबैक डेटा एकत्र और भेजने से Chrome को रोकता है"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome एक्सटेंडेड Safe Browsing",
+        "description": "Google को विस्तृत URL और डाउनलोड रिपोर्ट भेजे जाने से Chrome को रोकता है"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox टेलीमेट्री",
+        "description": "टेलीमेट्री डेटा एकत्र करने और उसे Mozilla पर अपलोड करने से Firefox को रोकता है"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox डिफ़ॉल्ट ब्राउज़र एजेंट",
+        "description": "Mozilla को ब्राउज़र उपयोग डेटा रिपोर्ट करने वाला बैकग्राउंड एजेंट अक्षम करता है"
+      },
+      "macos-diagnostics": {
+        "label": "डायग्नोस्टिक्स और उपयोग डेटा",
+        "description": "Apple के साथ डायग्नोस्टिक और उपयोग डेटा साझा करना बंद करता है"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri एनालिटिक्स",
+        "description": "Siri एनालिटिक्स और सुधार डेटा संग्रह बंद करता है"
+      },
+      "macos-health-data-sharing": {
+        "label": "स्वास्थ्य डेटा साझाकरण",
+        "description": "अनुसंधान के लिए Apple के साथ स्वास्थ्य डेटा साझा करना बंद करता है"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop खोज-योग्यता",
+        "description": "AirDrop को 'कोई नहीं' पर सेट करता है: जब तक आप इसे System Settings में फिर से चालू नहीं करते, तब तक AirDrop से फ़ाइलें प्राप्त नहीं कर सकते"
+      },
+      "macos-crash-reporter": {
+        "label": "क्रैश रिपोर्टर",
+        "description": "क्रैश रिपोर्टर को स्वचालित रूप से रिपोर्ट भेजने से रोकता है"
+      },
+      "macos-ad-tracking": {
+        "label": "वैयक्तिकृत विज्ञापन",
+        "description": "Apple द्वारा विज्ञापन ट्रैकिंग सीमित करता है"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "App Store में Siri सुझाव",
+        "description": "App Store में Siri सुझाव बंद करता है"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari सुझाव",
+        "description": "Apple को भेजे जाने वाले Safari खोज सुझाव बंद करता है"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight सुझाव",
+        "description": "Spotlight वेब सुझाव बंद करता है"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari प्रीलोड टॉप हिट",
+        "description": "Safari को शीर्ष खोज परिणाम पहले से लोड करने से रोकता है, जो साइटों को ब्राउज़िंग डेटा भेजता है"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Handoff और Universal Clipboard बंद करता है: अब आप Apple डिवाइसों के बीच गतिविधियाँ जारी नहीं रख सकते या कॉपी-पेस्ट नहीं कर सकते"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud एनालिटिक्स",
+        "description": "Apple के साथ iCloud एनालिटिक्स साझा करना बंद करता है"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari iCloud टैब",
+        "description": "Safari iCloud टैब सिंकिंग बंद करता है: अब आपको अपने अन्य Apple डिवाइसों पर खुले टैब दिखाई नहीं देंगे"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Siri को पूरी तरह बंद करता है: Hey Siri, वॉइस कमांड और Siri Shortcuts काम करना बंद कर देते हैं"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri डिक्टेशन",
+        "description": "डिक्टेशन बंद करता है: आपके कीबोर्ड पर माइक्रोफ़ोन कुंजी काम करना बंद कर देती है"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Apple Intelligence AI सुविधाएँ बंद करता है (macOS 15 Sequoia और बाद के संस्करण)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "Safari में Do Not Track हेडर चालू करता है"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome मेट्रिक्स रिपोर्टिंग",
+        "description": "Chrome को Google को उपयोग मेट्रिक्स भेजने से रोकता है"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Safe Browsing रिपोर्ट",
+        "description": "Google को विस्तृत URL और डाउनलोड रिपोर्ट भेजे जाने से Chrome को रोकता है"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox टेलीमेट्री",
+        "description": "टेलीमेट्री डेटा एकत्र करने और उसे Mozilla पर अपलोड करने से Firefox को रोकता है"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "सुनिश्चित करता है कि Gatekeeper चालू है, ताकि असत्यापित ऐप्स ब्लॉक हो जाएँ"
+      },
+      "macos-remote-apple-events": {
+        "label": "रिमोट Apple Events",
+        "description": "रिमोट Apple Events बंद करता है, ताकि आपके Mac को दूर से स्वचालित न किया जा सके"
+      },
+      "macos-wake-on-network": {
+        "label": "नेटवर्क एक्सेस के लिए वेक",
+        "description": "नेटवर्क एक्सेस के लिए वेक बंद करता है, ताकि आपके Mac को दूर से जगाया न जा सके"
+      },
+      "macos-guest-account": {
+        "label": "गेस्ट खाता",
+        "description": "अनधिकृत स्थानीय पहुँच रोकने के लिए गेस्ट खाता बंद करता है"
+      },
+      "macos-auto-login": {
+        "label": "स्वचालित लॉगिन",
+        "description": "स्वचालित लॉगिन बंद करता है, ताकि Mac स्टार्टअप पर प्रमाणीकरण माँगे"
+      },
+      "macos-firewall": {
+        "label": "एप्लिकेशन फ़ायरवॉल",
+        "description": "इनकमिंग कनेक्शन नियंत्रित करने के लिए macOS एप्लिकेशन फ़ायरवॉल चालू करता है"
+      },
+      "macos-stealth-mode": {
+        "label": "स्टील्थ मोड",
+        "description": "स्टील्थ मोड चालू करता है, ताकि आपका Mac प्रोब अनुरोधों (ICMP ping) का जवाब न दे"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP फ़ॉरवर्डिंग अक्षम करें",
+        "description": "सिस्टम को नेटवर्क इंटरफ़ेस के बीच पैकेट फ़ॉरवर्ड करने से रोकता है"
+      },
+      "macos-block-signed-auto": {
+        "label": "साइन किए गए ऐप्स के लिए स्वचालित अनुमति ब्लॉक करें",
+        "description": "साइन किए गए एप्लिकेशन को फ़ायरवॉल स्वचालित रूप से बायपास करने से रोकता है"
+      },
+      "macos-remote-login": {
+        "label": "रिमोट लॉगिन अक्षम करें (SSH)",
+        "description": "SSH सर्वर को पूरी तरह बंद करता है। यदि आपको SSH एक्सेस चाहिए, तो इसे बंद ही छोड़ें और इसके बजाय SSH सेटिंग्स को हार्डन करें"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH root लॉगिन अक्षम करें",
+        "description": "SSH के माध्यम से सीधे root लॉगिन को रोकता है; इसके बजाय सामान्य खाते से sudo का उपयोग करें"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH पासवर्ड प्रमाणीकरण अक्षम करें",
+        "description": "केवल की-आधारित SSH प्रमाणीकरण की अनुमति देता है। पहले SSH की सेट करें, वरना आपकी पहुँच अवरुद्ध हो सकती है"
+      },
+      "macos-core-dumps": {
+        "label": "कोर डंप अक्षम करें",
+        "description": "कोर डंप को रोकता है, जो संवेदनशील मेमोरी सामग्री लीक कर सकते हैं"
+      },
+      "gnome-usage-stats": {
+        "label": "उपयोग आँकड़े",
+        "description": "GNOME उपयोग आँकड़ा संग्रह बंद करता है"
+      },
+      "gnome-recent-files": {
+        "label": "हाल की फ़ाइलें ट्रैकिंग",
+        "description": "हाल ही में उपयोग की गई फ़ाइलों की ट्रैकिंग बंद करता है"
+      },
+      "gnome-location": {
+        "label": "स्थान सेवाएँ",
+        "description": "GNOME स्थान सेवाएँ बंद करता है"
+      },
+      "gnome-crash-reporting": {
+        "label": "क्रैश रिपोर्टिंग (Apport)",
+        "description": "स्वचालित क्रैश रिपोर्ट सबमिशन बंद करता है"
+      },
+      "gnome-connectivity-check": {
+        "label": "कनेक्टिविटी जाँच",
+        "description": "आवधिक नेटवर्क कनेक्टिविटी जाँच बंद करता है"
+      },
+      "core-dump-disable": {
+        "label": "कोर डंप अक्षम करें",
+        "description": "कोर डंप को रोकता है, जो संवेदनशील मेमोरी सामग्री लीक कर सकते हैं"
+      },
+      "ssh-root-login": {
+        "label": "SSH root लॉगिन अक्षम करें",
+        "description": "SSH के माध्यम से सीधे root लॉगिन को रोकता है; इसके बजाय सामान्य खाते से sudo का उपयोग करें"
+      },
+      "ssh-password-auth": {
+        "label": "SSH पासवर्ड प्रमाणीकरण अक्षम करें",
+        "description": "केवल की-आधारित SSH प्रमाणीकरण की अनुमति देता है। पहले SSH की सेट करें, वरना आपकी पहुँच अवरुद्ध हो सकती है"
+      },
+      "kde-usage-stats": {
+        "label": "उपयोग आँकड़े",
+        "description": "KDE Plasma उपयोगकर्ता फ़ीडबैक बंद करता है"
+      },
+      "kde-recent-files": {
+        "label": "हाल की फ़ाइलें ट्रैकिंग",
+        "description": "हाल की फ़ाइलों के लिए KDE गतिविधि इतिहास बंद करता है"
+      },
+      "kde-baloo": {
+        "label": "फ़ाइल इंडेक्सिंग (Baloo)",
+        "description": "Baloo फ़ाइल इंडेक्सर बंद करता है"
+      },
+      "kde-crash-reporting": {
+        "label": "क्रैश रिपोर्टिंग (DrKonqi)",
+        "description": "KDE क्रैश रिपोर्ट हैंडलर बंद करता है"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetry और डेटा संग्रह",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Debloater",
-    "pageDescription": "पूर्व-स्थापित Windows ऐप्स और OEM bloatware हटाएँ",
+    "pageDescription": "Windows और निर्माता द्वारा पूर्व-स्थापित ऐप्स। हटाने के बाद, उन्हें केवल Microsoft Store से ही पुनः स्थापित किया जा सकता है।",
     "scanButton": "स्कैन करें",
-    "irreversibleWarning": "अपरिवर्तनीय — हटाए गए ऐप्स केवल Microsoft Store से ही पुनः स्थापित किए जा सकते हैं। चयन सावधानीपूर्वक जाँचें।",
-    "scanningPackages": "स्थापित पैकेज स्कैन किए जा रहे हैं...",
-    "removingProgress": "{{total}} में से {{current}} हटाया जा रहा है",
+    "rescanButton": "फिर से स्कैन करें",
+    "irreversibleWarning": "ऐप से हटाना पूर्ववत नहीं किया जा सकता: पुष्टि करने से पहले चयनित ऐप्स जाँच लें।",
+    "scanningPackages": "इंस्टॉल किए गए पैकेज स्कैन किए जा रहे हैं…",
+    "removingProgress": "ऐप्स हटाए जा रहे हैं ({{total}} में से {{current}})",
+    "receiptTitle": "हटाना पूर्ण हुआ",
+    "removedApps_one": "{{count}} ऐप हटाया गया",
+    "removedApps_other": "{{count}} ऐप्स हटाए गए",
+    "failedCount_one": "{{count}} विफल",
+    "failedCount_other": "{{count}} विफल",
+    "reinstallFromStore": "केवल Microsoft Store से पुनः स्थापित किया जा सकता है",
     "selectAll": "सभी चुनें",
-    "emptyStateTitle": "कोई bloatware नहीं मिला",
-    "emptyStateDescription": "\"स्कैन करें\" पर क्लिक करके पूर्व-स्थापित ऐप्स और OEM bloatware खोजें।",
+    "filterLabel": "श्रेणी",
+    "confirmTitle_one": "{{count}} ऐप हटाएँ?",
+    "confirmTitle_other": "{{count}} ऐप्स हटाएँ?",
+    "confirmDescription_one": "ऐप आपके उपयोगकर्ता के लिए हटाया जाता है, और व्यवस्थापक अधिकारों के साथ नए उपयोगकर्ताओं के लिए भी। इसे केवल Microsoft Store से ही पुनः स्थापित किया जा सकता है।",
+    "confirmDescription_other": "ऐप्स आपके उपयोगकर्ता के लिए हटाए जाते हैं, और व्यवस्थापक अधिकारों के साथ नए उपयोगकर्ताओं के लिए भी। उन्हें केवल Microsoft Store से ही पुनः स्थापित किया जा सकता है।",
+    "confirmLabel_one": "{{count}} ऐप हटाएँ",
+    "confirmLabel_other": "{{count}} ऐप्स हटाएँ",
+    "emptyStateTitle": "अभी तक स्कैन नहीं किया गया",
+    "emptyStateDescription": "इस सत्र में पूर्व-स्थापित ऐप्स का कोई स्कैन नहीं हुआ।",
+    "lastRun_one": "पिछला निष्कासन: {{date}}, {{count}} ऐप हटाया गया।",
+    "lastRun_other": "पिछला निष्कासन: {{date}}, {{count}} ऐप्स हटाए गए।",
+    "checkKnownTitle": "ज्ञात ऐप्स",
+    "checkKnownDetail": "Microsoft और निर्माताओं (OEM) द्वारा पूर्व-स्थापित ऐप्स की सूची",
+    "checkInstalledTitle": "इंस्टॉल किए गए पैकेज",
+    "checkInstalledDetail": "आपके उपयोगकर्ता के ऐप पैकेज, सूची से तुलना किए गए",
+    "checkRemovalTitle": "निष्कासन",
+    "checkRemovalDetail": "आपके उपयोगकर्ता के लिए; व्यवस्थापक अधिकारों के साथ नए उपयोगकर्ताओं के लिए उपयोग की जाने वाली प्रति से भी",
+    "noneFoundTitle": "सूचीबद्ध ऐप्स में से कोई भी इंस्टॉल नहीं है",
+    "noneFoundDescription": "ज्ञात पूर्व-स्थापित ऐप्स आपके उपयोगकर्ता के लिए मौजूद नहीं हैं।",
+    "summaryTitle_one": "{{count}} पूर्व-स्थापित ऐप मिला",
+    "summaryTitle_other": "{{count}} पूर्व-स्थापित ऐप्स मिले",
+    "selectedCount_one": "{{count}} चयनित",
+    "selectedCount_other": "{{count}} चयनित",
+    "removeButton_one": "{{count}} ऐप हटाएँ",
+    "removeButton_other": "{{count}} ऐप्स हटाएँ",
+    "removeNone": "चयनित हटाएँ",
     "scanFailedToast": "Bloatware स्कैन विफल हुआ",
     "scanFailedDescription": "सुनिश्चित करें कि PowerShell उपलब्ध है",
     "scanFailedError": "Bloatware के लिए स्कैन नहीं किया जा सका। सुनिश्चित करें कि PowerShell उपलब्ध है।",
