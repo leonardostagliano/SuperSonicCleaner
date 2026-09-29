@@ -9,7 +9,7 @@ import { CleanerType, ScanStatus } from '@shared/enums'
 import type { ScanResult, ScheduleEntry } from '@shared/types'
 import { formatBytes, formatNumber } from '@/lib/utils'
 import { buildUpdateSummary } from '@/lib/update-summary'
-import { categoryWasRead } from '@/lib/cleaner-report'
+import { categoryWasRead, ELEVATION_MARKER } from '@/lib/cleaner-report'
 import { showUpdateSummaryToast } from '@/components/updates/UpdateSummaryToast'
 
 class ScheduleConditionChanged extends Error {}
@@ -101,10 +101,11 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
   let totalCleaned = 0
   let totalSpaceSaved = 0
   const categoryResults: Record<string, { found: number; cleaned: number; size: number }> = {}
-  // The cleaner categories this run read, and those whose scan failed, for the Cleaner
-  // page's "Nothing found in" and "Scan failed for" lists.
+  // The cleaner categories this run read, those whose scan failed and the targets skipped
+  // for lack of administrator rights, for the Cleaner page's notes and notices.
   const scannedCategories: CleanerType[] = []
   const failedCategories: string[] = []
+  const elevationSkipped: string[] = []
   // Whether this run replaced the Cleaner's last results; a deferred run leaves them alone.
   let replacedResults = false
 
@@ -157,6 +158,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
     store.setScannedCategories([])
     store.setStoppedEarly(false)
     store.setFailedCategories([])
+    store.setElevationSkipped([])
     replacedResults = true
     // ── Restore point before the first auto-apply clean ──
     // Created lazily so a run that ends up cleaning nothing (e.g. a scope of
@@ -189,11 +191,16 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
           const scanned = await task.scan()
           markStarted(taskType)
           if (categoryWasRead(scanned)) scannedCategories.push(task.type)
+          // As in a manual scan, the marker only names the targets skipped for lack of
+          // rights; it is not a result.
+          const marker = scanned.find((r) => r.subcategory === ELEVATION_MARKER)
+          if (marker?.group) elevationSkipped.push(...marker.group.split(', '))
+          const read = scanned.filter((r) => r.subcategory !== ELEVATION_MARKER)
           const scope =
             payload.cleanerSubcategories?.[
               taskType as keyof NonNullable<ScheduleEntry['cleanerSubcategories']>
             ]
-          const results = scope ? scanned.filter((r) => scope.includes(r.subcategory)) : scanned
+          const results = scope ? read.filter((r) => scope.includes(r.subcategory)) : read
           store.addResults(results)
           const found = results.reduce((s, r) => s + r.itemCount, 0)
           const size = results.reduce((s, r) => s + r.totalSize, 0)
@@ -333,6 +340,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
     }
     store.setScannedCategories(scannedCategories)
     store.setFailedCategories(failedCategories)
+    store.setElevationSkipped(elevationSkipped)
     store.setScannedAt(Date.now())
     store.setStatus(ScanStatus.Complete)
     store.setProgress(null)
@@ -355,6 +363,7 @@ export async function runSchedule(payload: ScheduleRunPayload): Promise<void> {
       if (replacedResults) {
         store.setScannedCategories(scannedCategories)
         store.setFailedCategories(failedCategories)
+        store.setElevationSkipped(elevationSkipped)
         store.setStoppedEarly(true)
         if (started) store.setScannedAt(Date.now())
       }

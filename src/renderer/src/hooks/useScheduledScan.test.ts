@@ -10,7 +10,8 @@ const mocks = vi.hoisted(() => ({
     setScannedAt: vi.fn(),
     setScannedCategories: vi.fn(),
     setStoppedEarly: vi.fn(),
-    setFailedCategories: vi.fn()
+    setFailedCategories: vi.fn(),
+    setElevationSkipped: vi.fn()
   }
 }))
 vi.mock('@/stores/scan-store', () => ({ useScanStore: { getState: () => mocks.state } }))
@@ -98,6 +99,32 @@ it('reports a cleaner category whose scan failed, replacing an earlier list', as
   expect(mocks.state.setFailedCategories).toHaveBeenLastCalledWith(['cleaner:categoryBrowsers'])
   expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([CleanerType.System])
 })
+it('reports the targets skipped for administrator rights instead of adding the marker', async () => {
+  const marker = {
+    category: 'System',
+    subcategory: '__elevation_required',
+    group: 'Windows Temp, Prefetch',
+    itemCount: 0,
+    totalSize: 0,
+    items: []
+  }
+  // Only the marker: nothing was read, so the category is not listed as empty either.
+  api.systemScan.mockResolvedValue([marker])
+  await runSchedule({ ...payload, autoApply: false })
+  expect(mocks.state.addResults).toHaveBeenLastCalledWith([])
+  expect(mocks.state.setElevationSkipped).toHaveBeenNthCalledWith(1, [])
+  expect(mocks.state.setElevationSkipped).toHaveBeenLastCalledWith(['Windows Temp', 'Prefetch'])
+  expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([])
+
+  // The marker next to real results: the results are added, the category was read.
+  vi.clearAllMocks()
+  api.scheduleAuthorize.mockResolvedValue({ allowed: true, reason: null })
+  api.systemScan.mockResolvedValue([marker, result('Cache', 'one')])
+  await runSchedule({ ...payload, autoApply: false })
+  expect(mocks.state.addResults).toHaveBeenLastCalledWith([result('Cache', 'one')])
+  expect(mocks.state.setElevationSkipped).toHaveBeenLastCalledWith(['Windows Temp', 'Prefetch'])
+  expect(mocks.state.setScannedCategories).toHaveBeenLastCalledWith([CleanerType.System])
+})
 it('marks the results as partial when the conditions change during the run', async () => {
   api.scheduleAuthorize
     .mockResolvedValueOnce({ allowed: true })
@@ -116,6 +143,7 @@ it('defers a queued run if eligibility changes before execution', async () => {
   // A deferred run never touched the Cleaner's last results.
   expect(mocks.state.setScannedCategories).not.toHaveBeenCalled()
   expect(mocks.state.setStoppedEarly).not.toHaveBeenCalled()
+  expect(mocks.state.setElevationSkipped).not.toHaveBeenCalled()
 })
 it('rechecks immediately before mutation and records partial work without cleaning', async () => {
   api.scheduleAuthorize
