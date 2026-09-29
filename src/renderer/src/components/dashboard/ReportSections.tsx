@@ -61,10 +61,24 @@ export function StorageSection() {
             )
           })}
         </ul>
+      ) : status === 'unavailable' ? (
+        <p className="home-note">{t('storage.unavailable')}</p>
       ) : (
-        <p className="home-note">
-          {t(status === 'unavailable' ? 'storage.unavailable' : 'storage.reading')}
-        </p>
+        // Shaped like a drive row, so the page does not jump when the first drive arrives.
+        <ul className="home-drives" aria-busy="true">
+          <li className="home-drive">
+            <div className="home-drive-top">
+              <span className="home-note">{t('storage.reading')}</span>
+              <span className="home-drive-free" aria-hidden="true">
+                &nbsp;
+              </span>
+            </div>
+            <ProgressBar indeterminate label={t('storage.reading')} />
+            <div className="home-drive-figures" aria-hidden="true">
+              <span>&nbsp;</span>
+            </div>
+          </li>
+        </ul>
       )}
     </Section>
   )
