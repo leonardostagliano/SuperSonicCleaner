@@ -251,6 +251,10 @@
   font-size: var(--text-13);
   white-space: normal;
 }
+.dashboard-view .home-checks .ui-table tbody td.home-check-name .ui-tag {
+  display: block;
+  font-size: var(--text-12);
+}
 .dashboard-view .home-checks .ui-table tbody td.home-check-when {
   white-space: nowrap;
 }

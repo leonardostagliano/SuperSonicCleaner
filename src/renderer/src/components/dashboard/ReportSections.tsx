@@ -119,7 +119,13 @@ export function ChecksSection({
                   : t(ACTION_KEYS[check.id])
               return (
                 <TableRow key={check.id} recommended={check.state.recommended}>
-                  <TableCell className="home-check-name">{name}</TableCell>
+                  <TableCell className="home-check-name">
+                    {name}
+                    {/* The amber rule alone is colour only: the row also says it in words. */}
+                    {check.state.recommended && (
+                      <Tag tone="recommended">{t('simple.recommended')}</Tag>
+                    )}
+                  </TableCell>
                   <TableCell className="home-check-result">
                     {check.resultTone === 'neutral' ? (
                       check.result
