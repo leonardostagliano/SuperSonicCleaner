@@ -1,4 +1,4 @@
-/* Page header (spec 5.4): crumb from the sidebar group, title, scope sentence, actions. */
+/* Page header: crumb from the sidebar group, title, scope sentence, actions. */
 .page-header {
   container-type: inline-size;
   margin-bottom: var(--space-5);

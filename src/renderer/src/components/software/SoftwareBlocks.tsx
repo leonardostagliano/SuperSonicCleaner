@@ -9,7 +9,7 @@ import './software.css'
 
 /*
  * Blocks shared by the Software pages (/updates, /drivers, /uninstaller, /debloater,
- * /context-menu) on top of components/ui. Candidates for components/ui in Task C1.
+ * /context-menu) on top of components/ui.
  */
 
 export interface SummaryCardProps {

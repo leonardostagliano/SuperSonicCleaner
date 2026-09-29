@@ -28,7 +28,7 @@ const MB = 1048576
 /** Smaller movements read as one sentence: percentage points, or MB/s for the disk. */
 const MIN_SPREAD = { percent: 2, disk: 0.1 }
 const PERCENT_TICKS = [0, 50, 100]
-/** A flat fill at 10 % under the line (spec 3.2: no gradients). */
+/** A flat fill at 10 % under the line; charts use no gradients. */
 const FILL_OPACITY = 0.1
 
 export const TimeSeriesChart = memo(function TimeSeriesChart({

@@ -181,7 +181,7 @@ function dateFormat(locale: string, options: Intl.DateTimeFormatOptions, id: str
   return format
 }
 
-/** "12 set 2026, 18:40" in the UI language, Latin digits (sub-project 1). */
+/** "12 set 2026, 18:40" in the UI language, Latin digits. */
 export function formatDateTime(value: string | Date, locale: string): string {
   const date = new Date(value)
   if (!Number.isFinite(date.getTime())) return '—'
@@ -217,8 +217,8 @@ export function formatCount(value: number, locale: string): string {
 }
 
 /**
- * A chart earns its place only with at least two points and a spread worth seeing
- * (spec 4, "Chart"): the largest value is positive and the smallest differs from it
+ * A chart earns its place only with at least two points and a spread worth seeing:
+ * the largest value is positive and the smallest differs from it
  * by at least a tenth. Otherwise one sentence says the same thing.
  */
 export function isChartable(values: number[]): boolean {

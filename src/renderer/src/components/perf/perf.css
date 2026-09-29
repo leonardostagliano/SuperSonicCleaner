@@ -1,4 +1,4 @@
-/* Performance monitor and diagnostics (spec 5.4): flat sections, neutral meters and
+/* Performance monitor and diagnostics: flat sections, neutral meters and
    charts, tokens only. Loaded with the pages' lazy chunks, after ui.css. */
 
 .perf-stack {
@@ -49,7 +49,7 @@
   font-weight: 400;
   white-space: nowrap;
 }
-/* Typical widths, kept by empty slots and values alike (sub-project 1, no layout shift). */
+/* Typical widths, kept by empty slots and values alike, so nothing shifts when values land. */
 .perf-system-info [data-slot='cpu'] {
   min-width: 26.5ch;
 }

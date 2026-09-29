@@ -1,5 +1,5 @@
 // Number and date formatting for the Protection pages (malware, privacy, firewall, game
-// mode): the UI language decides separators, digits stay Latin (sub-project 1).
+// mode): the UI language decides separators, digits stay Latin.
 
 const NBSP = ' '
 const cache = new Map<string, Intl.NumberFormat | Intl.DateTimeFormat>()

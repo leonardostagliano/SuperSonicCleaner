@@ -59,7 +59,10 @@ export async function connect(port = process.env.CDP_PORT || 9333) {
     (t) =>
       t.type === 'page' && t.url.startsWith('http://localhost:') && !t.url.includes('desktop-notch')
   )
-  if (!page) throw new Error('Dev renderer not found on the debug port: start the dev app (Task 0)')
+  if (!page)
+    throw new Error(
+      `Dev renderer not found on port ${port}: start the dev app with --remote-debugging-port=${port}`
+    )
   const ws = new WebSocket(page.webSocketDebuggerUrl)
   await new Promise((resolve, reject) => {
     ws.onopen = resolve

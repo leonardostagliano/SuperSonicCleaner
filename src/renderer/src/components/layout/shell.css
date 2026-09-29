@@ -195,7 +195,7 @@
   min-height: 60vh;
 }
 
-/* ── Admin banner: a neutral notice in the page flow (spec 5.1) ─────────── */
+/* ── Admin banner: a neutral notice in the page flow ────────────────────── */
 .app-shell .admin-banner {
   display: flex;
   flex-wrap: wrap;
@@ -227,7 +227,7 @@
   margin-inline-start: auto;
 }
 
-/* ── Onboarding (spec 5.4): a flat card on the page colour ──────────────── */
+/* ── Onboarding: a flat card on the page colour ─────────────────────────── */
 .onboarding-overlay {
   background: var(--page-bg);
 }

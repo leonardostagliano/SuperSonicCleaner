@@ -53,7 +53,7 @@ describe('malwareResult', () => {
     })
   })
 
-  // X1 fix 1: a persisted check run with no history entry and no in-session scan (e.g.
+  // A persisted check run with no history entry and no in-session scan (e.g.
   // right after a restart, having only ever run clean scans) must not say "never".
   it('reports a recorded run with no history and no session scan as clean, not "never"', () => {
     expect(
@@ -95,7 +95,7 @@ describe('driversResult', () => {
     })
   })
 
-  // X1 fix 1: a persisted check run with no history entry (evicted from the capped log,
+  // A persisted check run with no history entry (evicted from the capped log,
   // or a scan that found nothing to change) must not say "no scan recorded".
   it('reports a recorded run with no history entry as nothing to review, not "never"', () => {
     expect(driversResult(t, { entry: null, hasRecordedRun: true })).toEqual({

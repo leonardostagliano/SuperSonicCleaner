@@ -15,7 +15,7 @@ import { useSettingsStore } from '@/stores/settings-store'
 import type { HomeCheck } from './home-checks'
 import { driveName, formatCount, formatDateTime } from './when'
 
-/** A load above this share of a drive is shown in red (spec 3.1). */
+/** A load above this share of a drive is shown in red; below it the bar stays neutral. */
 const DRIVE_FULL = 0.9
 
 export function StorageSection() {

@@ -39,7 +39,7 @@ import {
   Wrench,
   type LucideIcon
 } from 'lucide-react'
-// The AI glyph marks AI features only (spec 3.6). Its lines carry the check's allow marker.
+// The AI glyph marks AI features only. Its lines carry the design check's allow marker.
 import { Sparkles } from 'lucide-react' // design-allow
 
 /**

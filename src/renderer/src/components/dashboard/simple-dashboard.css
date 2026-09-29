@@ -1,4 +1,4 @@
-/* Simple Home: a question, three goals and the chosen goal's path (spec 5.3). Tokens only.
+/* Simple Home: a question, three goals and the chosen goal's path. Tokens only.
    Selectors start at .dashboard-view to outrank the equal-specificity global rules that
    load after this sheet. */
 

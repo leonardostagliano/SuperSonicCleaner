@@ -3,7 +3,7 @@ import { AlertTriangle, Info, X, type LucideIcon } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import './storage.css'
 
-/** The number that matters, one line of facts and the action that uses it (spec 5.4). */
+/** The number that matters, one line of facts and the action that uses it. */
 export function SummaryCard({
   value,
   facts,

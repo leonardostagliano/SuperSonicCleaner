@@ -13,7 +13,7 @@ interface PageHeaderProps {
   className?: string
 }
 
-/** Crumb from the sidebar group, title, scope sentence and actions (spec 5.4). */
+/** Crumb from the sidebar group, title, scope sentence and actions. */
 export function PageHeader({ title, description, action, className }: PageHeaderProps) {
   const { pathname } = useLocation()
   const { t } = useTranslation('experience')

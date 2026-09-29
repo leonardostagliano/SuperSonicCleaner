@@ -10,7 +10,7 @@ export interface ReportNoticeProps {
   detail?: ReactNode
   /** A button that resolves the notice (relaunch, open settings). */
   action?: ReactNode
-  /** 'danger' only for errors; warnings stay neutral (spec 3.1). */
+  /** 'danger' only for errors; warnings stay neutral. */
   tone?: 'neutral' | 'danger'
   /** Defaults to the warning glyph. */
   icon?: LucideIcon

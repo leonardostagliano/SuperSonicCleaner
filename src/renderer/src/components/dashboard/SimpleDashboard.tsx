@@ -49,7 +49,7 @@ const TOOL_KEYS: Record<string, string> = {
 // The chosen goal survives a visit to a tool and back.
 let lastGoal: Goal = 'space'
 
-/** The simple Home: pick a goal, follow its tools in order, each with its real state (spec 5.3). */
+/** The simple Home: pick a goal, follow its tools in order, each with its real state. */
 export function SimpleDashboard({
   onAdvanced,
   switching

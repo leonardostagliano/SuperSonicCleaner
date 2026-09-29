@@ -55,7 +55,7 @@
   font-size: var(--text-13);
   line-height: 1.5;
 }
-/* Holds the list's place on a cold first visit (sub-project 1): nothing moves when it lands. */
+/* Holds the list's place on a cold first visit: nothing moves when it lands. */
 .recovery-loading {
   display: grid;
   min-height: 300px;

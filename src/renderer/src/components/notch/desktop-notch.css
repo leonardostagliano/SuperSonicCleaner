@@ -4,9 +4,9 @@ html.desktop-notch-surface,
   background: transparent !important;
   overflow: hidden;
 }
-/* Direction A "Strumento nero": a near-black instrument with a hairline of light on top.
-   Monochrome; colour only means something (spec 3.1): green = live data,
-   red = above 90 %. Every colour is a token from design-tokens.css. */
+/* A near-black instrument with a hairline of light on top. Monochrome; colour only
+   means something: green = live data, red = above 90 %. Every colour is a token from
+   design-tokens.css. */
 .desktop-notch {
   --notch-tone: var(--chart-1);
   position: absolute;

@@ -1,4 +1,4 @@
-/* Home: the view switch and the advanced report (spec 5.2). Tokens only.
+/* Home: the view switch and the advanced report. Tokens only.
    Selectors start at .dashboard-view to outrank shared rules of equal specificity. */
 
 .dashboard-view {

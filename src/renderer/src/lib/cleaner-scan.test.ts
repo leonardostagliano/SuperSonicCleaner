@@ -218,7 +218,7 @@ describe('cleaner scan lifecycle', () => {
     expect(lastCheckRun('cleanup')).toEqual(expect.any(Number))
   })
 
-  // X1 fix 2: "Complete" with nothing but failures is not a completed check.
+  // "Complete" with nothing but failures is not a completed check.
   it('does not record a cleanup check when every category fails', async () => {
     systemScan.mockRejectedValue(new Error('boom'))
     browserScan.mockRejectedValue(new Error('boom'))

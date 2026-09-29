@@ -413,7 +413,7 @@ export function DesktopNotch() {
   )
 }
 
-/** Meters are neutral; above 90 % they turn red (spec 3.1). */
+/** Meters are neutral; above 90 % they turn red. */
 function tone(value: number | undefined): string {
   return !known(value) ? 'unknown' : value > 90 ? 'danger' : 'normal'
 }

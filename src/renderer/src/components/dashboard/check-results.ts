@@ -1,5 +1,5 @@
-// Pure result-text logic for Home's Controlli rows that needs recorded-check-run
-// awareness (X1 fix 1). Kept out of home-checks.ts, which transitively imports
+// Pure result-text logic for Home's Controlli rows that needs to know about recorded
+// check runs. Kept out of home-checks.ts, which transitively imports
 // stores/history-store.ts — that module touches `window.kudu` at import time, which
 // makes it unimportable from a node-environment unit test; this module imports no
 // stores, so it can be tested directly.

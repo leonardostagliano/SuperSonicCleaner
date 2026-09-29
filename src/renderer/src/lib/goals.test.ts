@@ -121,7 +121,7 @@ describe('stepStates', () => {
     expect(threats).toMatchObject({ status: 'recommended', reason: 'threats', marked: true })
   })
 
-  it('counts a completed check with no history entry as done, not never (X1)', () => {
+  it('counts a completed check with no history entry as done, not never', () => {
     // A user who reviews startup apps and changes nothing leaves no history entry;
     // the recorded check run (check-runs-store) is the only source for `lastRun`.
     const [startup] = stepStates('speed', [], [{ id: 'startup', lastRun: NOW - 2 * DAY }], NOW)

@@ -1,4 +1,4 @@
-/* Service manager (spec 5.4): a summary with the action, filters and one flat section per
+/* Service manager: a summary with the action, filters and one flat section per
    safety group. Tokens only; loaded with the page's lazy chunk, after ui.css. */
 
 .svc-stack {
@@ -158,7 +158,7 @@
 }
 
 /* ── Safety groups ──────────────────────────────────────────────────────── */
-/* The column template of sub-project 1, shared by the header and every row so they
+/* One column template, shared by the header and every row so they
    align; both reserve the same scrollbar gutter for the same reason. */
 .svc-grid {
   display: grid;

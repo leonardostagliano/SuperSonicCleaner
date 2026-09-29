@@ -620,7 +620,7 @@ function ApplyReceipt({
 
 /**
  * One safety group. Header and rows are separate grids sharing one column template
- * (`.svc-grid` in service-manager.css, from sub-project 1), so they stay aligned.
+ * (`.svc-grid` in service-manager.css), so they stay aligned.
  */
 function SafetyGroup({ label, services }: { label: string; services: WindowsService[] }) {
   const { t } = useTranslation('hardening')

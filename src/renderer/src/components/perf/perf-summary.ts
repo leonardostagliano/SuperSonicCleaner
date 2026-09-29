@@ -1,6 +1,6 @@
 import type { DiskSmartInfo, PerfSnapshot } from '@shared/types'
 
-/** A load meter turns red above this share of capacity (spec 3.1); below it stays neutral. */
+/** A load meter turns red above this share of capacity; below it stays neutral. */
 export const LOAD_DANGER_PERCENT = 90
 
 export function meterTone(percent: number | null): 'neutral' | 'danger' {
@@ -54,8 +54,8 @@ export type ChartBody =
   | { kind: 'chart' }
 
 /**
- * A chart is drawn only from two points and a spread of at least `minSpread`
- * (spec 4, Chart); otherwise the page says the same thing in one sentence.
+ * A chart is drawn only from two points and a spread of at least `minSpread`;
+ * otherwise the page says the same thing in one sentence.
  */
 export function chartBody(values: (number | null)[], minSpread: number): ChartBody {
   const known = values.filter((v): v is number => v !== null && Number.isFinite(v))

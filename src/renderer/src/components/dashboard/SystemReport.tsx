@@ -27,7 +27,7 @@ import {
 } from './quick-clean'
 import { formatCount } from './when'
 
-/** The advanced Home: a report of resources, storage, checks and recent activity (spec 5.2). */
+/** The advanced Home: a report of resources, storage, checks and recent activity. */
 export function SystemReport({ onBusyChange }: { onBusyChange: (busy: boolean) => void }) {
   const { t, i18n } = useTranslation('dashboard')
   const { features } = usePlatform()
