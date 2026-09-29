@@ -5,7 +5,8 @@ import i18next from 'i18next'
 import enCommon from './en/common.json'
 import enNotch from './en/notch.json'
 import itNotch from './it/notch.json'
-import { createLocaleBackend } from './locale-backend'
+import arDashboard from './ar/dashboard.json'
+import { completePlurals, createLocaleBackend } from './locale-backend'
 import { localeBackend, namespaces } from './index'
 
 describe('on-demand local translations', () => {
@@ -100,5 +101,91 @@ describe('English loaded on demand', () => {
     expect(notch.t('notch:title')).toBe(itNotch.title)
     expect(notch.getResource('en', 'notch', 'title')).toBe(enNotch.title)
     expect(notch.hasResourceBundle('en', 'common')).toBe(false)
+  })
+})
+
+describe('plural forms of every language', () => {
+  const english = { items_one: '{{count}} item', items_other: '{{count}} items' }
+
+  it('fills the categories a language needs with its own _other text, never English', async () => {
+    const arabic = {
+      items_one: 'AR one',
+      items_other: 'AR {{count}}',
+      nested: { steps_one: 'AR step', steps_other: 'AR steps {{count}}' },
+      kept_one: 'AR kept one',
+      kept_two: 'AR kept two',
+      kept_few: 'AR kept few',
+      kept_other: 'AR kept other'
+    }
+    const instance = i18next.createInstance()
+    await instance
+      .use(
+        createLocaleBackend({
+          './ar/ns.json': async () => arabic,
+          './en/ns.json': async () => ({
+            ...english,
+            nested: { steps_one: 'EN step', steps_other: 'EN steps' },
+            kept_one: 'EN kept',
+            kept_other: 'EN kept other'
+          })
+        })
+      )
+      .init({ lng: 'ar', fallbackLng: 'en', ns: ['ns'], defaultNS: 'ns' })
+    for (const count of [0, 2, 3, 11, 100]) {
+      expect(instance.t('items', { count })).toBe(`AR ${count}`)
+      expect(instance.t('nested.steps', { count })).toBe(`AR steps ${count}`)
+    }
+    expect(instance.t('items', { count: 1 })).toBe('AR one')
+    // Forms a translation already has are kept.
+    expect(instance.t('kept', { count: 2 })).toBe('AR kept two')
+    expect(instance.t('kept', { count: 3 })).toBe('AR kept few')
+    expect(instance.t('kept', { count: 11 })).toBe('AR kept other')
+    // The loaded module itself is left as it was.
+    expect(arabic).not.toHaveProperty('items_two')
+  })
+
+  it("covers Italian 'many', used for exact millions", async () => {
+    const instance = i18next.createInstance()
+    await instance
+      .use(
+        createLocaleBackend({
+          './it/ns.json': async () => ({ items_one: '1 elemento', items_other: '{{count}} elementi' }),
+          './en/ns.json': async () => english
+        })
+      )
+      .init({ lng: 'it', fallbackLng: 'en', ns: ['ns'], defaultNS: 'ns' })
+    expect(instance.t('items', { count: 1000000 })).toBe('1000000 elementi')
+    expect(instance.t('items', { count: 2 })).toBe('2 elementi')
+  })
+
+  it('keeps a real Arabic page in Arabic for every count', async () => {
+    const instance = i18next.createInstance()
+    await instance
+      .use(localeBackend)
+      .init({ lng: 'ar', fallbackLng: 'en', ns: ['dashboard'], defaultNS: 'dashboard' })
+    for (const count of [0, 1, 2, 3, 11, 100])
+      expect(instance.t('checks.toRun', { count })).toBe(
+        arDashboard.checks[count === 1 ? 'toRun_one' : 'toRun_other'].replace(
+          '{{count}}',
+          String(count)
+        )
+      )
+  })
+
+  it('adds only the missing categories and leaves other keys alone', () => {
+    const data = { a_one: 'one', a_other: 'other', a_few: 'few', plain: 'text', b_other: 'b' }
+    expect(completePlurals(data, 'ru')).toEqual({
+      a_one: 'one',
+      a_other: 'other',
+      a_few: 'few',
+      a_many: 'other',
+      plain: 'text',
+      b_other: 'b',
+      b_one: 'b',
+      b_few: 'b',
+      b_many: 'b'
+    })
+    expect(completePlurals(data, 'en')).toEqual({ ...data, b_one: 'b' })
+    expect(completePlurals(data, 'not a language')).toEqual(data)
   })
 })
