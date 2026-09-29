@@ -8,7 +8,7 @@
     "failed": "Ripristino non riuscito.",
     "loading": "Lettura della cronologia di ripristino…",
     "emptyTitle": "Nessuna modifica ripristinabile",
-    "empty": "Le modifiche fatte da Scudo privacy, Gestione servizi e Pulizia registro compaiono qui con lo stato originale e quello successivo.",
+    "empty": "Le modifiche fatte da Scudo privacy, Gestione servizi e dalla pagina Registro e impostazioni di sistema compaiono qui con lo stato originale e quello successivo.",
     "summary": {
       "recorded": "Modifiche registrate",
       "registryBackups": "Backup del registro",

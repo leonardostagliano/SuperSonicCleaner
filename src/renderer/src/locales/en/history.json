@@ -8,7 +8,7 @@
     "failed": "Recovery failed.",
     "loading": "Reading recovery history…",
     "emptyTitle": "No restorable changes",
-    "empty": "Changes made by Privacy Shield, Service Manager and Registry Cleaner appear here with their original and later state.",
+    "empty": "Changes made from Privacy Shield, Services Manager and the Registry and system settings page appear here with their original and later state.",
     "summary": {
       "recorded": "Recorded changes",
       "registryBackups": "Registry backups",
