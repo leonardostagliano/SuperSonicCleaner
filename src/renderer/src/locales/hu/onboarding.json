@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "A SuperSonicCleaner átvizsgálja az ideiglenes fájlokat, a gyorsítótárakat és a rendszerleíró adatbázis bejegyzéseit, kezeli az indításkor futó alkalmazásokat, és megjeleníti a rendszer állapotát. Az Ön jóváhagyása nélkül semmi nem változik.",
   "welcomeDescriptionOther": "A SuperSonicCleaner átvizsgálja az ideiglenes fájlokat és a gyorsítótárakat, kezeli az indításkor futó alkalmazásokat, és megjeleníti a rendszer állapotát. Az Ön jóváhagyása nélkül semmi nem változik.",
   "factsLabel": "Hogyan működik",
-  "factPreview": "Előnézet minden tisztítás előtt",
+  "factPreview": "Előnézet minden manuális tisztítás előtt; előnézet nélküli tisztítás megerősítést kér",
   "factRegistryBackup": "Rendszerleíró adatbázis biztonsági mentése minden javítás előtt",
   "factAi": "Opcionális AI-elemzés, kizárólag anonim adatokon",
   "changeLanguage": "Nyelv módosítása",

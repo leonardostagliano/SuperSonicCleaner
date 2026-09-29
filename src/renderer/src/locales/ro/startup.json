@@ -1,6 +1,8 @@
 {
   "pageTitle": "Manager de pornire",
   "pageDescription": "Programe care pornesc la autentificare, citite din registry, folderul de pornire și Programatorul de activități. Dezactivarea unei intrări nu dezinstalează programul; impactul este estimat din numele aplicației.",
+  "pageDescriptionMac": "Programe care pornesc la autentificare, citite din folderele LaunchAgents și elementele de autentificare. Dezactivarea unei intrări nu dezinstalează programul; impactul depinde de locul în care se găsește intrarea.",
+  "pageDescriptionLinux": "Programe care pornesc la autentificare, citite din folderul autostart, serviciile de utilizator systemd și intrările cron @reboot. Dezactivarea unei intrări nu dezinstalează programul; impactul depinde de locul în care se găsește intrarea.",
   "refreshButton": "Reîmprospătați",
   "listTitle": "Programe de pornire",
   "listMeta": "{{active}} active · {{disabled}} dezactivate",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Ultima pornire nu are timpi per aplicație.",
   "emptyStateTitle": "Niciun program de pornire în locațiile citite",
   "emptyStateDescription": "Registry, folderul de pornire și Programatorul de activități nu conțin intrări de pornire.",
+  "emptyStateDescriptionMac": "Folderele LaunchAgents și elementele de autentificare nu conțin intrări de pornire.",
+  "emptyStateDescriptionLinux": "Folderul autostart, serviciile de utilizator systemd și cron nu conțin intrări de pornire.",
   "dismissError": "Închideți",
   "toastFailedToEnable": "Nu s-a putut activa {{name}}",
   "toastFailedToDisable": "Nu s-a putut dezactiva {{name}}",

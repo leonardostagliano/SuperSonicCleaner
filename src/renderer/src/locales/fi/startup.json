@@ -1,6 +1,8 @@
 {
   "pageTitle": "Käynnistyksen hallinta",
   "pageDescription": "Ohjelmat, jotka käynnistyvät kirjautuessasi sisään, luettu rekisteristä, Käynnistyskansiosta ja Tehtävien ajoittajasta. Merkinnän poistaminen käytöstä ei poista ohjelman asennusta; vaikutus arvioidaan sovelluksen nimestä.",
+  "pageDescriptionMac": "Ohjelmat, jotka käynnistyvät kirjautuessasi sisään, luettu LaunchAgents-kansioista ja kirjautumiskohteista. Merkinnän poistaminen käytöstä ei poista ohjelman asennusta; vaikutus riippuu siitä, missä merkintä sijaitsee.",
+  "pageDescriptionLinux": "Ohjelmat, jotka käynnistyvät kirjautuessasi sisään, luettu autostart-kansiosta, systemd-käyttäjäpalveluista ja @reboot-cron-merkinnöistä. Merkinnän poistaminen käytöstä ei poista ohjelman asennusta; vaikutus riippuu siitä, missä merkintä sijaitsee.",
   "refreshButton": "Päivitä",
   "listTitle": "Käynnistysohjelmat",
   "listMeta": "{{active}} käytössä · {{disabled}} poistettu käytöstä",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Viimeisimmässä käynnistyksessä ei ole sovelluskohtaisia ajoituksia.",
   "emptyStateTitle": "Ei käynnistysohjelmia luetuissa sijainneissa",
   "emptyStateDescription": "Rekisterissä, Käynnistyskansiossa ja Tehtävien ajoittajassa ei ole käynnistysmerkintöjä.",
+  "emptyStateDescriptionMac": "LaunchAgents-kansioissa ja kirjautumiskohteissa ei ole käynnistysmerkintöjä.",
+  "emptyStateDescriptionLinux": "Autostart-kansiossa, systemd-käyttäjäpalveluissa ja cronissa ei ole käynnistysmerkintöjä.",
   "dismissError": "Sulje",
   "toastFailedToEnable": "Kohteen {{name}} käyttöönotto epäonnistui",
   "toastFailedToDisable": "Kohteen {{name}} poistaminen käytöstä epäonnistui",

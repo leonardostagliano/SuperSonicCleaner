@@ -6,7 +6,7 @@
     "export": "Eksportér gendannelseshistorik",
     "loadError": "Gendannelseshistorikken kunne ikke læses.",
     "failed": "Gendannelse mislykkedes.",
-    "empty": "Ændringer foretaget af Privacy Shield, Tjenestehåndtering og Registreringsdatabaseoprydning vises her med deres oprindelige og senere tilstand.",
+    "empty": "Ændringer fra Privatlivsskjold, Tjenestehåndtering og siden Registreringsdatabase og systemindstillinger vises her med deres oprindelige og senere tilstand.",
     "summary": {
       "recorded": "Registrerede ændringer",
       "registryBackups": "Sikkerhedskopier af registreringsdatabasen",

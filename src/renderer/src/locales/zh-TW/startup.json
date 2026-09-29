@@ -1,6 +1,8 @@
 {
   "pageTitle": "啟動管理員",
   "pageDescription": "登入時啟動的程式，讀取自登錄檔、啟動資料夾與工作排程器。停用某個項目並不會解除安裝相應的程式；影響程度是依應用程式名稱估算的。",
+  "pageDescriptionMac": "登入時啟動的程式，讀取自 LaunchAgents 資料夾與登入項目。停用某個項目並不會解除安裝相應的程式；影響程度取決於該項目所在的位置。",
+  "pageDescriptionLinux": "登入時啟動的程式，讀取自 autostart 資料夾、systemd 使用者服務與 cron 的 @reboot 項目。停用某個項目並不會解除安裝相應的程式；影響程度取決於該項目所在的位置。",
   "refreshButton": "重新整理",
   "listTitle": "啟動項目",
   "listMeta": "已啟用 {{active}} 項 · 已停用 {{disabled}} 項",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "上次開機沒有依應用程式劃分的耗時資料。",
   "emptyStateTitle": "在已讀取的位置中沒有啟動項目",
   "emptyStateDescription": "登錄檔、啟動資料夾與工作排程器中不含任何啟動項目。",
+  "emptyStateDescriptionMac": "LaunchAgents 資料夾與登入項目中不含任何啟動項目。",
+  "emptyStateDescriptionLinux": "autostart 資料夾、systemd 使用者服務與 cron 中不含任何啟動項目。",
   "dismissError": "關閉",
   "toastFailedToEnable": "無法啟用 {{name}}",
   "toastFailedToDisable": "無法停用 {{name}}",

@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner scanează fișierele temporare, memoria cache și intrările din registry, gestionează aplicațiile de pornire și afișează starea sistemului. Nimic nu se schimbă fără confirmarea dvs.",
   "welcomeDescriptionOther": "SuperSonicCleaner scanează fișierele temporare și memoria cache, gestionează aplicațiile de pornire și afișează starea sistemului. Nimic nu se schimbă fără confirmarea dvs.",
   "factsLabel": "Cum funcționează",
-  "factPreview": "O previzualizare înaintea fiecărei curățări",
+  "factPreview": "O previzualizare înaintea fiecărei curățări manuale; curățarea fără previzualizare solicită confirmare",
   "factRegistryBackup": "O copie de siguranță a registry-ului înaintea fiecărei reparații",
   "factAi": "Analiză AI opțională, doar pe date anonime",
   "changeLanguage": "Schimbați limba",

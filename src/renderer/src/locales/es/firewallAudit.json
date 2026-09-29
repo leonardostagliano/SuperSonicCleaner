@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} regla para revisar",
   "summaryTitle_other": "{{count}} reglas para revisar",
   "summaryNone": "No hay reglas para revisar",
+  "summaryNonePartial": "No hay reglas para revisar entre las leídas",
   "summaryFacts": "{{total}} reglas de entrada habilitadas · {{stale}} con un programa ausente · {{unsigned}} sin firma · {{broad}} con alcance amplio",
   "scanProgressTitle": "Análisis en curso",
   "scanProgressCount": "{{current}} de {{total}}",

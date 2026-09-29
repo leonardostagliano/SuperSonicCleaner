@@ -1,6 +1,8 @@
 {
   "pageTitle": "Automatikus indítás kezelő",
   "pageDescription": "A bejelentkezéskor induló programok, a beállításjegyzékből, az Automatikus indítás mappából és a Feladatütemezőből beolvasva. Egy bejegyzés letiltása nem távolítja el a programot; a hatás az alkalmazás nevéből becsülhető.",
+  "pageDescriptionMac": "A bejelentkezéskor induló programok, a LaunchAgents mappákból és a bejelentkezési elemekből beolvasva. Egy bejegyzés letiltása nem távolítja el a programot; a hatás attól függ, hol található a bejegyzés.",
+  "pageDescriptionLinux": "A bejelentkezéskor induló programok, az autostart mappából, a systemd felhasználói szolgáltatásaiból és a @reboot cron bejegyzésekből beolvasva. Egy bejegyzés letiltása nem távolítja el a programot; a hatás attól függ, hol található a bejegyzés.",
   "refreshButton": "Frissítés",
   "listTitle": "Automatikusan induló programok",
   "listMeta": "{{active}} aktív · {{disabled}} letiltva",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Az utolsó indításhoz nincsenek alkalmazásonkénti időzítési adatok.",
   "emptyStateTitle": "Nincsenek automatikusan induló programok a beolvasott helyeken",
   "emptyStateDescription": "A rendszerleíró adatbázis, az Automatikus indítás mappa és a Feladatütemező nem tartalmaz indítási bejegyzést.",
+  "emptyStateDescriptionMac": "A LaunchAgents mappák és a bejelentkezési elemek nem tartalmaznak indítási bejegyzést.",
+  "emptyStateDescriptionLinux": "Az autostart mappa, a systemd felhasználói szolgáltatásai és a cron nem tartalmaznak indítási bejegyzést.",
   "dismissError": "Bezárás",
   "toastFailedToEnable": "Nem sikerült engedélyezni ezt: {{name}}",
   "toastFailedToDisable": "Nem sikerült letiltani ezt: {{name}}",

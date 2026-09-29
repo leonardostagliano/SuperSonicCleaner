@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner scanner midlertidige filer, cache og poster i registreringsdatabasen, administrerer opstartsprogrammer og viser systemets status. Intet ændres uden din bekræftelse.",
   "welcomeDescriptionOther": "SuperSonicCleaner scanner midlertidige filer og cache, administrerer opstartsprogrammer og viser systemets status. Intet ændres uden din bekræftelse.",
   "factsLabel": "Sådan fungerer det",
-  "factPreview": "En forhåndsvisning før hver oprydning",
+  "factPreview": "En forhåndsvisning før hver manuel oprydning; oprydning uden forhåndsvisning kræver bekræftelse",
   "factRegistryBackup": "En sikkerhedskopi af registreringsdatabasen før hver rettelse",
   "factAi": "Valgfri AI-analyse, kun på anonyme data",
   "changeLanguage": "Skift sprog",

@@ -54,6 +54,7 @@
   "summaryTitle_one": "確認が必要なルール {{count}} 件",
   "summaryTitle_other": "確認が必要なルール {{count}} 件",
   "summaryNone": "確認が必要なルールはありません",
+  "summaryNonePartial": "読み取ったルールの中に確認が必要なものはありません",
   "summaryFacts": "有効な受信ルール {{total}} 件 · プログラムが見つからないもの {{stale}} 件 · 未署名 {{unsigned}} 件 · 範囲が広いもの {{broad}} 件",
   "scanProgressTitle": "スキャン中",
   "scanProgressCount": "{{total}} 件中 {{current}} 件",

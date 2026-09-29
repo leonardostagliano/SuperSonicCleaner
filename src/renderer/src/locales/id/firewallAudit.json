@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} aturan untuk ditinjau",
   "summaryTitle_other": "{{count}} aturan untuk ditinjau",
   "summaryNone": "Tidak ada aturan untuk ditinjau",
+  "summaryNonePartial": "Tidak ada aturan untuk ditinjau di antara yang telah dibaca",
   "summaryFacts": "{{total}} aturan masuk aktif · {{stale}} dengan program yang hilang · {{unsigned}} tanpa tanda tangan · {{broad}} dengan cakupan luas",
   "scanProgressTitle": "Pemindaian sedang berlangsung",
   "scanProgressCount": "{{current}} dari {{total}}",

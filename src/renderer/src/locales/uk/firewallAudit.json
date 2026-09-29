@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} правило потребує перевірки",
   "summaryTitle_other": "{{count}} правил потребують перевірки",
   "summaryNone": "Немає правил для перевірки",
+  "summaryNonePartial": "Серед прочитаних правил немає таких, що потребують перевірки",
   "summaryFacts": "{{total}} увімкнених вхідних правил · {{stale}} з відсутньою програмою · {{unsigned}} без підпису · {{broad}} з широкою областю дії",
   "scanProgressTitle": "Виконується перевірка",
   "scanProgressCount": "{{current}} з {{total}}",

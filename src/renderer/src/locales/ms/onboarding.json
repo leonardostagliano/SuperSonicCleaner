@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner mengimbas fail sementara, cache dan entri registry, menguruskan aplikasi permulaan dan memaparkan keadaan sistem. Tiada apa-apa berubah tanpa pengesahan anda.",
   "welcomeDescriptionOther": "SuperSonicCleaner mengimbas fail sementara dan cache, menguruskan aplikasi permulaan dan memaparkan keadaan sistem. Tiada apa-apa berubah tanpa pengesahan anda.",
   "factsLabel": "Cara ia berfungsi",
-  "factPreview": "Pratonton sebelum setiap pembersihan",
+  "factPreview": "Pratonton sebelum setiap pembersihan manual; pembersihan tanpa pratonton akan meminta pengesahan",
   "factRegistryBackup": "Sandaran registry sebelum setiap pembaikan",
   "factAi": "Analisis AI pilihan, hanya pada data tanpa nama",
   "changeLanguage": "Tukar bahasa",

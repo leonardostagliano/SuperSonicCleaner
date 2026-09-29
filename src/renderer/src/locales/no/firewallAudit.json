@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} regel å gjennomgå",
   "summaryTitle_other": "{{count}} regler å gjennomgå",
   "summaryNone": "Ingen regler å gjennomgå",
+  "summaryNonePartial": "Ingen regler å gjennomgå blant dem som er lest",
   "summaryFacts": "{{total}} aktiverte innkommende regler · {{stale}} med manglende program · {{unsigned}} usignerte · {{broad}} med bredt omfang",
   "scanProgressTitle": "Skanning pågår",
   "scanProgressCount": "{{current}} av {{total}}",

@@ -1,6 +1,8 @@
 {
   "pageTitle": "Administrador de inicio",
   "pageDescription": "Programas que se inician al iniciar sesión, leídos del registro, la carpeta de inicio y el Programador de tareas. Deshabilitar una entrada no desinstala el programa; el impacto se estima a partir del nombre de la aplicación.",
+  "pageDescriptionMac": "Programas que se inician al iniciar sesión, leídos de las carpetas LaunchAgents y los elementos de inicio de sesión. Deshabilitar una entrada no desinstala el programa; el impacto depende de dónde se encuentre la entrada.",
+  "pageDescriptionLinux": "Programas que se inician al iniciar sesión, leídos de la carpeta autostart, los servicios de usuario de systemd y las entradas @reboot de cron. Deshabilitar una entrada no desinstala el programa; el impacto depende de dónde se encuentre la entrada.",
   "refreshButton": "Actualizar",
   "listTitle": "Programas de inicio",
   "listMeta": "{{active}} activos · {{disabled}} deshabilitados",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "El último inicio no tiene tiempos por aplicación.",
   "emptyStateTitle": "No hay programas de inicio en las ubicaciones leídas",
   "emptyStateDescription": "El registro, la carpeta de inicio y el Programador de tareas no contienen entradas de inicio.",
+  "emptyStateDescriptionMac": "Las carpetas LaunchAgents y los elementos de inicio de sesión no contienen entradas de inicio.",
+  "emptyStateDescriptionLinux": "La carpeta autostart, los servicios de usuario de systemd y cron no contienen entradas de inicio.",
   "dismissError": "Cerrar",
   "toastFailedToEnable": "No se pudo activar {{name}}",
   "toastFailedToDisable": "No se pudo desactivar {{name}}",

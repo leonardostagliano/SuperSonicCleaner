@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner は一時ファイル、キャッシュ、レジストリ エントリをスキャンし、スタートアップ アプリを管理して、システムの状態を表示します。確認なしに変更されることはありません。",
   "welcomeDescriptionOther": "SuperSonicCleaner は一時ファイルとキャッシュをスキャンし、スタートアップ アプリを管理して、システムの状態を表示します。確認なしに変更されることはありません。",
   "factsLabel": "仕組み",
-  "factPreview": "クリーンアップの前に毎回プレビューを表示",
+  "factPreview": "手動クリーンアップの前に毎回プレビューを表示します。プレビューなしでクリーンアップする場合は確認が必要です。",
   "factRegistryBackup": "修復の前に毎回レジストリをバックアップ",
   "factAi": "AI 分析は任意で、匿名データのみを使用します",
   "changeLanguage": "言語を変更",

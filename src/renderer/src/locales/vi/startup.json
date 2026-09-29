@@ -1,6 +1,8 @@
 {
   "pageTitle": "Trình quản lý khởi động",
   "pageDescription": "Các chương trình khởi động khi bạn đăng nhập, được đọc từ registry, thư mục Khởi động và Task Scheduler. Việc tắt một mục không gỡ cài đặt chương trình; mức ảnh hưởng được ước tính từ tên ứng dụng.",
+  "pageDescriptionMac": "Các chương trình khởi động khi bạn đăng nhập, được đọc từ các thư mục LaunchAgents và mục đăng nhập. Việc tắt một mục không gỡ cài đặt chương trình; mức ảnh hưởng phụ thuộc vào nơi tìm thấy mục đó.",
+  "pageDescriptionLinux": "Các chương trình khởi động khi bạn đăng nhập, được đọc từ thư mục autostart, dịch vụ người dùng systemd và các mục @reboot của cron. Việc tắt một mục không gỡ cài đặt chương trình; mức ảnh hưởng phụ thuộc vào nơi tìm thấy mục đó.",
   "refreshButton": "Làm mới",
   "listTitle": "Chương trình khởi động",
   "listMeta": "{{active}} đang bật · {{disabled}} đã tắt",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Lần khởi động gần nhất không có dữ liệu thời gian theo từng ứng dụng.",
   "emptyStateTitle": "Không có chương trình khởi động nào ở các vị trí đã đọc",
   "emptyStateDescription": "Registry, thư mục Khởi động và Task Scheduler không chứa mục khởi động nào.",
+  "emptyStateDescriptionMac": "Các thư mục LaunchAgents và mục đăng nhập không chứa mục khởi động nào.",
+  "emptyStateDescriptionLinux": "Thư mục autostart, dịch vụ người dùng systemd và cron không chứa mục khởi động nào.",
   "dismissError": "Đóng",
   "toastFailedToEnable": "Không thể bật {{name}}",
   "toastFailedToDisable": "Không thể tắt {{name}}",

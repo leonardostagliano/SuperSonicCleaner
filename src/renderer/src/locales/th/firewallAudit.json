@@ -54,6 +54,7 @@
   "summaryTitle_one": "กฎที่ต้องตรวจสอบ {{count}} รายการ",
   "summaryTitle_other": "กฎที่ต้องตรวจสอบ {{count}} รายการ",
   "summaryNone": "ไม่มีกฎที่ต้องตรวจสอบ",
+  "summaryNonePartial": "ไม่มีกฎที่ต้องตรวจสอบในบรรดากฎที่อ่านแล้ว",
   "summaryFacts": "กฎขาเข้าที่เปิดใช้งาน {{total}} รายการ · {{stale}} รายการมีโปรแกรมหายไป · {{unsigned}} รายการไม่ได้ลงลายเซ็น · {{broad}} รายการมีขอบเขตกว้าง",
   "scanProgressTitle": "กำลังสแกน",
   "scanProgressCount": "{{current}} จาก {{total}}",

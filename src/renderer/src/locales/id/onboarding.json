@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner memindai file sementara, cache, dan entri registry, mengelola aplikasi startup, dan menampilkan status sistem. Tidak ada yang berubah tanpa konfirmasi Anda.",
   "welcomeDescriptionOther": "SuperSonicCleaner memindai file sementara dan cache, mengelola aplikasi startup, dan menampilkan status sistem. Tidak ada yang berubah tanpa konfirmasi Anda.",
   "factsLabel": "Cara kerjanya",
-  "factPreview": "Pratinjau sebelum setiap pembersihan",
+  "factPreview": "Pratinjau sebelum setiap pembersihan manual; pembersihan tanpa pratinjau meminta konfirmasi",
   "factRegistryBackup": "Cadangan registry sebelum setiap perbaikan",
   "factAi": "Analisis AI opsional, hanya pada data anonim",
   "changeLanguage": "Ubah bahasa",

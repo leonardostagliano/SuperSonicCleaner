@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner quét các tệp tạm thời, bộ nhớ đệm và mục registry, quản lý các ứng dụng khởi động và hiển thị trạng thái hệ thống. Không có gì thay đổi nếu không có sự xác nhận của bạn.",
   "welcomeDescriptionOther": "SuperSonicCleaner quét các tệp tạm thời và bộ nhớ đệm, quản lý các ứng dụng khởi động và hiển thị trạng thái hệ thống. Không có gì thay đổi nếu không có sự xác nhận của bạn.",
   "factsLabel": "Cách hoạt động",
-  "factPreview": "Xem trước trước mỗi lần dọn dẹp",
+  "factPreview": "Xem trước trước mỗi lần dọn dẹp thủ công; dọn dẹp mà không xem trước sẽ yêu cầu xác nhận",
   "factRegistryBackup": "Sao lưu registry trước mỗi lần khắc phục",
   "factAi": "Phân tích AI tùy chọn, chỉ trên dữ liệu ẩn danh",
   "changeLanguage": "Đổi ngôn ngữ",

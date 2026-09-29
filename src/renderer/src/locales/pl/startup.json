@@ -1,6 +1,8 @@
 {
   "pageTitle": "Menedżer uruchamiania",
   "pageDescription": "Programy uruchamiane przy logowaniu, odczytane z rejestru, folderu Autostart i Harmonogramu zadań. Wyłączenie wpisu nie odinstalowuje programu; wpływ jest szacowany na podstawie nazwy aplikacji.",
+  "pageDescriptionMac": "Programy uruchamiane przy logowaniu, odczytane z folderów LaunchAgents i elementów logowania. Wyłączenie wpisu nie odinstalowuje programu; wpływ zależy od tego, gdzie znajduje się wpis.",
+  "pageDescriptionLinux": "Programy uruchamiane przy logowaniu, odczytane z folderu autostart, usług systemd użytkownika i wpisów cron @reboot. Wyłączenie wpisu nie odinstalowuje programu; wpływ zależy od tego, gdzie znajduje się wpis.",
   "refreshButton": "Odśwież",
   "listTitle": "Programy uruchamiane przy starcie",
   "listMeta": "{{active}} aktywne · {{disabled}} wyłączone",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Ostatni rozruch nie ma danych czasowych dla poszczególnych aplikacji.",
   "emptyStateTitle": "Brak programów uruchamianych przy starcie w odczytanych lokalizacjach",
   "emptyStateDescription": "Rejestr, folder Autostart i Harmonogram zadań nie zawierają wpisów uruchamiania.",
+  "emptyStateDescriptionMac": "Foldery LaunchAgents i elementy logowania nie zawierają wpisów uruchamiania.",
+  "emptyStateDescriptionLinux": "Folder autostart, usługi systemd użytkownika i cron nie zawierają wpisów uruchamiania.",
   "dismissError": "Zamknij",
   "toastFailedToEnable": "Nie udało się włączyć {{name}}",
   "toastFailedToDisable": "Nie udało się wyłączyć {{name}}",

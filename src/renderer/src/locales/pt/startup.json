@@ -1,6 +1,8 @@
 {
   "pageTitle": "Gestor de Arranque",
   "pageDescription": "Programas que iniciam ao iniciar sessão, lidos do registo, da pasta de arranque e do Agendador de Tarefas. Desativar uma entrada não desinstala o programa; o impacto é estimado a partir do nome da aplicação.",
+  "pageDescriptionMac": "Programas que iniciam ao iniciar sessão, lidos das pastas LaunchAgents e dos itens de início de sessão. Desativar uma entrada não desinstala o programa; o impacto depende de onde a entrada se encontra.",
+  "pageDescriptionLinux": "Programas que iniciam ao iniciar sessão, lidos da pasta autostart, dos serviços de utilizador do systemd e das entradas @reboot do cron. Desativar uma entrada não desinstala o programa; o impacto depende de onde a entrada se encontra.",
   "refreshButton": "Atualizar",
   "listTitle": "Programas de arranque",
   "listMeta": "{{active}} ativos · {{disabled}} desativados",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "O último arranque não tem tempos por aplicação.",
   "emptyStateTitle": "Sem programas de arranque nos locais lidos",
   "emptyStateDescription": "O registo, a pasta de arranque e o Agendador de Tarefas não contêm entradas de arranque.",
+  "emptyStateDescriptionMac": "As pastas LaunchAgents e os itens de início de sessão não contêm entradas de arranque.",
+  "emptyStateDescriptionLinux": "A pasta autostart, os serviços de utilizador do systemd e o cron não contêm entradas de arranque.",
   "dismissError": "Fechar",
   "toastFailedToEnable": "Não foi possível ativar {{name}}",
   "toastFailedToDisable": "Não foi possível desativar {{name}}",

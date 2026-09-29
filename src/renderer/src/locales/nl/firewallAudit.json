@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} regel om te controleren",
   "summaryTitle_other": "{{count}} regels om te controleren",
   "summaryNone": "Geen regels om te controleren",
+  "summaryNonePartial": "Geen regels om te controleren onder de gelezen regels",
   "summaryFacts": "{{total}} ingeschakelde inkomende regels · {{stale}} met een ontbrekend programma · {{unsigned}} niet ondertekend · {{broad}} met brede reikwijdte",
   "scanProgressTitle": "Scan bezig",
   "scanProgressCount": "{{current}} van {{total}}",

@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} quy tắc cần xem lại",
   "summaryTitle_other": "{{count}} quy tắc cần xem lại",
   "summaryNone": "Không có quy tắc nào cần xem lại",
+  "summaryNonePartial": "Không có quy tắc nào cần xem lại trong số những quy tắc đã đọc",
   "summaryFacts": "{{total}} quy tắc cho kết nối đến đang bật · {{stale}} thiếu chương trình · {{unsigned}} chưa ký · {{broad}} có phạm vi rộng",
   "scanProgressTitle": "Đang quét",
   "scanProgressCount": "{{current}}/{{total}}",

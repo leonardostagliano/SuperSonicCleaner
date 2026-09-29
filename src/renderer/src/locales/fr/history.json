@@ -6,7 +6,7 @@
     "export": "Exporter l’historique de récupération",
     "loadError": "Impossible de lire l’historique de récupération.",
     "failed": "La récupération a échoué.",
-    "empty": "Les modifications effectuées par Bouclier de confidentialité, Gestionnaire de services et Nettoyeur du registre apparaissent ici avec leur état d’origine et ultérieur.",
+    "empty": "Les modifications effectuées depuis Bouclier de confidentialité, Gestionnaire de services et la page Registre et paramètres système apparaissent ici avec leur état d’origine et ultérieur.",
     "summary": {
       "recorded": "Modifications enregistrées",
       "registryBackups": "Sauvegardes du registre",

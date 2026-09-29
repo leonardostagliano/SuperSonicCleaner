@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} peraturan untuk disemak",
   "summaryTitle_other": "{{count}} peraturan untuk disemak",
   "summaryNone": "Tiada peraturan untuk disemak",
+  "summaryNonePartial": "Tiada peraturan untuk disemak antara yang telah dibaca",
   "summaryFacts": "{{total}} peraturan masuk dihidupkan · {{stale}} dengan program tiada · {{unsigned}} tanpa tandatangan · {{broad}} dengan skop luas",
   "scanProgressTitle": "Imbasan sedang berjalan",
   "scanProgressCount": "{{current}} daripada {{total}}",

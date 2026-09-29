@@ -6,7 +6,7 @@
     "export": "Vie palautushistoria",
     "loadError": "Palautushistoriaa ei voitu lukea.",
     "failed": "Palautus epäonnistui.",
-    "empty": "Tietosuojakilven, Palveluiden hallinnan ja Registry Cleanerin tekemät muutokset näkyvät täällä alkuperäisen ja myöhemmän tilan kanssa.",
+    "empty": "Tietosuojakilven, Palvelujen hallinnan ja sivun Rekisteri ja järjestelmäasetukset tekemät muutokset näkyvät täällä alkuperäisen ja myöhemmän tilan kanssa.",
     "summary": {
       "recorded": "Tallennetut muutokset",
       "registryBackups": "Rekisterin varmuuskopiot",

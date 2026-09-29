@@ -6,7 +6,7 @@
     "export": "Kurtarma geçmişini dışa aktar",
     "loadError": "Kurtarma geçmişi okunamadı.",
     "failed": "Kurtarma başarısız oldu.",
-    "empty": "Gizlilik Kalkanı, Hizmet Yöneticisi ve Kayıt Defteri Temizleyici tarafından yapılan değişiklikler burada özgün ve sonraki durumlarıyla görünür.",
+    "empty": "Gizlilik Kalkanı, Hizmet Yöneticisi ve Kayıt defteri ve sistem ayarları sayfası tarafından yapılan değişiklikler, özgün ve sonraki durumlarıyla burada görünür.",
     "summary": {
       "recorded": "Kaydedilen değişiklikler",
       "registryBackups": "Kayıt defteri yedekleri",

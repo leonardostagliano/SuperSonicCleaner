@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner tarkistaa väliaikaiset tiedostot, välimuistit ja rekisterimerkinnät, hallitsee käynnistysohjelmia ja näyttää järjestelmän tilan. Mikään ei muutu ilman vahvistustasi.",
   "welcomeDescriptionOther": "SuperSonicCleaner tarkistaa väliaikaiset tiedostot ja välimuistit, hallitsee käynnistysohjelmia ja näyttää järjestelmän tilan. Mikään ei muutu ilman vahvistustasi.",
   "factsLabel": "Näin se toimii",
-  "factPreview": "Esikatselu ennen jokaista puhdistusta",
+  "factPreview": "Esikatselu ennen jokaista manuaalista puhdistusta; puhdistus ilman esikatselua pyytää vahvistuksen",
   "factRegistryBackup": "Rekisterin varmuuskopio ennen jokaista korjausta",
   "factAi": "Valinnainen AI-analyysi, vain anonyymistä datasta",
   "changeLanguage": "Vaihda kieli",

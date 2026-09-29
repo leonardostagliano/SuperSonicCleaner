@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner skannar temporära filer, cachar och registerposter, hanterar autostartprogram och visar systemets status. Inget ändras utan din bekräftelse.",
   "welcomeDescriptionOther": "SuperSonicCleaner skannar temporära filer och cachar, hanterar autostartprogram och visar systemets status. Inget ändras utan din bekräftelse.",
   "factsLabel": "Så här fungerar det",
-  "factPreview": "En förhandsgranskning före varje rensning",
+  "factPreview": "En förhandsgranskning före varje manuell rensning; att rensa utan förhandsgranskning kräver bekräftelse",
   "factRegistryBackup": "En registersäkerhetskopia före varje åtgärd",
   "factAi": "Valfri AI-analys, endast på anonyma data",
   "changeLanguage": "Byt språk",

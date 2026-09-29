@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} כלל לבדיקה",
   "summaryTitle_other": "{{count}} כללים לבדיקה",
   "summaryNone": "אין כללים לבדיקה",
+  "summaryNonePartial": "אין כללים לבדיקה מבין אלה שנקראו",
   "summaryFacts": "{{total}} כללים נכנסים מופעלים · {{stale}} עם תוכנית חסרה · {{unsigned}} לא חתומים · {{broad}} עם היקף רחב",
   "scanProgressTitle": "הסריקה מתבצעת",
   "scanProgressCount": "{{current}} מתוך {{total}}",

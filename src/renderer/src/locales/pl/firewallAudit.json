@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} reguła do sprawdzenia",
   "summaryTitle_other": "{{count}} reguł do sprawdzenia",
   "summaryNone": "Brak reguł do sprawdzenia",
+  "summaryNonePartial": "Brak reguł do sprawdzenia wśród odczytanych",
   "summaryFacts": "{{total}} włączonych reguł przychodzących · {{stale}} z brakującym programem · {{unsigned}} niepodpisanych · {{broad}} o szerokim zakresie",
   "scanProgressTitle": "Skanowanie w toku",
   "scanProgressCount": "{{current}} z {{total}}",

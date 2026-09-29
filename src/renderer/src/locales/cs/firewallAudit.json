@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} pravidlo ke kontrole",
   "summaryTitle_other": "{{count}} pravidel ke kontrole",
   "summaryNone": "Žádná pravidla ke kontrole",
+  "summaryNonePartial": "Žádná pravidla ke kontrole mezi již načtenými",
   "summaryFacts": "{{total}} povolených příchozích pravidel · {{stale}} s chybějícím programem · {{unsigned}} nepodepsaných · {{broad}} se širokým rozsahem",
   "scanProgressTitle": "Probíhá kontrola",
   "scanProgressCount": "{{current}} z {{total}}",

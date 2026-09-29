@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} 個規則待審查",
   "summaryTitle_other": "{{count}} 個規則待審查",
   "summaryNone": "沒有待審查的規則",
+  "summaryNonePartial": "在已讀取的規則中沒有待審查的規則",
   "summaryFacts": "已啟用的傳入規則 {{total}} 個 · {{stale}} 個程式缺失 · {{unsigned}} 個未簽署 · {{broad}} 個範圍過廣",
   "scanProgressTitle": "正在掃描",
   "scanProgressCount": "{{total}} 項中的 {{current}} 項",

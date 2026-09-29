@@ -1,6 +1,8 @@
 {
   "pageTitle": "Startstyring",
   "pageDescription": "Programmer, der starter, når du logger ind, hentet fra registreringsdatabasen, startmappen og Jobplanlægning. Deaktivering af en post afinstallerer ikke programmet; påvirkningen anslås ud fra appnavnet.",
+  "pageDescriptionMac": "Programmer, der starter, når du logger ind, hentet fra LaunchAgents-mapperne og logon-objekterne. Deaktivering af en post afinstallerer ikke programmet; påvirkningen afhænger af, hvor posten findes.",
+  "pageDescriptionLinux": "Programmer, der starter, når du logger ind, hentet fra autostart-mappen, systemd-brugertjenesterne og @reboot-posterne i cron. Deaktivering af en post afinstallerer ikke programmet; påvirkningen afhænger af, hvor posten findes.",
   "refreshButton": "Opdater",
   "listTitle": "Opstartsprogrammer",
   "listMeta": "{{active}} aktive · {{disabled}} deaktiverede",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Den seneste opstart har ingen tider pr. app.",
   "emptyStateTitle": "Ingen opstartsprogrammer i de læste placeringer",
   "emptyStateDescription": "Registreringsdatabasen, startmappen og Jobplanlægning indeholder ingen opstartsposter.",
+  "emptyStateDescriptionMac": "LaunchAgents-mapperne og logon-objekterne indeholder ingen opstartsposter.",
+  "emptyStateDescriptionLinux": "Autostart-mappen, systemd-brugertjenesterne og cron indeholder ingen opstartsposter.",
   "dismissError": "Luk",
   "toastFailedToEnable": "{{name}} kunne ikke aktiveres",
   "toastFailedToDisable": "{{name}} kunne ikke deaktiveres",

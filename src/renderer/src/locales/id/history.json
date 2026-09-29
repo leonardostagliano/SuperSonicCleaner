@@ -6,7 +6,7 @@
     "export": "Ekspor riwayat pemulihan",
     "loadError": "Riwayat pemulihan tidak dapat dibaca.",
     "failed": "Pemulihan gagal.",
-    "empty": "Perubahan yang dibuat oleh Perisai Privasi, Pengelola Layanan, dan Pembersih Registry muncul di sini beserta status asli dan status setelahnya.",
+    "empty": "Perubahan yang dibuat dari Perisai Privasi, Pengelola Layanan, dan halaman Registry dan pengaturan sistem muncul di sini beserta status asli dan status berikutnya.",
     "summary": {
       "recorded": "Perubahan yang tercatat",
       "registryBackups": "Cadangan registry",

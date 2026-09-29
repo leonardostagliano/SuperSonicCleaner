@@ -54,6 +54,7 @@
   "summaryTitle_one": "İncelenecek {{count}} kural",
   "summaryTitle_other": "İncelenecek {{count}} kural",
   "summaryNone": "İncelenecek kural yok",
+  "summaryNonePartial": "Okunan kurallar arasında incelenecek kural yok",
   "summaryFacts": "{{total}} etkin gelen kural · {{stale}} eksik programlı · {{unsigned}} imzasız · {{broad}} geniş kapsamlı",
   "scanProgressTitle": "Tarama sürüyor",
   "scanProgressCount": "{{total}} üzerinden {{current}}",

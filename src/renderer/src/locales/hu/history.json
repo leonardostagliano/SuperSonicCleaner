@@ -6,7 +6,7 @@
     "export": "Helyreállítási előzmények exportálása",
     "loadError": "A helyreállítási előzmények nem olvashatók be.",
     "failed": "A helyreállítás sikertelen.",
-    "empty": "Az Adatvédelmi pajzs, a Szolgáltatáskezelő és a Rendszerleíró adatbázis-tisztító által végzett módosítások itt jelennek meg az eredeti és a későbbi állapotukkal.",
+    "empty": "Az Adatvédelmi pajzs, a Szolgáltatáskezelő és a Rendszerleíró adatbázis és rendszerbeállítások oldal által végzett módosítások itt jelennek meg az eredeti és a későbbi állapotukkal.",
     "summary": {
       "recorded": "Rögzített módosítások",
       "registryBackups": "Rendszerleíró adatbázis biztonsági mentései",

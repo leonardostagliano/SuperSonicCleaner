@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner skanuje pliki tymczasowe, pamięć podręczną i wpisy rejestru, zarządza programami uruchamianymi przy starcie i pokazuje stan systemu. Nic nie zmienia się bez Twojego potwierdzenia.",
   "welcomeDescriptionOther": "SuperSonicCleaner skanuje pliki tymczasowe i pamięć podręczną, zarządza programami uruchamianymi przy starcie i pokazuje stan systemu. Nic nie zmienia się bez Twojego potwierdzenia.",
   "factsLabel": "Jak to działa",
-  "factPreview": "Podgląd przed każdym czyszczeniem",
+  "factPreview": "Podgląd przed każdym ręcznym czyszczeniem; czyszczenie bez podglądu wymaga potwierdzenia",
   "factRegistryBackup": "Kopia zapasowa rejestru przed każdą naprawą",
   "factAi": "Opcjonalna analiza AI, wyłącznie na danych anonimowych",
   "changeLanguage": "Zmień język",

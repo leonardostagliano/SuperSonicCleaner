@@ -6,7 +6,7 @@
     "export": "Eksporter gjenopprettingshistorikk",
     "loadError": "Kunne ikke lese gjenopprettingshistorikken.",
     "failed": "Gjenoppretting mislyktes.",
-    "empty": "Endringer gjort av Personvernskjold, Tjenestebehandling og Registerrenser vises her, med opprinnelig og senere tilstand.",
+    "empty": "Endringer gjort av Personvernskjold, Tjenesteadministrasjon og siden Register og systeminnstillinger vises her, med opprinnelig og senere tilstand.",
     "summary": {
       "recorded": "Registrerte endringer",
       "registryBackups": "Registersikkerhetskopier",

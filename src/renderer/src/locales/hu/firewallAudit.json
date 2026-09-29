@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} szabály áttekintésre vár",
   "summaryTitle_other": "{{count}} szabály áttekintésre vár",
   "summaryNone": "Nincs áttekintendő szabály",
+  "summaryNonePartial": "Nincs áttekintendő szabály a beolvasottak között",
   "summaryFacts": "{{total}} engedélyezett bejövő szabály · {{stale}} hiányzó programmal · {{unsigned}} aláíratlan · {{broad}} túl tág hatókörrel",
   "scanProgressTitle": "Vizsgálat folyamatban",
   "scanProgressCount": "{{current}}/{{total}}",

@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner scant tijdelijke bestanden, caches en registervermeldingen, beheert opstartprogramma's en toont de status van het systeem. Er verandert niets zonder uw bevestiging.",
   "welcomeDescriptionOther": "SuperSonicCleaner scant tijdelijke bestanden en caches, beheert opstartprogramma's en toont de status van het systeem. Er verandert niets zonder uw bevestiging.",
   "factsLabel": "Zo werkt het",
-  "factPreview": "Een voorbeeld vóór elke opschoning",
+  "factPreview": "Een voorbeeld vóór elke handmatige opschoning; opschonen zonder voorbeeld vraagt om bevestiging",
   "factRegistryBackup": "Een registerback-up vóór elke oplossing",
   "factAi": "Optionele AI-analyse, alleen op anonieme gegevens",
   "changeLanguage": "Taal wijzigen",

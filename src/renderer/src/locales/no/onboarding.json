@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner skanner midlertidige filer, hurtigbuffer og registeroppføringer, administrerer oppstartsprogrammer og viser systemets tilstand. Ingenting endres uten din bekreftelse.",
   "welcomeDescriptionOther": "SuperSonicCleaner skanner midlertidige filer og hurtigbuffer, administrerer oppstartsprogrammer og viser systemets tilstand. Ingenting endres uten din bekreftelse.",
   "factsLabel": "Slik fungerer det",
-  "factPreview": "En forhåndsvisning før hver opprydding",
+  "factPreview": "En forhåndsvisning før hver manuelle opprydding; opprydding uten forhåndsvisning ber om bekreftelse",
   "factRegistryBackup": "En registersikkerhetskopi før hver reparasjon",
   "factAi": "Valgfri AI-analyse, kun på anonyme data",
   "changeLanguage": "Endre språk",

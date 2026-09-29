@@ -6,7 +6,7 @@
     "export": "Exportă istoricul de recuperare",
     "loadError": "Istoricul de recuperare nu a putut fi citit.",
     "failed": "Recuperarea a eșuat.",
-    "empty": "Modificările efectuate de Scutul de confidențialitate, Managerul de servicii și Registry Cleaner apar aici cu starea lor originală și ulterioară.",
+    "empty": "Modificările efectuate de Scutul de confidențialitate, Managerul de servicii și pagina Registry și setări de sistem apar aici cu starea lor originală și ulterioară.",
     "summary": {
       "recorded": "Modificări înregistrate",
       "registryBackups": "Copii de siguranță ale registry-ului",

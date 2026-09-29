@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner geçici dosyaları, önbellekleri ve kayıt defteri girdilerini tarar, başlangıç uygulamalarını yönetir ve sistemin durumunu gösterir. Onayınız olmadan hiçbir şey değişmez.",
   "welcomeDescriptionOther": "SuperSonicCleaner geçici dosyaları ve önbellekleri tarar, başlangıç uygulamalarını yönetir ve sistemin durumunu gösterir. Onayınız olmadan hiçbir şey değişmez.",
   "factsLabel": "Nasıl çalışır",
-  "factPreview": "Her temizlikten önce bir önizleme",
+  "factPreview": "Her manuel temizlikten önce bir önizleme; önizleme olmadan temizlik onay ister",
   "factRegistryBackup": "Her düzeltmeden önce kayıt defteri yedeği",
   "factAi": "Yalnızca anonim veriler üzerinde isteğe bağlı AI analizi",
   "changeLanguage": "Dili değiştir",

@@ -1,6 +1,8 @@
 {
   "pageTitle": "Gestionnaire de démarrage",
   "pageDescription": "Programmes qui démarrent à la connexion, lus depuis le registre, le dossier de démarrage et le Planificateur de tâches. La désactivation d’une entrée ne désinstalle pas le programme ; l’impact est estimé à partir du nom de l’application.",
+  "pageDescriptionMac": "Programmes qui démarrent à la connexion, lus depuis les dossiers LaunchAgents et les éléments de connexion. La désactivation d’une entrée ne désinstalle pas le programme ; l’impact dépend de l’endroit où se trouve l’entrée.",
+  "pageDescriptionLinux": "Programmes qui démarrent à la connexion, lus depuis le dossier autostart, les services utilisateur systemd et les entrées @reboot de cron. La désactivation d’une entrée ne désinstalle pas le programme ; l’impact dépend de l’endroit où se trouve l’entrée.",
   "refreshButton": "Actualiser",
   "listTitle": "Programmes de démarrage",
   "listMeta": "{{active}} actifs · {{disabled}} désactivés",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Le dernier démarrage n’a pas de durées par application.",
   "emptyStateTitle": "Aucun programme de démarrage dans les emplacements lus",
   "emptyStateDescription": "Le registre, le dossier de démarrage et le Planificateur de tâches ne contiennent aucune entrée de démarrage.",
+  "emptyStateDescriptionMac": "Les dossiers LaunchAgents et les éléments de connexion ne contiennent aucune entrée de démarrage.",
+  "emptyStateDescriptionLinux": "Le dossier autostart, les services utilisateur systemd et cron ne contiennent aucune entrée de démarrage.",
   "dismissError": "Fermer",
   "toastFailedToEnable": "Impossible d’activer {{name}}",
   "toastFailedToDisable": "Impossible de désactiver {{name}}",

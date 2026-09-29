@@ -1,6 +1,8 @@
 {
   "pageTitle": "Správce po spuštění",
   "pageDescription": "Programy, které se spouštějí při přihlášení, načtené z registru, složky Po spuštění a Plánovače úloh. Zakázání položky program neodinstaluje; dopad se odhaduje z názvu aplikace.",
+  "pageDescriptionMac": "Programy, které se spouštějí při přihlášení, načtené ze složek LaunchAgents a položek přihlášení. Zakázání položky program neodinstaluje; dopad závisí na tom, kde se položka nachází.",
+  "pageDescriptionLinux": "Programy, které se spouštějí při přihlášení, načtené ze složky autostart, uživatelských služeb systemd a položek cron @reboot. Zakázání položky program neodinstaluje; dopad závisí na tom, kde se položka nachází.",
   "refreshButton": "Obnovit",
   "listTitle": "Programy po spuštění",
   "listMeta": "{{active}} aktivní · {{disabled}} zakázané",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Poslední spuštění nemá časové údaje pro jednotlivé aplikace.",
   "emptyStateTitle": "Na přečtených místech nejsou žádné programy po spuštění",
   "emptyStateDescription": "Registr, složka Po spuštění a Plánovač úloh neobsahují žádné položky spuštění.",
+  "emptyStateDescriptionMac": "Složky LaunchAgents a položky přihlášení neobsahují žádné položky spuštění.",
+  "emptyStateDescriptionLinux": "Složka autostart, uživatelské služby systemd a cron neobsahují žádné položky spuštění.",
   "dismissError": "Zavřít",
   "toastFailedToEnable": "Nepodařilo se povolit {{name}}",
   "toastFailedToDisable": "Nepodařilo se zakázat {{name}}",

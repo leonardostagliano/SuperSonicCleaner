@@ -6,7 +6,7 @@
     "export": "Herstelgeschiedenis exporteren",
     "loadError": "De herstelgeschiedenis kon niet worden gelezen.",
     "failed": "Herstel mislukt.",
-    "empty": "Wijzigingen die zijn aangebracht door Privacy Shield, Servicebeheer en Registeropschoning verschijnen hier met hun oorspronkelijke en latere status.",
+    "empty": "Wijzigingen vanuit Privacyschild, Servicesbeheer en de pagina Register en systeeminstellingen verschijnen hier met hun oorspronkelijke en latere status.",
     "summary": {
       "recorded": "Vastgelegde wijzigingen",
       "registryBackups": "Registerback-ups",

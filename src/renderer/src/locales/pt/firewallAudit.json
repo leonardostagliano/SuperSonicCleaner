@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} regra para rever",
   "summaryTitle_other": "{{count}} regras para rever",
   "summaryNone": "Nenhuma regra para rever",
+  "summaryNonePartial": "Nenhuma regra para rever entre as lidas",
   "summaryFacts": "{{total}} regras de entrada ativadas · {{stale}} com um programa em falta · {{unsigned}} sem assinatura · {{broad}} com âmbito amplo",
   "scanProgressTitle": "Análise em curso",
   "scanProgressCount": "{{current}} de {{total}}",

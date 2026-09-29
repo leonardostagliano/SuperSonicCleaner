@@ -54,6 +54,7 @@
   "summaryTitle_one": "समीक्षा के लिए {{count}} नियम",
   "summaryTitle_other": "समीक्षा के लिए {{count}} नियम",
   "summaryNone": "समीक्षा के लिए कोई नियम नहीं",
+  "summaryNonePartial": "पढ़े गए नियमों में समीक्षा के लिए कोई नियम नहीं",
   "summaryFacts": "{{total}} सक्षम इनबाउंड नियम · {{stale}} गुम प्रोग्राम के साथ · {{unsigned}} बिना हस्ताक्षर · {{broad}} व्यापक दायरे के साथ",
   "scanProgressTitle": "स्कैन जारी है",
   "scanProgressCount": "{{current}} / {{total}}",

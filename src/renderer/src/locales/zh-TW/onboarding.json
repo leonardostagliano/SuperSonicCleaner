@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner 會掃描暫存檔案、快取和登錄項目，管理啟動程式，並顯示系統狀態。未經您確認，不會進行任何變更。",
   "welcomeDescriptionOther": "SuperSonicCleaner 會掃描暫存檔案和快取，管理啟動程式，並顯示系統狀態。未經您確認，不會進行任何變更。",
   "factsLabel": "運作方式",
-  "factPreview": "每次清理前都會顯示預覽",
+  "factPreview": "每次手動清理前都會顯示預覽；不顯示預覽進行清理時會要求確認",
   "factRegistryBackup": "每次修復前都會備份登錄",
   "factAi": "可選的 AI 分析，僅使用匿名資料",
   "changeLanguage": "變更語言",

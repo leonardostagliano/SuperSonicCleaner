@@ -1,6 +1,8 @@
 {
   "pageTitle": "시작 프로그램 관리자",
   "pageDescription": "로그인 시 시작되는 프로그램으로, 레지스트리, 시작프로그램 폴더, 작업 스케줄러에서 읽습니다. 항목을 비활성화해도 프로그램이 제거되지는 않으며, 영향도는 앱 이름을 기준으로 추정됩니다.",
+  "pageDescriptionMac": "로그인 시 시작되는 프로그램으로, LaunchAgents 폴더와 로그인 항목에서 읽습니다. 항목을 비활성화해도 프로그램이 제거되지는 않으며, 영향도는 항목이 발견된 위치에 따라 다릅니다.",
+  "pageDescriptionLinux": "로그인 시 시작되는 프로그램으로, autostart 폴더, systemd 사용자 서비스, cron의 @reboot 항목에서 읽습니다. 항목을 비활성화해도 프로그램이 제거되지는 않으며, 영향도는 항목이 발견된 위치에 따라 다릅니다.",
   "refreshButton": "새로 고침",
   "listTitle": "시작 프로그램",
   "listMeta": "활성 {{active}}개 · 비활성 {{disabled}}개",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "최근 부팅에는 앱별 시간 데이터가 없습니다.",
   "emptyStateTitle": "읽은 위치에 시작 프로그램이 없습니다",
   "emptyStateDescription": "레지스트리, 시작프로그램 폴더, 작업 스케줄러에 시작 항목이 없습니다.",
+  "emptyStateDescriptionMac": "LaunchAgents 폴더와 로그인 항목에 시작 항목이 없습니다.",
+  "emptyStateDescriptionLinux": "autostart 폴더, systemd 사용자 서비스, cron에 시작 항목이 없습니다.",
   "dismissError": "닫기",
   "toastFailedToEnable": "{{name}}을(를) 활성화할 수 없습니다",
   "toastFailedToDisable": "{{name}}을(를) 비활성화할 수 없습니다",

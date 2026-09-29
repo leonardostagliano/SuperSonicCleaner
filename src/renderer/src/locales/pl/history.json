@@ -6,7 +6,7 @@
     "export": "Eksportuj historię odzyskiwania",
     "loadError": "Nie można było odczytać historii odzyskiwania.",
     "failed": "Odzyskiwanie nie powiodło się.",
-    "empty": "Zmiany wprowadzone przez Tarczę prywatności, Menedżera usług i Czyszczenie rejestru pojawiają się tutaj wraz z ich stanem pierwotnym i późniejszym.",
+    "empty": "Zmiany wprowadzone przez Tarczę prywatności, Menedżera usług i stronę Rejestr i ustawienia systemowe pojawiają się tutaj wraz z ich stanem pierwotnym i późniejszym.",
     "summary": {
       "recorded": "Zarejestrowane zmiany",
       "registryBackups": "Kopie zapasowe rejestru",

@@ -1,6 +1,8 @@
 {
   "pageTitle": "Oppstartsbehandling",
   "pageDescription": "Programmer som starter når du logger inn, lest fra registeret, Oppstartsmappen og Oppgaveplanleggeren. Å deaktivere en oppføring avinstallerer ikke programmet; påvirkningen anslås ut fra appnavnet.",
+  "pageDescriptionMac": "Programmer som starter når du logger inn, lest fra LaunchAgents-mappene og påloggingselementene. Å deaktivere en oppføring avinstallerer ikke programmet; påvirkningen avhenger av hvor oppføringen finnes.",
+  "pageDescriptionLinux": "Programmer som starter når du logger inn, lest fra autostart-mappen, systemd-brukertjenestene og @reboot-cron-oppføringene. Å deaktivere en oppføring avinstallerer ikke programmet; påvirkningen avhenger av hvor oppføringen finnes.",
   "refreshButton": "Oppdater",
   "listTitle": "Oppstartsprogrammer",
   "listMeta": "{{active}} aktive · {{disabled}} deaktiverte",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Siste oppstart har ingen tidsmålinger per app.",
   "emptyStateTitle": "Ingen oppstartsprogrammer på de leste plasseringene",
   "emptyStateDescription": "Registeret, Oppstartsmappen og Oppgaveplanleggeren inneholder ingen oppstartsoppføringer.",
+  "emptyStateDescriptionMac": "LaunchAgents-mappene og påloggingselementene inneholder ingen oppstartsoppføringer.",
+  "emptyStateDescriptionLinux": "Autostart-mappen, systemd-brukertjenestene og cron inneholder ingen oppstartsoppføringer.",
   "dismissError": "Lukk",
   "toastFailedToEnable": "Kunne ikke aktivere {{name}}",
   "toastFailedToDisable": "Kunne ikke deaktivere {{name}}",

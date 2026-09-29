@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} κανόνας προς έλεγχο",
   "summaryTitle_other": "{{count}} κανόνες προς έλεγχο",
   "summaryNone": "Δεν υπάρχουν κανόνες προς έλεγχο",
+  "summaryNonePartial": "Δεν υπάρχουν κανόνες προς έλεγχο μεταξύ των αναγνωσμένων",
   "summaryFacts": "{{total}} ενεργοποιημένοι εισερχόμενοι κανόνες · {{stale}} με πρόγραμμα που λείπει · {{unsigned}} ανυπόγραφοι · {{broad}} με ευρύ πεδίο εφαρμογής",
   "scanProgressTitle": "Η σάρωση βρίσκεται σε εξέλιξη",
   "scanProgressCount": "{{current}} από {{total}}",

@@ -6,7 +6,7 @@
     "export": "Xuất lịch sử khôi phục",
     "loadError": "Không thể đọc lịch sử khôi phục.",
     "failed": "Khôi phục thất bại.",
-    "empty": "Các thay đổi do Lá chắn quyền riêng tư, Trình quản lý dịch vụ và Trình dọn dẹp Sổ đăng ký thực hiện sẽ xuất hiện tại đây cùng với trạng thái gốc và trạng thái sau đó.",
+    "empty": "Các thay đổi được thực hiện từ Lá chắn quyền riêng tư, Trình quản lý dịch vụ và trang Registry và cài đặt hệ thống sẽ xuất hiện tại đây cùng với trạng thái gốc và trạng thái sau đó.",
     "summary": {
       "recorded": "Thay đổi đã ghi lại",
       "registryBackups": "Bản sao lưu registry",

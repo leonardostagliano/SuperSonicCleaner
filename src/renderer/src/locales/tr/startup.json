@@ -1,6 +1,8 @@
 {
   "pageTitle": "Başlangıç Yöneticisi",
   "pageDescription": "Oturum açtığınızda başlayan, kayıt defterinden, Başlangıç klasöründen ve Görev Zamanlayıcı'dan okunan programlar. Bir girdiyi devre dışı bırakmak programı kaldırmaz; etki, uygulama adından tahmin edilir.",
+  "pageDescriptionMac": "Oturum açtığınızda başlayan, LaunchAgents klasörlerinden ve oturum açma öğelerinden okunan programlar. Bir girdiyi devre dışı bırakmak programı kaldırmaz; etki, girdinin bulunduğu yere bağlıdır.",
+  "pageDescriptionLinux": "Oturum açtığınızda başlayan, autostart klasöründen, systemd kullanıcı hizmetlerinden ve @reboot cron girdilerinden okunan programlar. Bir girdiyi devre dışı bırakmak programı kaldırmaz; etki, girdinin bulunduğu yere bağlıdır.",
   "refreshButton": "Yenile",
   "listTitle": "Başlangıç programları",
   "listMeta": "{{active}} etkin · {{disabled}} devre dışı",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Son açılışta uygulama bazında zamanlama yok.",
   "emptyStateTitle": "Okunan konumlarda başlangıç programı yok",
   "emptyStateDescription": "Kayıt defterinde, Başlangıç klasöründe ve Görev Zamanlayıcı'da başlangıç girdisi yok.",
+  "emptyStateDescriptionMac": "LaunchAgents klasörlerinde ve oturum açma öğelerinde başlangıç girdisi yok.",
+  "emptyStateDescriptionLinux": "Autostart klasöründe, systemd kullanıcı hizmetlerinde ve cron'da başlangıç girdisi yok.",
   "dismissError": "Kapat",
   "toastFailedToEnable": "{{name}} etkinleştirilemedi",
   "toastFailedToDisable": "{{name}} devre dışı bırakılamadı",

@@ -1,6 +1,8 @@
 {
   "pageTitle": "Autostart-Manager",
   "pageDescription": "Programme, die beim Anmelden gestartet werden, gelesen aus der Registrierung, dem Autostart-Ordner und der Aufgabenplanung. Das Deaktivieren eines Eintrags deinstalliert das Programm nicht; die Auswirkung wird anhand des App-Namens geschätzt.",
+  "pageDescriptionMac": "Programme, die beim Anmelden gestartet werden, gelesen aus den LaunchAgents-Ordnern und den Anmeldeobjekten. Das Deaktivieren eines Eintrags deinstalliert das Programm nicht; die Auswirkung hängt davon ab, wo der Eintrag gefunden wird.",
+  "pageDescriptionLinux": "Programme, die beim Anmelden gestartet werden, gelesen aus dem Autostart-Ordner, den systemd-Benutzerdiensten und den @reboot-Einträgen von cron. Das Deaktivieren eines Eintrags deinstalliert das Programm nicht; die Auswirkung hängt davon ab, wo der Eintrag gefunden wird.",
   "refreshButton": "Aktualisieren",
   "listTitle": "Autostart-Programme",
   "listMeta": "{{active}} aktiv · {{disabled}} deaktiviert",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Der letzte Start enthält keine Zeiten pro App.",
   "emptyStateTitle": "Keine Autostart-Programme in den gelesenen Speicherorten",
   "emptyStateDescription": "Die Registrierung, der Autostart-Ordner und die Aufgabenplanung enthalten keine Autostart-Einträge.",
+  "emptyStateDescriptionMac": "Die LaunchAgents-Ordner und die Anmeldeobjekte enthalten keine Autostart-Einträge.",
+  "emptyStateDescriptionLinux": "Der Autostart-Ordner, die systemd-Benutzerdienste und cron enthalten keine Autostart-Einträge.",
   "dismissError": "Schließen",
   "toastFailedToEnable": "{{name}} konnte nicht aktiviert werden",
   "toastFailedToDisable": "{{name}} konnte nicht deaktiviert werden",

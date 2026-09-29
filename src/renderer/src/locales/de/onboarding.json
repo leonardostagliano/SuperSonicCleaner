@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner durchsucht temporäre Dateien, Caches und Registrierungseinträge, verwaltet Autostartprogramme und zeigt den Zustand des Systems an. Ohne Ihre Bestätigung ändert sich nichts.",
   "welcomeDescriptionOther": "SuperSonicCleaner durchsucht temporäre Dateien und Caches, verwaltet Autostartprogramme und zeigt den Zustand des Systems an. Ohne Ihre Bestätigung ändert sich nichts.",
   "factsLabel": "So funktioniert es",
-  "factPreview": "Eine Vorschau vor jeder Bereinigung",
+  "factPreview": "Eine Vorschau vor jeder manuellen Bereinigung; Bereinigen ohne Vorschau erfordert eine Bestätigung",
   "factRegistryBackup": "Eine Registrierungssicherung vor jeder Korrektur",
   "factAi": "Optionale AI-Analyse, nur mit anonymen Daten",
   "changeLanguage": "Sprache ändern",

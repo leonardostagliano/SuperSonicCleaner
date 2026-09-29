@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner kontroluje dočasné soubory, mezipaměti a položky registru, spravuje programy po spuštění a zobrazuje stav systému. Bez vašeho potvrzení se nic nemění.",
   "welcomeDescriptionOther": "SuperSonicCleaner kontroluje dočasné soubory a mezipaměti, spravuje programy po spuštění a zobrazuje stav systému. Bez vašeho potvrzení se nic nemění.",
   "factsLabel": "Jak to funguje",
-  "factPreview": "Náhled před každým čištěním",
+  "factPreview": "Náhled před každým ručním čištěním; čištění bez náhledu vyžádá potvrzení",
   "factRegistryBackup": "Záloha registru před každou opravou",
   "factAi": "Volitelná analýza AI, pouze na anonymních datech",
   "changeLanguage": "Změnit jazyk",

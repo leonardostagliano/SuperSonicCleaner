@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} sääntö tarkistettavana",
   "summaryTitle_other": "{{count}} sääntöä tarkistettavana",
   "summaryNone": "Ei tarkistettavia sääntöjä",
+  "summaryNonePartial": "Ei tarkistettavia sääntöjä luettujen joukossa",
   "summaryFacts": "{{total}} käytössä olevaa saapuvan liikenteen sääntöä · {{stale}} puuttuvalla ohjelmalla · {{unsigned}} allekirjoittamatonta · {{broad}} laajalla soveltamisalalla",
   "scanProgressTitle": "Tarkistus käynnissä",
   "scanProgressCount": "{{current}}/{{total}}",

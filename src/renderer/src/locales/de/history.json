@@ -6,7 +6,7 @@
     "export": "Wiederherstellungsverlauf exportieren",
     "loadError": "Der Wiederherstellungsverlauf konnte nicht gelesen werden.",
     "failed": "Wiederherstellung fehlgeschlagen.",
-    "empty": "Änderungen von Privacy Shield, Service Manager und Registry Cleaner werden hier mit ihrem ursprünglichen und späteren Zustand angezeigt.",
+    "empty": "Änderungen von Datenschutzschild, Dienste-Manager und der Seite Registrierung und Systemeinstellungen werden hier mit ihrem ursprünglichen und späteren Zustand angezeigt.",
     "summary": {
       "recorded": "Aufgezeichnete Änderungen",
       "registryBackups": "Registrierungssicherungen",

@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} قاعدة تحتاج إلى مراجعة",
   "summaryTitle_other": "{{count}} قواعد تحتاج إلى مراجعة",
   "summaryNone": "لا توجد قواعد للمراجعة",
+  "summaryNonePartial": "لا توجد قواعد للمراجعة من بين تلك التي تمت قراءتها",
   "summaryFacts": "{{total}} قاعدة واردة مفعّلة · {{stale}} ببرنامج مفقود · {{unsigned}} غير موقّعة · {{broad}} بنطاق واسع",
   "scanProgressTitle": "الفحص قيد التقدّم",
   "scanProgressCount": "{{current}} من {{total}}",

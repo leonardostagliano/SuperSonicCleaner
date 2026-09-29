@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} regel att granska",
   "summaryTitle_other": "{{count}} regler att granska",
   "summaryNone": "Inga regler att granska",
+  "summaryNonePartial": "Inga regler att granska bland de lästa",
   "summaryFacts": "{{total}} aktiverade inkommande regler · {{stale}} med ett saknat program · {{unsigned}} osignerade · {{broad}} med bred omfattning",
   "scanProgressTitle": "Skanning pågår",
   "scanProgressCount": "{{current}} av {{total}}",

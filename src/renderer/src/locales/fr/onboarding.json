@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner analyse les fichiers temporaires, les caches et les entrées du registre, gère les programmes de démarrage et affiche l’état du système. Rien ne change sans votre confirmation.",
   "welcomeDescriptionOther": "SuperSonicCleaner analyse les fichiers temporaires et les caches, gère les programmes de démarrage et affiche l’état du système. Rien ne change sans votre confirmation.",
   "factsLabel": "Comment ça fonctionne",
-  "factPreview": "Un aperçu avant chaque nettoyage",
+  "factPreview": "Un aperçu avant chaque nettoyage manuel ; nettoyer sans aperçu demande une confirmation",
   "factRegistryBackup": "Une sauvegarde du registre avant chaque correction",
   "factAi": "Analyse IA facultative, uniquement sur des données anonymes",
   "changeLanguage": "Changer de langue",

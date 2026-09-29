@@ -54,6 +54,7 @@
   "summaryTitle_one": "검토할 규칙 {{count}}개",
   "summaryTitle_other": "검토할 규칙 {{count}}개",
   "summaryNone": "검토할 규칙이 없습니다",
+  "summaryNonePartial": "읽은 규칙 중 검토할 규칙이 없습니다",
   "summaryFacts": "사용 설정된 수신 규칙 {{total}}개 · 프로그램 누락 {{stale}}개 · 서명되지 않음 {{unsigned}}개 · 넓은 범위 {{broad}}개",
   "scanProgressTitle": "검사 진행 중",
   "scanProgressCount": "{{total}}개 중 {{current}}개",

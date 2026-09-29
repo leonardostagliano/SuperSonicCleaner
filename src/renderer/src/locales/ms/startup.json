@@ -1,6 +1,8 @@
 {
   "pageTitle": "Pengurus Permulaan",
   "pageDescription": "Program yang bermula semasa anda log masuk, dibaca daripada registry, folder Permulaan dan Penjadual Tugas. Melumpuhkan entri tidak menyahpasang program; impak dianggarkan daripada nama aplikasi.",
+  "pageDescriptionMac": "Program yang bermula semasa anda log masuk, dibaca daripada folder LaunchAgents dan item log masuk. Melumpuhkan entri tidak menyahpasang program; impaknya bergantung pada tempat entri itu ditemui.",
+  "pageDescriptionLinux": "Program yang bermula semasa anda log masuk, dibaca daripada folder autostart, perkhidmatan pengguna systemd dan entri @reboot cron. Melumpuhkan entri tidak menyahpasang program; impaknya bergantung pada tempat entri itu ditemui.",
   "refreshButton": "Segar semula",
   "listTitle": "Program permulaan",
   "listMeta": "{{active}} aktif · {{disabled}} dilumpuhkan",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "But terakhir tiada masa bagi setiap aplikasi.",
   "emptyStateTitle": "Tiada program permulaan dalam lokasi yang dibaca",
   "emptyStateDescription": "Registry, folder Permulaan dan Penjadual Tugas tidak mengandungi sebarang entri permulaan.",
+  "emptyStateDescriptionMac": "Folder LaunchAgents dan item log masuk tidak mengandungi sebarang entri permulaan.",
+  "emptyStateDescriptionLinux": "Folder autostart, perkhidmatan pengguna systemd dan cron tidak mengandungi sebarang entri permulaan.",
   "dismissError": "Tutup",
   "toastFailedToEnable": "Tidak dapat mendayakan {{name}}",
   "toastFailedToDisable": "Tidak dapat melumpuhkan {{name}}",

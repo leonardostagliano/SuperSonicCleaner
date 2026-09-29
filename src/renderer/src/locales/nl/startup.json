@@ -1,6 +1,8 @@
 {
   "pageTitle": "Opstartbeheer",
   "pageDescription": "Programma's die worden gestart bij aanmelden, gelezen uit het register, de opstartmap en Taakplanner. Het uitschakelen van een item verwijdert het programma niet; de impact wordt geschat op basis van de app-naam.",
+  "pageDescriptionMac": "Programma's die worden gestart bij aanmelden, gelezen uit de LaunchAgents-mappen en de aanmeldingsitems. Het uitschakelen van een item verwijdert het programma niet; de impact hangt af van waar het item zich bevindt.",
+  "pageDescriptionLinux": "Programma's die worden gestart bij aanmelden, gelezen uit de autostart-map, de systemd-gebruikersservices en de @reboot-cron-items. Het uitschakelen van een item verwijdert het programma niet; de impact hangt af van waar het item zich bevindt.",
   "refreshButton": "Vernieuwen",
   "listTitle": "Opstartprogramma's",
   "listMeta": "{{active}} actief · {{disabled}} uitgeschakeld",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "De laatste opstart heeft geen tijden per app.",
   "emptyStateTitle": "Geen opstartprogramma's in de gelezen locaties",
   "emptyStateDescription": "Het register, de opstartmap en Taakplanner bevatten geen opstartitems.",
+  "emptyStateDescriptionMac": "De LaunchAgents-mappen en de aanmeldingsitems bevatten geen opstartitems.",
+  "emptyStateDescriptionLinux": "De autostart-map, de systemd-gebruikersservices en cron bevatten geen opstartitems.",
   "dismissError": "Sluiten",
   "toastFailedToEnable": "{{name}} kon niet worden ingeschakeld",
   "toastFailedToDisable": "{{name}} kon niet worden uitgeschakeld",

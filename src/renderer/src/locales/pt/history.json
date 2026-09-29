@@ -6,7 +6,7 @@
     "export": "Exportar histórico de recuperação",
     "loadError": "Não foi possível ler o histórico de recuperação.",
     "failed": "A recuperação falhou.",
-    "empty": "As alterações feitas pelo Escudo de Privacidade, Gestor de Serviços e Limpador do Registo aparecem aqui com o respetivo estado original e posterior.",
+    "empty": "As alterações feitas a partir do Escudo de Privacidade, Gestor de Serviços e da página Registo e definições do sistema aparecem aqui com o respetivo estado original e posterior.",
     "summary": {
       "recorded": "Alterações registadas",
       "registryBackups": "Cópias de segurança do registo",

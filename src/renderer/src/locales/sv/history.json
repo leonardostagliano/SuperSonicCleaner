@@ -6,7 +6,7 @@
     "export": "Exportera återställningshistorik",
     "loadError": "Det gick inte att läsa återställningshistoriken.",
     "failed": "Återställningen misslyckades.",
-    "empty": "Ändringar som gjorts av Privacy Shield, Tjänstehanteraren och Registerrensning visas här med sitt ursprungliga och senare tillstånd.",
+    "empty": "Ändringar från Sekretesskydd, Tjänstehanterare och sidan Register och systeminställningar visas här med sitt ursprungliga och senare tillstånd.",
     "summary": {
       "recorded": "Registrerade ändringar",
       "registryBackups": "Registersäkerhetskopior",

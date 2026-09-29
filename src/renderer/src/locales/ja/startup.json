@@ -1,6 +1,8 @@
 {
   "pageTitle": "スタートアップ マネージャー",
   "pageDescription": "サインイン時に起動するプログラムで、レジストリ、スタートアップ フォルダー、タスク スケジューラから読み取られます。エントリを無効化してもプログラムはアンインストールされません。影響度はアプリ名から推定されます。",
+  "pageDescriptionMac": "サインイン時に起動するプログラムで、LaunchAgents フォルダーとログイン項目から読み取られます。エントリを無効化してもプログラムはアンインストールされません。影響度はエントリが見つかった場所によって異なります。",
+  "pageDescriptionLinux": "サインイン時に起動するプログラムで、autostart フォルダー、systemd のユーザー サービス、cron の @reboot エントリから読み取られます。エントリを無効化してもプログラムはアンインストールされません。影響度はエントリが見つかった場所によって異なります。",
   "refreshButton": "更新",
   "listTitle": "スタートアップ プログラム",
   "listMeta": "有効 {{active}} · 無効 {{disabled}}",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "前回の起動にはアプリごとの時間データがありません。",
   "emptyStateTitle": "読み取った場所にスタートアップ プログラムはありません",
   "emptyStateDescription": "レジストリ、スタートアップ フォルダー、タスク スケジューラにスタートアップ エントリは含まれていません。",
+  "emptyStateDescriptionMac": "LaunchAgents フォルダーとログイン項目にスタートアップ エントリは含まれていません。",
+  "emptyStateDescriptionLinux": "autostart フォルダー、systemd のユーザー サービス、cron にスタートアップ エントリは含まれていません。",
   "dismissError": "閉じる",
   "toastFailedToEnable": "{{name}} を有効にできませんでした",
   "toastFailedToDisable": "{{name}} を無効にできませんでした",

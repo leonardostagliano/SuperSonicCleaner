@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} regulă de revizuit",
   "summaryTitle_other": "{{count}} reguli de revizuit",
   "summaryNone": "Nicio regulă de revizuit",
+  "summaryNonePartial": "Nicio regulă de revizuit printre cele citite",
   "summaryFacts": "{{total}} reguli de intrare activate · {{stale}} cu program lipsă · {{unsigned}} nesemnate · {{broad}} cu domeniu larg",
   "scanProgressTitle": "Scanare în curs",
   "scanProgressCount": "{{current}} din {{total}}",

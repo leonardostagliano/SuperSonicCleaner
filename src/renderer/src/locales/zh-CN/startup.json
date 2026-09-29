@@ -1,6 +1,8 @@
 {
   "pageTitle": "启动项管理器",
   "pageDescription": "登录时启动的程序，读取自注册表、启动文件夹和任务计划程序。禁用某个条目并不会卸载相应程序；影响程度是根据应用名称估算的。",
+  "pageDescriptionMac": "登录时启动的程序，读取自 LaunchAgents 文件夹和登录项。禁用某个条目并不会卸载相应程序；影响程度取决于该条目所在的位置。",
+  "pageDescriptionLinux": "登录时启动的程序，读取自 autostart 文件夹、systemd 用户服务和 cron 的 @reboot 条目。禁用某个条目并不会卸载相应程序；影响程度取决于该条目所在的位置。",
   "refreshButton": "刷新",
   "listTitle": "启动项",
   "listMeta": "活动 {{active}} 项 · 已禁用 {{disabled}} 项",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "上次启动没有按应用划分的耗时数据。",
   "emptyStateTitle": "在已读取的位置中没有启动项",
   "emptyStateDescription": "注册表、启动文件夹和任务计划程序中不包含任何启动项。",
+  "emptyStateDescriptionMac": "LaunchAgents 文件夹和登录项中不包含任何启动项。",
+  "emptyStateDescriptionLinux": "autostart 文件夹、systemd 用户服务和 cron 中不包含任何启动项。",
   "dismissError": "关闭",
   "toastFailedToEnable": "无法启用 {{name}}",
   "toastFailedToDisable": "无法禁用 {{name}}",

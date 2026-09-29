@@ -6,7 +6,7 @@
     "export": "Exportovat historii obnovení",
     "loadError": "Historii obnovení se nepodařilo načíst.",
     "failed": "Obnovení se nezdařilo.",
-    "empty": "Zde se zobrazují změny provedené Štítem soukromí, Správcem služeb a Čističem registru, s jejich původním a pozdějším stavem.",
+    "empty": "Zde se zobrazují změny provedené Štítem soukromí, Správcem služeb a stránkou Registr a nastavení systému, s jejich původním a pozdějším stavem.",
     "summary": {
       "recorded": "Zaznamenané změny",
       "registryBackups": "Zálohy registru",

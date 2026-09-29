@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} 条规则待审查",
   "summaryTitle_other": "{{count}} 条规则待审查",
   "summaryNone": "没有待审查的规则",
+  "summaryNonePartial": "在已读取的规则中没有待审查的规则",
   "summaryFacts": "已启用的传入规则 {{total}} 条 · {{stale}} 条程序缺失 · {{unsigned}} 条未签名 · {{broad}} 条范围过宽",
   "scanProgressTitle": "正在扫描",
   "scanProgressCount": "{{total}} 项中的 {{current}} 项",

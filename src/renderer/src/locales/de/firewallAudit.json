@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} Regel zu überprüfen",
   "summaryTitle_other": "{{count}} Regeln zu überprüfen",
   "summaryNone": "Keine Regeln zu überprüfen",
+  "summaryNonePartial": "Keine der gelesenen Regeln zu überprüfen",
   "summaryFacts": "{{total}} aktivierte eingehende Regeln · {{stale}} mit fehlendem Programm · {{unsigned}} unsigniert · {{broad}} mit weitem Geltungsbereich",
   "scanProgressTitle": "Scan läuft",
   "scanProgressCount": "{{current}} von {{total}}",

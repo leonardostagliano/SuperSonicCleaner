@@ -1,6 +1,8 @@
 {
   "pageTitle": "Manajer Startup",
   "pageDescription": "Program yang dimulai saat Anda masuk, dibaca dari registry, folder Startup, dan Task Scheduler. Menonaktifkan entri tidak menghapus instalan program; dampaknya diperkirakan dari nama aplikasi.",
+  "pageDescriptionMac": "Program yang dimulai saat Anda masuk, dibaca dari folder LaunchAgents dan item login. Menonaktifkan entri tidak menghapus instalan program; dampaknya bergantung pada tempat entri ditemukan.",
+  "pageDescriptionLinux": "Program yang dimulai saat Anda masuk, dibaca dari folder autostart, layanan pengguna systemd, dan entri cron @reboot. Menonaktifkan entri tidak menghapus instalan program; dampaknya bergantung pada tempat entri ditemukan.",
   "refreshButton": "Segarkan",
   "listTitle": "Program startup",
   "listMeta": "{{active}} aktif · {{disabled}} dinonaktifkan",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "Booting terakhir tidak memiliki waktu per aplikasi.",
   "emptyStateTitle": "Tidak ada program startup di lokasi yang dibaca",
   "emptyStateDescription": "Registry, folder Startup, dan Task Scheduler tidak berisi entri startup.",
+  "emptyStateDescriptionMac": "Folder LaunchAgents dan item login tidak berisi entri startup.",
+  "emptyStateDescriptionLinux": "Folder autostart, layanan pengguna systemd, dan cron tidak berisi entri startup.",
   "dismissError": "Tutup",
   "toastFailedToEnable": "Gagal mengaktifkan {{name}}",
   "toastFailedToDisable": "Gagal menonaktifkan {{name}}",

@@ -6,7 +6,7 @@
     "export": "Exportar historial de recuperación",
     "loadError": "No se pudo leer el historial de recuperación.",
     "failed": "La recuperación falló.",
-    "empty": "Los cambios realizados por Privacy Shield, Administrador de servicios y Limpiador del registro aparecen aquí con su estado original y posterior.",
+    "empty": "Los cambios realizados desde Escudo de privacidad, Administrador de servicios y la página Registro y configuración del sistema aparecen aquí con su estado original y posterior.",
     "summary": {
       "recorded": "Cambios registrados",
       "registryBackups": "Copias de seguridad del registro",

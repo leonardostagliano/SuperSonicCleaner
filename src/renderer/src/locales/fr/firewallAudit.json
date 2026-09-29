@@ -54,6 +54,7 @@
   "summaryTitle_one": "{{count}} règle à examiner",
   "summaryTitle_other": "{{count}} règles à examiner",
   "summaryNone": "Aucune règle à examiner",
+  "summaryNonePartial": "Aucune règle à examiner parmi celles lues",
   "summaryFacts": "{{total}} règles entrantes activées · {{stale}} avec un programme manquant · {{unsigned}} non signées · {{broad}} avec une portée étendue",
   "scanProgressTitle": "Analyse en cours",
   "scanProgressCount": "{{current}} sur {{total}}",

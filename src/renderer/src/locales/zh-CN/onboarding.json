@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner 会扫描临时文件、缓存和注册表项，管理启动程序，并显示系统状态。未经您确认，不会做出任何更改。",
   "welcomeDescriptionOther": "SuperSonicCleaner 会扫描临时文件和缓存，管理启动程序，并显示系统状态。未经您确认，不会做出任何更改。",
   "factsLabel": "工作原理",
-  "factPreview": "每次清理前都会显示预览",
+  "factPreview": "每次手动清理前都会显示预览；不显示预览进行清理时会要求确认",
   "factRegistryBackup": "每次修复前都会备份注册表",
   "factAi": "可选的 AI 分析，仅使用匿名数据",
   "changeLanguage": "更改语言",
