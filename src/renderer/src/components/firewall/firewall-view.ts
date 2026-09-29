@@ -28,6 +28,18 @@ export function firewallSummary(rules: readonly FirewallRule[]): FirewallSummary
   }
 }
 
+/**
+ * How the summary heading reads: 'flagged' leads with the rules to review; with none, green
+ * ('ok') only when Windows returned every rule, since a partial list is not a verified result.
+ */
+export function summaryTone(
+  summary: FirewallSummary,
+  truncated: boolean
+): 'flagged' | 'ok' | 'neutral' {
+  if (summary.flagged > 0) return 'flagged'
+  return truncated ? 'neutral' : 'ok'
+}
+
 /** A rule whose program no longer exists: safe to remove, so pre-selected and recommended. */
 export function isRecommended(rule: FirewallRule): boolean {
   return rule.issues.includes('stale')

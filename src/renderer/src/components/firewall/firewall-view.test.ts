@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { FirewallRule } from '@shared/types'
-import { firewallSummary, isRecommended, riskTone, sortByRisk } from './firewall-view'
+import { firewallSummary, isRecommended, riskTone, sortByRisk, summaryTone } from './firewall-view'
 
 const rule = (over: Partial<FirewallRule>): FirewallRule => ({
   name: over.displayName ?? 'rule',
@@ -48,6 +48,15 @@ describe('firewall-view', () => {
   it('recommends removing only rules whose program is missing', () => {
     expect(isRecommended(rule({ issues: ['stale'] }))).toBe(true)
     expect(isRecommended(rule({ issues: ['broad-scope'] }))).toBe(false)
+  })
+
+  it('shows a summary with no findings in green only when every rule was read', () => {
+    const clean = firewallSummary([rule({})])
+    const flagged = firewallSummary([rule({ issues: ['stale'] })])
+    expect(summaryTone(clean, false)).toBe('ok')
+    expect(summaryTone(clean, true)).toBe('neutral')
+    expect(summaryTone(flagged, false)).toBe('flagged')
+    expect(summaryTone(flagged, true)).toBe('flagged')
   })
 
   it('paints only high risk red', () => {

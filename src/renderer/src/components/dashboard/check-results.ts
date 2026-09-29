@@ -4,7 +4,7 @@
 // makes it unimportable from a node-environment unit test; this module imports no
 // stores, so it can be tested directly.
 import type { TFunction } from 'i18next'
-import type { ScanHistoryEntry } from '@shared/types'
+import type { PackageManagerName, PackageManagerStatus, ScanHistoryEntry } from '@shared/types'
 import { formatBytes } from '@/lib/format'
 import { formatCount } from './when'
 
@@ -72,6 +72,57 @@ export function driversResult(
   if (hasRecordedRun)
     return { result: t('checks.results.driversFound', { count: 0 }), resultTone: 'neutral' }
   return { result: t('checks.results.driversNever'), resultTone: 'neutral' }
+}
+
+/** Package managers whose display name differs from their command name. */
+const MANAGER_LABEL: Partial<Record<PackageManagerName, string>> = {
+  choco: 'Chocolatey',
+  scoop: 'Scoop'
+}
+
+function listFormat(items: string[], locale: string): string {
+  try {
+    return new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' }).format(items)
+  } catch {
+    return items.join(', ')
+  }
+}
+
+/**
+ * The updates row's result text, once a check has finished. Green only for a verified
+ * result: every package manager answered and nothing is pending. With no manager, or a
+ * manager that failed or timed out, "no updates" would be a guess, so the row says so.
+ */
+export function updatesResult(
+  t: TFunction,
+  params: {
+    pending: number
+    major: number
+    packageManagerAvailable: boolean
+    managers: Pick<PackageManagerStatus, 'name' | 'error'>[]
+    locale: string
+  }
+): { result: string; resultTone: ResultTone } {
+  const { pending, major, packageManagerAvailable, managers, locale } = params
+  if (!packageManagerAvailable)
+    return { result: t('checks.results.updatesNoManager'), resultTone: 'neutral' }
+  if (pending > 0) {
+    const parts = [t('checks.results.updatesPending', { count: pending })]
+    if (major > 0) parts.push(t('checks.results.updatesMajor', { count: major }))
+    return { result: parts.join(' · '), resultTone: 'recommended' }
+  }
+  const failed = managers.filter((manager) => manager.error)
+  if (failed.length > 0)
+    return {
+      result: t('checks.results.updatesIncomplete', {
+        managers: listFormat(
+          failed.map((manager) => MANAGER_LABEL[manager.name] ?? manager.name),
+          locale
+        )
+      }),
+      resultTone: 'neutral'
+    }
+  return { result: t('checks.results.updatesNone'), resultTone: 'ok' }
 }
 
 /**

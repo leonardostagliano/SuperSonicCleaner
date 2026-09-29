@@ -43,6 +43,7 @@
   "summaryTitle_one": "{{count}} rule to review",
   "summaryTitle_other": "{{count}} rules to review",
   "summaryNone": "No rules to review",
+  "summaryNonePartial": "No rules to review among those read",
   "summaryFacts": "{{total}} enabled inbound rules · {{stale}} with a missing program · {{unsigned}} unsigned · {{broad}} with broad scope",
   "scanProgressTitle": "Scan in progress",
   "scanProgressCount": "{{current}} of {{total}}",

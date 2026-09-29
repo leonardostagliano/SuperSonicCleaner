@@ -43,6 +43,7 @@
   "summaryTitle_one": "{{count}} regola da rivedere",
   "summaryTitle_other": "{{count}} regole da rivedere",
   "summaryNone": "Nessuna regola da rivedere",
+  "summaryNonePartial": "Nessuna regola da rivedere tra quelle lette",
   "summaryFacts": "{{total}} regole in ingresso abilitate · {{stale}} con programma mancante · {{unsigned}} non firmate · {{broad}} con ambito esteso",
   "scanProgressTitle": "Analisi in corso",
   "scanProgressCount": "{{current}} di {{total}}",

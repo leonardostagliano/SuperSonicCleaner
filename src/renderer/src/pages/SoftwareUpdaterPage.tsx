@@ -180,7 +180,9 @@ export function SoftwareUpdaterPage({ embedded }: { embedded?: boolean }) {
       s.setManagers(result.managers)
       lastCheckedAt = Date.now()
       s.setHasChecked(true)
-      recordCheckRun('updates', lastCheckedAt)
+      // A check no package manager answered verified nothing.
+      if (result.managers.some((m) => m.available && !m.error))
+        recordCheckRun('updates', lastCheckedAt)
 
       // Use the visible (non-ignored) count for the toast
       const visibleCount = useUpdaterStore.getState().apps.length

@@ -17,7 +17,13 @@ import { useStartupStore } from '@/stores/startup-store'
 import { useMalwareStore } from '@/stores/malware-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { lastCheckRun } from '@/stores/check-runs-store'
-import { cleanupResult, driversResult, malwareResult, type ResultTone } from './check-results'
+import {
+  cleanupResult,
+  driversResult,
+  malwareResult,
+  updatesResult,
+  type ResultTone
+} from './check-results'
 import { formatWhen } from './when'
 
 export type { ResultTone } from './check-results'
@@ -73,6 +79,8 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
   const updatesChecked = useUpdaterStore((s) => s.hasChecked)
   const updatesLoading = useUpdaterStore((s) => s.loading)
   const updateApps = useUpdaterStore((s) => s.apps)
+  const packageManagerAvailable = useUpdaterStore((s) => s.packageManagerAvailable)
+  const updateManagers = useUpdaterStore((s) => s.managers)
   const startupItems = useStartupStore((s) => s.items)
   const startupLoaded = useStartupStore((s) => s.hasLoaded)
   const startupLoading = useStartupStore((s) => s.loading)
@@ -101,10 +109,13 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
       case 'updates':
         return {
           id,
-          lastRun: newestRun(
-            updatesChecked ? updatesCheckedAt : latestRun(history, 'software-update'),
-            lastCheckRun('updates')
-          ),
+          // Without a package manager nothing was checked, so the row is not fresh.
+          lastRun: !packageManagerAvailable
+            ? null
+            : newestRun(
+                updatesChecked ? updatesCheckedAt : latestRun(history, 'software-update'),
+                lastCheckRun('updates')
+              ),
           pendingCount: pending
         }
       case 'malware': {
@@ -141,11 +152,13 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
           return neutral(
             t(remindersOn ? 'checks.results.updatesNotChecked' : 'checks.results.updatesAutoOff')
           )
-        if (pending === 0) return { result: t('checks.results.updatesNone'), resultTone: 'ok' }
-        const major = updateApps.filter((app) => app.severity === 'major').length
-        const parts = [t('checks.results.updatesPending', { count: pending })]
-        if (major > 0) parts.push(t('checks.results.updatesMajor', { count: major }))
-        return { result: parts.join(' · '), resultTone: 'recommended' }
+        return updatesResult(t, {
+          pending,
+          major: updateApps.filter((app) => app.severity === 'major').length,
+          packageManagerAvailable,
+          managers: updateManagers,
+          locale
+        })
       }
       case 'startup': {
         if (startupLoading && !startupLoaded) return transient(t('checks.results.reading'))

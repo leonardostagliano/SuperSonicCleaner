@@ -172,7 +172,10 @@ function GoalStep({
   const scanStatus = useScanStore((s) => s.status)
   const scanResults = useScanStore((s) => s.results)
   const cleanSummary = useScanStore((s) => s.cleanSummary)
-  const updatesChecked = useUpdaterStore((s) => s.hasChecked)
+  // "No updates" only when every package manager answered the check.
+  const updatesVerified = useUpdaterStore(
+    (s) => s.hasChecked && s.packageManagerAvailable && !s.managers.some((m) => m.error)
+  )
   const pendingUpdates = useUpdaterStore((s) => s.apps.length)
   const lastScan = useMalwareStore((s) => s.lastCompletedScan)
   const restoredThreats = useMalwareStore((s) => s.knownActiveThreats)
@@ -210,7 +213,7 @@ function GoalStep({
       case '/disk':
         return analysed ? free : ''
       case '/updates':
-        return updatesChecked && pendingUpdates === 0 ? t('simple.data.noUpdates') : ''
+        return updatesVerified && pendingUpdates === 0 ? t('simple.data.noUpdates') : ''
       case '/malware':
         return lastScan && openThreats === 0 ? t('simple.data.noThreats') : ''
       default:

@@ -71,6 +71,8 @@
       "updatesNotChecked": "Not checked in this session yet",
       "updatesAutoOff": "Automatic check turned off",
       "updatesNone": "No updates available",
+      "updatesNoManager": "No package manager available",
+      "updatesIncomplete": "Check incomplete: {{managers}}",
       "updatesPending_one": "{{count}} available",
       "updatesPending_other": "{{count}} available",
       "updatesMajor_one": "{{count}} major",

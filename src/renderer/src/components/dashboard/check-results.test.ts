@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { TFunction } from 'i18next'
-import { cleanupResult, driversResult, malwareResult } from './check-results'
+import { cleanupResult, driversResult, malwareResult, updatesResult } from './check-results'
 
 const t = ((key: string, params?: Record<string, unknown>) =>
   params && Object.keys(params).length
@@ -170,5 +170,76 @@ describe('cleanupResult', () => {
         locale: 'en'
       })
     ).toEqual({ result: 'checks.results.cleanupAnalyzed', resultTone: 'neutral' })
+  })
+})
+
+describe('updatesResult', () => {
+  const answered = [{ name: 'winget' as const }, { name: 'choco' as const }]
+
+  it('reports no package manager as neutral, never as up to date', () => {
+    expect(
+      updatesResult(t, {
+        pending: 0,
+        major: 0,
+        packageManagerAvailable: false,
+        managers: [],
+        locale: 'en'
+      })
+    ).toEqual({ result: 'checks.results.updatesNoManager', resultTone: 'neutral' })
+  })
+
+  it('reports a manager that did not answer as an incomplete check', () => {
+    expect(
+      updatesResult(t, {
+        pending: 0,
+        major: 0,
+        packageManagerAvailable: true,
+        managers: [
+          { name: 'winget', error: 'timed out' },
+          { name: 'choco', error: 'failed' }
+        ],
+        locale: 'en'
+      })
+    ).toEqual({
+      result: 'checks.results.updatesIncomplete({"managers":"winget and Chocolatey"})',
+      resultTone: 'neutral'
+    })
+  })
+
+  it('reports ok only when every manager answered and nothing is pending', () => {
+    expect(
+      updatesResult(t, {
+        pending: 0,
+        major: 0,
+        packageManagerAvailable: true,
+        managers: answered,
+        locale: 'en'
+      })
+    ).toEqual({ result: 'checks.results.updatesNone', resultTone: 'ok' })
+  })
+
+  it('reports pending updates, with the major ones, as recommended', () => {
+    expect(
+      updatesResult(t, {
+        pending: 3,
+        major: 1,
+        packageManagerAvailable: true,
+        managers: answered,
+        locale: 'en'
+      })
+    ).toEqual({
+      result:
+        'checks.results.updatesPending({"count":3}) · checks.results.updatesMajor({"count":1})',
+      resultTone: 'recommended'
+    })
+    expect(
+      updatesResult(t, {
+        pending: 2,
+        major: 0,
+        packageManagerAvailable: true,
+        managers: answered,
+        locale: 'en'
+      }).result
+    ).toBe('checks.results.updatesPending({"count":2})')
   })
 })

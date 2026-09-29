@@ -23,7 +23,8 @@ import {
   firewallSummary,
   isRecommended,
   riskTone,
-  sortByRisk
+  sortByRisk,
+  summaryTone
 } from '@/components/firewall/firewall-view'
 import { icons } from '@/lib/icons'
 import { formatCount, formatDateTime } from '@/lib/protection-format'
@@ -189,6 +190,7 @@ export function FirewallAuditPage() {
   )
 
   const summary = firewallSummary(rules)
+  const headingTone = summaryTone(summary, truncated)
   const selectedRules = rules.filter((r) => r.selected)
   const selectedCount = selectedRules.length
   const SelectStaleIcon = icons.selectStale
@@ -341,14 +343,18 @@ export function FirewallAuditPage() {
             <div className="min-w-0 flex-[1_1_320px]">
               <h2
                 className={
-                  summary.flagged > 0
+                  headingTone === 'flagged'
                     ? 'm-0 font-[family-name:var(--font-display)] text-[length:var(--text-20)] leading-[1.25] font-semibold tracking-[-0.01em] tabular-nums'
-                    : 'm-0 font-[family-name:var(--font-display)] text-[length:var(--text-15)] leading-[1.3] font-semibold text-[var(--signal-ok-text)]'
+                    : headingTone === 'ok'
+                      ? 'm-0 font-[family-name:var(--font-display)] text-[length:var(--text-15)] leading-[1.3] font-semibold text-[var(--signal-ok-text)]'
+                      : 'm-0 font-[family-name:var(--font-display)] text-[length:var(--text-15)] leading-[1.3] font-semibold text-[var(--text-primary)]'
                 }
               >
-                {summary.flagged > 0
+                {headingTone === 'flagged'
                   ? t('summaryTitle', { count: summary.flagged })
-                  : t('summaryNone')}
+                  : headingTone === 'ok'
+                    ? t('summaryNone')
+                    : t('summaryNonePartial')}
               </h2>
               <p className="mt-1 text-[length:var(--text-13)] text-[var(--text-secondary)] tabular-nums">
                 {t('summaryFacts', {

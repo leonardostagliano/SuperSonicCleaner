@@ -71,6 +71,8 @@
       "updatesNotChecked": "Non ancora controllati in questa sessione",
       "updatesAutoOff": "Controllo automatico disattivato",
       "updatesNone": "Nessun aggiornamento disponibile",
+      "updatesNoManager": "Nessun gestore di pacchetti disponibile",
+      "updatesIncomplete": "Controllo incompleto: {{managers}}",
       "updatesPending_one": "{{count}} disponibile",
       "updatesPending_other": "{{count}} disponibili",
       "updatesMajor_one": "{{count}} principale",
