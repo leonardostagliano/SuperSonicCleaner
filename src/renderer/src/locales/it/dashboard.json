@@ -85,7 +85,7 @@
       "malwareThreats_one": "{{count}} minaccia da gestire",
       "malwareThreats_other": "{{count}} minacce da gestire",
       "malwareClear": "Nessuna minaccia trovata",
-      "malwareHandled_one": "{{handled}} di {{count}} rilevamento gestiti",
+      "malwareHandled_one": "{{handled}} di {{count}} rilevamento gestito",
       "malwareHandled_other": "{{handled}} di {{count}} rilevamenti gestiti",
       "malwareNever": "Non ancora eseguita",
       "cleanupNever": "Non ancora eseguita",

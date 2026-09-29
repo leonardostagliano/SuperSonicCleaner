@@ -26,6 +26,7 @@ import { formatDateTime, formatDelay } from '@/lib/cleaner-report'
 import { icons } from '@/lib/icons'
 import { formatNumber } from '@/lib/utils'
 import { usePlatform } from '@/hooks/usePlatform'
+import { STARTUP_COPY } from '@/lib/startup-copy'
 import { useStartupStore } from '@/stores/startup-store'
 import { useHistoryStore } from '@/stores/history-store'
 import { recordCheckRun } from '@/stores/check-runs-store'
@@ -340,7 +341,7 @@ export function StartupPage() {
     <div className="pulizia-page">
       <PageHeader
         title={t('pageTitle')}
-        description={t('pageDescription')}
+        description={t(STARTUP_COPY[platform].description)}
         action={
           <Button variant="ghost" icon={RefreshCw} busy={loading} onClick={handleRefresh}>
             {t('refreshButton')}
@@ -371,7 +372,7 @@ export function StartupPage() {
       )}
 
       {items.length === 0 && !loading && !error && (
-        <EmptyState title={t('emptyStateTitle')} description={t('emptyStateDescription')} />
+        <EmptyState title={t('emptyStateTitle')} description={t(STARTUP_COPY[platform].empty)} />
       )}
 
       {items.length > 0 && (

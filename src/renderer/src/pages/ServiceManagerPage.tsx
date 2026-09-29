@@ -15,6 +15,7 @@ import { Card, Section } from '@/components/ui/Card'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { Tag } from '@/components/ui/Tag'
+import { usePlatform } from '@/hooks/usePlatform'
 import { icons } from '@/lib/icons'
 import { progressText } from '@/lib/progress-label'
 import { useServiceStore } from '@/stores/service-store'
@@ -71,6 +72,7 @@ const RecommendedIcon = icons.applyRecommended
 
 export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
   const { t, i18n } = useTranslation('hardening')
+  const { platform } = usePlatform()
   const locale = i18n.language
   const services = useServiceStore((s) => s.services)
   const scanning = useServiceStore((s) => s.scanning)
@@ -551,7 +553,11 @@ export function ServiceManagerPage({ embedded }: { embedded?: boolean }) {
             ? t('serviceManager.confirmEnableDescription', {
                 startType: t(START_TYPE_KEY_MAP[enableStartType])
               })
-            : t('serviceManager.confirmDescription')
+            : t(
+                platform === 'win32'
+                  ? 'serviceManager.confirmDescription'
+                  : 'serviceManager.confirmDescriptionOther'
+              )
         }
         details={confirmTargets.map((s) => s.displayName).join('\n')}
         confirmLabel={t(
@@ -580,6 +586,8 @@ function ApplyReceipt({
   appliedAt: string | null
 }) {
   const { t, i18n } = useTranslation('hardening')
+  // Only Windows records the change in the Recovery Centre; elsewhere this page undoes it.
+  const recoverable = usePlatform().platform === 'win32'
   const failures = result.errors.map((e) => `${e.displayName || e.name}: ${e.reason}`).join('; ')
   return (
     <Receipt
@@ -594,14 +602,18 @@ function ApplyReceipt({
       })}
       facts={[
         appliedAt ? formatDateTime(appliedAt, i18n.language) : '',
-        t('serviceManager.receiptReversible')
+        t(
+          recoverable ? 'serviceManager.receiptReversible' : 'serviceManager.receiptReversibleOther'
+        )
       ]}
       skipped={
         result.failed > 0
           ? t('serviceManager.receiptFailed', { count: result.failed, list: failures })
           : undefined
       }
-      links={<Link to="/recovery">{t('serviceManager.openRecovery')}</Link>}
+      links={
+        recoverable ? <Link to="/recovery">{t('serviceManager.openRecovery')}</Link> : undefined
+      }
     />
   )
 }

@@ -1,6 +1,8 @@
 {
   "pageTitle": "Startup Manager",
   "pageDescription": "Programs that start when you sign in, read from the registry, the Startup folder and Task Scheduler. Disabling an entry does not uninstall the program; the impact is estimated from the app name.",
+  "pageDescriptionMac": "Programs that start when you sign in, read from the LaunchAgents folders and the login items. Disabling an entry does not uninstall the program; the impact depends on where the entry is found.",
+  "pageDescriptionLinux": "Programs that start when you sign in, read from the autostart folder, the systemd user services and the @reboot cron entries. Disabling an entry does not uninstall the program; the impact depends on where the entry is found.",
   "refreshButton": "Refresh",
   "listTitle": "Startup programs",
   "listMeta": "{{active}} active · {{disabled}} disabled",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "The last boot has no per-app timings.",
   "emptyStateTitle": "No startup programs in the locations read",
   "emptyStateDescription": "The registry, the Startup folder and Task Scheduler contain no startup entries.",
+  "emptyStateDescriptionMac": "The LaunchAgents folders and the login items contain no startup entries.",
+  "emptyStateDescriptionLinux": "The autostart folder, the systemd user services and cron contain no startup entries.",
   "dismissError": "Close",
   "toastFailedToEnable": "Could not enable {{name}}",
   "toastFailedToDisable": "Could not disable {{name}}",

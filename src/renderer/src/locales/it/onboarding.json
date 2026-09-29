@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner analizza file temporanei, cache e voci di registro, gestisce le app all'avvio e mostra lo stato del sistema. Niente viene modificato senza la tua conferma.",
   "welcomeDescriptionOther": "SuperSonicCleaner analizza file temporanei e cache, gestisce le app all'avvio e mostra lo stato del sistema. Niente viene modificato senza la tua conferma.",
   "factsLabel": "Come funziona",
-  "factPreview": "Anteprima prima di ogni pulizia",
+  "factPreview": "Anteprima prima di ogni pulizia manuale; la pulizia senza anteprima chiede conferma",
   "factRegistryBackup": "Backup del registro prima delle correzioni",
   "factAi": "Analisi AI facoltativa, solo su dati anonimi",
   "changeLanguage": "Cambia lingua",

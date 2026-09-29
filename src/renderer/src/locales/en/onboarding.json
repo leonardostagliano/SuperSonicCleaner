@@ -7,7 +7,7 @@
   "welcomeDescriptionWindows": "SuperSonicCleaner scans temporary files, caches and registry entries, manages startup apps and shows the state of the system. Nothing changes without your confirmation.",
   "welcomeDescriptionOther": "SuperSonicCleaner scans temporary files and caches, manages startup apps and shows the state of the system. Nothing changes without your confirmation.",
   "factsLabel": "How it works",
-  "factPreview": "A preview before every cleanup",
+  "factPreview": "A preview before every manual cleanup; cleaning without a preview asks for confirmation",
   "factRegistryBackup": "A registry backup before every fix",
   "factAi": "Optional AI analysis, on anonymous data only",
   "changeLanguage": "Change language",

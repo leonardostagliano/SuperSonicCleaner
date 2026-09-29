@@ -1,6 +1,8 @@
 {
   "pageTitle": "Gestione avvio",
   "pageDescription": "Programmi che si avviano all'accesso, letti dal registro, dalla cartella Esecuzione automatica e dall'Utilità di pianificazione. Disattivare una voce non disinstalla il programma; l'impatto è stimato dal nome dell'app.",
+  "pageDescriptionMac": "Programmi che si avviano all'accesso, letti dalle cartelle LaunchAgents e dagli elementi login. Disattivare una voce non disinstalla il programma; l'impatto dipende da dove si trova la voce.",
+  "pageDescriptionLinux": "Programmi che si avviano all'accesso, letti dalla cartella autostart, dai servizi utente di systemd e dalle voci @reboot di cron. Disattivare una voce non disinstalla il programma; l'impatto dipende da dove si trova la voce.",
   "refreshButton": "Aggiorna",
   "listTitle": "Programmi all'avvio",
   "listMeta": "{{active}} attivi · {{disabled}} disattivati",
@@ -51,6 +53,8 @@
   "chartNoPerAppData": "L'ultimo avvio non riporta tempi per singola app.",
   "emptyStateTitle": "Nessun programma all'avvio nelle posizioni lette",
   "emptyStateDescription": "Registro, cartella Esecuzione automatica e Utilità di pianificazione non contengono voci di avvio.",
+  "emptyStateDescriptionMac": "Le cartelle LaunchAgents e gli elementi login non contengono voci di avvio.",
+  "emptyStateDescriptionLinux": "La cartella autostart, i servizi utente di systemd e cron non contengono voci di avvio.",
   "dismissError": "Chiudi",
   "toastFailedToEnable": "Impossibile attivare {{name}}",
   "toastFailedToDisable": "Impossibile disattivare {{name}}",
