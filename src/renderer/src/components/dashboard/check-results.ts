@@ -5,6 +5,8 @@
 // stores, so it can be tested directly.
 import type { TFunction } from 'i18next'
 import type { ScanHistoryEntry } from '@shared/types'
+import { formatBytes } from '@/lib/format'
+import { formatCount } from './when'
 
 export type ResultTone = 'neutral' | 'recommended' | 'ok' | 'danger'
 
@@ -70,4 +72,36 @@ export function driversResult(
   if (hasRecordedRun)
     return { result: t('checks.results.driversFound', { count: 0 }), resultTone: 'neutral' }
   return { result: t('checks.results.driversNever'), resultTone: 'neutral' }
+}
+
+/**
+ * The cleanup row's result text. Every completed analysis records a check run, and so
+ * does Home's "Analyze and clean", which only analyses: when that run is newer than the
+ * last cleanup in history (or there is none), the row says the system was analysed and
+ * nothing was cleaned, so the text agrees with the `when` date next to it.
+ */
+export function cleanupResult(
+  t: TFunction,
+  params: {
+    entry: Pick<ScanHistoryEntry, 'timestamp' | 'totalSpaceSaved' | 'totalItemsCleaned'> | null
+    lastRun: number | null
+    locale: string
+  }
+): { result: string; resultTone: ResultTone } {
+  const { entry, lastRun, locale } = params
+  const cleaned = entry ? new Date(entry.timestamp).getTime() : null
+  if (entry && (lastRun === null || cleaned! >= lastRun))
+    return {
+      result:
+        entry.totalSpaceSaved > 0
+          ? t('checks.results.freed', { size: formatBytes(entry.totalSpaceSaved, locale) })
+          : t('checks.results.itemsCleaned', {
+              count: entry.totalItemsCleaned,
+              n: formatCount(entry.totalItemsCleaned, locale)
+            }),
+      resultTone: 'neutral'
+    }
+  if (lastRun !== null)
+    return { result: t('checks.results.cleanupAnalyzed'), resultTone: 'neutral' }
+  return { result: t('checks.results.cleanupNever'), resultTone: 'neutral' }
 }

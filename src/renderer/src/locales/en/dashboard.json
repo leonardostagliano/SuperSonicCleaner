@@ -87,6 +87,7 @@
       "malwareHandled_other": "{{handled}} of {{count}} detections handled",
       "malwareNever": "Not run yet",
       "cleanupNever": "Not run yet",
+      "cleanupAnalyzed": "Analyzed, nothing cleaned",
       "freed": "{{size}} freed",
       "itemsCleaned_one": "{{n}} item cleaned",
       "itemsCleaned_other": "{{n}} items cleaned",

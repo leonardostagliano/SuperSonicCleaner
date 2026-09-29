@@ -203,6 +203,18 @@ describe('cleaner scan lifecycle', () => {
     expect(lastCheckRun('cleanup')).toEqual(expect.any(Number))
   })
 
+  it('does not record a cleanup check when the run was cancelled', async () => {
+    const system = deferred<ScanResult[]>()
+    systemScan.mockReturnValueOnce(system.promise)
+    const running = startCleanerScan(categories)
+    await Promise.resolve()
+    cancelCleanerScan()
+    system.resolve(result(CleanerType.System, 'only'))
+    await running
+    expect(useScanStore.getState().status).toBe(ScanStatus.Complete)
+    expect(lastCheckRun('cleanup')).toBeNull()
+  })
+
   it('does not record a cleanup check for a scan cancelled before anything completed', async () => {
     const running = startCleanerScan(categories)
     cancelCleanerScan()

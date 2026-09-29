@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { TFunction } from 'i18next'
-import { driversResult, malwareResult } from './check-results'
+import { cleanupResult, driversResult, malwareResult } from './check-results'
 
 const t = ((key: string, params?: Record<string, unknown>) =>
   params && Object.keys(params).length
@@ -109,5 +109,66 @@ describe('driversResult', () => {
       result: 'checks.results.driversNever',
       resultTone: 'neutral'
     })
+  })
+})
+
+describe('cleanupResult', () => {
+  const cleaned = (timestamp: string, saved: number, items: number) => ({
+    timestamp,
+    totalSpaceSaved: saved,
+    totalItemsCleaned: items
+  })
+
+  it('reports "never" when neither a run nor a cleanup was recorded', () => {
+    expect(cleanupResult(t, { entry: null, lastRun: null, locale: 'en' })).toEqual({
+      result: 'checks.results.cleanupNever',
+      resultTone: 'neutral'
+    })
+  })
+
+  it('reports an analysis with no cleanup as analysed, not "never"', () => {
+    expect(
+      cleanupResult(t, { entry: null, lastRun: Date.parse('2026-09-28T10:00:00Z'), locale: 'en' })
+    ).toEqual({ result: 'checks.results.cleanupAnalyzed', resultTone: 'neutral' })
+  })
+
+  it('reports what the last cleanup freed or cleaned when no run is recorded', () => {
+    expect(
+      cleanupResult(t, {
+        entry: cleaned('2026-09-20T10:00:00Z', 2048, 3),
+        lastRun: null,
+        locale: 'en'
+      })
+    ).toEqual({ result: 'checks.results.freed({"size":"2.00\u00a0KB"})', resultTone: 'neutral' })
+    expect(
+      cleanupResult(t, {
+        entry: cleaned('2026-09-20T10:00:00Z', 0, 3),
+        lastRun: null,
+        locale: 'en'
+      })
+    ).toEqual({
+      result: 'checks.results.itemsCleaned({"count":3,"n":"3"})',
+      resultTone: 'neutral'
+    })
+  })
+
+  it('reports the cleanup when the recorded run is the analysis before it', () => {
+    expect(
+      cleanupResult(t, {
+        entry: cleaned('2026-09-20T10:05:00Z', 2048, 3),
+        lastRun: Date.parse('2026-09-20T10:00:00Z'),
+        locale: 'en'
+      })
+    ).toEqual({ result: 'checks.results.freed({"size":"2.00\u00a0KB"})', resultTone: 'neutral' })
+  })
+
+  it('reports an analysis newer than the last cleanup as analysed', () => {
+    expect(
+      cleanupResult(t, {
+        entry: cleaned('2026-09-20T10:00:00Z', 2048, 3),
+        lastRun: Date.parse('2026-09-28T10:00:00Z'),
+        locale: 'en'
+      })
+    ).toEqual({ result: 'checks.results.cleanupAnalyzed', resultTone: 'neutral' })
   })
 })

@@ -127,9 +127,10 @@ export function startCleanerScan(categories: CleanerScanCategory[]): Promise<voi
       if (completed > 0) currentState.setScannedAt(Date.now())
       const finished = completed === 0 && cancelRequested ? ScanStatus.Idle : ScanStatus.Complete
       currentState.setStatus(finished)
-      // Not "every category failed" (and not an empty run): the analysis must have
-      // actually produced a result, not merely finished going through the motions.
-      if (finished === ScanStatus.Complete && completed > failed.length) recordCheckRun('cleanup')
+      // Not "every category failed", not an empty run and not a cancelled one: the analysis
+      // must have actually produced a result, not merely finished going through the motions.
+      if (finished === ScanStatus.Complete && completed > failed.length && !cancelRequested)
+        recordCheckRun('cleanup')
     } catch {
       useScanStore.getState().setStatus(ScanStatus.Error)
     } finally {

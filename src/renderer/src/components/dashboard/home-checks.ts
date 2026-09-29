@@ -10,7 +10,6 @@ import {
   type CheckInput,
   type CheckState
 } from '@/lib/checks'
-import { formatBytes } from '@/lib/utils'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useHistoryStore } from '@/stores/history-store'
 import { useUpdaterStore } from '@/stores/updater-store'
@@ -18,8 +17,8 @@ import { useStartupStore } from '@/stores/startup-store'
 import { useMalwareStore } from '@/stores/malware-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { lastCheckRun } from '@/stores/check-runs-store'
-import { driversResult, malwareResult, type ResultTone } from './check-results'
-import { formatCount, formatWhen } from './when'
+import { cleanupResult, driversResult, malwareResult, type ResultTone } from './check-results'
+import { formatWhen } from './when'
 
 export type { ResultTone } from './check-results'
 
@@ -168,18 +167,12 @@ export function useHomeChecks(): { checks: HomeCheck[]; inputs: CheckInput[] } {
           sessionScan,
           hasRecordedRun: lastCheckRun('malware') !== null
         })
-      case 'cleanup': {
-        const entry = latestEntry(history, 'cleaner')
-        if (!entry) return neutral(t('checks.results.cleanupNever'))
-        return neutral(
-          entry.totalSpaceSaved > 0
-            ? t('checks.results.freed', { size: formatBytes(entry.totalSpaceSaved) })
-            : t('checks.results.itemsCleaned', {
-                count: entry.totalItemsCleaned,
-                n: formatCount(entry.totalItemsCleaned, locale)
-              })
-        )
-      }
+      case 'cleanup':
+        return cleanupResult(t, {
+          entry: latestEntry(history, 'cleaner'),
+          lastRun: lastCheckRun('cleanup'),
+          locale
+        })
       case 'registry': {
         const entry = latestEntry(history, 'registry')
         return neutral(
