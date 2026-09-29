@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Ασπίδα απορρήτου",
-    "pageDescription": "Ελέγξτε την τηλεμετρία, τις διαφημίσεις, την παρακολούθηση και τη συλλογή δεδομένων σε όλο το σύστημά σας",
+    "pageDescription": "Διαβάζει τις ρυθμίσεις τηλεμετρίας, διαφημίσεων, αναζήτησης και συγχρονισμού και τις συγκρίνει με την πιο ιδιωτική τιμή. Μια ρύθμιση αλλάζει μόνο όταν χρησιμοποιήσετε τον διακόπτη της ή επιβεβαιώσετε· οι περισσότερες μπορούν να επανέλθουν στην προεπιλογή.",
     "scanButton": "Σάρωση",
-    "scanProgressPreparing": "Προετοιμασία σάρωσης...",
-    "applyingProtections": "Εφαρμογή προστασιών απορρήτου...",
-    "emptyStateTitle": "Ασπίδα απορρήτου",
-    "emptyStateDescription": "Κάντε κλικ στο \"Σάρωση\" για να ελέγξετε τις ρυθμίσεις απορρήτου και ασφάλειας και να εφαρμόσετε τις προτεινόμενες ενισχύσεις.",
-    "adminWarning": "Ορισμένες ρυθμίσεις απαιτούν δικαιώματα διαχειριστή για τροποποίηση. Εκτελέστε το SuperSonicCleaner ως διαχειριστής για πλήρη προστασία.",
+    "scanProgressPreparing": "Προετοιμασία της σάρωσης",
+    "applyingProtections": "Εφαρμογή των ρυθμίσεων…",
+    "emptyStateTitle": "Οι ρυθμίσεις δεν έχουν σαρωθεί ακόμη",
+    "emptyStateDescription": "Η σάρωση διαβάζει τις ρυθμίσεις και δεν αλλάζει καμία από αυτές.",
+    "adminWarning": "Ορισμένες ρυθμίσεις μπορούν να αλλάξουν μόνο όταν το SuperSonicCleaner εκτελείται ως διαχειριστής· χωρίς αυτά τα δικαιώματα παραμένουν όπως είναι.",
     "scanFailed": "Η σάρωση απορρήτου απέτυχε",
-    "applyFailed": "Αποτυχία εφαρμογής ρυθμίσεων απορρήτου",
-    "applyFailedDescription": "Δοκιμάστε να το εκτελέσετε ως διαχειριστής",
-    "settingApplyFailed": "Αποτυχία εφαρμογής του \"{{label}}\"",
-    "settingEnabled": "Το {{label}} αποκλείστηκε",
-    "settingDisabled": "Το {{label}} επανήλθε στην προεπιλογή",
-    "settingRevertFailed": "Αποτυχία επαναφοράς του \"{{label}}\"",
+    "applyFailed": "Δεν ήταν δυνατή η εφαρμογή των ρυθμίσεων απορρήτου",
+    "applyFailedDescription": "Δοκιμάστε να εκτελέσετε την εφαρμογή ως διαχειριστής",
+    "settingApplyFailed": "Δεν ήταν δυνατή η εφαρμογή του «{{label}}»",
+    "settingEnabled": "Εφαρμόστηκε: {{label}}",
+    "settingDisabled": "Επανήλθε στην προεπιλογή: {{label}}",
+    "settingRevertFailed": "Δεν ήταν δυνατή η επαναφορά του «{{label}}»",
     "settingRevertFailedGeneric": "Αποτυχία επαναφοράς ρύθμισης απορρήτου",
     "settingApplyFailedGeneric": "Αποτυχία εφαρμογής ρύθμισης απορρήτου",
-    "ipcCallFailed": "Η κλήση IPC απέτυχε — δοκιμάστε να το εκτελέσετε ως διαχειριστής",
+    "ipcCallFailed": "Η κλήση απέτυχε: δοκιμάστε να εκτελέσετε την εφαρμογή ως διαχειριστής",
     "allSettingsLabel": "Όλες οι ρυθμίσεις",
     "unknownError": "Άγνωστο σφάλμα",
-    "requiresSettingEnabled": "Ενεργοποιήστε πρώτα το \"{{label}}\"",
-    "adminRequired": "Δοκιμάστε να το εκτελέσετε ως διαχειριστής",
-    "settingNotApplied": "Το σύστημα δεν ανέφερε την αλλαγή — ενδέχεται να απαιτείται επανεκκίνηση ή η ρύθμιση να διαχειρίζεται από άλλο προφίλ"
+    "requiresSettingEnabled": "Ενεργοποιήστε πρώτα το «{{label}}»",
+    "adminRequired": "Δοκιμάστε να εκτελέσετε την εφαρμογή ως διαχειριστής",
+    "settingNotApplied": "Το σύστημα δεν ανέφερε την αλλαγή: ενδέχεται να απαιτείται επανεκκίνηση, ή η ρύθμιση να διαχειρίζεται από άλλο προφίλ.",
+    "rescanButton": "Σάρωση ξανά",
+    "scanningButton": "Σάρωση…",
+    "applyRecommended_one": "Εφαρμογή {{count}} προτεινόμενης αλλαγής",
+    "applyRecommended_other": "Εφαρμογή {{count}} προτεινόμενων αλλαγών",
+    "summaryTitle_one": "{{count}} ρύθμιση προς αλλαγή",
+    "summaryTitle_other": "{{count}} ρυθμίσεις προς αλλαγή",
+    "summaryNone": "Όλες οι {{total}} ρυθμίσεις έχουν ήδη την πιο ιδιωτική τιμή",
+    "summaryFacts": "{{protected}} από {{total}} έχουν ήδη την πιο ιδιωτική τιμή · {{categories}} κατηγορίες",
+    "categoryMeta_one": "{{count}} προς αλλαγή",
+    "categoryMeta_other": "{{count}} προς αλλαγή",
+    "categoryAllSet": "όλα είναι ήδη ρυθμισμένα",
+    "categoryApply_one": "Εφαρμογή {{count}}",
+    "categoryApply_other": "Εφαρμογή {{count}}",
+    "categoryShow": "Εμφάνιση",
+    "categoryHide": "Απόκρυψη",
+    "adminTag": "Απαιτεί διαχειριστή",
+    "notReversibleTag": "Μη αναστρέψιμο",
+    "scanProgressTitle": "Η σάρωση βρίσκεται σε εξέλιξη",
+    "scanProgressCount": "{{current}} από {{total}}",
+    "scanProgressCategory": "Έλεγχος: {{category}}",
+    "scanProgressLabel": "Πρόοδος σάρωσης",
+    "applyingLabel": "Πρόοδος εφαρμογής",
+    "receiptTitle": "Οι ρυθμίσεις εφαρμόστηκαν",
+    "receiptApplied_one": "{{count}} ρύθμιση άλλαξε",
+    "receiptApplied_other": "{{count}} ρυθμίσεις άλλαξαν",
+    "receiptReversible": "μπορεί να επαναφερθεί από τους διακόπτες",
+    "receiptFailed_one": "{{count}} δεν εφαρμόστηκε: ο λόγος αναφέρεται παρακάτω.",
+    "receiptFailed_other": "{{count}} δεν εφαρμόστηκαν: οι λόγοι αναφέρονται παρακάτω.",
+    "receiptFailedAdmin_one": "{{count}} δεν εφαρμόστηκε: ενδέχεται να απαιτείται εκτέλεση της εφαρμογής ως διαχειριστής. Ο λόγος αναφέρεται παρακάτω.",
+    "receiptFailedAdmin_other": "{{count}} δεν εφαρμόστηκαν: ενδέχεται να απαιτείται εκτέλεση της εφαρμογής ως διαχειριστής. Οι λόγοι αναφέρονται παρακάτω.",
+    "failedHeading": "Ρυθμίσεις που δεν εφαρμόστηκαν",
+    "failedColumnSetting": "Ρύθμιση",
+    "failedColumnReason": "Λόγος",
+    "confirmTitle_one": "Αλλαγή {{count}} ρύθμισης;",
+    "confirmTitle_other": "Αλλαγή {{count}} ρυθμίσεων;",
+    "confirmDescription": "Οι αναφερόμενες ρυθμίσεις αλλάζουν στην πιο ιδιωτική τιμή. Μπορούν να επανέλθουν στην προεπιλογή από τους διακόπτες αυτής της σελίδας.",
+    "confirmDescriptionIrreversible_one": "Οι αναφερόμενες ρυθμίσεις αλλάζουν στην πιο ιδιωτική τιμή. {{count}} δεν μπορεί να επανέλθει στην προεπιλογή από αυτή τη σελίδα.",
+    "confirmDescriptionIrreversible_other": "Οι αναφερόμενες ρυθμίσεις αλλάζουν στην πιο ιδιωτική τιμή. {{count}} δεν μπορούν να επανέλθουν στην προεπιλογή από αυτή τη σελίδα.",
+    "confirmLabel_one": "Αλλαγή {{count}} ρύθμισης",
+    "confirmLabel_other": "Αλλαγή {{count}} ρυθμίσεων",
+    "settings": {
+      "telemetry-level": {
+        "label": "Τηλεμετρία των Windows",
+        "description": "Ορίστε τη συλλογή διαγνωστικών δεδομένων στο ελάχιστο (μόνο επίπεδο ασφάλειας)"
+      },
+      "activity-history": {
+        "label": "Ιστορικό δραστηριότητας",
+        "description": "Εμποδίστε τα Windows να παρακολουθούν και να συγχρονίζουν τη χρήση εφαρμογών και αρχείων"
+      },
+      "publish-activity": {
+        "label": "Δημοσίευση δραστηριοτήτων χρήστη",
+        "description": "Εμποδίστε τα Windows να δημοσιεύουν τις δραστηριότητές σας στη Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Προτροπές σχολίων",
+        "description": "Απενεργοποιήστε τις περιοδικές προτροπές σχολίων και τις έρευνες της Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Δεδομένα χειρόγραφης εισαγωγής",
+        "description": "Εμποδίστε την αποστολή δεδομένων χειρόγραφης εισαγωγής και πληκτρολόγησης στη Microsoft"
+      },
+      "input-personalization": {
+        "label": "Εξατομίκευση εισαγωγής",
+        "description": "Εμποδίστε τη συλλογή δεδομένων πληκτρολόγησης και γραφής για εξατομίκευση"
+      },
+      "tailored-experiences": {
+        "label": "Εξατομικευμένες εμπειρίες",
+        "description": "Εμποδίστε τη Microsoft να χρησιμοποιεί διαγνωστικά δεδομένα για εξατομίκευση συμβουλών και διαφημίσεων"
+      },
+      "app-launch-tracking": {
+        "label": "Παρακολούθηση εκκίνησης εφαρμογών",
+        "description": "Εμποδίστε τα Windows να παρακολουθούν ποιες εφαρμογές ανοίγετε, για την προσαρμογή του μενού Έναρξη"
+      },
+      "advertising-id": {
+        "label": "Αναγνωριστικό διαφήμισης",
+        "description": "Απενεργοποιήστε το μοναδικό αναγνωριστικό διαφήμισης που χρησιμοποιούν οι εφαρμογές για να σας παρακολουθούν"
+      },
+      "suggested-content": {
+        "label": "Προτεινόμενο περιεχόμενο στις Ρυθμίσεις",
+        "description": "Εμποδίστε τη Microsoft να εμφανίζει προτάσεις εφαρμογών και διαφημίσεις στις Ρυθμίσεις"
+      },
+      "tips-notifications": {
+        "label": "Συμβουλές και προτάσεις",
+        "description": "Απενεργοποιήστε τις ειδοποιήσεις συμβουλών, κόλπων και προτάσεων των Windows"
+      },
+      "start-suggestions": {
+        "label": "Προτάσεις στο μενού Έναρξη",
+        "description": "Απενεργοποιήστε τις προτάσεις εφαρμογών (διαφημίσεις) στο μενού Έναρξη"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight στην οθόνη κλειδώματος",
+        "description": "Απενεργοποιήστε τις διαφημίσεις και τις προτάσεις του Microsoft Spotlight στην οθόνη κλειδώματος"
+      },
+      "silently-installed-apps": {
+        "label": "Εφαρμογές που εγκαθίστανται αθόρυβα",
+        "description": "Εμποδίστε τα Windows να εγκαθιστούν αυτόματα προωθούμενες εφαρμογές"
+      },
+      "preinstalled-apps": {
+        "label": "Προτάσεις προεγκατεστημένων εφαρμογών",
+        "description": "Εμποδίστε τα Windows να προτείνουν προεγκατεστημένες εφαρμογές που δεν έχετε χρησιμοποιήσει"
+      },
+      "bing-start-menu": {
+        "label": "Bing στο μενού Έναρξη",
+        "description": "Εμποδίστε την αποστολή στο Bing των αναζητήσεων που πληκτρολογείτε στο μενού Έναρξη"
+      },
+      "bing-web-search": {
+        "label": "Αποτελέσματα ιστού Bing",
+        "description": "Απενεργοποιήστε τα αποτελέσματα ιστού στην Αναζήτηση Windows, ώστε οι αναζητήσεις να παραμένουν σε αυτόν τον υπολογιστή"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Απενεργοποιήστε την Cortana, η οποία εκτελείται στο παρασκήνιο και συλλέγει δεδομένα"
+      },
+      "search-highlights": {
+        "label": "Κορυφαίες αναζητήσεις",
+        "description": "Απενεργοποιήστε τις δημοφιλείς προτάσεις αναζήτησης και το περιεχόμενο ιστού στο πλαίσιο αναζήτησης"
+      },
+      "store-search-suggestions": {
+        "label": "Προτάσεις αναζήτησης στο Store",
+        "description": "Απενεργοποιήστε τις προτάσεις αναζήτησης του Microsoft Store, οι οποίες στέλνουν τα ερωτήματά σας στη Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Συγχρονισμός προχείρου στο cloud",
+        "description": "Εμποδίστε τον συγχρονισμό δεδομένων του προχείρου μεταξύ συσκευών μέσω cloud"
+      },
+      "clipboard-history": {
+        "label": "Ιστορικό προχείρου",
+        "description": "Απενεργοποιήστε το ιστορικό προχείρου, το οποίο αποθηκεύει αντιγραμμένο κείμενο και εικόνες"
+      },
+      "settings-sync": {
+        "label": "Συγχρονισμός ρυθμίσεων",
+        "description": "Εμποδίστε τον συγχρονισμό ρυθμίσεων, θεμάτων και κωδικών πρόσβασης των Windows με τον λογαριασμό σας Microsoft"
+      },
+      "find-my-device": {
+        "label": "Εύρεση της συσκευής μου",
+        "description": "Απενεργοποιήστε την παρακολούθηση συσκευής βάσει τοποθεσίας από τη Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Απενεργοποιήστε τον βοηθό AI Microsoft Copilot σε όλα τα Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Απενεργοποιήστε το Windows Recall, το ιστορικό στιγμιότυπων οθόνης με AI που καταγράφει ό,τι εμφανίζεται στην οθόνη"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Απενεργοποιήστε την ανάλυση AI του Click to Do για το κείμενο και τις εικόνες στην οθόνη"
+      },
+      "ai-service-autostart": {
+        "label": "Αυτόματη εκκίνηση υπηρεσιών AI",
+        "description": "Εμποδίστε τις υπηρεσίες AI να ξεκινούν αυτόματα στο παρασκήνιο"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Απενεργοποιήστε τις λειτουργίες AI του Edge για σύνθεση και αναδιατύπωση κειμένου"
+      },
+      "paint-ai": {
+        "label": "Λειτουργίες AI στο Paint",
+        "description": "Απενεργοποιήστε τις λειτουργίες δημιουργίας εικόνων με AI στο Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Λειτουργίες AI στο Notepad",
+        "description": "Απενεργοποιήστε τις λειτουργίες αναδιατύπωσης κειμένου με AI στο Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "Υπηρεσία DiagTrack",
+        "description": "Απενεργοποιήστε την υπηρεσία Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "Υπηρεσία WAP Push",
+        "description": "Απενεργοποιήστε την υπηρεσία δρομολόγησης μηνυμάτων WAP Push που χρησιμοποιείται για τηλεμετρία"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Απενεργοποιήστε την κοινή χρήση ενημερώσεων Windows μεταξύ ομότιμων, ώστε αυτός ο υπολογιστής να μην ανεβάζει δεδομένα ενημέρωσης σε άλλες συσκευές"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Απενεργοποιήστε το Downloaded Maps Manager, μια υπηρεσία παρασκηνίου που οι περισσότεροι υπολογιστές δεν χρειάζονται"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Απενεργοποιήστε την εργασία τηλεμετρίας της Microsoft που συλλέγει δεδομένα συμβατότητας"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Απενεργοποιήστε την εργασία παρασκηνίου που ανεβάζει τηλεμετρία προγραμμάτων"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Απενεργοποιήστε τη συλλογή τηλεμετρίας που γίνεται μέσω του proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Απενεργοποιήστε την αποστολή δεδομένων του Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "Δεδομένα χρήσης USB (CEIP)",
+        "description": "Απενεργοποιήστε τη συλλογή τηλεμετρίας σχετικά με τη χρήση συσκευών USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Απενεργοποιήστε τη συλλογή και αποστολή διαγνωστικών δεδομένων δίσκου"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Απενεργοποιήστε την εργασία τηλεμετρίας διαχείρισης συσκευών για σχόλια"
+      },
+      "task-maps-update": {
+        "label": "Εργασία ενημέρωσης χαρτών",
+        "description": "Απενεργοποιήστε την αυτόματη λήψη δεδομένων χαρτών στο παρασκήνιο"
+      },
+      "task-maps-toast": {
+        "label": "Εργασία ειδοποιήσεων χαρτών",
+        "description": "Απενεργοποιήστε την εργασία ειδοποιήσεων χαρτών"
+      },
+      "edge-metrics": {
+        "label": "Αναφορά χρήσης στο Edge",
+        "description": "Εμποδίστε το Edge να στέλνει μετρήσεις χρήσης και κατάρρευσης στη Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Συλλογή πληροφοριών ιστοτόπων στο Edge",
+        "description": "Εμποδίστε το Edge να στέλνει τις διευθύνσεις των ιστοτόπων που επισκέπτεστε στη Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Αναφορά εξατομίκευσης στο Edge",
+        "description": "Εμποδίστε το Edge να στέλνει το ιστορικό περιήγησής σας για εξατομίκευση διαφημίσεων"
+      },
+      "edge-copilot-cdp": {
+        "label": "Πρόσβαση του Copilot στη σελίδα στο Edge (CDP)",
+        "description": "Εμποδίστε το Copilot να διαβάζει το περιεχόμενο της σελίδας μέσω του Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Πλαίσιο σελίδας του Copilot στο Edge",
+        "description": "Εμποδίστε το Copilot να χρησιμοποιεί το πλαίσιο της σελίδας για ανάλυση περιεχομένου"
+      },
+      "edge-discover": {
+        "label": "Σάρωση σελίδων από το Edge Discover",
+        "description": "Σταματήστε τη λειτουργία Discover από τη σάρωση περιεχομένου σελίδων"
+      },
+      "edge-sidebar": {
+        "label": "Πλαϊνή γραμμή του Edge",
+        "description": "Απενεργοποιήστε την πλαϊνή γραμμή του Edge και τη συλλογή δεδομένων που κάνει στο παρασκήνιο"
+      },
+      "edge-shopping": {
+        "label": "Βοηθός αγορών στο Edge",
+        "description": "Απενεργοποιήστε τον ιχνηλάτη σύγκρισης τιμών στο Edge"
+      },
+      "chrome-metrics": {
+        "label": "Αναφορά χρήσης στο Chrome",
+        "description": "Εμποδίστε το Chrome να στέλνει μετρήσεις χρήσης και κατάρρευσης στη Google"
+      },
+      "chrome-feedback": {
+        "label": "Σχόλια χρηστών Chrome",
+        "description": "Εμποδίστε το Chrome να συλλέγει και να στέλνει δεδομένα σχολίων χρηστών"
+      },
+      "chrome-extended-reporting": {
+        "label": "Εκτεταμένη Safe Browsing στο Chrome",
+        "description": "Εμποδίστε το Chrome να στέλνει εκτεταμένες αναφορές URL και λήψεων στη Google"
+      },
+      "firefox-telemetry": {
+        "label": "Τηλεμετρία Firefox",
+        "description": "Εμποδίστε το Firefox να συλλέγει δεδομένα τηλεμετρίας και να τα ανεβάζει στη Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Προεπιλεγμένος πράκτορας προγράμματος περιήγησης Firefox",
+        "description": "Απενεργοποιήστε τον πράκτορα παρασκηνίου που αναφέρει δεδομένα χρήσης του προγράμματος περιήγησης στη Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Διαγνωστικά και δεδομένα χρήσης",
+        "description": "Σταματήστε την κοινή χρήση διαγνωστικών δεδομένων και δεδομένων χρήσης με την Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Αναλυτικά στοιχεία Siri",
+        "description": "Σταματήστε τη συλλογή αναλυτικών στοιχείων και δεδομένων βελτίωσης της Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Κοινή χρήση δεδομένων υγείας",
+        "description": "Σταματήστε την κοινή χρήση δεδομένων υγείας με την Apple για έρευνα"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Ορατότητα AirDrop",
+        "description": "Ορίστε το AirDrop σε Κανένας: δεν μπορείτε να λαμβάνετε αρχεία μέσω AirDrop έως ότου το ενεργοποιήσετε ξανά στις Ρυθμίσεις Συστήματος"
+      },
+      "macos-crash-reporter": {
+        "label": "Αναφορά κατάρρευσης",
+        "description": "Σταματήστε την αυτόματη αποστολή αναφορών από το εργαλείο αναφοράς κατάρρευσης"
+      },
+      "macos-ad-tracking": {
+        "label": "Εξατομικευμένες διαφημίσεις",
+        "description": "Περιορίστε την παρακολούθηση διαφημίσεων από την Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Προτάσεις Siri στο App Store",
+        "description": "Απενεργοποιήστε τις προτάσεις Siri στο App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Προτάσεις αναζήτησης Safari",
+        "description": "Απενεργοποιήστε τις προτάσεις αναζήτησης του Safari που στέλνονται στην Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Προτάσεις Spotlight",
+        "description": "Απενεργοποιήστε τις προτάσεις ιστού του Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Προφόρτωση κορυφαίου αποτελέσματος στο Safari",
+        "description": "Εμποδίστε το Safari να προφορτώνει το κορυφαίο αποτέλεσμα αναζήτησης, κάτι που στέλνει δεδομένα περιήγησης στους ιστοτόπους"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Απενεργοποιήστε το Handoff και το κοινόχρηστο πρόχειρο: δεν θα μπορείτε πλέον να συνεχίζετε δραστηριότητες ούτε να αντιγράφετε και να επικολλάτε μεταξύ συσκευών Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Αναλυτικά στοιχεία iCloud",
+        "description": "Σταματήστε την κοινή χρήση αναλυτικών στοιχείων iCloud με την Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Καρτέλες iCloud στο Safari",
+        "description": "Απενεργοποιήστε τον συγχρονισμό καρτελών iCloud στο Safari: δεν θα βλέπετε πλέον τις καρτέλες που είναι ανοιχτές στις άλλες συσκευές σας Apple"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Απενεργοποιήστε εντελώς τη Siri: το «Hey Siri», οι φωνητικές εντολές και οι συντομεύσεις Siri θα σταματήσουν να λειτουργούν"
+      },
+      "macos-siri-dictation": {
+        "label": "Υπαγόρευση Siri",
+        "description": "Απενεργοποιήστε την υπαγόρευση: το πλήκτρο μικροφώνου στο πληκτρολόγιό σας θα σταματήσει να λειτουργεί"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Απενεργοποιήστε τις λειτουργίες AI του Apple Intelligence (macOS 15 Sequoia και νεότερα)"
+      },
+      "macos-safari-dnt": {
+        "label": "Do Not Track στο Safari",
+        "description": "Ενεργοποιήστε την κεφαλίδα Do Not Track (μη παρακολούθηση) στο Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Αναφορά χρήσης στο Chrome",
+        "description": "Εμποδίστε το Chrome να στέλνει μετρήσεις χρήσης στη Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Αναφορές Safe Browsing στο Chrome",
+        "description": "Εμποδίστε το Chrome να στέλνει εκτεταμένες αναφορές URL και λήψεων στη Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Τηλεμετρία Firefox",
+        "description": "Εμποδίστε το Firefox να συλλέγει δεδομένα τηλεμετρίας και να τα ανεβάζει στη Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Βεβαιωθείτε ότι το Gatekeeper είναι ενεργοποιημένο, ώστε να αποκλείονται οι μη επαληθευμένες εφαρμογές"
+      },
+      "macos-remote-apple-events": {
+        "label": "Απομακρυσμένα Apple Events",
+        "description": "Απενεργοποιήστε τα απομακρυσμένα Apple Events, ώστε το Mac σας να μην μπορεί να αυτοματοποιηθεί εξ αποστάσεως"
+      },
+      "macos-wake-on-network": {
+        "label": "Αφύπνιση από το δίκτυο",
+        "description": "Απενεργοποιήστε την αφύπνιση από το δίκτυο, ώστε το Mac σας να μην μπορεί να αφυπνιστεί εξ αποστάσεως"
+      },
+      "macos-guest-account": {
+        "label": "Λογαριασμός επισκέπτη",
+        "description": "Απενεργοποιήστε τον λογαριασμό επισκέπτη για να αποτρέψετε μη εξουσιοδοτημένη τοπική πρόσβαση"
+      },
+      "macos-auto-login": {
+        "label": "Αυτόματη σύνδεση",
+        "description": "Απενεργοποιήστε την αυτόματη σύνδεση, ώστε το Mac να ζητά έλεγχο ταυτότητας κατά την εκκίνηση"
+      },
+      "macos-firewall": {
+        "label": "Τείχος προστασίας εφαρμογών",
+        "description": "Ενεργοποιήστε το τείχος προστασίας εφαρμογών του macOS για τον έλεγχο εισερχόμενων συνδέσεων"
+      },
+      "macos-stealth-mode": {
+        "label": "Λειτουργία απόκρυψης",
+        "description": "Ενεργοποιήστε τη λειτουργία απόκρυψης, ώστε το Mac σας να μην απαντά σε αιτήματα δοκιμής (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Απενεργοποίηση προώθησης IP",
+        "description": "Εμποδίστε το σύστημα να προωθεί πακέτα μεταξύ των διεπαφών δικτύου"
+      },
+      "macos-block-signed-auto": {
+        "label": "Αποκλεισμός αυτόματης έγκρισης για υπογεγραμμένες εφαρμογές",
+        "description": "Εμποδίστε τις υπογεγραμμένες εφαρμογές να παρακάμπτουν αυτόματα το τείχος προστασίας"
+      },
+      "macos-remote-login": {
+        "label": "Απενεργοποίηση απομακρυσμένης σύνδεσης (SSH)",
+        "description": "Απενεργοποιήστε εντελώς τον διακομιστή SSH. Αν χρειάζεστε πρόσβαση SSH, αφήστε το απενεργοποιημένο και ενισχύστε αντ' αυτού τις ρυθμίσεις SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Απενεργοποίηση σύνδεσης root μέσω SSH",
+        "description": "Εμποδίστε την απευθείας σύνδεση ως root μέσω SSH· χρησιμοποιήστε αντ' αυτού sudo από κανονικό λογαριασμό"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Απενεργοποίηση ελέγχου ταυτότητας με κωδικό πρόσβασης SSH",
+        "description": "Επιτρέψτε μόνο έλεγχο ταυτότητας SSH βάσει κλειδιών. Ρυθμίστε πρώτα τα κλειδιά SSH, αλλιώς ενδέχεται να κλειδωθείτε έξω"
+      },
+      "macos-core-dumps": {
+        "label": "Απενεργοποίηση core dump",
+        "description": "Εμποδίστε τα core dump, τα οποία μπορούν να διαρρεύσουν ευαίσθητο περιεχόμενο μνήμης"
+      },
+      "gnome-usage-stats": {
+        "label": "Στατιστικά χρήσης",
+        "description": "Απενεργοποιήστε τη συλλογή στατιστικών χρήσης του GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Παρακολούθηση πρόσφατων αρχείων",
+        "description": "Απενεργοποιήστε την παρακολούθηση των πρόσφατα χρησιμοποιημένων αρχείων"
+      },
+      "gnome-location": {
+        "label": "Υπηρεσίες τοποθεσίας",
+        "description": "Απενεργοποιήστε τις υπηρεσίες τοποθεσίας του GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Αναφορά κατάρρευσης (Apport)",
+        "description": "Απενεργοποιήστε την αυτόματη υποβολή αναφορών κατάρρευσης"
+      },
+      "gnome-connectivity-check": {
+        "label": "Έλεγχος συνδεσιμότητας",
+        "description": "Απενεργοποιήστε τους περιοδικούς ελέγχους συνδεσιμότητας δικτύου"
+      },
+      "core-dump-disable": {
+        "label": "Απενεργοποίηση core dump",
+        "description": "Εμποδίστε τα core dump, τα οποία μπορούν να διαρρεύσουν ευαίσθητο περιεχόμενο μνήμης"
+      },
+      "ssh-root-login": {
+        "label": "Απενεργοποίηση σύνδεσης root μέσω SSH",
+        "description": "Εμποδίστε την απευθείας σύνδεση ως root μέσω SSH· χρησιμοποιήστε αντ' αυτού sudo από κανονικό λογαριασμό"
+      },
+      "ssh-password-auth": {
+        "label": "Απενεργοποίηση ελέγχου ταυτότητας με κωδικό πρόσβασης SSH",
+        "description": "Επιτρέψτε μόνο έλεγχο ταυτότητας SSH βάσει κλειδιών. Ρυθμίστε πρώτα τα κλειδιά SSH, αλλιώς ενδέχεται να κλειδωθείτε έξω"
+      },
+      "kde-usage-stats": {
+        "label": "Στατιστικά χρήσης",
+        "description": "Απενεργοποιήστε τα σχόλια χρηστών του KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Παρακολούθηση πρόσφατων αρχείων",
+        "description": "Απενεργοποιήστε το ιστορικό δραστηριότητας πρόσφατων αρχείων του KDE"
+      },
+      "kde-baloo": {
+        "label": "Ευρετηρίαση αρχείων (Baloo)",
+        "description": "Απενεργοποιήστε τον ευρετηριαστή αρχείων Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Αναφορά κατάρρευσης (DrKonqi)",
+        "description": "Απενεργοποιήστε τον χειριστή αναφορών κατάρρευσης του KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Τηλεμετρία και συλλογή δεδομένων",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Αφαίρεση ανεπιθύμητων εφαρμογών",
-    "pageDescription": "Αφαιρέστε προεγκατεστημένες εφαρμογές των Windows και ανεπιθύμητο λογισμικό OEM",
+    "pageDescription": "Εφαρμογές προεγκατεστημένες από τα Windows και τον κατασκευαστή. Μόλις αφαιρεθούν, μπορούν να επανεγκατασταθούν μόνο από το Microsoft Store.",
     "scanButton": "Σάρωση",
-    "irreversibleWarning": "Μη αναστρέψιμο — Οι εφαρμογές που αφαιρούνται μπορούν να επανεγκατασταθούν μόνο από το Microsoft Store. Ελέγξτε προσεκτικά τις επιλογές σας.",
-    "scanningPackages": "Σάρωση εγκατεστημένων πακέτων...",
-    "removingProgress": "Αφαίρεση {{current}} από {{total}}",
+    "rescanButton": "Σάρωση ξανά",
+    "irreversibleWarning": "Η αφαίρεση δεν μπορεί να αναιρεθεί από την εφαρμογή: ελέγξτε τις επιλεγμένες εφαρμογές πριν επιβεβαιώσετε.",
+    "scanningPackages": "Σάρωση εγκατεστημένων πακέτων…",
+    "removingProgress": "Αφαίρεση εφαρμογών ({{current}} από {{total}})",
+    "receiptTitle": "Η αφαίρεση ολοκληρώθηκε",
+    "removedApps_one": "{{count}} εφαρμογή αφαιρέθηκε",
+    "removedApps_other": "{{count}} εφαρμογές αφαιρέθηκαν",
+    "failedCount_one": "{{count}} απέτυχε",
+    "failedCount_other": "{{count}} απέτυχαν",
+    "reinstallFromStore": "επανεγκαθίσταται μόνο από το Microsoft Store",
     "selectAll": "Επιλογή όλων",
-    "emptyStateTitle": "Δεν εντοπίστηκαν ανεπιθύμητες εφαρμογές",
-    "emptyStateDescription": "Κάντε κλικ στο \"Σάρωση\" για να βρείτε προεγκατεστημένες εφαρμογές και ανεπιθύμητο λογισμικό OEM.",
+    "filterLabel": "Κατηγορία",
+    "confirmTitle_one": "Αφαίρεση {{count}} εφαρμογής;",
+    "confirmTitle_other": "Αφαίρεση {{count}} εφαρμογών;",
+    "confirmDescription_one": "Η εφαρμογή αφαιρείται για τον χρήστη σας και, με δικαιώματα διαχειριστή, και για νέους χρήστες. Μπορεί να επανεγκατασταθεί μόνο από το Microsoft Store.",
+    "confirmDescription_other": "Οι εφαρμογές αφαιρούνται για τον χρήστη σας και, με δικαιώματα διαχειριστή, και για νέους χρήστες. Μπορούν να επανεγκατασταθούν μόνο από το Microsoft Store.",
+    "confirmLabel_one": "Αφαίρεση {{count}} εφαρμογής",
+    "confirmLabel_other": "Αφαίρεση {{count}} εφαρμογών",
+    "emptyStateTitle": "Δεν έχει σαρωθεί ακόμη",
+    "emptyStateDescription": "Δεν έγινε σάρωση προεγκατεστημένων εφαρμογών σε αυτήν τη συνεδρία.",
+    "lastRun_one": "Τελευταία αφαίρεση: {{date}}, {{count}} εφαρμογή αφαιρέθηκε.",
+    "lastRun_other": "Τελευταία αφαίρεση: {{date}}, {{count}} εφαρμογές αφαιρέθηκαν.",
+    "checkKnownTitle": "Γνωστές εφαρμογές",
+    "checkKnownDetail": "Μια λίστα εφαρμογών προεγκατεστημένων από τη Microsoft και τους κατασκευαστές (OEM)",
+    "checkInstalledTitle": "Εγκατεστημένα πακέτα",
+    "checkInstalledDetail": "Τα πακέτα εφαρμογών του χρήστη σας, σε σύγκριση με τη λίστα",
+    "checkRemovalTitle": "Αφαίρεση",
+    "checkRemovalDetail": "Για τον χρήστη σας· με δικαιώματα διαχειριστή και από το αντίγραφο που χρησιμοποιείται για νέους χρήστες",
+    "noneFoundTitle": "Καμία από τις αναφερόμενες εφαρμογές δεν είναι εγκατεστημένη",
+    "noneFoundDescription": "Οι γνωστές προεγκατεστημένες εφαρμογές δεν υπάρχουν για τον χρήστη σας.",
+    "summaryTitle_one": "Βρέθηκε {{count}} προεγκατεστημένη εφαρμογή",
+    "summaryTitle_other": "Βρέθηκαν {{count}} προεγκατεστημένες εφαρμογές",
+    "selectedCount_one": "{{count}} επιλεγμένη",
+    "selectedCount_other": "{{count}} επιλεγμένες",
+    "removeButton_one": "Αφαίρεση {{count}} εφαρμογής",
+    "removeButton_other": "Αφαίρεση {{count}} εφαρμογών",
+    "removeNone": "Αφαίρεση επιλεγμένων",
     "scanFailedToast": "Η σάρωση ανεπιθύμητων εφαρμογών απέτυχε",
     "scanFailedDescription": "Βεβαιωθείτε ότι το PowerShell είναι διαθέσιμο",
     "scanFailedError": "Αποτυχία σάρωσης για ανεπιθύμητες εφαρμογές. Βεβαιωθείτε ότι το PowerShell είναι διαθέσιμο.",
