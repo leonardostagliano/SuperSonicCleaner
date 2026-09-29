@@ -2,6 +2,9 @@ import type { DiskRepairResult } from '@shared/types'
 
 export type RepairTool = DiskRepairResult['tool']
 
+/** The label key of each tool's run button, written out so key sweeps can find it. */
+export const RUN_KEY = { dism: 'runDism', sfc: 'runSfc', chkdsk: 'runChkdsk' } as const
+
 /**
  * How a finished repair tool reads on the page: 'ok' only for a run the tool reported as
  * successful (green is for verified results), 'blocked' when it never started for lack of

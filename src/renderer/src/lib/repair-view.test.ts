@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { DiskRepairResult } from '@shared/types'
-import { repairOutcome } from './repair-view'
+import enDisk from '@/locales/en/disk.json'
+import itDisk from '@/locales/it/disk.json'
+import { RUN_KEY, repairOutcome } from './repair-view'
 
 const result = (over: Partial<DiskRepairResult>): DiskRepairResult => ({
   tool: 'sfc',
@@ -21,5 +23,14 @@ describe('repairOutcome', () => {
 
   it('treats a run blocked by missing administrator rights as not started', () => {
     expect(repairOutcome(result({ needsAdmin: true }))).toBe('blocked')
+  })
+})
+
+describe('RUN_KEY', () => {
+  it('names a run button key that exists in en and it', () => {
+    for (const key of Object.values(RUN_KEY)) {
+      expect(enDisk).toHaveProperty([key])
+      expect(itDisk).toHaveProperty([key])
+    }
   })
 })

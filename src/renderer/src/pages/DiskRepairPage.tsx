@@ -10,7 +10,7 @@ import { usePlatform } from '@/hooks/usePlatform'
 import { icons } from '@/lib/icons'
 import { progressText } from '@/lib/progress-label'
 import { formatPercent } from '@/lib/storage-tools-format'
-import { repairOutcome, type RepairTool } from '@/lib/repair-view'
+import { RUN_KEY, repairOutcome, type RepairTool } from '@/lib/repair-view'
 import { useDiskStore } from '@/stores/disk-store'
 
 /** The command-line name of each tool, as Windows writes it. */
@@ -165,7 +165,7 @@ function RepairStage({ tool, index, disabled, onRun }: RepairStageProps) {
         </div>
       </div>
       <Button className="shrink-0" busy={running} disabled={disabled} onClick={onRun}>
-        {t(`run${tool === 'dism' ? 'Dism' : tool === 'sfc' ? 'Sfc' : 'Chkdsk'}`)}
+        {t(RUN_KEY[tool])}
       </Button>
     </li>
   )
