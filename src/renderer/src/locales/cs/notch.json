@@ -15,6 +15,7 @@
   "cpuDetail": "Aktuální využití procesoru",
   "sample": "Poslední vzorek",
   "used": "{{used}} z {{total}} GB využito",
+  "free": "{{free}} GB volné",
   "waiting": "Čeká se na data v reálném čase",
   "unavailable": "Data o disku nejsou dostupná",
   "live": "Systémová měření v reálném čase",

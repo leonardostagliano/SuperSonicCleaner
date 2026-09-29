@@ -1,7 +1,7 @@
 {
   "title": "Analýza AI",
   "description": "Vyžádejte si další posouzení těchto výsledků kontroly.",
-  "hubDescription": "Další posouzení kontrol a záznamů výkonu pomocí vašeho přihlášení Codex.",
+  "hubDescription": "Odesílá do Codexu, v rámci vašeho přihlášení, pouze metadata kontroly nebo měření ze záznamů, a to jen tehdy, když spustíte analýzu z nástroje.",
   "hubPrivacy": "Kontroly sdílejí pouze anonymní metadata souborů. Záznamy sdílejí číselná měření CPU, paměti a disku s dočasnými ID procesů. Názvy, cesty, poznámky a obsah souborů zůstávají na tomto zařízení.",
   "connectionTitle": "Připojení k Codex",
   "connectionIntro": "Používejte Codex na tomto počítači. Zkontrolujte připojení a poté níže vyberte nástroj.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Dokončete kontrolu nebo uložte záznam výkonu, zapněte pro něj analýzu AI a poté ji spusťte příslušným tlačítkem. Nic se neodesílá automaticky.",
   "tools": {
     "cleaner": {
-      "title": "Vyčištění systému"
+      "title": "Vyčištění systému",
+      "dataSent": "Dočasná ID, typ souboru, velikost a přibližné stáří. Stopy soukromí jsou vyloučeny."
     },
     "largeFiles": {
-      "title": "Velké soubory"
+      "title": "Velké soubory",
+      "dataSent": "Dočasná ID, typ souboru, velikost a přibližné stáří."
     },
     "duplicates": {
-      "title": "Duplicitní soubory"
+      "title": "Duplicitní soubory",
+      "dataSent": "Dočasná ID, typ souboru, velikost, přibližné stáří a skupina duplicit."
     },
     "disk": {
-      "title": "Analýza disku"
+      "title": "Analýza disku",
+      "dataSent": "Dočasná ID, celková velikost složky a přibližné stáří."
     },
     "performance": {
-      "title": "Záznamy výkonu"
+      "title": "Záznamy výkonu",
+      "dataSent": "Číselné hodnoty CPU, paměti a disku, s dočasnými ID procesů."
     }
   },
   "enable": "Zapnout analýzu AI pro toto zobrazení",
@@ -51,5 +56,23 @@
     "low": "Nízká priorita",
     "medium": "Střední priorita",
     "high": "Vysoká priorita"
+  },
+  "toolsTitle": "Nástroje",
+  "columns": {
+    "tool": "Nástroj",
+    "dataSent": "Odeslaná data",
+    "lastRun": "Poslední spuštění",
+    "state": "Stav"
+  },
+  "lastRun": {
+    "running": "Spouští se",
+    "done": "Dokončeno v této relaci",
+    "failed": "Nezdařilo se",
+    "none": "Žádné v této relaci",
+    "perRecording": "Ukládá se ke každému analyzovanému záznamu"
+  },
+  "state": {
+    "on": "Zapnuto",
+    "off": "Vypnuto"
   }
 }

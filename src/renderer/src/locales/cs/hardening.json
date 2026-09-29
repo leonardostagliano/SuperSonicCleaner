@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Štít soukromí",
-    "pageDescription": "Mějte pod kontrolou telemetrii, reklamy, sledování a shromažďování dat v celém systému",
+    "pageDescription": "Načte nastavení telemetrie, reklam, vyhledávání a synchronizace a porovná je s nejsoukromější hodnotou. Nastavení se změní jen tehdy, když použijete jeho přepínač nebo potvrdíte změnu; většinu lze vrátit na výchozí hodnotu.",
     "scanButton": "Prohledat",
-    "scanProgressPreparing": "Příprava kontroly...",
-    "applyingProtections": "Používají se ochrany soukromí...",
-    "emptyStateTitle": "Štít soukromí",
-    "emptyStateDescription": "Kliknutím na „Prohledat“ zkontrolujete nastavení soukromí a zabezpečení a použijete doporučené zpevnění systému.",
-    "adminWarning": "Některá nastavení vyžadují ke změně oprávnění správce. Pro plnou ochranu spusťte SuperSonicCleaner jako správce.",
+    "scanProgressPreparing": "Příprava kontroly",
+    "applyingProtections": "Používají se nastavení…",
+    "emptyStateTitle": "Nastavení zatím nebyla zkontrolována",
+    "emptyStateDescription": "Kontrola načte nastavení a žádné z nich nezmění.",
+    "adminWarning": "Některá nastavení lze změnit, jen když SuperSonicCleaner běží jako správce; bez těchto oprávnění zůstávají beze změny.",
     "scanFailed": "Kontrola soukromí selhala",
     "applyFailed": "Nepodařilo se použít nastavení soukromí",
-    "applyFailedDescription": "Zkuste spustit jako správce",
+    "applyFailedDescription": "Zkuste spustit aplikaci jako správce",
     "settingApplyFailed": "Nepodařilo se použít „{{label}}“",
-    "settingEnabled": "{{label}} zablokováno",
-    "settingDisabled": "{{label}} obnoveno na výchozí hodnotu",
-    "settingRevertFailed": "Nepodařilo se vrátit „{{label}}“",
+    "settingEnabled": "Použito: {{label}}",
+    "settingDisabled": "Vráceno na výchozí hodnotu: {{label}}",
+    "settingRevertFailed": "Nepodařilo se obnovit „{{label}}“",
     "settingRevertFailedGeneric": "Nepodařilo se vrátit nastavení soukromí",
     "settingApplyFailedGeneric": "Nepodařilo se použít nastavení soukromí",
-    "ipcCallFailed": "Volání IPC selhalo — zkuste spustit jako správce",
+    "ipcCallFailed": "Volání selhalo: zkuste spustit aplikaci jako správce",
     "allSettingsLabel": "Všechna nastavení",
     "unknownError": "Neznámá chyba",
-    "requiresSettingEnabled": "Nejprve povolte „{{label}}“",
-    "adminRequired": "Zkuste spustit jako správce",
-    "settingNotApplied": "Systém změnu nepotvrdil — může být vyžadován restart nebo může být nastavení spravováno jiným profilem"
+    "requiresSettingEnabled": "Nejprve zapněte „{{label}}“",
+    "adminRequired": "Zkuste spustit aplikaci jako správce",
+    "settingNotApplied": "Systém změnu nepotvrdil: může být potřeba restart, nebo je nastavení spravováno jiným profilem.",
+    "rescanButton": "Prohledat znovu",
+    "scanningButton": "Kontroluje se…",
+    "applyRecommended_one": "Použít {{count}} doporučenou změnu",
+    "applyRecommended_other": "Použít {{count}} doporučených změn",
+    "summaryTitle_one": "{{count}} nastavení ke změně",
+    "summaryTitle_other": "{{count}} nastavení ke změně",
+    "summaryNone": "Všech {{total}} nastavení už má nejsoukromější hodnotu",
+    "summaryFacts": "{{protected}} z {{total}} už má nejsoukromější hodnotu · kategorií: {{categories}}",
+    "categoryMeta_one": "{{count}} ke změně",
+    "categoryMeta_other": "{{count}} ke změně",
+    "categoryAllSet": "vše už nastaveno",
+    "categoryApply_one": "Použít {{count}}",
+    "categoryApply_other": "Použít {{count}}",
+    "categoryShow": "Zobrazit",
+    "categoryHide": "Skrýt",
+    "adminTag": "Vyžaduje správce",
+    "notReversibleTag": "Nevratné",
+    "scanProgressTitle": "Probíhá kontrola",
+    "scanProgressCount": "{{current}} z {{total}}",
+    "scanProgressCategory": "Kontroluje se: {{category}}",
+    "scanProgressLabel": "Průběh kontroly",
+    "applyingLabel": "Průběh použití",
+    "receiptTitle": "Nastavení použita",
+    "receiptApplied_one": "{{count}} nastavení změněno",
+    "receiptApplied_other": "{{count}} nastavení změněno",
+    "receiptReversible": "lze obnovit z přepínačů",
+    "receiptFailed_one": "{{count}} nepoužito: důvod je uveden níže.",
+    "receiptFailed_other": "{{count}} nepoužito: důvody jsou uvedeny níže.",
+    "receiptFailedAdmin_one": "{{count}} nepoužito: může být potřeba spustit aplikaci jako správce. Důvod je uveden níže.",
+    "receiptFailedAdmin_other": "{{count}} nepoužito: může být potřeba spustit aplikaci jako správce. Důvody jsou uvedeny níže.",
+    "failedHeading": "Nastavení nepoužita",
+    "failedColumnSetting": "Nastavení",
+    "failedColumnReason": "Důvod",
+    "confirmTitle_one": "Změnit {{count}} nastavení?",
+    "confirmTitle_other": "Změnit {{count}} nastavení?",
+    "confirmDescription": "Uvedená nastavení se přepnou na nejsoukromější hodnotu. Na této stránce je lze vrátit na výchozí hodnotu pomocí přepínačů.",
+    "confirmDescriptionIrreversible_one": "Uvedená nastavení se přepnou na nejsoukromější hodnotu. {{count}} nelze z této stránky vrátit na výchozí hodnotu.",
+    "confirmDescriptionIrreversible_other": "Uvedená nastavení se přepnou na nejsoukromější hodnotu. {{count}} nelze z této stránky vrátit na výchozí hodnotu.",
+    "confirmLabel_one": "Změnit {{count}} nastavení",
+    "confirmLabel_other": "Změnit {{count}} nastavení",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetrie Windows",
+        "description": "Nastavte shromažďování diagnostických dat na minimum (jen úroveň zabezpečení)"
+      },
+      "activity-history": {
+        "label": "Historie aktivit",
+        "description": "Zabraňte Windows sledovat a synchronizovat používání aplikací a souborů"
+      },
+      "publish-activity": {
+        "label": "Zveřejňování aktivit uživatele",
+        "description": "Zabraňte Windows zveřejňovat vaše aktivity Microsoftu"
+      },
+      "feedback-frequency": {
+        "label": "Výzvy k hodnocení",
+        "description": "Vypněte pravidelné výzvy k hodnocení a průzkumy od Microsoftu"
+      },
+      "handwriting-telemetry": {
+        "label": "Data rukopisu",
+        "description": "Zastavte odesílání dat rukopisu a psaní na klávesnici Microsoftu"
+      },
+      "input-personalization": {
+        "label": "Personalizace vstupu",
+        "description": "Zastavte shromažďování dat o psaní a rukopisu pro personalizaci"
+      },
+      "tailored-experiences": {
+        "label": "Přizpůsobené prostředí",
+        "description": "Zabraňte Microsoftu používat diagnostická data k přizpůsobení tipů a reklam"
+      },
+      "app-launch-tracking": {
+        "label": "Sledování spouštění aplikací",
+        "description": "Zabraňte Windows sledovat, které aplikace otevíráte, kvůli úpravě nabídky Start"
+      },
+      "advertising-id": {
+        "label": "Reklamní ID",
+        "description": "Vypněte jedinečné reklamní ID, které aplikace používají k vašemu sledování"
+      },
+      "suggested-content": {
+        "label": "Navrhovaný obsah v Nastavení",
+        "description": "Zabraňte Microsoftu zobrazovat návrhy aplikací a reklamy v Nastavení"
+      },
+      "tips-notifications": {
+        "label": "Tipy a doporučení",
+        "description": "Vypněte oznámení s tipy, triky a doporučeními od Windows"
+      },
+      "start-suggestions": {
+        "label": "Doporučení v nabídce Start",
+        "description": "Vypněte doporučení aplikací (reklamy) v nabídce Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight na uzamčené obrazovce",
+        "description": "Vypněte reklamy a doporučení Microsoft Spotlight na uzamčené obrazovce"
+      },
+      "silently-installed-apps": {
+        "label": "Tiše instalované aplikace",
+        "description": "Zabraňte Windows automaticky instalovat propagované aplikace"
+      },
+      "preinstalled-apps": {
+        "label": "Doporučení předinstalovaných aplikací",
+        "description": "Zabraňte Windows doporučovat předinstalované aplikace, které jste nepoužili"
+      },
+      "bing-start-menu": {
+        "label": "Bing v nabídce Start",
+        "description": "Zabraňte odesílání hledaných výrazů zadaných v nabídce Start do Bingu"
+      },
+      "bing-web-search": {
+        "label": "Webové výsledky Bingu",
+        "description": "Vypněte webové výsledky ve Vyhledávání Windows, aby hledání zůstalo jen v tomto počítači"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Vypněte Cortanu, která běží na pozadí a shromažďuje data"
+      },
+      "search-highlights": {
+        "label": "Přehledy hledání",
+        "description": "Vypněte populární návrhy hledání a webový obsah ve vyhledávacím poli"
+      },
+      "store-search-suggestions": {
+        "label": "Návrhy hledání v Store",
+        "description": "Vypněte návrhy hledání Microsoft Store, které odesílají vaše dotazy Microsoftu"
+      },
+      "clipboard-sync": {
+        "label": "Synchronizace schránky v cloudu",
+        "description": "Zabraňte synchronizaci dat schránky mezi zařízeními přes cloud"
+      },
+      "clipboard-history": {
+        "label": "Historie schránky",
+        "description": "Vypněte historii schránky, která ukládá zkopírovaný text a obrázky"
+      },
+      "settings-sync": {
+        "label": "Synchronizace nastavení",
+        "description": "Zastavte synchronizaci nastavení, motivů a hesel Windows s vaším účtem Microsoft"
+      },
+      "find-my-device": {
+        "label": "Najít zařízení",
+        "description": "Vypněte sledování zařízení podle polohy ze strany Microsoftu"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Vypněte AI asistenta Microsoft Copilot v celém Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Vypněte Windows Recall, historii snímků obrazovky s AI, která zaznamenává vše, co se zobrazuje na obrazovce"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Vypněte AI analýzu textu a obrázků na obrazovce prováděnou funkcí Click to Do"
+      },
+      "ai-service-autostart": {
+        "label": "Automatické spouštění služeb AI",
+        "description": "Zabraňte službám AI automaticky se spouštět na pozadí"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Vypněte funkce AI Edge pro tvorbu a přepisování textu"
+      },
+      "paint-ai": {
+        "label": "Funkce AI v Paintu",
+        "description": "Vypněte funkce generování obrázků pomocí AI v Microsoft Paintu"
+      },
+      "notepad-ai": {
+        "label": "Funkce AI v Notepadu",
+        "description": "Vypněte funkce přepisování textu pomocí AI v Microsoft Notepadu"
+      },
+      "service-diagtrack": {
+        "label": "Služba DiagTrack",
+        "description": "Zakažte službu Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "Služba WAP Push",
+        "description": "Zakažte směrovací službu zpráv WAP Push používanou pro telemetrii"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Zakažte sdílení aktualizací Windows peer-to-peer, aby tento počítač neodesílal data aktualizací jiným zařízením"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Zakažte Downloaded Maps Manager, službu na pozadí, kterou většina počítačů nepotřebuje"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Zakažte telemetrickou úlohu Microsoftu, která shromažďuje data o kompatibilitě"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Zakažte úlohu na pozadí, která odesílá telemetrii programů"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Zakažte shromažďování telemetrie prováděné prostřednictvím proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Zakažte odesílání dat programu Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "Data o používání USB (CEIP)",
+        "description": "Zakažte shromažďování telemetrie o používání USB zařízení"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Zakažte shromažďování a odesílání diagnostických dat disku"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Zakažte telemetrickou úlohu správy zařízení pro zpětnou vazbu"
+      },
+      "task-maps-update": {
+        "label": "Úloha aktualizace map",
+        "description": "Zakažte automatické stahování dat map na pozadí"
+      },
+      "task-maps-toast": {
+        "label": "Úloha oznámení map",
+        "description": "Zakažte úlohu oznámení map"
+      },
+      "edge-metrics": {
+        "label": "Hlášení používání v Edge",
+        "description": "Zabraňte Edge odesílat metriky používání a pádů Microsoftu"
+      },
+      "edge-site-info": {
+        "label": "Shromažďování informací o webech v Edge",
+        "description": "Zabraňte Edge odesílat adresy navštívených webů Microsoftu"
+      },
+      "edge-personalization": {
+        "label": "Hlášení personalizace v Edge",
+        "description": "Zabraňte Edge odesílat historii prohlížení pro personalizaci reklam"
+      },
+      "edge-copilot-cdp": {
+        "label": "Přístup Copilota ke stránce v Edge (CDP)",
+        "description": "Zabraňte Copilotu číst obsah stránky přes Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Kontext stránky pro Copilota v Edge",
+        "description": "Zabraňte Copilotu používat kontext stránky k analýze obsahu"
+      },
+      "edge-discover": {
+        "label": "Skenování stránek funkcí Edge Discover",
+        "description": "Zastavte funkci Discover ve skenování obsahu stránek"
+      },
+      "edge-sidebar": {
+        "label": "Postranní panel Edge",
+        "description": "Vypněte postranní panel Edge a jeho shromažďování dat na pozadí"
+      },
+      "edge-shopping": {
+        "label": "Nákupní asistent v Edge",
+        "description": "Vypněte sledování srovnání cen v Edge"
+      },
+      "chrome-metrics": {
+        "label": "Hlášení používání v Chrome",
+        "description": "Zabraňte Chrome odesílat metriky používání a pádů Googlu"
+      },
+      "chrome-feedback": {
+        "label": "Zpětná vazba uživatelů Chrome",
+        "description": "Zabraňte Chrome shromažďovat a odesílat data zpětné vazby uživatelů"
+      },
+      "chrome-extended-reporting": {
+        "label": "Rozšířené Safe Browsing v Chrome",
+        "description": "Zabraňte Chrome odesílat rozšířené zprávy o URL a stahování Googlu"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetrie Firefoxu",
+        "description": "Zabraňte Firefoxu shromažďovat telemetrická data a odesílat je Mozille"
+      },
+      "firefox-default-agent": {
+        "label": "Výchozí agent prohlížeče Firefox",
+        "description": "Zakažte agenta na pozadí, který hlásí Mozille data o používání prohlížeče"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnostická data a data o používání",
+        "description": "Zastavte sdílení diagnostických dat a dat o používání s Applem"
+      },
+      "macos-siri-analytics": {
+        "label": "Analytika Siri",
+        "description": "Zastavte shromažďování analytických a vylepšovacích dat Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Sdílení zdravotních dat",
+        "description": "Zastavte sdílení zdravotních dat s Applem pro výzkum"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Viditelnost AirDrop",
+        "description": "Nastavte AirDrop na Nikdo: soubory přes AirDrop nelze přijímat, dokud ho znovu nezapnete v Nastavení systému"
+      },
+      "macos-crash-reporter": {
+        "label": "Hlášení pádů",
+        "description": "Zastavte automatické odesílání hlášení nástrojem pro hlášení pádů"
+      },
+      "macos-ad-tracking": {
+        "label": "Personalizované reklamy",
+        "description": "Omezte sledování reklam ze strany Applu"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Návrhy Siri v App Store",
+        "description": "Vypněte návrhy Siri v App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Návrhy hledání Safari",
+        "description": "Vypněte návrhy hledání Safari odesílané Applu"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Návrhy Spotlight",
+        "description": "Vypněte webové návrhy Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Přednačítání nejlepšího výsledku v Safari",
+        "description": "Zabraňte Safari přednačítat nejlepší výsledek hledání, což odesílá data o prohlížení webům"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Vypněte Handoff a sdílenou schránku: aktivity už nelze pokračovat ani kopírovat a vkládat mezi zařízeními Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Analytika iCloud",
+        "description": "Zastavte sdílení analytiky iCloud s Applem"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Karty iCloud v Safari",
+        "description": "Vypněte synchronizaci karet iCloud v Safari: karty otevřené na dalších zařízeních Apple už neuvidíte"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Vypněte Siri úplně: Hey Siri, hlasové příkazy a zkratky Siri přestanou fungovat"
+      },
+      "macos-siri-dictation": {
+        "label": "Diktování Siri",
+        "description": "Vypněte diktování: klávesa mikrofonu na klávesnici přestane fungovat"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Vypněte funkce AI v Apple Intelligence (macOS 15 Sequoia a novější)"
+      },
+      "macos-safari-dnt": {
+        "label": "Do Not Track v Safari",
+        "description": "Zapněte hlavičku Do Not Track (nesledovat) v Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Hlášení používání v Chrome",
+        "description": "Zabraňte Chrome odesílat metriky používání Googlu"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Zprávy Safe Browsing v Chrome",
+        "description": "Zabraňte Chrome odesílat rozšířené zprávy o URL a stahování Googlu"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetrie Firefoxu",
+        "description": "Zabraňte Firefoxu shromažďovat telemetrická data a odesílat je Mozille"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Ujistěte se, že je Gatekeeper zapnutý, aby byly blokovány neověřené aplikace"
+      },
+      "macos-remote-apple-events": {
+        "label": "Vzdálené Apple Events",
+        "description": "Vypněte vzdálené Apple Events, aby váš Mac nešlo automatizovat na dálku"
+      },
+      "macos-wake-on-network": {
+        "label": "Probuzení při síťovém přístupu",
+        "description": "Vypněte probuzení při síťovém přístupu, aby váš Mac nešlo vzdáleně probudit"
+      },
+      "macos-guest-account": {
+        "label": "Účet hosta",
+        "description": "Vypněte účet hosta, aby se zabránilo neoprávněnému místnímu přístupu"
+      },
+      "macos-auto-login": {
+        "label": "Automatické přihlášení",
+        "description": "Vypněte automatické přihlášení, aby Mac při spuštění vyžadoval ověření"
+      },
+      "macos-firewall": {
+        "label": "Aplikační brána firewall",
+        "description": "Zapněte aplikační bránu firewall systému macOS pro kontrolu příchozích připojení"
+      },
+      "macos-stealth-mode": {
+        "label": "Skrytý režim",
+        "description": "Zapněte skrytý režim, aby Mac neodpovídal na testovací požadavky (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Zakázat přeposílání IP",
+        "description": "Zabraňte systému přeposílat pakety mezi síťovými rozhraními"
+      },
+      "macos-block-signed-auto": {
+        "label": "Blokovat automatické povolení pro podepsané aplikace",
+        "description": "Zabraňte podepsaným aplikacím automaticky obcházet bránu firewall"
+      },
+      "macos-remote-login": {
+        "label": "Zakázat vzdálené přihlášení (SSH)",
+        "description": "Úplně vypněte server SSH. Pokud potřebujete přístup přes SSH, ponechte ho vypnutý a místo toho zabezpečte nastavení SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Zakázat přihlášení root přes SSH",
+        "description": "Zabraňte přímému přihlášení root přes SSH; místo toho použijte sudo z běžného účtu"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Zakázat ověřování heslem přes SSH",
+        "description": "Povolte jen ověřování SSH pomocí klíčů. Nejdřív si nastavte klíče SSH, jinak se můžete zamknout venku"
+      },
+      "macos-core-dumps": {
+        "label": "Zakázat výpisy paměti (core dump)",
+        "description": "Zabraňte výpisům paměti, které mohou vyzradit citlivý obsah paměti"
+      },
+      "gnome-usage-stats": {
+        "label": "Statistiky používání",
+        "description": "Vypněte shromažďování statistik používání GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Sledování nedávných souborů",
+        "description": "Vypněte sledování nedávno použitých souborů"
+      },
+      "gnome-location": {
+        "label": "Služby polohy",
+        "description": "Vypněte služby polohy GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Hlášení pádů (Apport)",
+        "description": "Vypněte automatické odesílání hlášení o pádech"
+      },
+      "gnome-connectivity-check": {
+        "label": "Kontrola připojení",
+        "description": "Vypněte pravidelné kontroly síťového připojení"
+      },
+      "core-dump-disable": {
+        "label": "Zakázat výpisy paměti (core dump)",
+        "description": "Zabraňte výpisům paměti, které mohou vyzradit citlivý obsah paměti"
+      },
+      "ssh-root-login": {
+        "label": "Zakázat přihlášení root přes SSH",
+        "description": "Zabraňte přímému přihlášení root přes SSH; místo toho použijte sudo z běžného účtu"
+      },
+      "ssh-password-auth": {
+        "label": "Zakázat ověřování heslem přes SSH",
+        "description": "Povolte jen ověřování SSH pomocí klíčů. Nejdřív si nastavte klíče SSH, jinak se můžete zamknout venku"
+      },
+      "kde-usage-stats": {
+        "label": "Statistiky používání",
+        "description": "Vypněte zpětnou vazbu uživatelů KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Sledování nedávných souborů",
+        "description": "Vypněte historii aktivit nedávných souborů KDE"
+      },
+      "kde-baloo": {
+        "label": "Indexování souborů (Baloo)",
+        "description": "Vypněte indexer souborů Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Hlášení pádů (DrKonqi)",
+        "description": "Vypněte obslužný program hlášení pádů KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetrie a shromažďování dat",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Odstranění bloatwaru",
-    "pageDescription": "Odstraňte předinstalované aplikace Windows a OEM bloatware",
+    "pageDescription": "Aplikace předinstalované Windows a výrobcem. Po odebrání je lze znovu nainstalovat jen z Microsoft Store.",
     "scanButton": "Prohledat",
-    "irreversibleWarning": "Nevratné — odebrané aplikace lze znovu nainstalovat pouze z Microsoft Store. Výběr pečlivě zkontrolujte.",
-    "scanningPackages": "Kontrolují se nainstalované balíčky...",
-    "removingProgress": "Odebírá se {{current}} z {{total}}",
+    "rescanButton": "Prohledat znovu",
+    "irreversibleWarning": "Odebrání nelze v aplikaci vrátit zpět: před potvrzením zkontrolujte vybrané aplikace.",
+    "scanningPackages": "Kontrolují se nainstalované balíčky…",
+    "removingProgress": "Odebírají se aplikace ({{current}} z {{total}})",
+    "receiptTitle": "Odebrání dokončeno",
+    "removedApps_one": "{{count}} aplikace odebrána",
+    "removedApps_other": "{{count}} aplikací odebráno",
+    "failedCount_one": "{{count}} selhalo",
+    "failedCount_other": "{{count}} selhalo",
+    "reinstallFromStore": "lze znovu nainstalovat jen z Microsoft Store",
     "selectAll": "Vybrat vše",
-    "emptyStateTitle": "Nebyl zjištěn žádný bloatware",
-    "emptyStateDescription": "Kliknutím na „Prohledat“ vyhledáte předinstalované aplikace a OEM bloatware.",
+    "filterLabel": "Kategorie",
+    "confirmTitle_one": "Odebrat {{count}} aplikaci?",
+    "confirmTitle_other": "Odebrat {{count}} aplikací?",
+    "confirmDescription_one": "Aplikace se odebere pro vašeho uživatele a s oprávněními správce také pro nové uživatele. Lze ji znovu nainstalovat jen z Microsoft Store.",
+    "confirmDescription_other": "Aplikace se odeberou pro vašeho uživatele a s oprávněními správce také pro nové uživatele. Lze je znovu nainstalovat jen z Microsoft Store.",
+    "confirmLabel_one": "Odebrat {{count}} aplikaci",
+    "confirmLabel_other": "Odebrat {{count}} aplikací",
+    "emptyStateTitle": "Zatím nebylo prohledáno",
+    "emptyStateDescription": "V této relaci nebyla provedena kontrola předinstalovaných aplikací.",
+    "lastRun_one": "Poslední odebrání: {{date}}, {{count}} aplikace odebrána.",
+    "lastRun_other": "Poslední odebrání: {{date}}, {{count}} aplikací odebráno.",
+    "checkKnownTitle": "Známé aplikace",
+    "checkKnownDetail": "Seznam aplikací předinstalovaných Microsoftem a výrobci (OEM)",
+    "checkInstalledTitle": "Nainstalované balíčky",
+    "checkInstalledDetail": "Balíčky aplikací vašeho uživatele porovnané se seznamem",
+    "checkRemovalTitle": "Odebrání",
+    "checkRemovalDetail": "Pro vašeho uživatele; s oprávněními správce také z kopie používané pro nové uživatele",
+    "noneFoundTitle": "Žádná z uvedených aplikací není nainstalována",
+    "noneFoundDescription": "Známé předinstalované aplikace u vašeho uživatele nejsou.",
+    "summaryTitle_one": "Nalezena {{count}} předinstalovaná aplikace",
+    "summaryTitle_other": "Nalezeno {{count}} předinstalovaných aplikací",
+    "selectedCount_one": "Vybráno: {{count}}",
+    "selectedCount_other": "Vybráno: {{count}}",
+    "removeButton_one": "Odebrat {{count}} aplikaci",
+    "removeButton_other": "Odebrat {{count}} aplikací",
+    "removeNone": "Odebrat vybrané",
     "scanFailedToast": "Kontrola bloatwaru selhala",
     "scanFailedDescription": "Ujistěte se, že je k dispozici PowerShell",
     "scanFailedError": "Nepodařilo se zkontrolovat bloatware. Ujistěte se, že je k dispozici PowerShell.",

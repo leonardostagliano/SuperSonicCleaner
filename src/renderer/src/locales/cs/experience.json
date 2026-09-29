@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Podívejte se, co se změnilo, co bylo obnoveno a co potřebuje další kontrolu. Každá dokončená úloha zanechá záznam.",
-    "settings": "Přizpůsobte SuperSonicCleaner sobě. Nastavte vzhled, oznámení, výjimky a předvolby čištění.",
-    "about": "Open source, promyšleně vytvořené. Najděte svou verzi, zkontrolujte aktualizace a seznamte se s projektem.",
-    "recovery": "Jasná cesta zpět. Před vrácením změn zkontrolujte podporované změny a podrobnosti obnovení."
+    "history": "Posledních 100 kontrol a čištění provedených na tomto počítači, s datem, dobou trvání, počtem zpracovaných položek a uvolněným místem, a doklad o každém čištění.",
+    "settings": "Vzhled, jazyk, spouštění, oznámení, aktualizace, zálohy, předvolby čištění a výjimky. Každá změna se ukládá okamžitě.",
+    "about": "Nainstalovaná verze, aktualizace, licence MIT a původní projekt (Kudu).",
+    "recovery": "Změny v registru, službách a naplánovaných úlohách provedené aplikací SuperSonicCleaner, spolu se zálohami pro jejich vrácení zpět. Smazané soubory nelze obnovit."
   },
   "storageTrend": {
     "title": "Úložiště v čase",

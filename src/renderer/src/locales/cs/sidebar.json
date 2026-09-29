@@ -10,5 +10,7 @@
   "history": "Aktivita",
   "settings": "Předvolby",
   "gameMode": "Herní režim",
-  "firewallAudit": "Audit brány firewall"
+  "firewallAudit": "Audit brány firewall",
+  "updateBadge": "Aktualizace",
+  "mainNavigation": "Hlavní navigace"
 }
