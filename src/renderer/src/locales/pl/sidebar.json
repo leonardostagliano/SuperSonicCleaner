@@ -10,5 +10,7 @@
   "history": "Aktywność",
   "settings": "Preferencje",
   "gameMode": "Tryb gry",
-  "firewallAudit": "Inspekcja zapory"
+  "firewallAudit": "Inspekcja zapory",
+  "updateBadge": "Aktualizacja",
+  "mainNavigation": "Nawigacja główna"
 }

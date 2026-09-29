@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Tarcza prywatności",
-    "pageDescription": "Kontroluj telemetrię, reklamy, śledzenie i zbieranie danych w całym systemie",
+    "pageDescription": "Odczytuje ustawienia telemetrii, reklam, wyszukiwania i synchronizacji oraz porównuje je z najbardziej prywatną wartością. Ustawienie zmienia się tylko wtedy, gdy użyjesz jego przełącznika lub potwierdzisz zmianę; większość można przywrócić do wartości domyślnej.",
     "scanButton": "Skanuj",
-    "scanProgressPreparing": "Przygotowywanie skanowania...",
-    "applyingProtections": "Stosowanie ochrony prywatności...",
-    "emptyStateTitle": "Tarcza prywatności",
-    "emptyStateDescription": "Kliknij „Skanuj”, aby sprawdzić ustawienia prywatności i zabezpieczeń oraz zastosować zalecane wzmocnienia.",
-    "adminWarning": "Niektóre ustawienia wymagają uprawnień administratora do modyfikacji. Uruchom SuperSonicCleaner jako administrator, aby uzyskać pełną ochronę.",
+    "scanProgressPreparing": "Przygotowywanie skanowania",
+    "applyingProtections": "Stosowanie ustawień…",
+    "emptyStateTitle": "Ustawienia jeszcze nieprzeskanowane",
+    "emptyStateDescription": "Skanowanie odczytuje ustawienia i nie zmienia żadnego z nich.",
+    "adminWarning": "Niektóre ustawienia można zmienić tylko wtedy, gdy SuperSonicCleaner działa jako administrator; bez tych uprawnień pozostają bez zmian.",
     "scanFailed": "Skanowanie prywatności nie powiodło się",
     "applyFailed": "Nie udało się zastosować ustawień prywatności",
-    "applyFailedDescription": "Spróbuj uruchomić jako administrator",
+    "applyFailedDescription": "Spróbuj uruchomić aplikację jako administrator",
     "settingApplyFailed": "Nie udało się zastosować „{{label}}”",
-    "settingEnabled": "{{label}} zablokowano",
-    "settingDisabled": "Przywrócono domyślne ustawienie „{{label}}”",
+    "settingEnabled": "Zastosowano: {{label}}",
+    "settingDisabled": "Przywrócono wartość domyślną: {{label}}",
     "settingRevertFailed": "Nie udało się przywrócić „{{label}}”",
     "settingRevertFailedGeneric": "Nie udało się przywrócić ustawienia prywatności",
     "settingApplyFailedGeneric": "Nie udało się zastosować ustawienia prywatności",
-    "ipcCallFailed": "Wywołanie IPC nie powiodło się — spróbuj uruchomić jako administrator",
+    "ipcCallFailed": "Wywołanie nie powiodło się: spróbuj uruchomić aplikację jako administrator",
     "allSettingsLabel": "Wszystkie ustawienia",
     "unknownError": "Nieznany błąd",
     "requiresSettingEnabled": "Najpierw włącz „{{label}}”",
-    "adminRequired": "Spróbuj uruchomić jako administrator",
-    "settingNotApplied": "System nie zgłosił zmiany — może być wymagane ponowne uruchomienie albo ustawienie może być zarządzane przez inny profil"
+    "adminRequired": "Spróbuj uruchomić aplikację jako administrator",
+    "settingNotApplied": "System nie potwierdził zmiany: może być wymagane ponowne uruchomienie albo ustawienie jest zarządzane przez inny profil.",
+    "rescanButton": "Skanuj ponownie",
+    "scanningButton": "Skanowanie…",
+    "applyRecommended_one": "Zastosuj {{count}} zalecaną zmianę",
+    "applyRecommended_other": "Zastosuj {{count}} zalecanych zmian",
+    "summaryTitle_one": "{{count}} ustawienie do zmiany",
+    "summaryTitle_other": "{{count}} ustawień do zmiany",
+    "summaryNone": "Wszystkie {{total}} ustawienia mają już najbardziej prywatną wartość",
+    "summaryFacts": "{{protected}} z {{total}} ma już najbardziej prywatną wartość · kategorii: {{categories}}",
+    "categoryMeta_one": "{{count}} do zmiany",
+    "categoryMeta_other": "{{count}} do zmiany",
+    "categoryAllSet": "wszystko już ustawione",
+    "categoryApply_one": "Zastosuj {{count}}",
+    "categoryApply_other": "Zastosuj {{count}}",
+    "categoryShow": "Pokaż",
+    "categoryHide": "Ukryj",
+    "adminTag": "Wymaga administratora",
+    "notReversibleTag": "Nieodwracalne",
+    "scanProgressTitle": "Skanowanie w toku",
+    "scanProgressCount": "{{current}} z {{total}}",
+    "scanProgressCategory": "Sprawdzanie: {{category}}",
+    "scanProgressLabel": "Postęp skanowania",
+    "applyingLabel": "Postęp stosowania",
+    "receiptTitle": "Ustawienia zastosowane",
+    "receiptApplied_one": "{{count}} ustawienie zmienione",
+    "receiptApplied_other": "{{count}} ustawień zmienionych",
+    "receiptReversible": "można przywrócić z przełączników",
+    "receiptFailed_one": "{{count}} niezastosowane: powód podano poniżej.",
+    "receiptFailed_other": "{{count}} niezastosowanych: powody podano poniżej.",
+    "receiptFailedAdmin_one": "{{count}} niezastosowane: może być wymagane uruchomienie aplikacji jako administrator. Powód podano poniżej.",
+    "receiptFailedAdmin_other": "{{count}} niezastosowanych: może być wymagane uruchomienie aplikacji jako administrator. Powody podano poniżej.",
+    "failedHeading": "Ustawienia niezastosowane",
+    "failedColumnSetting": "Ustawienie",
+    "failedColumnReason": "Powód",
+    "confirmTitle_one": "Zmienić {{count}} ustawienie?",
+    "confirmTitle_other": "Zmienić {{count}} ustawień?",
+    "confirmDescription": "Wymienione ustawienia zostaną przełączone na najbardziej prywatną wartość. Można je przywrócić do wartości domyślnej z przełączników na tej stronie.",
+    "confirmDescriptionIrreversible_one": "Wymienione ustawienia zostaną przełączone na najbardziej prywatną wartość. {{count}} nie można przywrócić do wartości domyślnej z tej strony.",
+    "confirmDescriptionIrreversible_other": "Wymienione ustawienia zostaną przełączone na najbardziej prywatną wartość. {{count}} nie można przywrócić do wartości domyślnej z tej strony.",
+    "confirmLabel_one": "Zmień {{count}} ustawienie",
+    "confirmLabel_other": "Zmień {{count}} ustawień",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetria Windows",
+        "description": "Ustaw zbieranie danych diagnostycznych na minimum (tylko poziom zabezpieczeń)"
+      },
+      "activity-history": {
+        "label": "Historia aktywności",
+        "description": "Uniemożliw Windows śledzenie i synchronizowanie użycia aplikacji i plików"
+      },
+      "publish-activity": {
+        "label": "Publikowanie aktywności użytkownika",
+        "description": "Zablokuj publikowanie przez Windows Twoich aktywności do Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Prośby o opinię",
+        "description": "Wyłącz okresowe prośby o opinię i ankiety od Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Dane pisma odręcznego",
+        "description": "Zablokuj wysyłanie danych pisma odręcznego i wpisywanego tekstu do Microsoft"
+      },
+      "input-personalization": {
+        "label": "Personalizacja wprowadzania danych",
+        "description": "Zablokuj zbieranie danych o pisaniu i piśmie odręcznym do personalizacji"
+      },
+      "tailored-experiences": {
+        "label": "Spersonalizowane doświadczenia",
+        "description": "Uniemożliw Microsoft wykorzystywanie danych diagnostycznych do personalizacji porad i reklam"
+      },
+      "app-launch-tracking": {
+        "label": "Śledzenie uruchamiania aplikacji",
+        "description": "Uniemożliw Windows śledzenie, które aplikacje otwierasz, w celu dostosowania menu Start"
+      },
+      "advertising-id": {
+        "label": "Identyfikator reklamowy",
+        "description": "Wyłącz unikalny identyfikator reklamowy, którego aplikacje używają do śledzenia Cię"
+      },
+      "suggested-content": {
+        "label": "Sugerowana zawartość w Ustawieniach",
+        "description": "Uniemożliw Microsoft wyświetlanie sugestii aplikacji i reklam w Ustawieniach"
+      },
+      "tips-notifications": {
+        "label": "Porady i sugestie",
+        "description": "Wyłącz powiadomienia z poradami, wskazówkami i sugestiami Windows"
+      },
+      "start-suggestions": {
+        "label": "Sugestie w menu Start",
+        "description": "Wyłącz sugestie aplikacji (reklamy) w menu Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight na ekranie blokady",
+        "description": "Wyłącz reklamy i sugestie Microsoft Spotlight na ekranie blokady"
+      },
+      "silently-installed-apps": {
+        "label": "Cicho instalowane aplikacje",
+        "description": "Uniemożliw Windows automatyczne instalowanie promowanych aplikacji"
+      },
+      "preinstalled-apps": {
+        "label": "Sugestie preinstalowanych aplikacji",
+        "description": "Uniemożliw Windows sugerowanie preinstalowanych aplikacji, których nie używałeś"
+      },
+      "bing-start-menu": {
+        "label": "Bing w menu Start",
+        "description": "Zablokuj wysyłanie do Bing zapytań wpisywanych w menu Start"
+      },
+      "bing-web-search": {
+        "label": "Wyniki internetowe Bing",
+        "description": "Wyłącz wyniki internetowe w wyszukiwaniu Windows, aby wyszukiwania pozostawały na tym komputerze"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Wyłącz Cortanę, która działa w tle i zbiera dane"
+      },
+      "search-highlights": {
+        "label": "Najważniejsze wyniki wyszukiwania",
+        "description": "Wyłącz popularne sugestie wyszukiwania i zawartość internetową w polu wyszukiwania"
+      },
+      "store-search-suggestions": {
+        "label": "Sugestie wyszukiwania w Store",
+        "description": "Wyłącz sugestie wyszukiwania Microsoft Store, które wysyłają Twoje zapytania do Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Synchronizacja schowka w chmurze",
+        "description": "Uniemożliw synchronizowanie danych schowka między urządzeniami przez chmurę"
+      },
+      "clipboard-history": {
+        "label": "Historia schowka",
+        "description": "Wyłącz historię schowka, która przechowuje skopiowany tekst i obrazy"
+      },
+      "settings-sync": {
+        "label": "Synchronizacja ustawień",
+        "description": "Zablokuj synchronizację ustawień, motywów i haseł Windows z kontem Microsoft"
+      },
+      "find-my-device": {
+        "label": "Znajdź moje urządzenie",
+        "description": "Wyłącz śledzenie urządzenia na podstawie lokalizacji przez Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Wyłącz asystenta AI Microsoft Copilot w całym systemie Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Wyłącz Windows Recall, historię zrzutów ekranu AI, która rejestruje wszystko, co widać na ekranie"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Wyłącz analizę AI tekstu i obrazów na ekranie wykonywaną przez Click to Do"
+      },
+      "ai-service-autostart": {
+        "label": "Autostart usług AI",
+        "description": "Uniemożliw automatyczne uruchamianie usług AI w tle"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Wyłącz funkcje AI Edge do tworzenia i przepisywania tekstu"
+      },
+      "paint-ai": {
+        "label": "Funkcje AI w programie Paint",
+        "description": "Wyłącz funkcje generowania obrazów AI w programie Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Funkcje AI w programie Notepad",
+        "description": "Wyłącz funkcje przepisywania tekstu AI w programie Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "Usługa DiagTrack",
+        "description": "Wyłącz usługę Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "Usługa WAP Push",
+        "description": "Wyłącz usługę routingu wiadomości WAP Push używaną do telemetrii"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Wyłącz udostępnianie aktualizacji Windows metodą peer-to-peer, aby ten komputer nie wysyłał danych aktualizacji do innych urządzeń"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Wyłącz usługę Downloaded Maps Manager, usługę w tle, której większość komputerów nie potrzebuje"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Wyłącz zadanie telemetryczne Microsoft zbierające dane o zgodności"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Wyłącz zadanie w tle wysyłające telemetrię programów"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Wyłącz zbieranie telemetrii wykonywane przez proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Wyłącz wysyłanie danych programu Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "Dane użycia USB (CEIP)",
+        "description": "Wyłącz zbieranie telemetrii dotyczącej użycia urządzeń USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Wyłącz zbieranie i wysyłanie danych diagnostycznych dysku"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Wyłącz zadanie telemetryczne zarządzania urządzeniami do opinii"
+      },
+      "task-maps-update": {
+        "label": "Zadanie aktualizacji map",
+        "description": "Wyłącz automatyczne pobieranie danych map w tle"
+      },
+      "task-maps-toast": {
+        "label": "Zadanie powiadomień map",
+        "description": "Wyłącz zadanie powiadomień map"
+      },
+      "edge-metrics": {
+        "label": "Raportowanie danych użycia w Edge",
+        "description": "Zablokuj wysyłanie przez Edge danych o użyciu i awariach do Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Zbieranie informacji o witrynach w Edge",
+        "description": "Zablokuj wysyłanie przez Edge adresów odwiedzanych witryn do Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Raportowanie personalizacji w Edge",
+        "description": "Zablokuj wysyłanie przez Edge historii przeglądania do personalizacji reklam"
+      },
+      "edge-copilot-cdp": {
+        "label": "Dostęp Copilota do strony w Edge (CDP)",
+        "description": "Uniemożliw Copilotowi odczyt zawartości strony przez Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Kontekst strony Copilota w Edge",
+        "description": "Uniemożliw Copilotowi wykorzystywanie kontekstu strony do analizy zawartości"
+      },
+      "edge-discover": {
+        "label": "Skanowanie stron przez Edge Discover",
+        "description": "Zablokuj funkcji Discover skanowanie zawartości stron"
+      },
+      "edge-sidebar": {
+        "label": "Pasek boczny Edge",
+        "description": "Wyłącz pasek boczny Edge i związane z nim zbieranie danych w tle"
+      },
+      "edge-shopping": {
+        "label": "Asystent zakupów w Edge",
+        "description": "Wyłącz w Edge śledzenie porównań cen"
+      },
+      "chrome-metrics": {
+        "label": "Raportowanie danych użycia w Chrome",
+        "description": "Zablokuj wysyłanie przez Chrome danych o użyciu i awariach do Google"
+      },
+      "chrome-feedback": {
+        "label": "Opinie użytkowników Chrome",
+        "description": "Uniemożliw Chrome zbieranie i wysyłanie danych opinii użytkowników"
+      },
+      "chrome-extended-reporting": {
+        "label": "Rozszerzone Safe Browsing w Chrome",
+        "description": "Zablokuj wysyłanie przez Chrome rozszerzonych raportów adresów URL i pobrań do Google"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetria Firefox",
+        "description": "Zablokuj zbieranie przez Firefox danych telemetrycznych i wysyłanie ich do Mozilli"
+      },
+      "firefox-default-agent": {
+        "label": "Domyślny agent przeglądarki Firefox",
+        "description": "Wyłącz agenta w tle, który raportuje dane użycia przeglądarki do Mozilli"
+      },
+      "macos-diagnostics": {
+        "label": "Dane diagnostyczne i użycia",
+        "description": "Zablokuj udostępnianie danych diagnostycznych i użycia firmie Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Analityka Siri",
+        "description": "Zablokuj zbieranie danych analitycznych i ulepszeń Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Udostępnianie danych zdrowotnych",
+        "description": "Zablokuj udostępnianie danych zdrowotnych firmie Apple do celów badawczych"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Widoczność AirDrop",
+        "description": "Ustaw AirDrop na Nikt: nie możesz odbierać plików przez AirDrop, dopóki nie włączysz go ponownie w Ustawieniach systemowych"
+      },
+      "macos-crash-reporter": {
+        "label": "Raportowanie awarii",
+        "description": "Zablokuj automatyczne wysyłanie raportów przez narzędzie do raportowania awarii"
+      },
+      "macos-ad-tracking": {
+        "label": "Spersonalizowane reklamy",
+        "description": "Ogranicz śledzenie reklamowe przez Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Sugestie Siri w App Store",
+        "description": "Wyłącz sugestie Siri w App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Sugestie wyszukiwania Safari",
+        "description": "Wyłącz sugestie wyszukiwania Safari wysyłane do Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Sugestie Spotlight",
+        "description": "Wyłącz sugestie internetowe Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Wstępne ładowanie najlepszego wyniku w Safari",
+        "description": "Zablokuj wstępne ładowanie przez Safari najlepszego wyniku wyszukiwania, które wysyła dane przeglądania do witryn"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Wyłącz Handoff i wspólny schowek: nie będziesz mógł kontynuować czynności ani kopiować i wklejać między urządzeniami Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Analityka iCloud",
+        "description": "Zablokuj udostępnianie analityki iCloud firmie Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Karty iCloud w Safari",
+        "description": "Wyłącz synchronizację kart iCloud w Safari: nie będziesz już widzieć kart otwartych na innych urządzeniach Apple"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Wyłącz Siri całkowicie: Hey Siri, polecenia głosowe i skróty Siri przestaną działać"
+      },
+      "macos-siri-dictation": {
+        "label": "Dyktowanie Siri",
+        "description": "Wyłącz dyktowanie: klawisz mikrofonu na klawiaturze przestanie działać"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Wyłącz funkcje AI Apple Intelligence (macOS 15 Sequoia i nowsze)"
+      },
+      "macos-safari-dnt": {
+        "label": "Do Not Track w Safari",
+        "description": "Włącz nagłówek Do Not Track (blokada śledzenia) w Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Raportowanie danych użycia w Chrome",
+        "description": "Zablokuj wysyłanie przez Chrome danych o użyciu do Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Raporty Safe Browsing w Chrome",
+        "description": "Zablokuj wysyłanie przez Chrome rozszerzonych raportów adresów URL i pobrań do Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetria Firefox",
+        "description": "Zablokuj zbieranie przez Firefox danych telemetrycznych i wysyłanie ich do Mozilli"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Upewnij się, że Gatekeeper jest włączony, aby blokować niezweryfikowane aplikacje"
+      },
+      "macos-remote-apple-events": {
+        "label": "Zdalne zdarzenia Apple",
+        "description": "Wyłącz zdalne zdarzenia Apple, aby Twój Mac nie mógł być zdalnie zautomatyzowany"
+      },
+      "macos-wake-on-network": {
+        "label": "Wybudzanie przez sieć",
+        "description": "Wyłącz wybudzanie przez sieć, aby Twój Mac nie mógł być zdalnie wybudzony"
+      },
+      "macos-guest-account": {
+        "label": "Konto gościa",
+        "description": "Wyłącz konto gościa, aby zapobiec nieautoryzowanemu dostępowi lokalnemu"
+      },
+      "macos-auto-login": {
+        "label": "Automatyczne logowanie",
+        "description": "Wyłącz automatyczne logowanie, aby Mac wymagał uwierzytelnienia przy uruchomieniu"
+      },
+      "macos-firewall": {
+        "label": "Zapora aplikacji",
+        "description": "Włącz zaporę aplikacji systemu macOS, aby kontrolować połączenia przychodzące"
+      },
+      "macos-stealth-mode": {
+        "label": "Tryb ukrycia",
+        "description": "Włącz tryb ukrycia, aby Twój Mac nie odpowiadał na żądania sondujące (ping ICMP)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Wyłącz przekazywanie IP",
+        "description": "Uniemożliw systemowi przekazywanie pakietów między interfejsami sieciowymi"
+      },
+      "macos-block-signed-auto": {
+        "label": "Zablokuj automatyczne zezwalanie podpisanym aplikacjom",
+        "description": "Uniemożliw podpisanym aplikacjom automatyczne omijanie zapory"
+      },
+      "macos-remote-login": {
+        "label": "Wyłącz zdalne logowanie (SSH)",
+        "description": "Wyłącz całkowicie serwer SSH. Jeśli potrzebujesz dostępu SSH, pozostaw go wyłączonym i zamiast tego wzmocnij ustawienia SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Wyłącz logowanie root przez SSH",
+        "description": "Uniemożliw bezpośrednie logowanie root przez SSH; używaj zamiast tego sudo ze zwykłego konta"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Wyłącz uwierzytelnianie hasłem SSH",
+        "description": "Zezwalaj tylko na uwierzytelnianie SSH oparte na kluczach. Najpierw skonfiguruj klucze SSH, w przeciwnym razie możesz stracić dostęp"
+      },
+      "macos-core-dumps": {
+        "label": "Wyłącz zrzuty pamięci (core dump)",
+        "description": "Zablokuj zrzuty pamięci, które mogą ujawnić poufną zawartość pamięci"
+      },
+      "gnome-usage-stats": {
+        "label": "Statystyki użycia",
+        "description": "Wyłącz zbieranie statystyk użycia GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Śledzenie ostatnich plików",
+        "description": "Wyłącz śledzenie ostatnio używanych plików"
+      },
+      "gnome-location": {
+        "label": "Usługi lokalizacji",
+        "description": "Wyłącz usługi lokalizacji GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Raportowanie awarii (Apport)",
+        "description": "Wyłącz automatyczne przesyłanie raportów o awariach"
+      },
+      "gnome-connectivity-check": {
+        "label": "Sprawdzanie łączności",
+        "description": "Wyłącz okresowe sprawdzanie łączności sieciowej"
+      },
+      "core-dump-disable": {
+        "label": "Wyłącz zrzuty pamięci (core dump)",
+        "description": "Zablokuj zrzuty pamięci, które mogą ujawnić poufną zawartość pamięci"
+      },
+      "ssh-root-login": {
+        "label": "Wyłącz logowanie root przez SSH",
+        "description": "Uniemożliw bezpośrednie logowanie root przez SSH; używaj zamiast tego sudo ze zwykłego konta"
+      },
+      "ssh-password-auth": {
+        "label": "Wyłącz uwierzytelnianie hasłem SSH",
+        "description": "Zezwalaj tylko na uwierzytelnianie SSH oparte na kluczach. Najpierw skonfiguruj klucze SSH, w przeciwnym razie możesz stracić dostęp"
+      },
+      "kde-usage-stats": {
+        "label": "Statystyki użycia",
+        "description": "Wyłącz opinie użytkowników KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Śledzenie ostatnich plików",
+        "description": "Wyłącz historię aktywności ostatnich plików w KDE"
+      },
+      "kde-baloo": {
+        "label": "Indeksowanie plików (Baloo)",
+        "description": "Wyłącz indeksator plików Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Raportowanie awarii (DrKonqi)",
+        "description": "Wyłącz obsługę raportów o awariach KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetria i zbieranie danych",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Usuwanie zbędnego oprogramowania",
-    "pageDescription": "Usuń preinstalowane aplikacje Windows i zbędne oprogramowanie OEM",
+    "pageDescription": "Aplikacje preinstalowane przez Windows i producenta. Po usunięciu można je ponownie zainstalować tylko z Microsoft Store.",
     "scanButton": "Skanuj",
-    "irreversibleWarning": "Nieodwracalne — usunięte aplikacje można ponownie zainstalować tylko z Microsoft Store. Dokładnie sprawdź wybrane pozycje.",
-    "scanningPackages": "Skanowanie zainstalowanych pakietów...",
-    "removingProgress": "Usuwanie {{current}} z {{total}}",
+    "rescanButton": "Skanuj ponownie",
+    "irreversibleWarning": "Usunięcia nie można cofnąć z poziomu aplikacji: sprawdź wybrane aplikacje przed potwierdzeniem.",
+    "scanningPackages": "Skanowanie zainstalowanych pakietów…",
+    "removingProgress": "Usuwanie aplikacji ({{current}} z {{total}})",
+    "receiptTitle": "Usuwanie zakończone",
+    "removedApps_one": "{{count}} aplikacja usunięta",
+    "removedApps_other": "{{count}} aplikacji usuniętych",
+    "failedCount_one": "{{count}} niepowodzenie",
+    "failedCount_other": "{{count}} niepowodzeń",
+    "reinstallFromStore": "można zainstalować ponownie tylko z Microsoft Store",
     "selectAll": "Zaznacz wszystko",
-    "emptyStateTitle": "Nie wykryto zbędnego oprogramowania",
-    "emptyStateDescription": "Kliknij „Skanuj”, aby znaleźć preinstalowane aplikacje i zbędne oprogramowanie OEM.",
+    "filterLabel": "Kategoria",
+    "confirmTitle_one": "Usunąć {{count}} aplikację?",
+    "confirmTitle_other": "Usunąć {{count}} aplikacji?",
+    "confirmDescription_one": "Aplikacja zostanie usunięta dla Twojego użytkownika oraz, z uprawnieniami administratora, także dla nowych użytkowników. Można ją zainstalować ponownie tylko z Microsoft Store.",
+    "confirmDescription_other": "Aplikacje zostaną usunięte dla Twojego użytkownika oraz, z uprawnieniami administratora, także dla nowych użytkowników. Można je zainstalować ponownie tylko z Microsoft Store.",
+    "confirmLabel_one": "Usuń {{count}} aplikację",
+    "confirmLabel_other": "Usuń {{count}} aplikacji",
+    "emptyStateTitle": "Jeszcze nie skanowano",
+    "emptyStateDescription": "W tej sesji nie przeskanowano preinstalowanych aplikacji.",
+    "lastRun_one": "Ostatnie usuwanie: {{date}}, {{count}} aplikacja usunięta.",
+    "lastRun_other": "Ostatnie usuwanie: {{date}}, {{count}} aplikacji usuniętych.",
+    "checkKnownTitle": "Znane aplikacje",
+    "checkKnownDetail": "Lista aplikacji preinstalowanych przez Microsoft i producentów (OEM)",
+    "checkInstalledTitle": "Zainstalowane pakiety",
+    "checkInstalledDetail": "Pakiety aplikacji Twojego użytkownika porównane z listą",
+    "checkRemovalTitle": "Usuwanie",
+    "checkRemovalDetail": "Dla Twojego użytkownika; z uprawnieniami administratora także z kopii używanej dla nowych użytkowników",
+    "noneFoundTitle": "Żadna z wymienionych aplikacji nie jest zainstalowana",
+    "noneFoundDescription": "Znane preinstalowane aplikacje nie występują u Twojego użytkownika.",
+    "summaryTitle_one": "Znaleziono {{count}} preinstalowaną aplikację",
+    "summaryTitle_other": "Znaleziono {{count}} preinstalowanych aplikacji",
+    "selectedCount_one": "Wybrano: {{count}}",
+    "selectedCount_other": "Wybrano: {{count}}",
+    "removeButton_one": "Usuń {{count}} aplikację",
+    "removeButton_other": "Usuń {{count}} aplikacji",
+    "removeNone": "Usuń zaznaczone",
     "scanFailedToast": "Skanowanie zbędnego oprogramowania nie powiodło się",
     "scanFailedDescription": "Upewnij się, że PowerShell jest dostępny",
     "scanFailedError": "Nie udało się przeskanować zbędnego oprogramowania. Upewnij się, że PowerShell jest dostępny.",

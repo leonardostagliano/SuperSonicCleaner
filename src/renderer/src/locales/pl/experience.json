@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Zobacz, co się zmieniło, co zostało odzyskane i co wymaga ponownego sprawdzenia. Każde ukończone zadanie pozostawia zapis.",
-    "settings": "Dostosuj SuperSonicCleaner do siebie. Ustaw wygląd, powiadomienia, wykluczenia i preferencje czyszczenia.",
-    "about": "Open source, starannie przygotowane. Znajdź swoją wersję, sprawdź aktualizacje i poznaj projekt.",
-    "recovery": "Jasna droga powrotu. Przejrzyj obsługiwane zmiany i szczegóły przywracania, zanim cokolwiek cofniesz."
+    "history": "Ostatnie 100 skanowań i czyszczeń wykonanych na tym komputerze, z datą, czasem trwania, liczbą przetworzonych elementów i ilością zwolnionego miejsca oraz potwierdzeniem każdego czyszczenia.",
+    "settings": "Wygląd, język, uruchamianie, powiadomienia, aktualizacje, kopie zapasowe, preferencje czyszczenia i wykluczenia. Każda zmiana jest zapisywana natychmiast.",
+    "about": "Zainstalowana wersja, aktualizacje, licencja MIT i oryginalny projekt (Kudu).",
+    "recovery": "Zmiany w rejestrze, usługach i zaplanowanych zadaniach wprowadzone przez SuperSonicCleaner, wraz z kopiami zapasowymi umożliwiającymi ich cofnięcie. Usuniętych plików nie można odzyskać."
   },
   "storageTrend": {
     "title": "Pamięć masowa w czasie",

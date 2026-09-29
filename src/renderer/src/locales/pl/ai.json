@@ -1,7 +1,7 @@
 {
   "title": "Analiza AI",
   "description": "Poproś o dodatkową ocenę tych wyników skanowania.",
-  "hubDescription": "Dodatkowa ocena skanów i nagrań wydajności przy użyciu Twojego logowania Codex.",
+  "hubDescription": "Wysyła do Codex, w ramach Twojego logowania, tylko metadane skanowania lub pomiary z nagrań, i tylko wtedy, gdy uruchomisz analizę z poziomu narzędzia.",
   "hubPrivacy": "Skany udostępniają tylko anonimowe metadane plików. Nagrania udostępniają liczbowe pomiary CPU, pamięci i dysku z tymczasowymi identyfikatorami procesów. Nazwy, ścieżki, notatki i zawartość plików pozostają na tym urządzeniu.",
   "connectionTitle": "Połączenie z Codex",
   "connectionIntro": "Użyj Codex na tym komputerze. Sprawdź połączenie, a następnie wybierz narzędzie poniżej.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Ukończ skanowanie lub zapisz nagranie wydajności, włącz dla niego analizę AI, a następnie uruchom ją odpowiednim przyciskiem. Nic nie jest wysyłane automatycznie.",
   "tools": {
     "cleaner": {
-      "title": "Oczyszczanie systemu"
+      "title": "Oczyszczanie systemu",
+      "dataSent": "Tymczasowe identyfikatory, typ pliku, rozmiar i przybliżony wiek. Bez śladów prywatności."
     },
     "largeFiles": {
-      "title": "Duże pliki"
+      "title": "Duże pliki",
+      "dataSent": "Tymczasowe identyfikatory, typ pliku, rozmiar i przybliżony wiek."
     },
     "duplicates": {
-      "title": "Zduplikowane pliki"
+      "title": "Zduplikowane pliki",
+      "dataSent": "Tymczasowe identyfikatory, typ pliku, rozmiar, przybliżony wiek i grupa duplikatów."
     },
     "disk": {
-      "title": "Analiza dysku"
+      "title": "Analiza dysku",
+      "dataSent": "Tymczasowe identyfikatory, łączny rozmiar folderu i przybliżony wiek."
     },
     "performance": {
-      "title": "Nagrania wydajności"
+      "title": "Nagrania wydajności",
+      "dataSent": "Liczbowe pomiary CPU, pamięci i dysku, z tymczasowymi identyfikatorami procesów."
     }
   },
   "enable": "Włącz analizę AI dla tego widoku",
@@ -51,5 +56,23 @@
     "low": "Niski priorytet",
     "medium": "Średni priorytet",
     "high": "Wysoki priorytet"
+  },
+  "toolsTitle": "Narzędzia",
+  "columns": {
+    "tool": "Narzędzie",
+    "dataSent": "Wysłane dane",
+    "lastRun": "Ostatnie uruchomienie",
+    "state": "Stan"
+  },
+  "lastRun": {
+    "running": "Uruchomiono",
+    "done": "Ukończono w tej sesji",
+    "failed": "Niepowodzenie",
+    "none": "Brak w tej sesji",
+    "perRecording": "Zapisywane przy każdym analizowanym nagraniu"
+  },
+  "state": {
+    "on": "Włączone",
+    "off": "Wyłączone"
   }
 }
