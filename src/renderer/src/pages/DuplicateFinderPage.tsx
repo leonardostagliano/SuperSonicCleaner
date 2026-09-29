@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { ChevronRight, FolderOpen, ListChecks, RotateCcw, X } from 'lucide-react'
 import { formatBytes } from '@/lib/utils'
 import { icons } from '@/lib/icons'
-import { isRecommendedCopy, useDuplicateStore } from '@/stores/duplicate-store'
+import { copyTag, isRecommendedCopy, useDuplicateStore } from '@/stores/duplicate-store'
 import { refreshDrivesAfterDelete } from '@/stores/drives-store'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -615,6 +615,7 @@ function DuplicateGroupRow({
               {group.files.map((file, index) => {
                 const isSelected = selectedPaths.has(file.path)
                 const recommended = isRecommendedCopy(group, index)
+                const tag = copyTag(group, index, selectedPaths)
                 // Selecting this would leave no copy of the file behind
                 const isLastCopy = !isSelected && groupSelected === group.files.length - 1
                 return (
@@ -641,11 +642,11 @@ function DuplicateGroupRow({
                       <span className="storage-path-text">{file.path}</span>
                     </TableCell>
                     <TableCell className="storage-col-status">
-                      {index === 0 ? (
+                      {tag === 'keep' ? (
                         <Tag tone="neutral">{t('keepTag')}</Tag>
-                      ) : recommended ? (
+                      ) : tag === 'recommended' ? (
                         <Tag tone="recommended">{t('recommendedTag')}</Tag>
-                      ) : file.hardLinked ? (
+                      ) : tag === 'hardLinked' ? (
                         <Tag tone="neutral">{t('hardLinkedTag')}</Tag>
                       ) : null}
                     </TableCell>

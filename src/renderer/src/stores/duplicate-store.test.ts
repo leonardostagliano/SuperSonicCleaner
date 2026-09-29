@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { isRecommendedCopy, useDuplicateStore } from './duplicate-store'
+import { copyTag, isRecommendedCopy, useDuplicateStore } from './duplicate-store'
 import type { DuplicateScanResult } from '@shared/types'
 
 function makeResult(
@@ -374,6 +374,37 @@ describe('duplicate-store', () => {
     useDuplicateStore.getState().setResult(result)
     useDuplicateStore.getState().selectAllDuplicates()
     expect([...useDuplicateStore.getState().selectedPaths]).toEqual(['/copy-1.bin', '/copy-2.bin'])
+  })
+
+  it('tags the copy that stays, then the recommended and hard-linked copies', () => {
+    const [group] = makeResult([
+      {
+        hash: 'aaaa7777aaaa7777aaaa7777aaaa7777aaaa7777aaaa7777aaaa7777aaaa7777',
+        fileSize: 1000,
+        paths: ['/a.bin', '/b.bin', '/linked.bin']
+      }
+    ]).groups
+    group.files[2].hardLinked = true
+    const tags = (selected: string[]) =>
+      group.files.map((_, index) => copyTag(group, index, new Set(selected)))
+    // The default selection: the first copy stays, the other one is recommended.
+    expect(tags(['/b.bin'])).toEqual(['keep', 'recommended', 'hardLinked'])
+    expect(tags([])).toEqual(['keep', 'recommended', 'hardLinked'])
+    // With the first copy selected instead, the second is the one that stays.
+    expect(tags(['/a.bin'])).toEqual([null, 'keep', 'hardLinked'])
+  })
+
+  it('tags the second copy as staying when only the first one is selected', () => {
+    const [group] = makeResult([
+      {
+        hash: 'bbbb8888bbbb8888bbbb8888bbbb8888bbbb8888bbbb8888bbbb8888bbbb8888',
+        fileSize: 1000,
+        paths: ['/a.bin', '/b.bin']
+      }
+    ]).groups
+    const selected = new Set(['/a.bin'])
+    expect(copyTag(group, 0, selected)).not.toBe('keep')
+    expect(copyTag(group, 1, selected)).toBe('keep')
   })
 
   it('records when a deletion finished and where the files went, and reset forgets it', () => {

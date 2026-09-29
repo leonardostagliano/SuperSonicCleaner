@@ -16,6 +16,21 @@ export function isRecommendedCopy(group: DuplicateGroup, index: number): boolean
   return index > 0 && !group.files[index]?.hardLinked
 }
 
+/**
+ * The status tag of a copy: 'keep' for the first copy left unselected, the one that stays
+ * after the deletion; then 'recommended' and 'hardLinked'. The selection decides which copy
+ * stays, so a selected first copy is never tagged as kept.
+ */
+export function copyTag(
+  group: DuplicateGroup,
+  index: number,
+  selectedPaths: ReadonlySet<string>
+): 'keep' | 'recommended' | 'hardLinked' | null {
+  if (index === group.files.findIndex((file) => !selectedPaths.has(file.path))) return 'keep'
+  if (isRecommendedCopy(group, index)) return 'recommended'
+  return group.files[index]?.hardLinked ? 'hardLinked' : null
+}
+
 interface DuplicateState {
   // Config
   directory: string | null
