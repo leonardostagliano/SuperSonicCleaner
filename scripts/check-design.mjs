@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Design rules for the renderer and the it/en copy. See the spec, section 7.
+// Design rules for the renderer and the it/en copy, described in docs/DESIGN_SYSTEM.md.
 //   node scripts/check-design.mjs                 fail on any violation; while a baseline file
 //                                                 exists, fail only on an increase over it
 //   node scripts/check-design.mjs --list          list every violation with file:line
@@ -218,7 +218,7 @@ if (args[0] === '--list') {
     // No baseline: the gate is zero violations.
     print(violations)
     if (violations.length) {
-      console.log(`FAIL: ${violations.length} design violation(s) (see the spec, section 7)`)
+      console.log(`FAIL: ${violations.length} design violation(s) (see docs/DESIGN_SYSTEM.md)`)
       process.exit(1)
     }
     console.log('OK: no design violations')
@@ -229,7 +229,7 @@ if (args[0] === '--list') {
         const [file, rule] = k.split('|')
         print(violations.filter((v) => v.file === file && v.rule === rule))
       })
-      console.log('FAIL: design violations increased (see the spec, section 7)')
+      console.log('FAIL: design violations increased (see docs/DESIGN_SYSTEM.md)')
       process.exit(1)
     }
     const total = Object.values(now).reduce((a, b) => a + b, 0)

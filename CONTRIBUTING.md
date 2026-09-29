@@ -70,7 +70,7 @@ npm run catalog          # Regenerate the rules catalog
 
 ## Submitting a Pull Request
 
-1. Run `npm run check` — it mirrors CI (typecheck, lint, format, rule validation, tests).
+1. Run `npm run check` — it mirrors CI (typecheck, lint, format, design check, rule validation, tests).
 2. Push your branch and open a PR against `main`.
 3. **Give the PR a [Conventional Commits](https://www.conventionalcommits.org/) title.** PRs are squash-merged and the title becomes the commit message, which drives the changelog. Individual commits inside your PR can be anything.
    - `feat(rules): add Spotify cache rule`

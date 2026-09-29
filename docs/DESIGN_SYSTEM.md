@@ -36,4 +36,44 @@ Operation state and IPC progress belong to stores or operation runners, independ
 
 Transitions use `--duration-feedback` (120ms) for hover and press and `--duration-enter` (200ms) for entrances and expansions, with `--ease-out`, and animate only opacity, transform and colours; progress bars use `transform: scaleX()`. Only spinners and indeterminate progress bars loop. The global reduced-motion policy disables animation and transition duration. Responsive layouts preserve readable content and reachable actions at narrow window sizes.
 
-`npm run check:design` (`scripts/check-design.mjs`) enforces these rules on the renderer code and the Italian and English copy.
+## Writing
+
+The app reads like a report: every screen says what was measured, when, what would change and within which limits. Italian and English are the source copy; every other language follows the same rules.
+
+- A title names the screen. A subtitle is there only when it says what the screen reads or changes, or where it stops.
+- Say what was checked, when and with which limits. Never promise an outcome such as "the system is clean" or "everything is protected". A result is green only when a check verified it; a partial or failed check says so.
+- No slogans, no exclamation marks, no words in capitals (acronyms such as DISM or CPU are fine) and no "Label — sentence" openings.
+- Keep states and verbs apart: a state describes ("Off", "On for 5 min"), a button acts ("Turn on", "Turn off").
+- In Italian the product does *pulizia*, *controllo* and *manutenzione*; it never offers *cura*.
+- Numbers carry their unit and follow the format of the language (`formatBytes`, `formatCount`, `formatPercent`).
+
+| Avoid                                  | Write                                                       |
+| -------------------------------------- | ----------------------------------------------------------- |
+| "Your PC is clean!"                    | "Nothing to clean in the scanned categories"                |
+| "Up to date" after a check that failed | "Check incomplete: winget"                                  |
+| "CLEAN NOW"                            | "Clean 2.34 GB"                                             |
+| "Scan complete" after a cancel         | "Scan stopped: results are partial."                        |
+| "Heads up — admin rights needed"       | "2 categories not scanned: they need administrator rights." |
+| "Game mode: ACTIVE"                    | "On for 12 min", with a "Turn off" button                   |
+
+## Design check
+
+`npm run check:design` runs `scripts/check-design.mjs`. It is part of `npm run check` and runs in CI, so a violation fails the build. It reports each violation with its file and line.
+
+In the renderer code (`src/renderer/src`: TypeScript, TSX and CSS, tests excluded):
+
+- colour literals (`#hex`, `rgb()`, `rgba()`, `hsl()`) outside `design-tokens.css`: use a token;
+- gradients outside `design-tokens.css`, and `backdrop-filter` or `backdrop-blur`;
+- `transition-all` and `transition: all`: name the properties that change;
+- pixel font sizes in class names such as `text-[13px]`: use `text-[length:var(--text-13)]`;
+- `uppercase` and `text-transform: uppercase`, except in the wordmark;
+- the `Sparkles` icon outside `components/ai/` and the AI analysis pages, and the `Rocket`, `Flame` and `Wand2` icons.
+
+In the Italian and English copy (`src/renderer/src/locales/it` and `en`):
+
+- text in capitals, except the acronyms listed in the script;
+- an exclamation mark;
+- an opening in the form "Label — sentence";
+- the words *cura* and *cure* in Italian.
+
+A line that contains `design-allow` is exempt; say on the same line why the rule does not apply there. `node scripts/check-design.mjs --list` lists every violation, and `node scripts/check-design.mjs --strict <files or folders>` checks only the paths given.
