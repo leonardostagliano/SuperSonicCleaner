@@ -15,6 +15,7 @@
   "cpuDetail": "Aktuell processoranvändning",
   "sample": "Senaste mätning",
   "used": "{{used}} av {{total}} GB använt",
+  "free": "{{free}} GB ledigt",
   "waiting": "Väntar på realtidsdata",
   "unavailable": "Diskdata inte tillgängliga",
   "live": "Systemmått i realtid",

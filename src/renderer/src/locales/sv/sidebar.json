@@ -10,5 +10,7 @@
   "history": "Aktivitet",
   "settings": "Inställningar",
   "gameMode": "Spelläge",
-  "firewallAudit": "Granskning av brandvägg"
+  "firewallAudit": "Granskning av brandvägg",
+  "updateBadge": "Uppdatering",
+  "mainNavigation": "Huvudnavigering"
 }

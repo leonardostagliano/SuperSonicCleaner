@@ -1,7 +1,7 @@
 {
   "title": "AI-analys",
   "description": "Få en andra åsikt om de här skanningsresultaten.",
-  "hubDescription": "En andra åsikt om skanningar och prestandainspelningar, med din Codex-inloggning.",
+  "hubDescription": "Skickar endast skanningsmetadata eller inspelningsmätningar till Codex, under din inloggning, och endast när du startar en analys från ett verktyg.",
   "hubPrivacy": "Skanningar delar endast anonym filmetadata. Inspelningar delar numeriska mätvärden för processor, minne och disk med tillfälliga process-ID:n. Namn, sökvägar, anteckningar och filinnehåll stannar på den här enheten.",
   "connectionTitle": "Codex-anslutning",
   "connectionIntro": "Använd Codex på den här datorn. Kontrollera anslutningen och välj sedan ett verktyg nedan.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Slutför en skanning eller spara en prestandainspelning, aktivera dess AI-analys och starta den sedan med den avsedda knappen. Ingenting skickas automatiskt.",
   "tools": {
     "cleaner": {
-      "title": "Systemrensning"
+      "title": "Systemrensning",
+      "dataSent": "Tillfälliga ID:n, filtyp, storlek och ungefärlig ålder. Sekretesspår exkluderade."
     },
     "largeFiles": {
-      "title": "Stora filer"
+      "title": "Stora filer",
+      "dataSent": "Tillfälliga ID:n, filtyp, storlek och ungefärlig ålder."
     },
     "duplicates": {
-      "title": "Dubblettfiler"
+      "title": "Dubblettfiler",
+      "dataSent": "Tillfälliga ID:n, filtyp, storlek, ungefärlig ålder och dublettgrupp."
     },
     "disk": {
-      "title": "Diskanalys"
+      "title": "Diskanalys",
+      "dataSent": "Tillfälliga ID:n, mappens totala storlek och ungefärlig ålder."
     },
     "performance": {
-      "title": "Prestandainspelningar"
+      "title": "Prestandainspelningar",
+      "dataSent": "Numeriska mätvärden för processor, minne och disk, med tillfälliga process-ID:n."
     }
   },
   "enable": "Aktivera AI-analys för den här vyn",
@@ -51,5 +56,23 @@
     "low": "Låg prioritet",
     "medium": "Medelhög prioritet",
     "high": "Hög prioritet"
+  },
+  "toolsTitle": "Verktyg",
+  "columns": {
+    "tool": "Verktyg",
+    "dataSent": "Skickad data",
+    "lastRun": "Senast körd",
+    "state": "Status"
+  },
+  "lastRun": {
+    "running": "Pågår",
+    "done": "Slutförd i den här sessionen",
+    "failed": "Misslyckades",
+    "none": "Inga i den här sessionen",
+    "perRecording": "Sparas med varje analyserad inspelning"
+  },
+  "state": {
+    "on": "På",
+    "off": "Av"
   }
 }

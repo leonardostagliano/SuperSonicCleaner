@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Se vad som ändrades, vad som återställdes och vad som behöver granskas igen. Varje slutförd uppgift lämnar ett spår.",
-    "settings": "Få SuperSonicCleaner att kännas rätt för dig. Ställ in utseende, aviseringar, undantag och inställningar för rensning.",
-    "about": "Öppen källkod, genomtänkt utformad. Hitta din version, sök efter uppdateringar och lär känna projektet.",
-    "recovery": "En tydlig väg tillbaka. Granska ändringar som stöds och återställningsdetaljer innan du ångrar något."
+    "history": "De senaste 100 skanningarna och rensningarna som körts på den här datorn, med datum, varaktighet, bearbetade objekt och frigjort utrymme, samt kvittot för varje rensning.",
+    "settings": "Utseende, språk, uppstart, aviseringar, uppdateringar, säkerhetskopior, rensningsinställningar och undantag. Varje ändring sparas omedelbart.",
+    "about": "Installerad version, uppdateringar, MIT-licens och ursprungsprojektet (Kudu).",
+    "recovery": "Ändringar av registret, tjänster och schemalagda uppgifter som gjorts av SuperSonicCleaner, med säkerhetskopiorna för att ångra dem. Borttagna filer kan inte återställas."
   },
   "storageTrend": {
     "title": "Lagring över tid",

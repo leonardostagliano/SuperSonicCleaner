@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "Återställningscenter",
-    "limits": "Återställning omfattar registrerade Windows DWORD-värden för sekretess/registrets värden, schemalagda aktiviteter och tjänstkonfiguration. Permanent filborttagning kan inte ångras. Äldre eller ändringar som inte stöds kan endast ha en manuell säkerhetskopia. Vissa återställda inställningar kräver en omstart.",
+    "limits": "Återställning omfattar registrets DWORD-värden som skrivits för sekretess- och systeminställningar, schemalagda uppgifter och tjänstkonfiguration. Äldre eller ändringar som inte stöds kan endast ha en manuell säkerhetskopia. Vissa återställda inställningar börjar gälla efter en omstart.",
     "refresh": "Uppdatera",
     "export": "Exportera återställningshistorik",
     "loadError": "Det gick inte att läsa återställningshistoriken.",
     "failed": "Återställningen misslyckades.",
-    "empty": "Det finns inga registrerade ändringar på den här sidan. Nya ändringar som stöds visas här.",
+    "empty": "Ändringar som gjorts av Privacy Shield, Tjänstehanteraren och Registerrensning visas här med sitt ursprungliga och senare tillstånd.",
+    "summary": {
+      "recorded": "Registrerade ändringar",
+      "registryBackups": "Registersäkerhetskopior",
+      "backupFiles": "Säkerhetskopior"
+    },
+    "changesTitle": "Registrerade ändringar",
+    "range": "{{from}}–{{to}} av {{total}}",
     "gameMode": "Återställning för spelläge",
     "gameModeDescription": "Spelläge har en aktiv eller väntande återställningsögonblicksbild.",
-    "openGameMode": "Öppna återställning för spelläge",
+    "openGameMode": "Öppna Spelläge",
     "before": "Ursprungligt tillstånd",
     "after": "Tillstånd efter SuperSonicCleaner",
     "restore": "Återställ ursprungligt tillstånd",
     "previous": "Föregående",
     "next": "Nästa",
     "backups": "Säkerhetskopior för registret och snabbmenyn",
-    "backupDescription": "Dessa säkerhetskopior innehåller inte verifierad information om efterföljande tillstånd. Granska dem i säkerhetskopieringsmappen innan du återställer manuellt. Om du importerar dem kan nyare inställningar skrivas över. En säkerhetskopia är inte en återställningspunkt i operativsystemet.",
+    "backupDescription": "Dessa säkerhetskopior innehåller inte ett verifierat senare tillstånd. Granska dem i säkerhetskopieringsmappen innan du återställer manuellt: om du importerar dem kan nyare inställningar skrivas över. En säkerhetskopia är inte en återställningspunkt i operativsystemet.",
     "openBackups": "Öppna säkerhetskopieringsmapp",
     "confirmTitle": "Återställa den här ändringen?",
-    "confirmDescription": "SuperSonicCleaner kontrollerar det aktuella tillståndet innan det registrerade ursprungliga värdet återställs. Nyare motstridiga ändringar bevaras. Administratörsbehörighet kan krävas.",
+    "confirmDescription": "SuperSonicCleaner kontrollerar det aktuella tillståndet innan det registrerade ursprungliga värdet skrivs tillbaka. Om värdet ändrades igen under tiden behålls den senare ändringen. Administratörsbehörighet kan krävas.",
     "status": {
-      "pending": "Avbruten / väntande",
-      "ready": "Tillgänglig",
+      "pending": "Avbruten eller väntande",
+      "ready": "Kan återställas",
       "restored": "Återställd",
-      "failed": "Kräver åtgärd",
+      "failed": "Återställningen misslyckades",
       "conflict": "Nyare ändring upptäckt"
     },
     "remove": "Ta bort post",
-    "removeDescription": "Ta bort den här återställningsposten från lokal historik? Detta ändrar inte dina inställningar och tar inte bort säkerhetskopior av registret. SuperSonicCleaner kommer inte längre att kunna återställa den här ändringen åt dig.",
-    "unreadable": "Den här återställningsposten kunde inte läsas. Den kan ha skrivits av ett annat användarkonto eller skadats på disken.",
-    "loading": "Läser in återställningshistorik?",
-    "emptyTitle": "Din återställningshistorik börjar här",
+    "removeTitle": "Ta bort den här återställningsposten?",
+    "removeDescription": "Posten lämnar den lokala historiken och SuperSonicCleaner kan inte längre ångra den här ändringen. Inställningar och registersäkerhetskopior ändras inte. Detta kan inte ångras.",
+    "unreadable": "Den här återställningsposten kunde inte läsas: den kan ha skrivits av ett annat användarkonto eller ha skadats på disken.",
+    "loading": "Läser återställningshistoriken…",
+    "emptyTitle": "Inga återställningsbara ändringar",
     "source": {
       "privacy": "Privacy Shield",
       "services": "Tjänstehanteraren",
       "registry": "Registerrensning"
+    },
+    "value": {
+      "absent": "Värdet fanns inte",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Aktivitet aktiverad",
+      "taskDisabled": "Aktivitet inaktiverad",
+      "start": {
+        "boot": "Bootstart",
+        "system": "Systemstart",
+        "automatic": "Automatisk start",
+        "manual": "Manuell start",
+        "disabled": "Inaktiverad"
+      },
+      "delayed": "fördröjd",
+      "running": "körs",
+      "stopped": "stoppad",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Säkerhetskopior av registret",
@@ -43,7 +68,7 @@
       "empty": "Inga säkerhetskopior av registret ännu.",
       "restore": "Återställ",
       "showInFolder": "Visa i mapp",
-      "requiresAdmin": "Kräver administratör",
+      "requiresAdmin": "Kräver administratörsbehörighet",
       "confirmTitle": "Återställa den här säkerhetskopian av registret?",
       "confirmDescription": "SuperSonicCleaner importerar nycklarna nedan. Värden från säkerhetskopian ersätter de nuvarande och saknade nycklar och värden läggs tillbaka. Inget annat tas bort, förutom att återställning av en säkerhetskopia från före återställning även tar bort de nycklar och värden som den återställning som ångras hade lagt till. Innan importen sparar SuperSonicCleaner det aktuella tillståndet för dessa nycklar som en säkerhetskopia från före återställning. Vissa ändringar börjar gälla först efter att du har loggat ut eller startat om.",
       "restored": "Återställd. Det tidigare tillståndet sparades i {{file}}.",
@@ -64,8 +89,12 @@
         "empty": "Innehåller inga registernycklar.",
         "unreadable": "Kunde inte läsas.",
         "classes-root": "Innehåller HKEY_CLASSES_ROOT-nycklar, som sammanfogar datorns och användarens klassnycklar, så SuperSonicCleaner kan inte avgöra vilken plats de ska återställas till. De kan bara granskas.",
-        "unverified": "Den här säkerhetskopian kan inte verifieras — den kan ha ändrats sedan SuperSonicCleaner skapade den, så den kan bara granskas."
-      }
+        "unverified": "Den här säkerhetskopian kan inte verifieras: den kan ha ändrats sedan SuperSonicCleaner skapade den, så den kan bara granskas."
+      },
+      "moreKeys_one": "+1 nyckel till",
+      "moreKeys_other": "+{{formatted}} nycklar till",
+      "confirmLabel_one": "Importera 1 nyckel",
+      "confirmLabel_other": "Importera {{formatted}} nycklar"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "Cachelagrade poster i dessa kategorier: {{found}} · Inte valda i den här åtgärden: {{unselected}}",
     "title": "Rensningskvitton",
     "description": "Registreras vid borttagningstillfället. Varje kvitto omfattar en rensningsåtgärd eller batch.",
-    "empty": "Inga rensningskvitton ännu. Kör en rensning för att registrera resultatet.",
+    "empty": "Inga rensningskvitton",
     "loadError": "Det gick inte att läsa rensningskvitton. Befintliga data har bevarats.",
     "actionError": "Kvittoåtgärden misslyckades.",
     "saveError": "Rensningen slutfördes, men dess kvitto kunde inte sparas.",
@@ -91,7 +120,7 @@
     "retryOf": "Försök igen av",
     "export": "Exportera kvitto",
     "retry": "Försök igen med berättigade misslyckanden ({{count}})",
-    "rescan": "Kör en ny genomsökning",
+    "rescan": "Ny skanning",
     "retryLifetime": "Nya försök använder fortfarande cachelagrade val i upp till 30 minuter. Undantag och åldersskydd kontrolleras igen. Efter att tiden gått ut eller efter omstart, kör en ny genomsökning.",
     "pathsOff": "Sökvägsloggning var avstängd för den här körningen. Endast kategorier och resultat sparades.",
     "item": "Objekt / kategori",
@@ -106,18 +135,26 @@
     "retryConfirm": "Försök igen med rensning",
     "clearTitle": "Rensa rensningskvitton?",
     "clearDescription": "Detta tar permanent bort sparade kvitton och deras information om nya försök. Genomsökningshistorik och den separata borttagningsloggen påverkas inte.",
-    "loading": "Loading cleanup receipts?"
+    "loading": "Läser rensningskvitton…"
   },
-  "pageTitle": "Skanningshistorik",
+  "pageTitle": "Aktivitet",
+  "viewLabel": "Vy",
   "viewOverview": "Översikt",
+  "viewList": "Lista",
+  "viewReceipts": "Kvitton",
   "clearButton": "Rensa",
-  "emptyStateTitle": "Ingen historik ännu",
-  "emptyStateDescription": "Kör en skanning från sidorna Cleaner, Registry eller Debloater. Resultaten visas här.",
-  "confirmClearScanDescription": "Detta tar permanent bort alla poster i skanningshistoriken. Åtgärden kan inte ångras.",
+  "clearHistory": "Rensa historik",
+  "emptyStateTitle": "Ingen aktivitet registrerad",
+  "emptyStateDescription": "Skanningar och rensningar visas här efter sin första körning, med datum, varaktighet och resultat. Rensningskvitton finns i vyn Kvitton.",
+  "confirmClearScanTitle_one": "Rensa 1 historikpost?",
+  "confirmClearScanTitle_other": "Rensa {{count}} historikposter?",
+  "confirmClearScanDescription": "Sökvägarna i loggen över borttagna filer rensas också. Rensningskvitton behålls. Detta kan inte ångras.",
+  "confirmClearLabel_one": "Rensa 1 post",
+  "confirmClearLabel_other": "Rensa {{count}} poster",
   "typeLabels": {
     "cleaner": "Systemrensning",
-    "registry": "Registerreparation",
-    "debloater": "Debloater",
+    "registry": "Registerrensning",
+    "debloater": "Borttagning av bloatware",
     "network": "Nätverksrensning",
     "drivers": "Drivrutinsrensning",
     "malware": "Skanning efter skadlig kod",
@@ -125,29 +162,88 @@
     "startup": "Autostarthanterare",
     "services": "Tjänstehanterare",
     "softwareUpdate": "Programuppdatering",
-    "cveScan": "CVE-skanning"
+    "cveScan": "Sårbarhetsskanning (CVE)"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} frigjort",
+    "noSpace": "Inget utrymme frigjort",
+    "entries_one": "1 post",
+    "entries_other": "{{formatted}} poster",
+    "items_one": "1 objekt bearbetat",
+    "items_other": "{{formatted}} objekt bearbetade",
+    "averageDuration": "genomsnittlig varaktighet {{duration}}",
+    "errors_one": "1 fel",
+    "errors_other": "{{formatted}} fel",
+    "noErrors": "inga fel",
+    "range": "från {{from}} till {{to}}",
+    "sameDay": "den {{date}}"
   },
   "overview": {
-    "tooltipSpace": "Utrymme"
+    "spaceOverTime": "Frigjort utrymme per dag",
+    "spaceSentence_one": "{{size}} frigjort under 1 dag med aktivitet.",
+    "spaceSentence_other": "{{size}} frigjort under {{count}} dagar med aktivitet.",
+    "noSpaceSentence": "Ingen registrerad aktivitet frigjorde något utrymme.",
+    "chartLabel_one": "Frigjort utrymme under 1 dag",
+    "chartLabel_other": "Frigjort utrymme under {{count}} dagar",
+    "tooltipSpace": "{{size}} frigjort",
+    "byType": "Efter typ",
+    "topCategories": "Kategorier som frigjorde mest utrymme",
+    "recent": "Senaste aktivitet",
+    "showAll": "Fullständig lista"
+  },
+  "columns": {
+    "type": "Typ",
+    "date": "Datum",
+    "entries": "Poster",
+    "items": "Objekt",
+    "space": "Utrymme",
+    "duration": "Varaktighet",
+    "outcome": "Resultat",
+    "category": "Kategori"
+  },
+  "list": {
+    "title": "All aktivitet",
+    "count_one": "1 post",
+    "count_other": "{{formatted}} poster",
+    "filterLabel": "Typ",
+    "filterAll": "Alla typer",
+    "scheduled": "Schemalagt",
+    "noErrors": "Inga fel"
   },
   "detail": {
+    "close": "Stäng",
+    "outcomeDone": "Slutförd",
+    "outcomeErrors_one": "Slutförd med 1 fel",
+    "outcomeErrors_other": "Slutförd med {{formatted}} fel",
+    "found_one": "1 objekt hittat",
+    "found_other": "{{formatted}} objekt hittade",
+    "processed_one": "1 bearbetat",
+    "processed_other": "{{formatted}} bearbetade",
+    "skipped_one": "1 objekt hoppades över.",
+    "skipped_other": "{{formatted}} objekt hoppades över.",
+    "scheduled": "schemalagt",
+    "scheduledBy": "schemalagt: {{name}}",
     "categoriesLabel": "Kategorier",
     "deletedFiles": {
       "title": "Borttagna filer",
-      "loading": "Läser in…",
+      "loading": "Läser borttagningsloggen…",
       "shownCount": "{{shown}} av {{total}}",
       "loadMore": "Läs in fler",
       "exportCsv": "Exportera CSV",
       "openLog": "Öppna logg",
-      "exportFailed": "Det gick inte att exportera listan över borttagna filer",
-      "truncatedBadge": "+{{count}} till",
+      "exported_one": "1 sökväg exporterad",
+      "exported_other": "{{formatted}} sökvägar exporterade",
+      "exportFailed": "Det gick inte att exportera listan över borttagna filer.",
+      "truncatedBadge": "+{{formatted}} ej listade",
+      "truncatedHint_one": "Den här mappen innehöll 1 post till utöver gränsen för listning per mapp. Den togs bort men listades inte.",
+      "truncatedHint_other": "Den här mappen innehöll {{formatted}} poster till utöver gränsen för listning per mapp. De togs bort men listades inte individuellt.",
       "emptyRecorded": "Inga filsökvägar registrerades för denna körning.",
-      "disabledHint": "Loggning av borttagning är avstängd, så de enskilda sökvägarna från denna körning registrerades inte. Aktivera \"Behåll en logg över borttagna filer\" i Inställningar → Rensningsinställningar för att registrera dem framöver."
+      "disabledHint": "Loggning av borttagning var avstängd, så sökvägarna från denna körning registrerades inte. Aktivera \"Behåll en logg över raderade filer\" i Inställningar › Rensningsinställningar för att registrera dem framöver."
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1s",
-    "seconds": "{{count}}s",
-    "minutesAndSeconds": "{{minutes}}m {{seconds}}s"
+    "lessThanOneSecond": "mindre än 1 s",
+    "seconds": "{{count}} s",
+    "minutesAndSeconds": "{{minutes}} min {{seconds}} s"
   }
 }
