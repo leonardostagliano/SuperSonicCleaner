@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Privacy Shield",
-    "pageDescription": "ควบคุม telemetry, โฆษณา, การติดตาม และการเก็บรวบรวมข้อมูลทั่วทั้งระบบของคุณ",
+    "pageDescription": "อ่านการตั้งค่า telemetry โฆษณา การค้นหา และการซิงค์ แล้วเปรียบเทียบกับค่าที่เป็นส่วนตัวที่สุด การตั้งค่าจะเปลี่ยนก็ต่อเมื่อคุณใช้สวิตช์หรือยืนยันเท่านั้น ส่วนใหญ่สามารถคืนค่ากลับเป็นค่าเริ่มต้นได้",
     "scanButton": "สแกน",
-    "scanProgressPreparing": "กำลังเตรียมการสแกน...",
-    "applyingProtections": "กำลังใช้การป้องกันความเป็นส่วนตัว...",
-    "emptyStateTitle": "Privacy Shield",
-    "emptyStateDescription": "คลิก \"สแกน\" เพื่อตรวจสอบการตั้งค่าความเป็นส่วนตัวและความปลอดภัยของคุณ และใช้การเสริมความปลอดภัยที่แนะนำ",
-    "adminWarning": "การตั้งค่าบางรายการต้องใช้สิทธิ์ผู้ดูแลระบบในการแก้ไข เรียกใช้ SuperSonicCleaner ในฐานะผู้ดูแลระบบเพื่อการป้องกันที่สมบูรณ์",
+    "scanProgressPreparing": "กำลังเตรียมการสแกน",
+    "applyingProtections": "กำลังใช้การตั้งค่า…",
+    "emptyStateTitle": "ยังไม่ได้สแกนการตั้งค่า",
+    "emptyStateDescription": "การสแกนจะอ่านการตั้งค่าและไม่เปลี่ยนแปลงรายการใดเลย",
+    "adminWarning": "การตั้งค่าบางรายการเปลี่ยนแปลงได้ก็ต่อเมื่อ SuperSonicCleaner ทำงานในฐานะผู้ดูแลระบบเท่านั้น หากไม่มีสิทธิ์ดังกล่าว การตั้งค่าจะคงเดิม",
     "scanFailed": "การสแกนความเป็นส่วนตัวล้มเหลว",
     "applyFailed": "ไม่สามารถใช้การตั้งค่าความเป็นส่วนตัวได้",
-    "applyFailedDescription": "ลองเรียกใช้ในฐานะผู้ดูแลระบบ",
+    "applyFailedDescription": "ลองเรียกใช้แอปในฐานะผู้ดูแลระบบ",
     "settingApplyFailed": "ไม่สามารถใช้ \"{{label}}\" ได้",
-    "settingEnabled": "บล็อก {{label}} แล้ว",
+    "settingEnabled": "ใช้ {{label}} แล้ว",
     "settingDisabled": "คืนค่า {{label}} เป็นค่าเริ่มต้นแล้ว",
-    "settingRevertFailed": "ไม่สามารถย้อนกลับ \"{{label}}\" ได้",
+    "settingRevertFailed": "ไม่สามารถคืนค่า \"{{label}}\" ได้",
     "settingRevertFailedGeneric": "ไม่สามารถย้อนกลับการตั้งค่าความเป็นส่วนตัวได้",
     "settingApplyFailedGeneric": "ไม่สามารถใช้การตั้งค่าความเป็นส่วนตัวได้",
-    "ipcCallFailed": "การเรียก IPC ล้มเหลว — ลองเรียกใช้ในฐานะผู้ดูแลระบบ",
+    "ipcCallFailed": "การเรียกใช้งานล้มเหลว — ลองเรียกใช้แอปในฐานะผู้ดูแลระบบ",
     "allSettingsLabel": "การตั้งค่าทั้งหมด",
     "unknownError": "ข้อผิดพลาดที่ไม่ทราบสาเหตุ",
     "requiresSettingEnabled": "เปิดใช้งาน \"{{label}}\" ก่อน",
-    "adminRequired": "ลองเรียกใช้ในฐานะผู้ดูแลระบบ",
-    "settingNotApplied": "ระบบไม่ได้รายงานการเปลี่ยนแปลง — อาจต้องรีสตาร์ท หรือการตั้งค่านี้อาจถูกจัดการโดยโปรไฟล์อื่น"
+    "adminRequired": "ลองเรียกใช้แอปในฐานะผู้ดูแลระบบ",
+    "settingNotApplied": "ระบบไม่ได้รายงานการเปลี่ยนแปลง — อาจต้องรีสตาร์ท หรือการตั้งค่านี้อาจถูกจัดการโดยโปรไฟล์อื่น",
+    "rescanButton": "สแกนอีกครั้ง",
+    "scanningButton": "กำลังสแกน…",
+    "applyRecommended_one": "ใช้การเปลี่ยนแปลงที่แนะนำ {{count}} รายการ",
+    "applyRecommended_other": "ใช้การเปลี่ยนแปลงที่แนะนำ {{count}} รายการ",
+    "summaryTitle_one": "การตั้งค่าที่ต้องเปลี่ยน {{count}} รายการ",
+    "summaryTitle_other": "การตั้งค่าที่ต้องเปลี่ยน {{count}} รายการ",
+    "summaryNone": "การตั้งค่าทั้งหมด {{total}} รายการมีค่าที่เป็นส่วนตัวที่สุดอยู่แล้ว",
+    "summaryFacts": "{{protected}} จาก {{total}} รายการอยู่ในค่าที่เป็นส่วนตัวที่สุดแล้ว · {{categories}} หมวดหมู่",
+    "categoryMeta_one": "{{count}} รายการที่ต้องเปลี่ยน",
+    "categoryMeta_other": "{{count}} รายการที่ต้องเปลี่ยน",
+    "categoryAllSet": "ตั้งค่าครบแล้วทั้งหมด",
+    "categoryApply_one": "ใช้ {{count}} รายการ",
+    "categoryApply_other": "ใช้ {{count}} รายการ",
+    "categoryShow": "แสดง",
+    "categoryHide": "ซ่อน",
+    "adminTag": "ต้องใช้สิทธิ์ผู้ดูแลระบบ",
+    "notReversibleTag": "ย้อนกลับไม่ได้",
+    "scanProgressTitle": "กำลังสแกน",
+    "scanProgressCount": "{{current}} จาก {{total}}",
+    "scanProgressCategory": "กำลังตรวจสอบ: {{category}}",
+    "scanProgressLabel": "ความคืบหน้าการสแกน",
+    "applyingLabel": "ความคืบหน้าการใช้งาน",
+    "receiptTitle": "ใช้การตั้งค่าแล้ว",
+    "receiptApplied_one": "เปลี่ยนการตั้งค่าแล้ว {{count}} รายการ",
+    "receiptApplied_other": "เปลี่ยนการตั้งค่าแล้ว {{count}} รายการ",
+    "receiptReversible": "คืนค่าได้จากสวิตช์",
+    "receiptFailed_one": "ไม่ได้ใช้ {{count}} รายการ: เหตุผลแสดงอยู่ด้านล่าง",
+    "receiptFailed_other": "ไม่ได้ใช้ {{count}} รายการ: เหตุผลแสดงอยู่ด้านล่าง",
+    "receiptFailedAdmin_one": "ไม่ได้ใช้ {{count}} รายการ: อาจต้องเรียกใช้แอปในฐานะผู้ดูแลระบบ เหตุผลแสดงอยู่ด้านล่าง",
+    "receiptFailedAdmin_other": "ไม่ได้ใช้ {{count}} รายการ: อาจต้องเรียกใช้แอปในฐานะผู้ดูแลระบบ เหตุผลแสดงอยู่ด้านล่าง",
+    "failedHeading": "การตั้งค่าที่ไม่ได้ใช้",
+    "failedColumnSetting": "การตั้งค่า",
+    "failedColumnReason": "เหตุผล",
+    "confirmTitle_one": "เปลี่ยนการตั้งค่า {{count}} รายการหรือไม่?",
+    "confirmTitle_other": "เปลี่ยนการตั้งค่า {{count}} รายการหรือไม่?",
+    "confirmDescription": "การตั้งค่าที่แสดงไว้จะเปลี่ยนเป็นค่าที่เป็นส่วนตัวที่สุด คุณสามารถคืนค่ากลับเป็นค่าเริ่มต้นได้จากสวิตช์ในหน้านี้",
+    "confirmDescriptionIrreversible_one": "การตั้งค่าที่แสดงไว้จะเปลี่ยนเป็นค่าที่เป็นส่วนตัวที่สุด {{count}} รายการไม่สามารถคืนค่ากลับเป็นค่าเริ่มต้นได้จากหน้านี้",
+    "confirmDescriptionIrreversible_other": "การตั้งค่าที่แสดงไว้จะเปลี่ยนเป็นค่าที่เป็นส่วนตัวที่สุด {{count}} รายการไม่สามารถคืนค่ากลับเป็นค่าเริ่มต้นได้จากหน้านี้",
+    "confirmLabel_one": "เปลี่ยนการตั้งค่า {{count}} รายการ",
+    "confirmLabel_other": "เปลี่ยนการตั้งค่า {{count}} รายการ",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetry ของ Windows",
+        "description": "ตั้งค่าการเก็บข้อมูลการวินิจฉัยไว้ที่ระดับต่ำสุด (ระดับความปลอดภัยเท่านั้น)"
+      },
+      "activity-history": {
+        "label": "ประวัติกิจกรรม",
+        "description": "หยุดไม่ให้ Windows ติดตามและซิงค์การใช้งานแอปและไฟล์ของคุณ"
+      },
+      "publish-activity": {
+        "label": "การเผยแพร่กิจกรรมผู้ใช้",
+        "description": "ป้องกันไม่ให้ Windows เผยแพร่กิจกรรมของคุณไปยัง Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "การแจ้งเตือนขอความคิดเห็น",
+        "description": "ปิดการแจ้งเตือนและแบบสำรวจความคิดเห็นของ Microsoft ที่แสดงเป็นระยะ"
+      },
+      "handwriting-telemetry": {
+        "label": "ข้อมูลลายมือ",
+        "description": "หยุดส่งข้อมูลลายมือและการพิมพ์ไปยัง Microsoft"
+      },
+      "input-personalization": {
+        "label": "การปรับแต่งข้อมูลป้อนเข้าส่วนบุคคล",
+        "description": "หยุดเก็บข้อมูลการพิมพ์และการเขียนด้วยปากกาเพื่อการปรับแต่งส่วนบุคคล"
+      },
+      "tailored-experiences": {
+        "label": "ประสบการณ์ที่ปรับให้เหมาะกับคุณ",
+        "description": "ป้องกันไม่ให้ Microsoft ใช้ข้อมูลการวินิจฉัยเพื่อปรับแต่งคำแนะนำและโฆษณา"
+      },
+      "app-launch-tracking": {
+        "label": "การติดตามการเปิดแอป",
+        "description": "หยุดไม่ให้ Windows ติดตามแอปที่คุณเปิดเพื่อปรับแต่งเมนู Start"
+      },
+      "advertising-id": {
+        "label": "รหัสโฆษณา",
+        "description": "ปิดรหัสโฆษณาเฉพาะที่แอปใช้ติดตามคุณ"
+      },
+      "suggested-content": {
+        "label": "เนื้อหาแนะนำในการตั้งค่า",
+        "description": "ป้องกันไม่ให้ Microsoft แสดงคำแนะนำแอปและโฆษณาในการตั้งค่า"
+      },
+      "tips-notifications": {
+        "label": "คำแนะนำและข้อเสนอแนะ",
+        "description": "ปิดคำแนะนำ เคล็ดลับ และการแจ้งเตือนข้อเสนอแนะของ Windows"
+      },
+      "start-suggestions": {
+        "label": "คำแนะนำในเมนู Start",
+        "description": "ปิดคำแนะนำแอป (โฆษณา) ในเมนู Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight บนหน้าจอล็อก",
+        "description": "ปิดโฆษณาและคำแนะนำของ Microsoft Spotlight บนหน้าจอล็อก"
+      },
+      "silently-installed-apps": {
+        "label": "แอปที่ติดตั้งแบบเงียบ",
+        "description": "ป้องกันไม่ให้ Windows ติดตั้งแอปที่โปรโมตโดยอัตโนมัติ"
+      },
+      "preinstalled-apps": {
+        "label": "คำแนะนำแอปที่ติดตั้งมาล่วงหน้า",
+        "description": "หยุดไม่ให้ Windows แนะนำแอปที่ติดตั้งมาล่วงหน้าที่คุณยังไม่เคยใช้"
+      },
+      "bing-start-menu": {
+        "label": "Bing ในเมนู Start",
+        "description": "หยุดส่งคำค้นหาที่พิมพ์ในเมนู Start ไปยัง Bing"
+      },
+      "bing-web-search": {
+        "label": "ผลลัพธ์เว็บจาก Bing",
+        "description": "ปิดผลลัพธ์เว็บใน Windows Search เพื่อให้การค้นหาอยู่บน PC เครื่องนี้เท่านั้น"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "ปิด Cortana ซึ่งทำงานอยู่เบื้องหลังและเก็บรวบรวมข้อมูล"
+      },
+      "search-highlights": {
+        "label": "ไฮไลต์การค้นหา",
+        "description": "ปิดคำแนะนำการค้นหายอดนิยมและเนื้อหาเว็บในกล่องค้นหา"
+      },
+      "store-search-suggestions": {
+        "label": "คำแนะนำการค้นหาของ Store",
+        "description": "ปิดคำแนะนำการค้นหาของ Microsoft Store ซึ่งส่งคำค้นหาของคุณไปยัง Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "การซิงค์คลิปบอร์ดผ่านคลาวด์",
+        "description": "ป้องกันไม่ให้ข้อมูลคลิปบอร์ดซิงค์ระหว่างอุปกรณ์ผ่านคลาวด์"
+      },
+      "clipboard-history": {
+        "label": "ประวัติคลิปบอร์ด",
+        "description": "ปิดประวัติคลิปบอร์ดที่เก็บข้อความและรูปภาพที่คัดลอกไว้"
+      },
+      "settings-sync": {
+        "label": "การซิงค์การตั้งค่า",
+        "description": "หยุดซิงค์การตั้งค่า ธีม และรหัสผ่านของ Windows ไปยังบัญชี Microsoft ของคุณ"
+      },
+      "find-my-device": {
+        "label": "ค้นหาอุปกรณ์ของฉัน",
+        "description": "ปิดการติดตามอุปกรณ์ตามตำแหน่งที่ตั้งโดย Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "ปิดผู้ช่วย AI Microsoft Copilot ทั่วทั้ง Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "ปิด Windows Recall ซึ่งเป็นประวัติภาพหน้าจอที่ขับเคลื่อนด้วย AI และบันทึกทุกอย่างบนหน้าจอ"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "ปิดการวิเคราะห์ด้วย AI ของ Click to Do สำหรับข้อความและรูปภาพบนหน้าจอ"
+      },
+      "ai-service-autostart": {
+        "label": "การเริ่มต้นอัตโนมัติของบริการ AI",
+        "description": "ป้องกันไม่ให้บริการ AI เริ่มทำงานอัตโนมัติในเบื้องหลัง"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "ปิดฟีเจอร์การเขียนและเรียบเรียงข้อความด้วย AI ของ Edge"
+      },
+      "paint-ai": {
+        "label": "ฟีเจอร์ AI ของ Paint",
+        "description": "ปิดฟีเจอร์สร้างภาพด้วย AI ใน Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "ฟีเจอร์ AI ของ Notepad",
+        "description": "ปิดฟีเจอร์เรียบเรียงข้อความด้วย AI ใน Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "บริการ DiagTrack",
+        "description": "ปิดใช้งานบริการ Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "บริการ WAP Push",
+        "description": "ปิดใช้งานบริการส่งต่อข้อความ WAP Push ที่ใช้สำหรับ telemetry"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "ปิดใช้งานการแชร์การอัปเดต Windows แบบ peer-to-peer เพื่อไม่ให้ PC เครื่องนี้อัปโหลดข้อมูลอัปเดตไปยังอุปกรณ์อื่น"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "ปิดใช้งาน Downloaded Maps Manager ซึ่งเป็นบริการเบื้องหลังที่ PC ส่วนใหญ่ไม่จำเป็นต้องใช้"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "ปิดใช้งานงาน telemetry ของ Microsoft ที่เก็บข้อมูลความเข้ากันได้"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "ปิดใช้งานงานเบื้องหลังที่อัปโหลด telemetry ของโปรแกรม"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "ปิดใช้งานการเก็บ telemetry ที่ทำผ่านพร็อกซี autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "ปิดใช้งานการอัปโหลดข้อมูล Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "ข้อมูลการใช้งาน USB (CEIP)",
+        "description": "ปิดใช้งานการเก็บ telemetry การใช้งานอุปกรณ์ USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "ปิดใช้งานการเก็บและอัปโหลดข้อมูลการวินิจฉัยดิสก์"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "ปิดใช้งานงาน telemetry การจัดการอุปกรณ์สำหรับความคิดเห็น"
+      },
+      "task-maps-update": {
+        "label": "งานอัปเดตแผนที่",
+        "description": "ปิดใช้งานการดาวน์โหลดข้อมูลแผนที่อัตโนมัติในเบื้องหลัง"
+      },
+      "task-maps-toast": {
+        "label": "งานแจ้งเตือนแผนที่",
+        "description": "ปิดใช้งานงานแจ้งเตือนแผนที่"
+      },
+      "edge-metrics": {
+        "label": "การรายงานเมตริกของ Edge",
+        "description": "หยุดไม่ให้ Edge ส่งเมตริกการใช้งานและการขัดข้องไปยัง Microsoft"
+      },
+      "edge-site-info": {
+        "label": "การเก็บข้อมูลเว็บไซต์ของ Edge",
+        "description": "หยุดไม่ให้ Edge ส่งที่อยู่เว็บไซต์ที่คุณเข้าชมไปยัง Microsoft"
+      },
+      "edge-personalization": {
+        "label": "การรายงานเพื่อปรับแต่งส่วนบุคคลของ Edge",
+        "description": "หยุดไม่ให้ Edge ส่งประวัติการเข้าชมของคุณเพื่อปรับแต่งโฆษณา"
+      },
+      "edge-copilot-cdp": {
+        "label": "การเข้าถึงหน้าเว็บของ Edge Copilot (CDP)",
+        "description": "ป้องกันไม่ให้ Copilot อ่านเนื้อหาหน้าเว็บผ่าน Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "บริบทหน้าเว็บของ Edge Copilot",
+        "description": "ป้องกันไม่ให้ Copilot ใช้บริบทของหน้าเว็บในการวิเคราะห์เนื้อหา"
+      },
+      "edge-discover": {
+        "label": "การสแกนหน้าเว็บของ Edge Discover",
+        "description": "หยุดฟีเจอร์ Discover จากการสแกนเนื้อหาหน้าเว็บ"
+      },
+      "edge-sidebar": {
+        "label": "แถบด้านข้างของ Edge",
+        "description": "ปิดแถบด้านข้างของ Edge และการเก็บข้อมูลเบื้องหลัง"
+      },
+      "edge-shopping": {
+        "label": "ผู้ช่วยช้อปปิ้งของ Edge",
+        "description": "ปิดตัวติดตามเปรียบเทียบราคาใน Edge"
+      },
+      "chrome-metrics": {
+        "label": "การรายงานเมตริกของ Chrome",
+        "description": "หยุดไม่ให้ Chrome ส่งเมตริกการใช้งานและการขัดข้องไปยัง Google"
+      },
+      "chrome-feedback": {
+        "label": "ความคิดเห็นผู้ใช้ Chrome",
+        "description": "ป้องกันไม่ให้ Chrome เก็บและส่งข้อมูลความคิดเห็นของผู้ใช้"
+      },
+      "chrome-extended-reporting": {
+        "label": "Safe Browsing แบบขยายของ Chrome",
+        "description": "หยุดไม่ให้ Chrome ส่งรายงาน URL และการดาวน์โหลดแบบขยายไปยัง Google"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetry ของ Firefox",
+        "description": "หยุดไม่ให้ Firefox เก็บข้อมูล telemetry และอัปโหลดไปยัง Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "ตัวแทนเบราว์เซอร์เริ่มต้นของ Firefox",
+        "description": "ปิดใช้งานตัวแทนเบื้องหลังที่รายงานข้อมูลการใช้งานเบราว์เซอร์ไปยัง Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "การวินิจฉัยและข้อมูลการใช้งาน",
+        "description": "หยุดแชร์ข้อมูลการวินิจฉัยและการใช้งานกับ Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "การวิเคราะห์ของ Siri",
+        "description": "หยุดการเก็บข้อมูลวิเคราะห์และปรับปรุงของ Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "การแชร์ข้อมูลสุขภาพ",
+        "description": "หยุดแชร์ข้อมูลสุขภาพกับ Apple เพื่อการวิจัย"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "การให้ผู้อื่นมองเห็น AirDrop",
+        "description": "ตั้งค่า AirDrop เป็นไม่มีใครเลย: คุณจะไม่สามารถรับไฟล์ผ่าน AirDrop ได้จนกว่าจะเปิดใช้งานอีกครั้งใน System Settings"
+      },
+      "macos-crash-reporter": {
+        "label": "ตัวรายงานการขัดข้อง",
+        "description": "หยุดตัวรายงานการขัดข้องจากการส่งรายงานโดยอัตโนมัติ"
+      },
+      "macos-ad-tracking": {
+        "label": "โฆษณาที่ปรับให้เหมาะกับคุณ",
+        "description": "จำกัดการติดตามโฆษณาโดย Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "คำแนะนำของ Siri ใน App Store",
+        "description": "ปิดคำแนะนำของ Siri ใน App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "คำแนะนำของ Safari",
+        "description": "ปิดคำแนะนำการค้นหาของ Safari ที่ส่งไปยัง Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "คำแนะนำของ Spotlight",
+        "description": "ปิดคำแนะนำเว็บของ Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "การโหลดผลลัพธ์อันดับต้นล่วงหน้าของ Safari",
+        "description": "หยุดไม่ให้ Safari โหลดผลการค้นหาอันดับต้นล่วงหน้า ซึ่งส่งข้อมูลการเข้าชมไปยังเว็บไซต์"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "ปิด Handoff และ Universal Clipboard: คุณจะไม่สามารถทำกิจกรรมต่อหรือคัดลอกวางระหว่างอุปกรณ์ Apple ได้อีกต่อไป"
+      },
+      "macos-icloud-analytics": {
+        "label": "การวิเคราะห์ของ iCloud",
+        "description": "หยุดแชร์ข้อมูลวิเคราะห์ของ iCloud กับ Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "แท็บ iCloud ของ Safari",
+        "description": "ปิดการซิงค์แท็บ iCloud ของ Safari: คุณจะไม่เห็นแท็บที่เปิดอยู่บนอุปกรณ์ Apple เครื่องอื่นอีกต่อไป"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "ปิด Siri ทั้งหมด: Hey Siri คำสั่งเสียง และ Siri Shortcuts จะหยุดทำงาน"
+      },
+      "macos-siri-dictation": {
+        "label": "การพิมพ์ตามเสียงของ Siri",
+        "description": "ปิดการพิมพ์ตามเสียง: ปุ่มไมโครโฟนบนแป้นพิมพ์ของคุณจะหยุดทำงาน"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "ปิดฟีเจอร์ AI ของ Apple Intelligence (macOS 15 Sequoia ขึ้นไป)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "เปิดใช้งานส่วนหัว Do Not Track ใน Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "การรายงานเมตริกของ Chrome",
+        "description": "หยุดไม่ให้ Chrome ส่งเมตริกการใช้งานไปยัง Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "รายงาน Safe Browsing ของ Chrome",
+        "description": "หยุดไม่ให้ Chrome ส่งรายงาน URL และการดาวน์โหลดแบบขยายไปยัง Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetry ของ Firefox",
+        "description": "หยุดไม่ให้ Firefox เก็บข้อมูล telemetry และอัปโหลดไปยัง Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "ตรวจสอบให้แน่ใจว่า Gatekeeper เปิดอยู่ เพื่อบล็อกแอปพลิเคชันที่ไม่ได้ตรวจสอบ"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote Apple Events",
+        "description": "ปิด Remote Apple Events เพื่อไม่ให้ Mac ของคุณถูกควบคุมจากระยะไกลได้"
+      },
+      "macos-wake-on-network": {
+        "label": "การปลุกเครื่องเมื่อมีการเข้าถึงเครือข่าย",
+        "description": "ปิดการปลุกเครื่องเมื่อมีการเข้าถึงเครือข่าย เพื่อไม่ให้ Mac ของคุณถูกปลุกจากระยะไกลได้"
+      },
+      "macos-guest-account": {
+        "label": "บัญชีผู้เยี่ยมชม",
+        "description": "ปิดบัญชีผู้เยี่ยมชมเพื่อป้องกันการเข้าถึงในเครื่องโดยไม่ได้รับอนุญาต"
+      },
+      "macos-auto-login": {
+        "label": "การเข้าสู่ระบบอัตโนมัติ",
+        "description": "ปิดการเข้าสู่ระบบอัตโนมัติ เพื่อให้ Mac ขอการยืนยันตัวตนเมื่อเริ่มระบบ"
+      },
+      "macos-firewall": {
+        "label": "ไฟร์วอลล์แอปพลิเคชัน",
+        "description": "เปิดใช้งานไฟร์วอลล์แอปพลิเคชันของ macOS เพื่อควบคุมการเชื่อมต่อขาเข้า"
+      },
+      "macos-stealth-mode": {
+        "label": "โหมดซ่อนตัว",
+        "description": "เปิดใช้งานโหมดซ่อนตัว เพื่อไม่ให้ Mac ของคุณตอบสนองคำขอตรวจสอบ (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "ปิดใช้งานการส่งต่อ IP",
+        "description": "ป้องกันไม่ให้ระบบส่งต่อแพ็กเก็ตระหว่างอินเทอร์เฟซเครือข่าย"
+      },
+      "macos-block-signed-auto": {
+        "label": "บล็อกการอนุญาตอัตโนมัติสำหรับแอปที่ลงนามแล้ว",
+        "description": "ป้องกันไม่ให้แอปพลิเคชันที่ลงนามแล้วข้ามไฟร์วอลล์โดยอัตโนมัติ"
+      },
+      "macos-remote-login": {
+        "label": "ปิดใช้งานการเข้าสู่ระบบระยะไกล (SSH)",
+        "description": "ปิดเซิร์ฟเวอร์ SSH ทั้งหมด หากคุณต้องการเข้าถึงผ่าน SSH ให้ปล่อยตัวเลือกนี้ไว้และเสริมความปลอดภัยการตั้งค่า SSH แทน"
+      },
+      "macos-ssh-root-login": {
+        "label": "ปิดใช้งานการเข้าสู่ระบบ root ผ่าน SSH",
+        "description": "ป้องกันการเข้าสู่ระบบ root โดยตรงผ่าน SSH ใช้ sudo จากบัญชีปกติแทน"
+      },
+      "macos-ssh-password-auth": {
+        "label": "ปิดใช้งานการตรวจสอบสิทธิ์ด้วยรหัสผ่านของ SSH",
+        "description": "อนุญาตเฉพาะการตรวจสอบสิทธิ์ SSH แบบใช้คีย์เท่านั้น ตั้งค่าคีย์ SSH ไว้ก่อน มิฉะนั้นคุณอาจถูกล็อกออกจากระบบ"
+      },
+      "macos-core-dumps": {
+        "label": "ปิดใช้งาน core dump",
+        "description": "ป้องกัน core dump ซึ่งอาจรั่วไหลเนื้อหาหน่วยความจำที่ละเอียดอ่อน"
+      },
+      "gnome-usage-stats": {
+        "label": "สถิติการใช้งาน",
+        "description": "ปิดการเก็บสถิติการใช้งานของ GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "การติดตามไฟล์ล่าสุด",
+        "description": "ปิดการติดตามไฟล์ที่ใช้งานล่าสุด"
+      },
+      "gnome-location": {
+        "label": "บริการตำแหน่งที่ตั้ง",
+        "description": "ปิดบริการตำแหน่งที่ตั้งของ GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "การรายงานการขัดข้อง (Apport)",
+        "description": "ปิดการส่งรายงานการขัดข้องอัตโนมัติ"
+      },
+      "gnome-connectivity-check": {
+        "label": "การตรวจสอบการเชื่อมต่อ",
+        "description": "ปิดการตรวจสอบการเชื่อมต่อเครือข่ายเป็นระยะ"
+      },
+      "core-dump-disable": {
+        "label": "ปิดใช้งาน core dump",
+        "description": "ป้องกัน core dump ซึ่งอาจรั่วไหลเนื้อหาหน่วยความจำที่ละเอียดอ่อน"
+      },
+      "ssh-root-login": {
+        "label": "ปิดใช้งานการเข้าสู่ระบบ root ผ่าน SSH",
+        "description": "ป้องกันการเข้าสู่ระบบ root โดยตรงผ่าน SSH ใช้ sudo จากบัญชีปกติแทน"
+      },
+      "ssh-password-auth": {
+        "label": "ปิดใช้งานการตรวจสอบสิทธิ์ด้วยรหัสผ่านของ SSH",
+        "description": "อนุญาตเฉพาะการตรวจสอบสิทธิ์ SSH แบบใช้คีย์เท่านั้น ตั้งค่าคีย์ SSH ไว้ก่อน มิฉะนั้นคุณอาจถูกล็อกออกจากระบบ"
+      },
+      "kde-usage-stats": {
+        "label": "สถิติการใช้งาน",
+        "description": "ปิดการแจ้งความคิดเห็นผู้ใช้ของ KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "การติดตามไฟล์ล่าสุด",
+        "description": "ปิดประวัติกิจกรรมไฟล์ล่าสุดของ KDE"
+      },
+      "kde-baloo": {
+        "label": "การจัดทำดัชนีไฟล์ (Baloo)",
+        "description": "ปิดตัวจัดทำดัชนีไฟล์ Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "การรายงานการขัดข้อง (DrKonqi)",
+        "description": "ปิดตัวจัดการรายงานการขัดข้องของ KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetry และการเก็บรวบรวมข้อมูล",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "เครื่องมือลบ Bloatware",
-    "pageDescription": "ลบแอป Windows ที่ติดตั้งมาล่วงหน้าและ OEM bloatware",
+    "pageDescription": "แอปที่ติดตั้งมาล่วงหน้าโดย Windows และผู้ผลิต เมื่อลบแล้วจะสามารถติดตั้งใหม่ได้จาก Microsoft Store เท่านั้น",
     "scanButton": "สแกน",
-    "irreversibleWarning": "ไม่สามารถย้อนกลับได้ — แอปที่ลบแล้วสามารถติดตั้งใหม่ได้จาก Microsoft Store เท่านั้น โปรดตรวจสอบรายการที่เลือกอย่างรอบคอบ",
-    "scanningPackages": "กำลังสแกนแพ็กเกจที่ติดตั้ง...",
-    "removingProgress": "กำลังลบ {{current}} จาก {{total}}",
+    "rescanButton": "สแกนอีกครั้ง",
+    "irreversibleWarning": "การลบไม่สามารถย้อนกลับได้จากแอปนี้: ตรวจสอบแอปที่เลือกก่อนยืนยัน",
+    "scanningPackages": "กำลังสแกนแพ็กเกจที่ติดตั้ง…",
+    "removingProgress": "กำลังลบแอป ({{current}} จาก {{total}})",
+    "receiptTitle": "ลบเสร็จสิ้น",
+    "removedApps_one": "ลบแอปแล้ว {{count}} รายการ",
+    "removedApps_other": "ลบแอปแล้ว {{count}} รายการ",
+    "failedCount_one": "ล้มเหลว {{count}} รายการ",
+    "failedCount_other": "ล้มเหลว {{count}} รายการ",
+    "reinstallFromStore": "ติดตั้งใหม่ได้จาก Microsoft Store เท่านั้น",
     "selectAll": "เลือกทั้งหมด",
-    "emptyStateTitle": "ไม่พบ Bloatware",
-    "emptyStateDescription": "คลิก \"สแกน\" เพื่อค้นหาแอปที่ติดตั้งมาล่วงหน้าและ OEM bloatware",
+    "filterLabel": "หมวดหมู่",
+    "confirmTitle_one": "ลบแอป {{count}} รายการหรือไม่?",
+    "confirmTitle_other": "ลบแอป {{count}} รายการหรือไม่?",
+    "confirmDescription_one": "แอปจะถูกลบสำหรับผู้ใช้ของคุณ และหากมีสิทธิ์ผู้ดูแลระบบจะลบสำหรับผู้ใช้ใหม่ด้วย สามารถติดตั้งใหม่ได้จาก Microsoft Store เท่านั้น",
+    "confirmDescription_other": "แอปจะถูกลบสำหรับผู้ใช้ของคุณ และหากมีสิทธิ์ผู้ดูแลระบบจะลบสำหรับผู้ใช้ใหม่ด้วย สามารถติดตั้งใหม่ได้จาก Microsoft Store เท่านั้น",
+    "confirmLabel_one": "ลบแอป {{count}} รายการ",
+    "confirmLabel_other": "ลบแอป {{count}} รายการ",
+    "emptyStateTitle": "ยังไม่ได้สแกน",
+    "emptyStateDescription": "ยังไม่มีการสแกนแอปที่ติดตั้งมาล่วงหน้าในเซสชันนี้",
+    "lastRun_one": "การลบล่าสุด: {{date}} ลบแอปแล้ว {{count}} รายการ",
+    "lastRun_other": "การลบล่าสุด: {{date}} ลบแอปแล้ว {{count}} รายการ",
+    "checkKnownTitle": "แอปที่รู้จัก",
+    "checkKnownDetail": "รายการแอปที่ติดตั้งมาล่วงหน้าโดย Microsoft และโดยผู้ผลิต (OEM)",
+    "checkInstalledTitle": "แพ็กเกจที่ติดตั้ง",
+    "checkInstalledDetail": "แพ็กเกจแอปของผู้ใช้ของคุณ เทียบกับรายการ",
+    "checkRemovalTitle": "การลบ",
+    "checkRemovalDetail": "สำหรับผู้ใช้ของคุณ หากมีสิทธิ์ผู้ดูแลระบบจะรวมถึงสำเนาที่ใช้สำหรับผู้ใช้ใหม่ด้วย",
+    "noneFoundTitle": "ไม่มีแอปในรายการติดตั้งอยู่",
+    "noneFoundDescription": "ไม่พบแอปที่ติดตั้งมาล่วงหน้าที่รู้จักสำหรับผู้ใช้ของคุณ",
+    "summaryTitle_one": "พบแอปที่ติดตั้งมาล่วงหน้า {{count}} รายการ",
+    "summaryTitle_other": "พบแอปที่ติดตั้งมาล่วงหน้า {{count}} รายการ",
+    "selectedCount_one": "เลือกแล้ว {{count}} รายการ",
+    "selectedCount_other": "เลือกแล้ว {{count}} รายการ",
+    "removeButton_one": "ลบแอป {{count}} รายการ",
+    "removeButton_other": "ลบแอป {{count}} รายการ",
+    "removeNone": "ลบรายการที่เลือก",
     "scanFailedToast": "การสแกน Bloatware ล้มเหลว",
     "scanFailedDescription": "ตรวจสอบให้แน่ใจว่า PowerShell พร้อมใช้งาน",
     "scanFailedError": "ไม่สามารถสแกนหา Bloatware ได้ ตรวจสอบให้แน่ใจว่า PowerShell พร้อมใช้งาน",

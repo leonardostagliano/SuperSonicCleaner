@@ -10,5 +10,7 @@
   "history": "กิจกรรม",
   "settings": "การกำหนดลักษณะ",
   "gameMode": "โหมดเกม",
-  "firewallAudit": "การตรวจสอบไฟร์วอลล์"
+  "firewallAudit": "การตรวจสอบไฟร์วอลล์",
+  "updateBadge": "อัปเดต",
+  "mainNavigation": "การนำทางหลัก"
 }
