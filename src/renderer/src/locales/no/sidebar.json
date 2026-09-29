@@ -10,5 +10,7 @@
   "history": "Aktivitet",
   "settings": "Innstillinger",
   "gameMode": "Spillmodus",
-  "firewallAudit": "Revisjon av brannmur"
+  "firewallAudit": "Revisjon av brannmur",
+  "updateBadge": "Oppdatering",
+  "mainNavigation": "Hovednavigasjon"
 }

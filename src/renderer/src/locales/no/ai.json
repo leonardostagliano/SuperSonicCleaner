@@ -1,7 +1,7 @@
 {
   "title": "AI-analyse",
   "description": "Få en ny vurdering av disse skanneresultatene.",
-  "hubDescription": "En ny vurdering av skanninger og ytelsesopptak, ved hjelp av Codex-innloggingen din.",
+  "hubDescription": "Sender kun skannemetadata eller opptaksmålinger til Codex, under din egen innlogging, og bare når du starter en analyse fra et verktøy.",
   "hubPrivacy": "Skanninger deler bare anonyme filmetadata. Opptak deler numeriske mål for CPU, minne og disk med midlertidige prosess-ID-er. Navn, baner, notater og filinnhold blir værende på denne enheten.",
   "connectionTitle": "Codex-tilkobling",
   "connectionIntro": "Bruk Codex på denne datamaskinen. Kontroller tilkoblingen, og velg deretter et verktøy nedenfor.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Fullfør en skanning eller lagre et ytelsesopptak, aktiver AI-analyse for det, og start den deretter med den egne knappen. Ingenting sendes automatisk.",
   "tools": {
     "cleaner": {
-      "title": "Systemopprydding"
+      "title": "Systemopprydding",
+      "dataSent": "Midlertidige IDer, filtype, størrelse og omtrentlig alder. Personvernspor er ekskludert."
     },
     "largeFiles": {
-      "title": "Store filer"
+      "title": "Store filer",
+      "dataSent": "Midlertidige IDer, filtype, størrelse og omtrentlig alder."
     },
     "duplicates": {
-      "title": "Dupliserte filer"
+      "title": "Dupliserte filer",
+      "dataSent": "Midlertidige IDer, filtype, størrelse, omtrentlig alder og duplikatgruppe."
     },
     "disk": {
-      "title": "Diskanalyse"
+      "title": "Diskanalyse",
+      "dataSent": "Midlertidige IDer, total mappestørrelse og omtrentlig alder."
     },
     "performance": {
-      "title": "Ytelsesopptak"
+      "title": "Ytelsesopptak",
+      "dataSent": "Numeriske mål for CPU, minne og disk, med midlertidige prosess-IDer."
     }
   },
   "enable": "Aktiver AI-analyse for denne visningen",
@@ -51,5 +56,23 @@
     "low": "Lav prioritet",
     "medium": "Middels prioritet",
     "high": "Høy prioritet"
+  },
+  "toolsTitle": "Verktøy",
+  "columns": {
+    "tool": "Verktøy",
+    "dataSent": "Data sendt",
+    "lastRun": "Sist kjørt",
+    "state": "Status"
+  },
+  "lastRun": {
+    "running": "Kjører",
+    "done": "Fullført denne økten",
+    "failed": "Mislyktes",
+    "none": "Ingen denne økten",
+    "perRecording": "Lagres for hvert analyserte opptak"
+  },
+  "state": {
+    "on": "På",
+    "off": "Av"
   }
 }

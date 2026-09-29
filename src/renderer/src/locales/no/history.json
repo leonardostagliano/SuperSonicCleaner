@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "Gjenopprettingssenter",
-    "limits": "Gjenoppretting dekker registrerte Windows DWORD-personvern-/registerverdier, planlagte oppgaver og tjenestekonfigurasjon. Permanent sletting av filer kan ikke angres. Eldre eller ikke-støttede endringer kan bare ha en manuell sikkerhetskopi. Noen gjenopprettede innstillinger krever omstart.",
+    "limits": "Gjenoppretting dekker registerets DWORD-verdier skrevet for personvern- og systeminnstillinger, planlagte oppgaver og tjenestekonfigurasjon. Eldre eller ikke-støttede endringer kan bare ha en manuell sikkerhetskopi. Noen gjenopprettede innstillinger trer i kraft etter en omstart.",
     "refresh": "Oppdater",
     "export": "Eksporter gjenopprettingshistorikk",
     "loadError": "Kunne ikke lese gjenopprettingshistorikken.",
     "failed": "Gjenoppretting mislyktes.",
-    "empty": "Ingen registrerte endringer på denne siden. Nye støttede endringer vises her.",
+    "empty": "Endringer gjort av Personvernskjold, Tjenestebehandling og Registerrenser vises her, med opprinnelig og senere tilstand.",
+    "summary": {
+      "recorded": "Registrerte endringer",
+      "registryBackups": "Registersikkerhetskopier",
+      "backupFiles": "Sikkerhetskopifiler"
+    },
+    "changesTitle": "Registrerte endringer",
+    "range": "{{from}}–{{to}} av {{total}}",
     "gameMode": "Gjenoppretting for spillmodus",
     "gameModeDescription": "Spillmodus har et aktivt eller ventende gjenopprettingsøyeblikksbilde.",
-    "openGameMode": "Åpne gjenoppretting for spillmodus",
+    "openGameMode": "Åpne Spillmodus",
     "before": "Opprinnelig tilstand",
     "after": "Tilstand etter SuperSonicCleaner",
     "restore": "Gjenopprett opprinnelig tilstand",
     "previous": "Forrige",
     "next": "Neste",
     "backups": "Sikkerhetskopier av register og hurtigmeny",
-    "backupDescription": "Disse sikkerhetskopifilene inneholder ikke bekreftet informasjon om tilstanden etter endringen. Kontroller dem i sikkerhetskopimappen før du gjenoppretter manuelt; import av dem kan overskrive nyere innstillinger. En sikkerhetskopifil er ikke et gjenopprettingspunkt i operativsystemet.",
+    "backupDescription": "Disse sikkerhetskopifilene inneholder ikke en bekreftet senere tilstand. Kontroller dem i sikkerhetskopimappen før du gjenoppretter manuelt: import av dem kan overskrive nyere innstillinger. En sikkerhetskopifil er ikke et gjenopprettingspunkt i operativsystemet.",
     "openBackups": "Åpne sikkerhetskopimappe",
     "confirmTitle": "Gjenopprette denne endringen?",
-    "confirmDescription": "SuperSonicCleaner vil kontrollere gjeldende tilstand før den registrerte opprinnelige verdien gjenopprettes. Nyere motstridende endringer blir bevart. Administratorrettigheter kan være påkrevd.",
+    "confirmDescription": "SuperSonicCleaner kontrollerer gjeldende tilstand før den skriver tilbake den registrerte opprinnelige verdien. Hvis verdien er endret på nytt i mellomtiden, beholdes den nyere endringen. Administratorrettigheter kan være nødvendig.",
     "status": {
-      "pending": "Avbrutt / venter",
-      "ready": "Tilgjengelig",
+      "pending": "Avbrutt eller venter",
+      "ready": "Kan gjenopprettes",
       "restored": "Gjenopprettet",
-      "failed": "Krever oppmerksomhet",
+      "failed": "Gjenoppretting mislyktes",
       "conflict": "Nyere endring oppdaget"
     },
     "remove": "Fjern oppføring",
-    "removeDescription": "Fjerne denne gjenopprettingsoppføringen fra lokal historikk? Dette endrer ikke innstillingene dine eller sletter sikkerhetskopier av registeret. SuperSonicCleaner vil ikke lenger kunne gjenopprette denne endringen for deg.",
-    "unreadable": "Denne gjenopprettingsoppføringen kunne ikke leses. Den kan ha blitt skrevet av en annen brukerkonto eller være skadet på disken.",
-    "loading": "Laster inn gjenopprettingshistorikk?",
-    "emptyTitle": "Gjenopprettingshistorikken din starter her",
+    "removeTitle": "Fjerne denne gjenopprettingsoppføringen?",
+    "removeDescription": "Oppføringen forsvinner fra den lokale historikken, og SuperSonicCleaner kan ikke lenger angre denne endringen. Innstillinger og registersikkerhetskopier endres ikke. Dette kan ikke angres.",
+    "unreadable": "Denne gjenopprettingsoppføringen kunne ikke leses: den kan ha blitt skrevet av en annen brukerkonto eller være skadet på disken.",
+    "loading": "Leser gjenopprettingshistorikk…",
+    "emptyTitle": "Ingen gjenopprettbare endringer",
     "source": {
       "privacy": "Personvernskjold",
       "services": "Tjenestebehandling",
       "registry": "Registerrenser"
+    },
+    "value": {
+      "absent": "Verdien fantes ikke",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Oppgave aktivert",
+      "taskDisabled": "Oppgave deaktivert",
+      "start": {
+        "boot": "Oppstart ved boot",
+        "system": "Systemoppstart",
+        "automatic": "Automatisk oppstart",
+        "manual": "Manuell oppstart",
+        "disabled": "Deaktivert"
+      },
+      "delayed": "forsinket",
+      "running": "kjører",
+      "stopped": "stoppet",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Sikkerhetskopier av registeret",
@@ -43,7 +68,7 @@
       "empty": "Ingen sikkerhetskopier av registeret ennå.",
       "restore": "Gjenopprett",
       "showInFolder": "Vis i mappe",
-      "requiresAdmin": "Krever administrator",
+      "requiresAdmin": "Krever administratorrettigheter",
       "confirmTitle": "Gjenopprette denne sikkerhetskopien av registeret?",
       "confirmDescription": "SuperSonicCleaner vil importere nøklene nedenfor. Verdier fra sikkerhetskopien erstatter de gjeldende, og manglende nøkler og verdier legges til igjen. Ingenting annet slettes, bortsett fra at gjenoppretting av en sikkerhetskopi fra før gjenoppretting også fjerner nøklene og verdiene som gjenopprettingen den opphever hadde lagt til. Før import lagrer SuperSonicCleaner gjeldende tilstand for disse nøklene som en sikkerhetskopi fra før gjenoppretting. Noen endringer trer først i kraft etter at du logger av eller starter på nytt.",
       "restored": "Gjenopprettet. Forrige tilstand ble lagret i {{file}}.",
@@ -64,8 +89,12 @@
         "empty": "Inneholder ingen registernøkler.",
         "unreadable": "Kunne ikke leses.",
         "classes-root": "Inneholder HKEY_CLASSES_ROOT-nøkler, som slår sammen maskinens og den enkelte brukerens klasser, så SuperSonicCleaner kan ikke avgjøre hvilken av dem de skal gjenopprettes til. De kan bare inspiseres.",
-        "unverified": "Denne sikkerhetskopien kan ikke verifiseres — den kan ha blitt endret siden SuperSonicCleaner opprettet den, så den kan bare inspiseres."
-      }
+        "unverified": "Denne sikkerhetskopien kan ikke verifiseres: den kan ha blitt endret siden SuperSonicCleaner skrev den, så den kan bare inspiseres."
+      },
+      "moreKeys_one": "+1 nøkkel til",
+      "moreKeys_other": "+{{formatted}} nøkler til",
+      "confirmLabel_one": "Importer 1 nøkkel",
+      "confirmLabel_other": "Importer {{formatted}} nøkler"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "Bufrede oppføringer i disse kategoriene: {{found}} · Ikke valgt i denne operasjonen: {{unselected}}",
     "title": "Oppryddingskvitteringer",
     "description": "Registrert på slettetidspunktet. Hver kvittering dekker én oppryddingsoperasjon eller én gruppe.",
-    "empty": "Ingen oppryddingskvitteringer ennå. Kjør en opprydding for å registrere resultatene.",
+    "empty": "Ingen oppryddingskvitteringer",
     "loadError": "Kunne ikke lese oppryddingskvitteringer. Eksisterende data er bevart.",
     "actionError": "Kvitteringshandlingen mislyktes.",
     "saveError": "Oppryddingen ble fullført, men kvitteringen kunne ikke lagres.",
@@ -91,7 +120,7 @@
     "retryOf": "Nytt forsøk på",
     "export": "Eksporter kvittering",
     "retry": "Prøv kvalifiserte feil på nytt ({{count}})",
-    "rescan": "Kjør en ny skanning",
+    "rescan": "Ny skanning",
     "retryLifetime": "Nye forsøk bruker fortsatt bufrede valg i opptil 30 minutter. Unntak og aldersbeskyttelse kontrolleres på nytt. Etter utløp eller omstart må du kjøre en ny skanning.",
     "pathsOff": "Baneregistrering var slått av for denne kjøringen. Bare kategorier og resultater ble beholdt.",
     "item": "Element / kategori",
@@ -106,18 +135,26 @@
     "retryConfirm": "Prøv opprydding på nytt",
     "clearTitle": "Tøm oppryddingskvitteringer?",
     "clearDescription": "Dette fjerner lagrede kvitteringer og informasjon om nye forsøk permanent. Skanningshistorikk og den separate sletteloggen forblir uendret.",
-    "loading": "Loading cleanup receipts?"
+    "loading": "Leser oppryddingskvitteringer…"
   },
-  "pageTitle": "Skannelogg",
+  "pageTitle": "Aktivitet",
+  "viewLabel": "Visning",
   "viewOverview": "Oversikt",
+  "viewList": "Liste",
+  "viewReceipts": "Kvitteringer",
   "clearButton": "Tøm",
-  "emptyStateTitle": "Ingen historikk ennå",
-  "emptyStateDescription": "Kjør en skanning fra sidene Cleaner, Registry eller Debloater. Resultatene vises her.",
-  "confirmClearScanDescription": "Dette vil slette alle oppføringer i skanneloggen permanent. Denne handlingen kan ikke angres.",
+  "clearHistory": "Tøm historikken",
+  "emptyStateTitle": "Ingen aktivitet registrert",
+  "emptyStateDescription": "Skanninger og oppryddinger vises her etter første kjøring, med dato, varighet og resultat. Oppryddingskvitteringer finnes i visningen Kvitteringer.",
+  "confirmClearScanTitle_one": "Tømme 1 historikkoppføring?",
+  "confirmClearScanTitle_other": "Tømme {{count}} historikkoppføringer?",
+  "confirmClearScanDescription": "Banene i loggen over slettede filer tømmes også. Oppryddingskvitteringer beholdes. Dette kan ikke angres.",
+  "confirmClearLabel_one": "Tøm 1 oppføring",
+  "confirmClearLabel_other": "Tøm {{count}} oppføringer",
   "typeLabels": {
     "cleaner": "Systemopprydding",
-    "registry": "Registerreparasjon",
-    "debloater": "Debloater",
+    "registry": "Registeropprydding",
+    "debloater": "Fjerning av forhåndsinstallert programvare",
     "network": "Nettverksopprydding",
     "drivers": "Driveropprydding",
     "malware": "Skanning etter skadelig programvare",
@@ -125,29 +162,88 @@
     "startup": "Oppstartsbehandling",
     "services": "Tjenestebehandling",
     "softwareUpdate": "Programvareoppdatering",
-    "cveScan": "CVE-skanning"
+    "cveScan": "Sårbarhetsskanning (CVE)"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} frigjort",
+    "noSpace": "Ingen plass frigjort",
+    "entries_one": "1 oppføring",
+    "entries_other": "{{formatted}} oppføringer",
+    "items_one": "1 element behandlet",
+    "items_other": "{{formatted}} elementer behandlet",
+    "averageDuration": "gjennomsnittlig varighet {{duration}}",
+    "errors_one": "1 feil",
+    "errors_other": "{{formatted}} feil",
+    "noErrors": "ingen feil",
+    "range": "fra {{from}} til {{to}}",
+    "sameDay": "den {{date}}"
   },
   "overview": {
-    "tooltipSpace": "Plass"
+    "spaceOverTime": "Plass frigjort per dag",
+    "spaceSentence_one": "{{size}} frigjort på 1 dag med aktivitet.",
+    "spaceSentence_other": "{{size}} frigjort over {{count}} dager med aktivitet.",
+    "noSpaceSentence": "Ingen registrert aktivitet frigjorde plass.",
+    "chartLabel_one": "Plass frigjort på 1 dag",
+    "chartLabel_other": "Plass frigjort over {{count}} dager",
+    "tooltipSpace": "{{size}} frigjort",
+    "byType": "Etter type",
+    "topCategories": "Kategorier som frigjorde mest plass",
+    "recent": "Nylig aktivitet",
+    "showAll": "Hele listen"
+  },
+  "columns": {
+    "type": "Type",
+    "date": "Dato",
+    "entries": "Oppføringer",
+    "items": "Elementer",
+    "space": "Plass",
+    "duration": "Varighet",
+    "outcome": "Resultat",
+    "category": "Kategori"
+  },
+  "list": {
+    "title": "All aktivitet",
+    "count_one": "1 oppføring",
+    "count_other": "{{formatted}} oppføringer",
+    "filterLabel": "Type",
+    "filterAll": "Alle typer",
+    "scheduled": "Planlagt",
+    "noErrors": "Ingen feil"
   },
   "detail": {
+    "close": "Lukk",
+    "outcomeDone": "Fullført",
+    "outcomeErrors_one": "Fullført med 1 feil",
+    "outcomeErrors_other": "Fullført med {{formatted}} feil",
+    "found_one": "1 element funnet",
+    "found_other": "{{formatted}} elementer funnet",
+    "processed_one": "1 behandlet",
+    "processed_other": "{{formatted}} behandlet",
+    "skipped_one": "1 element hoppet over.",
+    "skipped_other": "{{formatted}} elementer hoppet over.",
+    "scheduled": "planlagt",
+    "scheduledBy": "planlagt: {{name}}",
     "categoriesLabel": "Kategorier",
     "deletedFiles": {
       "title": "Slettede filer",
-      "loading": "Laster inn…",
+      "loading": "Leser slettingsloggen…",
       "shownCount": "{{shown}} av {{total}}",
       "loadMore": "Last inn flere",
       "exportCsv": "Eksporter CSV",
       "openLog": "Åpne logg",
-      "exportFailed": "Kunne ikke eksportere listen over slettede filer",
-      "truncatedBadge": "+{{count}} til",
+      "exported_one": "Eksporterte 1 bane",
+      "exported_other": "Eksporterte {{formatted}} baner",
+      "exportFailed": "Kunne ikke eksportere listen over slettede filer.",
+      "truncatedBadge": "+{{formatted}} ikke oppført",
+      "truncatedHint_one": "Denne mappen inneholdt 1 oppføring til utover grensen for oppføringer per mappe. Den ble slettet, men ikke oppført.",
+      "truncatedHint_other": "Denne mappen inneholdt {{formatted}} oppføringer til utover grensen for oppføringer per mappe. De ble slettet, men ikke oppført individuelt.",
       "emptyRecorded": "Ingen filbaner ble registrert for denne kjøringen.",
-      "disabledHint": "Slettelogging er slått av, så de individuelle banene fra denne kjøringen ble ikke registrert. Slå på \"Behold en logg over slettede filer\" i Innstillinger → Rengjøringsinnstillinger for å registrere dem fra nå av."
+      "disabledHint": "Slettelogging var av, så banene fra denne kjøringen ble ikke registrert. For å registrere dem fra nå av, slå på «Behold en logg over slettede filer» i Innstillinger › Rengjøringsinnstillinger."
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1s",
-    "seconds": "{{count}}s",
-    "minutesAndSeconds": "{{minutes}}m {{seconds}}s"
+    "lessThanOneSecond": "under 1 s",
+    "seconds": "{{count}} s",
+    "minutesAndSeconds": "{{minutes}} min {{seconds}} s"
   }
 }

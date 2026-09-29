@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Personvernskjold",
-    "pageDescription": "Kontroller telemetri, annonser, sporing og datainnsamling på hele systemet",
+    "pageDescription": "Leser innstillingene for telemetri, annonser, søk og synkronisering, og sammenligner dem med den mest private verdien. En innstilling endres bare når du bruker bryteren eller bekrefter; de fleste kan stilles tilbake til standardverdien.",
     "scanButton": "Skann",
-    "scanProgressPreparing": "Forbereder skanning...",
-    "applyingProtections": "Bruker personvernbeskyttelse...",
-    "emptyStateTitle": "Personvernskjold",
-    "emptyStateDescription": "Klikk på \"Skann\" for å kontrollere personvern- og sikkerhetsinnstillingene dine og bruke anbefalt herding.",
-    "adminWarning": "Noen innstillinger krever administratorrettigheter for å kunne endres. Kjør SuperSonicCleaner som administrator for full beskyttelse.",
+    "scanProgressPreparing": "Forbereder skanningen",
+    "applyingProtections": "Bruker innstillingene …",
+    "emptyStateTitle": "Innstillinger ikke skannet ennå",
+    "emptyStateDescription": "Skanningen leser innstillingene og endrer ingen av dem.",
+    "adminWarning": "Enkelte innstillinger kan bare endres når SuperSonicCleaner kjører som administrator; uten disse rettighetene forblir de som de er.",
     "scanFailed": "Personvernskanning mislyktes",
-    "applyFailed": "Kunne ikke bruke personverninnstillinger",
-    "applyFailedDescription": "Prøv å kjøre som administrator",
-    "settingApplyFailed": "Kunne ikke bruke \"{{label}}\"",
-    "settingEnabled": "{{label}} blokkert",
-    "settingDisabled": "{{label}} gjenopprettet til standard",
-    "settingRevertFailed": "Kunne ikke tilbakestille \"{{label}}\"",
+    "applyFailed": "Kunne ikke bruke personverninnstillingene",
+    "applyFailedDescription": "Prøv å kjøre appen som administrator",
+    "settingApplyFailed": "Kunne ikke bruke «{{label}}»",
+    "settingEnabled": "Brukt: {{label}}",
+    "settingDisabled": "Stilt tilbake til standard: {{label}}",
+    "settingRevertFailed": "Kunne ikke gjenopprette «{{label}}»",
     "settingRevertFailedGeneric": "Kunne ikke tilbakestille personverninnstilling",
     "settingApplyFailedGeneric": "Kunne ikke bruke personverninnstilling",
-    "ipcCallFailed": "IPC-kall mislyktes — prøv å kjøre som administrator",
+    "ipcCallFailed": "Kallet mislyktes: prøv å kjøre appen som administrator",
     "allSettingsLabel": "Alle innstillinger",
     "unknownError": "Ukjent feil",
-    "requiresSettingEnabled": "Aktiver \"{{label}}\" først",
-    "adminRequired": "Prøv å kjøre som administrator",
-    "settingNotApplied": "Systemet rapporterte ikke endringen — det kan være nødvendig med en omstart, eller innstillingen kan være administrert av en annen profil"
+    "requiresSettingEnabled": "Slå på «{{label}}» først",
+    "adminRequired": "Prøv å kjøre appen som administrator",
+    "settingNotApplied": "Systemet rapporterte ikke endringen: det kan hende det trengs en omstart, eller innstillingen styres av en annen profil.",
+    "rescanButton": "Skann på nytt",
+    "scanningButton": "Skanner …",
+    "applyRecommended_one": "Bruk {{count}} anbefalt endring",
+    "applyRecommended_other": "Bruk {{count}} anbefalte endringer",
+    "summaryTitle_one": "{{count}} innstilling å endre",
+    "summaryTitle_other": "{{count}} innstillinger å endre",
+    "summaryNone": "Alle {{total}} innstillingene har allerede den mest private verdien",
+    "summaryFacts": "{{protected}} av {{total}} har allerede den mest private verdien · {{categories}} kategorier",
+    "categoryMeta_one": "{{count}} å endre",
+    "categoryMeta_other": "{{count}} å endre",
+    "categoryAllSet": "alt er allerede satt",
+    "categoryApply_one": "Bruk {{count}}",
+    "categoryApply_other": "Bruk {{count}}",
+    "categoryShow": "Vis",
+    "categoryHide": "Skjul",
+    "adminTag": "Krever administrator",
+    "notReversibleTag": "Ikke reversibel",
+    "scanProgressTitle": "Skanning pågår",
+    "scanProgressCount": "{{current}} av {{total}}",
+    "scanProgressCategory": "Kontrollerer: {{category}}",
+    "scanProgressLabel": "Skannefremdrift",
+    "applyingLabel": "Bruksfremdrift",
+    "receiptTitle": "Innstillinger brukt",
+    "receiptApplied_one": "{{count}} innstilling endret",
+    "receiptApplied_other": "{{count}} innstillinger endret",
+    "receiptReversible": "kan gjenopprettes fra bryterne",
+    "receiptFailed_one": "{{count}} ikke brukt: årsaken er oppgitt nedenfor.",
+    "receiptFailed_other": "{{count}} ikke brukt: årsakene er oppgitt nedenfor.",
+    "receiptFailedAdmin_one": "{{count}} ikke brukt: det kan hende appen må kjøre som administrator. Årsaken er oppgitt nedenfor.",
+    "receiptFailedAdmin_other": "{{count}} ikke brukt: det kan hende appen må kjøre som administrator. Årsakene er oppgitt nedenfor.",
+    "failedHeading": "Innstillinger ikke brukt",
+    "failedColumnSetting": "Innstilling",
+    "failedColumnReason": "Årsak",
+    "confirmTitle_one": "Endre {{count}} innstilling?",
+    "confirmTitle_other": "Endre {{count}} innstillinger?",
+    "confirmDescription": "Innstillingene i listen settes til den mest private verdien. De kan stilles tilbake til standard fra bryterne på denne siden.",
+    "confirmDescriptionIrreversible_one": "Innstillingene i listen settes til den mest private verdien. {{count}} kan ikke stilles tilbake til standard fra denne siden.",
+    "confirmDescriptionIrreversible_other": "Innstillingene i listen settes til den mest private verdien. {{count}} kan ikke stilles tilbake til standard fra denne siden.",
+    "confirmLabel_one": "Endre {{count}} innstilling",
+    "confirmLabel_other": "Endre {{count}} innstillinger",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows-telemetri",
+        "description": "Sett innsamling av diagnostikkdata til minimum (bare sikkerhetsnivå)"
+      },
+      "activity-history": {
+        "label": "Aktivitetslogg",
+        "description": "Stopp Windows fra å spore og synkronisere bruken av apper og filer"
+      },
+      "publish-activity": {
+        "label": "Publisering av brukeraktiviteter",
+        "description": "Hindre Windows i å publisere aktivitetene dine til Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Tilbakemeldingsspørsmål",
+        "description": "Slå av de periodiske tilbakemeldingsspørsmålene og undersøkelsene fra Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Håndskriftsdata",
+        "description": "Stopp sending av håndskrifts- og tastedata til Microsoft"
+      },
+      "input-personalization": {
+        "label": "Personlig tilpasning av inndata",
+        "description": "Stopp innsamling av taste- og blekkdata til personlig tilpasning"
+      },
+      "tailored-experiences": {
+        "label": "Tilpassede opplevelser",
+        "description": "Hindre Microsoft i å bruke diagnostikkdata til å tilpasse tips og annonser"
+      },
+      "app-launch-tracking": {
+        "label": "Sporing av appstart",
+        "description": "Stopp Windows fra å spore hvilke apper du åpner for å tilpasse startmenyen"
+      },
+      "advertising-id": {
+        "label": "Annonse-ID",
+        "description": "Slå av den unike annonse-IDen som apper bruker til å spore deg"
+      },
+      "suggested-content": {
+        "label": "Foreslått innhold i Innstillinger",
+        "description": "Hindre Microsoft i å vise appforslag og annonser i Innstillinger"
+      },
+      "tips-notifications": {
+        "label": "Tips og forslag",
+        "description": "Slå av varsler med tips, triks og forslag fra Windows"
+      },
+      "start-suggestions": {
+        "label": "Forslag i startmenyen",
+        "description": "Slå av appforslag (annonser) i startmenyen"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight på låseskjermen",
+        "description": "Slå av Microsoft Spotlight-annonser og -forslag på låseskjermen"
+      },
+      "silently-installed-apps": {
+        "label": "Stille installerte apper",
+        "description": "Hindre Windows i å installere fremhevede apper automatisk"
+      },
+      "preinstalled-apps": {
+        "label": "Forslag til forhåndsinstallerte apper",
+        "description": "Stopp Windows fra å foreslå forhåndsinstallerte apper du ikke har brukt"
+      },
+      "bing-start-menu": {
+        "label": "Bing i startmenyen",
+        "description": "Stopp søk du skriver i startmenyen fra å bli sendt til Bing"
+      },
+      "bing-web-search": {
+        "label": "Bing-nettresultater",
+        "description": "Slå av nettresultater i Windows-søk, slik at søk blir værende på denne PC-en"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Slå av Cortana, som kjører i bakgrunnen og samler inn data"
+      },
+      "search-highlights": {
+        "label": "Søkehøydepunkter",
+        "description": "Slå av populære søkeforslag og nettinnhold i søkefeltet"
+      },
+      "store-search-suggestions": {
+        "label": "Søkeforslag i Store",
+        "description": "Slå av søkeforslag fra Microsoft Store, som sender søkene dine til Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Skysynkronisering av utklippstavle",
+        "description": "Hindre utklippstavledata i å synkroniseres mellom enheter via skyen"
+      },
+      "clipboard-history": {
+        "label": "Utklippstavlelogg",
+        "description": "Slå av utklippstavleloggen som lagrer kopiert tekst og bilder"
+      },
+      "settings-sync": {
+        "label": "Synkronisering av innstillinger",
+        "description": "Stopp synkronisering av Windows-innstillinger, temaer og passord til Microsoft-kontoen din"
+      },
+      "find-my-device": {
+        "label": "Finn enheten min",
+        "description": "Slå av Microsofts posisjonsbaserte enhetssporing"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Slå av AI-assistenten Microsoft Copilot i hele Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Slå av Windows Recall, AI-skjermbildeloggen som fanger opp alt som vises på skjermen"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Slå av Click to Dos AI-analyse av teksten og bildene på skjermen"
+      },
+      "ai-service-autostart": {
+        "label": "Autostart av AI-tjenester",
+        "description": "Hindre AI-tjenester i å starte automatisk i bakgrunnen"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Slå av Edges AI-funksjoner for tekstforfatting og omskriving"
+      },
+      "paint-ai": {
+        "label": "AI-funksjoner i Paint",
+        "description": "Slå av AI-bildegenereringsfunksjonene i Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "AI-funksjoner i Notepad",
+        "description": "Slå av AI-tekstomskrivingsfunksjonene i Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack-tjenesten",
+        "description": "Deaktiver tjenesten Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push-tjenesten",
+        "description": "Deaktiver WAP Push-meldingstjenesten som brukes til telemetri"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Deaktiver node-til-node-deling av Windows-oppdateringer, slik at denne PC-en ikke laster opp oppdateringsdata til andre enheter"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Deaktiver Downloaded Maps Manager, en bakgrunnstjeneste de fleste PC-er ikke trenger"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Deaktiver Microsofts telemetrioppgave som samler inn kompatibilitetsdata"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Deaktiver bakgrunnsoppgaven som laster opp programtelemetri"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Deaktiver telemetriinnsamlingen som gjøres via autochk-proxyen"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Deaktiver opplasting av data fra Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "USB-bruksdata (CEIP)",
+        "description": "Deaktiver innsamling av telemetri om bruk av USB-enheter"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Deaktiver innsamling og opplasting av diskdiagnostikkdata"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Deaktiver telemetrioppgaven for tilbakemeldings-enhetsadministrasjon"
+      },
+      "task-maps-update": {
+        "label": "Oppgave for kartoppdatering",
+        "description": "Deaktiver automatiske nedlastinger av kartdata i bakgrunnen"
+      },
+      "task-maps-toast": {
+        "label": "Oppgave for kartvarsler",
+        "description": "Deaktiver oppgaven for kartvarsler"
+      },
+      "edge-metrics": {
+        "label": "Bruksrapportering i Edge",
+        "description": "Stopp Edge fra å sende bruks- og krasjmålinger til Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Innsamling av nettstedsinfo i Edge",
+        "description": "Stopp Edge fra å sende adressene til nettstedene du besøker til Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Personaliseringsrapportering i Edge",
+        "description": "Stopp Edge fra å sende nettleserloggen din til annonsepersonalisering"
+      },
+      "edge-copilot-cdp": {
+        "label": "Copilots sidetilgang i Edge (CDP)",
+        "description": "Hindre Copilot i å lese sideinnhold via Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Copilots sidekontekst i Edge",
+        "description": "Hindre Copilot i å bruke sidekonteksten til å analysere innhold"
+      },
+      "edge-discover": {
+        "label": "Sideskanning i Edge Discover",
+        "description": "Stopp Discover-funksjonen fra å skanne sideinnhold"
+      },
+      "edge-sidebar": {
+        "label": "Sidepanel i Edge",
+        "description": "Slå av Edge-sidepanelet og datainnsamlingen det gjør i bakgrunnen"
+      },
+      "edge-shopping": {
+        "label": "Handleassistent i Edge",
+        "description": "Slå av prissammenligningssporeren i Edge"
+      },
+      "chrome-metrics": {
+        "label": "Bruksrapportering i Chrome",
+        "description": "Stopp Chrome fra å sende bruks- og krasjmålinger til Google"
+      },
+      "chrome-feedback": {
+        "label": "Brukertilbakemeldinger i Chrome",
+        "description": "Hindre Chrome i å samle inn og sende brukertilbakemeldingsdata"
+      },
+      "chrome-extended-reporting": {
+        "label": "Utvidet Safe Browsing i Chrome",
+        "description": "Stopp Chrome fra å sende utvidede URL- og nedlastingsrapporter til Google"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox-telemetri",
+        "description": "Stopp Firefox fra å samle inn telemetridata og laste dem opp til Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox-standardnettleseragent",
+        "description": "Deaktiver bakgrunnsagenten som rapporterer nettleserbruksdata til Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnostikk- og bruksdata",
+        "description": "Stopp deling av diagnostikk- og bruksdata med Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri-analyse",
+        "description": "Stopp innsamling av Siri-analyse- og forbedringsdata"
+      },
+      "macos-health-data-sharing": {
+        "label": "Deling av helsedata",
+        "description": "Stopp deling av helsedata med Apple til forskning"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop-synlighet",
+        "description": "Sett AirDrop til Ingen: du kan ikke motta filer via AirDrop før du slår det på igjen i Systeminnstillinger"
+      },
+      "macos-crash-reporter": {
+        "label": "Krasjrapportering",
+        "description": "Stopp krasjrapporteringen fra å sende rapporter automatisk"
+      },
+      "macos-ad-tracking": {
+        "label": "Personaliserte annonser",
+        "description": "Begrens Apples annonsesporing"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Siri-forslag i App Store",
+        "description": "Slå av Siri-forslag i App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari-søkeforslag",
+        "description": "Slå av Safari-søkeforslagene som sendes til Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight-forslag",
+        "description": "Slå av nettforslag fra Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Forhåndslasting av øverste treff i Safari",
+        "description": "Stopp Safari fra å forhåndslaste det øverste søketreffet, som sender nettleserdata til nettsteder"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Slå av Handoff og felles utklippstavle: du kan ikke lenger fortsette aktiviteter eller lime inn mellom Apple-enheter"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud-analyse",
+        "description": "Stopp deling av iCloud-analyse med Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "iCloud-faner i Safari",
+        "description": "Slå av iCloud-fanesynkronisering i Safari: du ser ikke lenger fanene som er åpne på de andre Apple-enhetene dine"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Slå av Siri helt: Hey Siri, talekommandoer og Siri-snarveier slutter å fungere"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri-diktering",
+        "description": "Slå av diktering: mikrofontasten på tastaturet slutter å fungere"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Slå av AI-funksjonene i Apple Intelligence (macOS 15 Sequoia og nyere)"
+      },
+      "macos-safari-dnt": {
+        "label": "Ikke spor i Safari",
+        "description": "Slå på Ikke spor-signalet (Do Not Track) i Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Bruksrapportering i Chrome",
+        "description": "Stopp Chrome fra å sende bruksmålinger til Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Safe Browsing-rapporter i Chrome",
+        "description": "Stopp Chrome fra å sende utvidede URL- og nedlastingsrapporter til Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox-telemetri",
+        "description": "Stopp Firefox fra å samle inn telemetridata og laste dem opp til Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Kontroller at Gatekeeper er slått på, slik at ikke-verifiserte programmer blokkeres"
+      },
+      "macos-remote-apple-events": {
+        "label": "Eksterne Apple-hendelser",
+        "description": "Slå av eksterne Apple-hendelser, slik at Mac-en ikke kan automatiseres eksternt"
+      },
+      "macos-wake-on-network": {
+        "label": "Oppvåkning ved nettverkstilgang",
+        "description": "Slå av oppvåkning ved nettverkstilgang, slik at Mac-en ikke kan vekkes eksternt"
+      },
+      "macos-guest-account": {
+        "label": "Gjestekonto",
+        "description": "Slå av gjestekontoen for å hindre uautorisert lokal tilgang"
+      },
+      "macos-auto-login": {
+        "label": "Automatisk innlogging",
+        "description": "Slå av automatisk innlogging, slik at Mac-en ber om autentisering ved oppstart"
+      },
+      "macos-firewall": {
+        "label": "Programbrannmur",
+        "description": "Slå på macOS-programbrannmuren for å kontrollere innkommende tilkoblinger"
+      },
+      "macos-stealth-mode": {
+        "label": "Skjult modus",
+        "description": "Slå på skjult modus, slik at Mac-en ikke svarer på probeforespørsler (ICMP-ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Deaktiver IP-viderekobling",
+        "description": "Hindre systemet i å videresende pakker mellom nettverksgrensesnitt"
+      },
+      "macos-block-signed-auto": {
+        "label": "Blokker automatisk tillatelse for signerte apper",
+        "description": "Hindre signerte programmer i å automatisk omgå brannmuren"
+      },
+      "macos-remote-login": {
+        "label": "Deaktiver ekstern pålogging (SSH)",
+        "description": "Slå av SSH-tjeneren helt. Trenger du SSH-tilgang, la denne stå av og herd SSH-innstillingene i stedet"
+      },
+      "macos-ssh-root-login": {
+        "label": "Deaktiver SSH-pålogging som root",
+        "description": "Hindre direkte root-pålogging via SSH; bruk sudo fra en vanlig konto i stedet"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Deaktiver SSH-passordautentisering",
+        "description": "Tillat bare nøkkelbasert SSH-autentisering. Sett opp SSH-nøkler først, ellers kan du bli utestengt"
+      },
+      "macos-core-dumps": {
+        "label": "Deaktiver core dumps",
+        "description": "Hindre core dumps, som kan lekke sensitivt minneinnhold"
+      },
+      "gnome-usage-stats": {
+        "label": "Bruksstatistikk",
+        "description": "Slå av innsamling av GNOME-bruksstatistikk"
+      },
+      "gnome-recent-files": {
+        "label": "Sporing av nylige filer",
+        "description": "Slå av sporingen av nylig brukte filer"
+      },
+      "gnome-location": {
+        "label": "Posisjonstjenester",
+        "description": "Slå av GNOME-posisjonstjenester"
+      },
+      "gnome-crash-reporting": {
+        "label": "Krasjrapportering (Apport)",
+        "description": "Slå av automatisk innsending av krasjrapporter"
+      },
+      "gnome-connectivity-check": {
+        "label": "Tilkoblingskontroll",
+        "description": "Slå av de periodiske kontrollene av nettverkstilkobling"
+      },
+      "core-dump-disable": {
+        "label": "Deaktiver core dumps",
+        "description": "Hindre core dumps, som kan lekke sensitivt minneinnhold"
+      },
+      "ssh-root-login": {
+        "label": "Deaktiver SSH-pålogging som root",
+        "description": "Hindre direkte root-pålogging via SSH; bruk sudo fra en vanlig konto i stedet"
+      },
+      "ssh-password-auth": {
+        "label": "Deaktiver SSH-passordautentisering",
+        "description": "Tillat bare nøkkelbasert SSH-autentisering. Sett opp SSH-nøkler først, ellers kan du bli utestengt"
+      },
+      "kde-usage-stats": {
+        "label": "Bruksstatistikk",
+        "description": "Slå av tilbakemeldinger fra KDE Plasma-brukere"
+      },
+      "kde-recent-files": {
+        "label": "Sporing av nylige filer",
+        "description": "Slå av KDEs aktivitetslogg over nylige filer"
+      },
+      "kde-baloo": {
+        "label": "Filindeksering (Baloo)",
+        "description": "Slå av Baloo-filindekseringen"
+      },
+      "kde-crash-reporting": {
+        "label": "Krasjrapportering (DrKonqi)",
+        "description": "Slå av KDEs krasjrapporthåndterer"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetri og datainnsamling",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Debloater",
-    "pageDescription": "Fjern forhåndsinstallerte Windows-apper og OEM-bloatware",
+    "pageDescription": "Apper forhåndsinstallert av Windows og produsenten. Når de er fjernet, kan de bare installeres på nytt fra Microsoft Store.",
     "scanButton": "Skann",
-    "irreversibleWarning": "Kan ikke angres — fjernede apper kan bare installeres på nytt fra Microsoft Store. Gå nøye gjennom valgene.",
-    "scanningPackages": "Skanner installerte pakker...",
-    "removingProgress": "Fjerner {{current}} av {{total}}",
+    "rescanButton": "Skann på nytt",
+    "irreversibleWarning": "Fjerning kan ikke angres fra appen: kontroller de valgte appene før du bekrefter.",
+    "scanningPackages": "Skanner installerte pakker …",
+    "removingProgress": "Fjerner apper ({{current}} av {{total}})",
+    "receiptTitle": "Fjerning fullført",
+    "removedApps_one": "{{count}} app fjernet",
+    "removedApps_other": "{{count}} apper fjernet",
+    "failedCount_one": "{{count}} mislyktes",
+    "failedCount_other": "{{count}} mislyktes",
+    "reinstallFromStore": "kan bare installeres på nytt fra Microsoft Store",
     "selectAll": "Velg alle",
-    "emptyStateTitle": "Ingen bloatware funnet",
-    "emptyStateDescription": "Klikk på \"Skann\" for å finne forhåndsinstallerte apper og OEM-bloatware.",
+    "filterLabel": "Kategori",
+    "confirmTitle_one": "Fjerne {{count}} app?",
+    "confirmTitle_other": "Fjerne {{count}} apper?",
+    "confirmDescription_one": "Appen fjernes for din bruker og, med administratorrettigheter, også for nye brukere. Den kan bare installeres på nytt fra Microsoft Store.",
+    "confirmDescription_other": "Appene fjernes for din bruker og, med administratorrettigheter, også for nye brukere. De kan bare installeres på nytt fra Microsoft Store.",
+    "confirmLabel_one": "Fjern {{count}} app",
+    "confirmLabel_other": "Fjern {{count}} apper",
+    "emptyStateTitle": "Ikke skannet ennå",
+    "emptyStateDescription": "Ingen skanning av forhåndsinstallerte apper i denne økten.",
+    "lastRun_one": "Siste fjerning: {{date}}, {{count}} app fjernet.",
+    "lastRun_other": "Siste fjerning: {{date}}, {{count}} apper fjernet.",
+    "checkKnownTitle": "Kjente apper",
+    "checkKnownDetail": "En liste over apper forhåndsinstallert av Microsoft og produsenter (OEM)",
+    "checkInstalledTitle": "Installerte pakker",
+    "checkInstalledDetail": "Brukerens apppakker, sammenlignet med listen",
+    "checkRemovalTitle": "Fjerning",
+    "checkRemovalDetail": "For din bruker; med administratorrettigheter også fra kopien som brukes for nye brukere",
+    "noneFoundTitle": "Ingen av de listede appene er installert",
+    "noneFoundDescription": "De kjente forhåndsinstallerte appene finnes ikke for din bruker.",
+    "summaryTitle_one": "{{count}} forhåndsinstallert app funnet",
+    "summaryTitle_other": "{{count}} forhåndsinstallerte apper funnet",
+    "selectedCount_one": "{{count}} valgt",
+    "selectedCount_other": "{{count}} valgt",
+    "removeButton_one": "Fjern {{count}} app",
+    "removeButton_other": "Fjern {{count}} apper",
+    "removeNone": "Fjern valgte",
     "scanFailedToast": "Skanning etter bloatware mislyktes",
     "scanFailedDescription": "Kontroller at PowerShell er tilgjengelig",
     "scanFailedError": "Kunne ikke skanne etter bloatware. Kontroller at PowerShell er tilgjengelig.",

@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Se hva som ble endret, hva som ble gjenopprettet, og hva som trenger en ny gjennomgang. Hver fullførte oppgave etterlater en registrering.",
-    "settings": "Gjør SuperSonicCleaner slik du liker den. Angi utseende, varsler, unntak og oppryddingsvalg.",
-    "about": "Åpen kildekode, gjennomtenkt laget. Finn versjonen din, se etter oppdateringer, og bli kjent med prosjektet.",
-    "recovery": "En tydelig vei tilbake. Se gjennom støttede endringer og gjenopprettingsdetaljene før du angrer noe."
+    "history": "De siste 100 skanningene og oppryddingene utført på denne PC-en, med dato, varighet, elementer behandlet og plass frigjort, samt kvitteringen for hver opprydding.",
+    "settings": "Utseende, språk, oppstart, varsler, oppdateringer, sikkerhetskopier, oppryddingsvalg og unntak. Hver endring lagres umiddelbart.",
+    "about": "Installert versjon, oppdateringer, MIT-lisens og det opprinnelige prosjektet (Kudu).",
+    "recovery": "Endringer i registeret, tjenester og planlagte oppgaver gjort av SuperSonicCleaner, med sikkerhetskopiene for å angre dem. Slettede filer kan ikke gjenopprettes."
   },
   "storageTrend": {
     "title": "Lagring over tid",
