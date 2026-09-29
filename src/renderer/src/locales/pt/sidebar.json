@@ -10,5 +10,7 @@
   "history": "Atividade",
   "settings": "Preferências",
   "gameMode": "Modo de jogo",
-  "firewallAudit": "Auditoria da firewall"
+  "firewallAudit": "Auditoria da firewall",
+  "updateBadge": "Atualização",
+  "mainNavigation": "Navegação principal"
 }

@@ -1,7 +1,7 @@
 {
   "title": "Análise de IA",
   "description": "Obtenha uma segunda opinião sobre estes resultados da análise.",
-  "hubDescription": "Uma segunda opinião sobre análises e gravações de desempenho, usando a sua sessão do Codex.",
+  "hubDescription": "Envia ao Codex, com a sua sessão, apenas metadados de análise ou medições de gravações, e apenas quando inicia uma análise a partir de uma ferramenta.",
   "hubPrivacy": "As análises partilham apenas metadados de ficheiro anónimos. As gravações partilham medições numéricas de CPU, memória e disco com IDs de processo temporários. Nomes, caminhos, notas e conteúdos de ficheiros permanecem neste dispositivo.",
   "connectionTitle": "Ligação ao Codex",
   "connectionIntro": "Utilize o Codex neste computador. Verifique a ligação e, em seguida, escolha uma ferramenta abaixo.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Conclua uma análise ou guarde uma gravação de desempenho, ative a respetiva análise de IA e, em seguida, inicie-a com o botão dedicado. Nada é enviado automaticamente.",
   "tools": {
     "cleaner": {
-      "title": "Limpeza do sistema"
+      "title": "Limpeza do sistema",
+      "dataSent": "IDs temporários, tipo de ficheiro, tamanho e idade aproximada. Rastros de privacidade excluídos."
     },
     "largeFiles": {
-      "title": "Ficheiros grandes"
+      "title": "Ficheiros grandes",
+      "dataSent": "IDs temporários, tipo de ficheiro, tamanho e idade aproximada."
     },
     "duplicates": {
-      "title": "Ficheiros duplicados"
+      "title": "Ficheiros duplicados",
+      "dataSent": "IDs temporários, tipo de ficheiro, tamanho, idade aproximada e grupo de duplicados."
     },
     "disk": {
-      "title": "Análise de disco"
+      "title": "Análise de disco",
+      "dataSent": "IDs temporários, tamanho total da pasta e idade aproximada."
     },
     "performance": {
-      "title": "Gravações de desempenho"
+      "title": "Gravações de desempenho",
+      "dataSent": "Medições numéricas de CPU, memória e disco, com IDs de processo temporários."
     }
   },
   "enable": "Ativar a análise de IA para esta vista",
@@ -51,5 +56,23 @@
     "low": "Prioridade baixa",
     "medium": "Prioridade média",
     "high": "Prioridade alta"
+  },
+  "toolsTitle": "Ferramentas",
+  "columns": {
+    "tool": "Ferramenta",
+    "dataSent": "Dados enviados",
+    "lastRun": "Última execução",
+    "state": "Estado"
+  },
+  "lastRun": {
+    "running": "Em curso",
+    "done": "Concluído nesta sessão",
+    "failed": "Falhou",
+    "none": "Nenhum nesta sessão",
+    "perRecording": "Guardado com cada gravação analisada"
+  },
+  "state": {
+    "on": "Ativado",
+    "off": "Desativado"
   }
 }

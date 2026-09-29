@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Escudo de Privacidade",
-    "pageDescription": "Controle a telemetria, os anúncios, o rastreamento e a recolha de dados em todo o sistema",
+    "pageDescription": "Lê as definições de telemetria, publicidade, pesquisa e sincronização e compara-as com o valor mais privado. Uma definição só muda quando usa o respetivo interruptor ou confirma; a maioria pode ser reposta na predefinição.",
     "scanButton": "Analisar",
-    "scanProgressPreparing": "A preparar análise...",
-    "applyingProtections": "A aplicar proteções de privacidade...",
-    "emptyStateTitle": "Escudo de Privacidade",
-    "emptyStateDescription": "Clique em \"Analisar\" para auditar as suas definições de privacidade e segurança e aplicar o reforço recomendado.",
-    "adminWarning": "Algumas definições exigem privilégios de administrador para serem modificadas. Execute o SuperSonicCleaner como administrador para proteção total.",
+    "scanProgressPreparing": "A preparar a análise",
+    "applyingProtections": "A aplicar as definições…",
+    "emptyStateTitle": "Definições ainda não analisadas",
+    "emptyStateDescription": "A análise lê as definições e não altera nenhuma.",
+    "adminWarning": "Algumas definições só podem ser alteradas quando o SuperSonicCleaner é executado como administrador; sem esses privilégios, permanecem como estão.",
     "scanFailed": "A análise de privacidade falhou",
-    "applyFailed": "Falha ao aplicar definições de privacidade",
-    "applyFailedDescription": "Tente executar como administrador",
-    "settingApplyFailed": "Falha ao aplicar \"{{label}}\"",
-    "settingEnabled": "{{label}} bloqueado",
-    "settingDisabled": "{{label}} restaurado para a predefinição",
-    "settingRevertFailed": "Falha ao reverter \"{{label}}\"",
+    "applyFailed": "Não foi possível aplicar as definições de privacidade",
+    "applyFailedDescription": "Tente executar a aplicação como administrador",
+    "settingApplyFailed": "Não foi possível aplicar \"{{label}}\"",
+    "settingEnabled": "Aplicado: {{label}}",
+    "settingDisabled": "Reposto na predefinição: {{label}}",
+    "settingRevertFailed": "Não foi possível restaurar \"{{label}}\"",
     "settingRevertFailedGeneric": "Falha ao reverter a definição de privacidade",
     "settingApplyFailedGeneric": "Falha ao aplicar a definição de privacidade",
-    "ipcCallFailed": "A chamada IPC falhou — tente executar como administrador",
+    "ipcCallFailed": "A chamada falhou: tente executar a aplicação como administrador",
     "allSettingsLabel": "Todas as definições",
     "unknownError": "Erro desconhecido",
     "requiresSettingEnabled": "Ative primeiro \"{{label}}\"",
-    "adminRequired": "Tente executar como administrador",
-    "settingNotApplied": "O sistema não comunicou a alteração — pode ser necessário reiniciar, ou a definição pode estar a ser gerida por outro perfil"
+    "adminRequired": "Tente executar a aplicação como administrador",
+    "settingNotApplied": "O sistema não reportou a alteração: pode ser necessário reiniciar, ou a definição é gerida por outro perfil.",
+    "rescanButton": "Analisar novamente",
+    "scanningButton": "A analisar…",
+    "applyRecommended_one": "Aplicar {{count}} alteração recomendada",
+    "applyRecommended_other": "Aplicar {{count}} alterações recomendadas",
+    "summaryTitle_one": "{{count}} definição a alterar",
+    "summaryTitle_other": "{{count}} definições a alterar",
+    "summaryNone": "As {{total}} definições já têm o valor mais privado",
+    "summaryFacts": "{{protected}} de {{total}} já no valor mais privado · {{categories}} categorias",
+    "categoryMeta_one": "{{count}} a alterar",
+    "categoryMeta_other": "{{count}} a alterar",
+    "categoryAllSet": "todas já definidas",
+    "categoryApply_one": "Aplicar {{count}}",
+    "categoryApply_other": "Aplicar {{count}}",
+    "categoryShow": "Mostrar",
+    "categoryHide": "Ocultar",
+    "adminTag": "Requer administrador",
+    "notReversibleTag": "Não reversível",
+    "scanProgressTitle": "Análise em curso",
+    "scanProgressCount": "{{current}} de {{total}}",
+    "scanProgressCategory": "A verificar: {{category}}",
+    "scanProgressLabel": "Progresso da análise",
+    "applyingLabel": "Progresso da aplicação",
+    "receiptTitle": "Definições aplicadas",
+    "receiptApplied_one": "{{count}} definição alterada",
+    "receiptApplied_other": "{{count}} definições alteradas",
+    "receiptReversible": "pode ser restaurada a partir dos interruptores",
+    "receiptFailed_one": "{{count}} não aplicada: o motivo está indicado abaixo.",
+    "receiptFailed_other": "{{count}} não aplicadas: os motivos estão indicados abaixo.",
+    "receiptFailedAdmin_one": "{{count}} não aplicada: pode ser necessário executar a aplicação como administrador. O motivo está indicado abaixo.",
+    "receiptFailedAdmin_other": "{{count}} não aplicadas: pode ser necessário executar a aplicação como administrador. Os motivos estão indicados abaixo.",
+    "failedHeading": "Definições não aplicadas",
+    "failedColumnSetting": "Definição",
+    "failedColumnReason": "Motivo",
+    "confirmTitle_one": "Alterar {{count}} definição?",
+    "confirmTitle_other": "Alterar {{count}} definições?",
+    "confirmDescription": "As definições indicadas mudam para o valor mais privado. Podem ser repostas na predefinição a partir dos interruptores desta página.",
+    "confirmDescriptionIrreversible_one": "As definições indicadas mudam para o valor mais privado. {{count}} não pode ser reposta na predefinição a partir desta página.",
+    "confirmDescriptionIrreversible_other": "As definições indicadas mudam para o valor mais privado. {{count}} não podem ser repostas na predefinição a partir desta página.",
+    "confirmLabel_one": "Alterar {{count}} definição",
+    "confirmLabel_other": "Alterar {{count}} definições",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetria do Windows",
+        "description": "Reduz a recolha de dados de diagnóstico ao mínimo (apenas nível de segurança)"
+      },
+      "activity-history": {
+        "label": "Histórico de atividade",
+        "description": "Impede o Windows de rastrear e sincronizar a utilização das suas aplicações e ficheiros"
+      },
+      "publish-activity": {
+        "label": "Publicação de atividades do utilizador",
+        "description": "Impede o Windows de publicar as suas atividades na Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Pedidos de comentários",
+        "description": "Desativa os pedidos e inquéritos periódicos de comentários da Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Dados de escrita manual",
+        "description": "Impede o envio de dados de escrita manual e de digitação para a Microsoft"
+      },
+      "input-personalization": {
+        "label": "Personalização de entrada",
+        "description": "Impede a recolha de dados de digitação e escrita para personalização"
+      },
+      "tailored-experiences": {
+        "label": "Experiências personalizadas",
+        "description": "Impede a Microsoft de usar dados de diagnóstico para personalizar sugestões e anúncios"
+      },
+      "app-launch-tracking": {
+        "label": "Rastreamento de abertura de aplicações",
+        "description": "Impede o Windows de rastrear as aplicações que abre para ajustar o menu Iniciar"
+      },
+      "advertising-id": {
+        "label": "ID de publicidade",
+        "description": "Desativa o ID de publicidade único que as aplicações usam para o rastrear"
+      },
+      "suggested-content": {
+        "label": "Conteúdo sugerido nas Definições",
+        "description": "Impede a Microsoft de mostrar sugestões de aplicações e anúncios nas Definições"
+      },
+      "tips-notifications": {
+        "label": "Dicas e sugestões",
+        "description": "Desativa as dicas, truques e notificações de sugestões do Windows"
+      },
+      "start-suggestions": {
+        "label": "Sugestões do menu Iniciar",
+        "description": "Desativa as sugestões de aplicações (anúncios) no menu Iniciar"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight do ecrã de bloqueio",
+        "description": "Desativa os anúncios e sugestões do Microsoft Spotlight no ecrã de bloqueio"
+      },
+      "silently-installed-apps": {
+        "label": "Aplicações instaladas silenciosamente",
+        "description": "Impede o Windows de instalar automaticamente aplicações promovidas"
+      },
+      "preinstalled-apps": {
+        "label": "Sugestões de aplicações pré-instaladas",
+        "description": "Impede o Windows de sugerir aplicações pré-instaladas que não usou"
+      },
+      "bing-start-menu": {
+        "label": "Bing no menu Iniciar",
+        "description": "Impede o envio para o Bing das pesquisas escritas no menu Iniciar"
+      },
+      "bing-web-search": {
+        "label": "Resultados Web do Bing",
+        "description": "Desativa os resultados Web na Pesquisa do Windows, para que as pesquisas fiquem neste PC"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Desativa o Cortana, que é executado em segundo plano e recolhe dados"
+      },
+      "search-highlights": {
+        "label": "Destaques de pesquisa",
+        "description": "Desativa as sugestões de pesquisas em tendência e o conteúdo Web na caixa de pesquisa"
+      },
+      "store-search-suggestions": {
+        "label": "Sugestões de pesquisa da Store",
+        "description": "Desativa as sugestões de pesquisa da Microsoft Store, que enviam as suas pesquisas para a Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Sincronização da área de transferência na nuvem",
+        "description": "Impede que os dados da área de transferência sejam sincronizados entre dispositivos através da nuvem"
+      },
+      "clipboard-history": {
+        "label": "Histórico da área de transferência",
+        "description": "Desativa o histórico da área de transferência que guarda texto e imagens copiados"
+      },
+      "settings-sync": {
+        "label": "Sincronização de definições",
+        "description": "Impede a sincronização de definições, temas e palavras-passe do Windows com a sua conta Microsoft"
+      },
+      "find-my-device": {
+        "label": "Localizar o meu dispositivo",
+        "description": "Desativa o rastreamento do dispositivo por localização feito pela Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Desativa o assistente de IA Microsoft Copilot em todo o Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Desativa o Windows Recall, o histórico de capturas de ecrã com IA que regista tudo o que aparece no ecrã"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Desativa a análise com IA do Click to Do sobre o texto e as imagens no ecrã"
+      },
+      "ai-service-autostart": {
+        "label": "Início automático de serviços de IA",
+        "description": "Impede que os serviços de IA sejam iniciados automaticamente em segundo plano"
+      },
+      "edge-ai-features": {
+        "label": "IA de redação do Edge",
+        "description": "Desativa as funcionalidades de IA de redação e reescrita de texto do Edge"
+      },
+      "paint-ai": {
+        "label": "Funcionalidades de IA do Paint",
+        "description": "Desativa as funcionalidades de geração de imagens com IA do Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Funcionalidades de IA do Bloco de Notas",
+        "description": "Desativa as funcionalidades de reescrita de texto com IA do Bloco de Notas da Microsoft"
+      },
+      "service-diagtrack": {
+        "label": "Serviço DiagTrack",
+        "description": "Desativa o serviço Experiências de Utilizador Ligadas e Telemetria"
+      },
+      "service-dmwappush": {
+        "label": "Serviço WAP Push",
+        "description": "Desativa o serviço de encaminhamento de mensagens WAP Push usado para telemetria"
+      },
+      "service-delivery-optimization": {
+        "label": "Otimização de Entrega",
+        "description": "Desativa a partilha ponto a ponto das atualizações do Windows, para que este PC não envie dados de atualização para outros dispositivos"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Desativa o Gestor de Mapas Transferidos, um serviço em segundo plano de que a maioria dos PC não precisa"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Desativa a tarefa de telemetria da Microsoft que recolhe dados de compatibilidade"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Desativa a tarefa em segundo plano que envia telemetria de programas"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Desativa a recolha de telemetria feita através do proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Desativa o envio de dados do Programa de Melhoria da Experiência do Cliente (CEIP)"
+      },
+      "task-usb-ceip": {
+        "label": "Dados de utilização de USB (CEIP)",
+        "description": "Desativa a recolha de telemetria de utilização de dispositivos USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Desativa a recolha e o envio de dados de diagnóstico do disco"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Desativa a tarefa de telemetria de gestão de dispositivos para comentários"
+      },
+      "task-maps-update": {
+        "label": "Tarefa de atualização de mapas",
+        "description": "Desativa as transferências automáticas de dados de mapas em segundo plano"
+      },
+      "task-maps-toast": {
+        "label": "Tarefa de notificação de mapas",
+        "description": "Desativa a tarefa de notificação de mapas"
+      },
+      "edge-metrics": {
+        "label": "Relatórios de métricas do Edge",
+        "description": "Impede o Edge de enviar métricas de utilização e de falhas para a Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Recolha de informação de sites do Edge",
+        "description": "Impede o Edge de enviar à Microsoft os endereços dos sites que visita"
+      },
+      "edge-personalization": {
+        "label": "Relatórios de personalização do Edge",
+        "description": "Impede o Edge de enviar o seu histórico de navegação para personalização de anúncios"
+      },
+      "edge-copilot-cdp": {
+        "label": "Acesso do Copilot à página (CDP) no Edge",
+        "description": "Impede o Copilot de ler o conteúdo da página através do Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Contexto de página para o Copilot no Edge",
+        "description": "Impede o Copilot de usar o contexto da página para analisar conteúdo"
+      },
+      "edge-discover": {
+        "label": "Análise de páginas do Discover no Edge",
+        "description": "Impede a funcionalidade Discover de analisar o conteúdo das páginas"
+      },
+      "edge-sidebar": {
+        "label": "Barra lateral do Edge",
+        "description": "Desativa a barra lateral do Edge e a respetiva recolha de dados em segundo plano"
+      },
+      "edge-shopping": {
+        "label": "Assistente de compras do Edge",
+        "description": "Desativa o rastreador de comparação de preços no Edge"
+      },
+      "chrome-metrics": {
+        "label": "Relatórios de métricas do Chrome",
+        "description": "Impede o Chrome de enviar métricas de utilização e de falhas para a Google"
+      },
+      "chrome-feedback": {
+        "label": "Comentários de utilizador do Chrome",
+        "description": "Impede o Chrome de recolher e enviar dados de comentários de utilizador"
+      },
+      "chrome-extended-reporting": {
+        "label": "Navegação segura alargada do Chrome",
+        "description": "Impede o Chrome de enviar à Google relatórios alargados de URL e transferências"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetria do Firefox",
+        "description": "Impede o Firefox de recolher dados de telemetria e de os enviar à Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Agente de navegador predefinido do Firefox",
+        "description": "Desativa o agente em segundo plano que reporta dados de utilização do navegador à Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Dados de diagnóstico e utilização",
+        "description": "Impede a partilha de dados de diagnóstico e utilização com a Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Análise da Siri",
+        "description": "Impede a recolha de dados de análise e melhoria da Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Partilha de dados de saúde",
+        "description": "Impede a partilha de dados de saúde com a Apple para investigação"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Visibilidade do AirDrop",
+        "description": "Define o AirDrop como Ninguém: não pode receber ficheiros por AirDrop até voltar a ativá-lo nas Definições do Sistema"
+      },
+      "macos-crash-reporter": {
+        "label": "Relatório de falhas",
+        "description": "Impede que o relatório de falhas envie relatórios automaticamente"
+      },
+      "macos-ad-tracking": {
+        "label": "Anúncios personalizados",
+        "description": "Limita o rastreamento publicitário feito pela Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Sugestões da Siri na App Store",
+        "description": "Desativa as sugestões da Siri na App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Sugestões do Safari",
+        "description": "Desativa as sugestões de pesquisa do Safari enviadas à Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Sugestões do Spotlight",
+        "description": "Desativa as sugestões Web do Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Pré-carregamento do primeiro resultado no Safari",
+        "description": "Impede o Safari de pré-carregar o primeiro resultado de pesquisa, o que envia dados de navegação aos sites"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Desativa o Handoff e a Área de Transferência Universal: deixa de poder continuar atividades ou copiar e colar entre dispositivos Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Análise do iCloud",
+        "description": "Impede a partilha de dados de análise do iCloud com a Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Separadores do iCloud no Safari",
+        "description": "Desativa a sincronização de separadores do iCloud no Safari: deixa de ver os separadores abertos nos seus outros dispositivos Apple"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Desativa a Siri por completo: \"Hey Siri\", os comandos de voz e os atalhos da Siri deixam de funcionar"
+      },
+      "macos-siri-dictation": {
+        "label": "Ditado da Siri",
+        "description": "Desativa o ditado: a tecla de microfone do seu teclado deixa de funcionar"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Desativa as funcionalidades de IA do Apple Intelligence (macOS 15 Sequoia e posterior)"
+      },
+      "macos-safari-dnt": {
+        "label": "Não Rastrear do Safari",
+        "description": "Ativa o cabeçalho Não Rastrear no Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Relatórios de métricas do Chrome",
+        "description": "Impede o Chrome de enviar métricas de utilização à Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Relatórios de Navegação Segura do Chrome",
+        "description": "Impede o Chrome de enviar à Google relatórios alargados de URL e transferências"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetria do Firefox",
+        "description": "Impede o Firefox de recolher dados de telemetria e de os enviar à Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Confirma que o Gatekeeper está ativo, para que aplicações não verificadas sejam bloqueadas"
+      },
+      "macos-remote-apple-events": {
+        "label": "Eventos Apple remotos",
+        "description": "Desativa os eventos Apple remotos, para que o seu Mac não possa ser automatizado remotamente"
+      },
+      "macos-wake-on-network": {
+        "label": "Ativação por acesso de rede",
+        "description": "Desativa a ativação por acesso de rede, para que o seu Mac não possa ser ativado remotamente"
+      },
+      "macos-guest-account": {
+        "label": "Conta de convidado",
+        "description": "Desativa a conta de convidado para impedir o acesso local não autorizado"
+      },
+      "macos-auto-login": {
+        "label": "Início de sessão automático",
+        "description": "Desativa o início de sessão automático, para que o Mac peça autenticação ao arrancar"
+      },
+      "macos-firewall": {
+        "label": "Firewall de aplicações",
+        "description": "Ativa a firewall de aplicações do macOS para controlar as ligações recebidas"
+      },
+      "macos-stealth-mode": {
+        "label": "Modo furtivo",
+        "description": "Ativa o modo furtivo, para que o seu Mac não responda a pedidos de sondagem (ping ICMP)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Desativar o encaminhamento de IP",
+        "description": "Impede o sistema de encaminhar pacotes entre interfaces de rede"
+      },
+      "macos-block-signed-auto": {
+        "label": "Bloquear a autorização automática de apps assinadas",
+        "description": "Impede que aplicações assinadas contornem a firewall automaticamente"
+      },
+      "macos-remote-login": {
+        "label": "Desativar o início de sessão remoto (SSH)",
+        "description": "Desativa por completo o servidor SSH. Se precisar de acesso SSH, deixe isto desativado e reforce as definições de SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Desativar o início de sessão SSH como root",
+        "description": "Impede o início de sessão direto como root por SSH; use sudo a partir de uma conta normal"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Desativar a autenticação SSH por palavra-passe",
+        "description": "Permite apenas autenticação SSH por chave. Configure primeiro as suas chaves SSH, ou poderá ficar bloqueado"
+      },
+      "macos-core-dumps": {
+        "label": "Desativar despejos de memória",
+        "description": "Impede despejos de memória, que podem expor conteúdo sensível da memória"
+      },
+      "gnome-usage-stats": {
+        "label": "Estatísticas de utilização",
+        "description": "Desativa a recolha de estatísticas de utilização do GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Rastreamento de ficheiros recentes",
+        "description": "Desativa o rastreamento dos ficheiros usados recentemente"
+      },
+      "gnome-location": {
+        "label": "Serviços de localização",
+        "description": "Desativa os serviços de localização do GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Relatórios de falhas (Apport)",
+        "description": "Desativa o envio automático de relatórios de falhas"
+      },
+      "gnome-connectivity-check": {
+        "label": "Verificação de ligação",
+        "description": "Desativa as verificações periódicas de ligação de rede"
+      },
+      "core-dump-disable": {
+        "label": "Desativar despejos de memória",
+        "description": "Impede despejos de memória, que podem expor conteúdo sensível da memória"
+      },
+      "ssh-root-login": {
+        "label": "Desativar o início de sessão SSH como root",
+        "description": "Impede o início de sessão direto como root por SSH; use sudo a partir de uma conta normal"
+      },
+      "ssh-password-auth": {
+        "label": "Desativar a autenticação SSH por palavra-passe",
+        "description": "Permite apenas autenticação SSH por chave. Configure primeiro as suas chaves SSH, ou poderá ficar bloqueado"
+      },
+      "kde-usage-stats": {
+        "label": "Estatísticas de utilização",
+        "description": "Desativa o feedback de utilizador do KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Rastreamento de ficheiros recentes",
+        "description": "Desativa o histórico de atividade do KDE de ficheiros recentes"
+      },
+      "kde-baloo": {
+        "label": "Indexação de ficheiros (Baloo)",
+        "description": "Desativa o indexador de ficheiros Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Relatórios de falhas (DrKonqi)",
+        "description": "Desativa o gestor de relatórios de falhas do KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetria e Recolha de Dados",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Removedor de Bloatware",
-    "pageDescription": "Remova aplicações pré-instaladas do Windows e bloatware do OEM",
+    "pageDescription": "Aplicações pré-instaladas pelo Windows e pelo fabricante. Depois de removidas, só podem ser reinstaladas a partir da Microsoft Store.",
     "scanButton": "Analisar",
-    "irreversibleWarning": "Irreversível — As aplicações removidas só podem ser reinstaladas a partir da Microsoft Store. Reveja cuidadosamente as seleções.",
-    "scanningPackages": "A analisar pacotes instalados...",
-    "removingProgress": "A remover {{current}} de {{total}}",
-    "selectAll": "Selecionar Tudo",
-    "emptyStateTitle": "Nenhum bloatware detetado",
-    "emptyStateDescription": "Clique em \"Analisar\" para encontrar aplicações pré-instaladas e bloatware do OEM.",
+    "rescanButton": "Analisar novamente",
+    "irreversibleWarning": "A remoção não pode ser anulada a partir da aplicação: verifique as aplicações selecionadas antes de confirmar.",
+    "scanningPackages": "A analisar pacotes instalados…",
+    "removingProgress": "A remover aplicações ({{current}} de {{total}})",
+    "receiptTitle": "Remoção concluída",
+    "removedApps_one": "{{count}} aplicação removida",
+    "removedApps_other": "{{count}} aplicações removidas",
+    "failedCount_one": "{{count}} com falha",
+    "failedCount_other": "{{count}} com falhas",
+    "reinstallFromStore": "só pode ser reinstalada a partir da Microsoft Store",
+    "selectAll": "Selecionar tudo",
+    "filterLabel": "Categoria",
+    "confirmTitle_one": "Remover {{count}} aplicação?",
+    "confirmTitle_other": "Remover {{count}} aplicações?",
+    "confirmDescription_one": "A aplicação é removida para o seu utilizador e, com privilégios de administrador, também para novos utilizadores. Só pode ser reinstalada a partir da Microsoft Store.",
+    "confirmDescription_other": "As aplicações são removidas para o seu utilizador e, com privilégios de administrador, também para novos utilizadores. Só podem ser reinstaladas a partir da Microsoft Store.",
+    "confirmLabel_one": "Remover {{count}} aplicação",
+    "confirmLabel_other": "Remover {{count}} aplicações",
+    "emptyStateTitle": "Ainda não analisado",
+    "emptyStateDescription": "Nenhuma análise de aplicações pré-instaladas nesta sessão.",
+    "lastRun_one": "Última remoção: {{date}}, {{count}} aplicação removida.",
+    "lastRun_other": "Última remoção: {{date}}, {{count}} aplicações removidas.",
+    "checkKnownTitle": "Aplicações conhecidas",
+    "checkKnownDetail": "Uma lista de aplicações pré-instaladas pela Microsoft e pelos fabricantes (OEM)",
+    "checkInstalledTitle": "Pacotes instalados",
+    "checkInstalledDetail": "Os pacotes de aplicações do seu utilizador, comparados com a lista",
+    "checkRemovalTitle": "Remoção",
+    "checkRemovalDetail": "Para o seu utilizador; com privilégios de administrador, também a partir da cópia usada para novos utilizadores",
+    "noneFoundTitle": "Nenhuma das aplicações indicadas está instalada",
+    "noneFoundDescription": "As aplicações pré-instaladas conhecidas não estão presentes para o seu utilizador.",
+    "summaryTitle_one": "{{count}} aplicação pré-instalada encontrada",
+    "summaryTitle_other": "{{count}} aplicações pré-instaladas encontradas",
+    "selectedCount_one": "{{count}} selecionada",
+    "selectedCount_other": "{{count}} selecionadas",
+    "removeButton_one": "Remover {{count}} aplicação",
+    "removeButton_other": "Remover {{count}} aplicações",
+    "removeNone": "Remover selecionadas",
     "scanFailedToast": "A análise de bloatware falhou",
     "scanFailedDescription": "Certifique-se de que o PowerShell está disponível",
     "scanFailedError": "Falha ao analisar bloatware. Certifique-se de que o PowerShell está disponível.",
