@@ -10,5 +10,7 @@
   "history": "Активність",
   "settings": "Параметри",
   "gameMode": "Ігровий режим",
-  "firewallAudit": "Аудит брандмауера"
+  "firewallAudit": "Аудит брандмауера",
+  "updateBadge": "Оновлення",
+  "mainNavigation": "Основна навігація"
 }

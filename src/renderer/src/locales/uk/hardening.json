@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Захист конфіденційності",
-    "pageDescription": "Керуйте телеметрією, рекламою, відстеженням і збиранням даних у всій системі",
+    "pageDescription": "Зчитує параметри телеметрії, реклами, пошуку та синхронізації і порівнює їх із найбільш приватним значенням. Параметр змінюється лише після використання перемикача або підтвердження; більшість можна повернути до типового значення.",
     "scanButton": "Сканувати",
-    "scanProgressPreparing": "Підготовка до сканування...",
-    "applyingProtections": "Застосування захисту конфіденційності...",
-    "emptyStateTitle": "Захист конфіденційності",
-    "emptyStateDescription": "Натисніть \"Сканувати\", щоб перевірити параметри конфіденційності та безпеки й застосувати рекомендоване зміцнення.",
-    "adminWarning": "Для зміни деяких параметрів потрібні права адміністратора. Запустіть SuperSonicCleaner від імені адміністратора для повного захисту.",
+    "scanProgressPreparing": "Підготовка сканування",
+    "applyingProtections": "Застосування параметрів…",
+    "emptyStateTitle": "Параметри ще не перевірено",
+    "emptyStateDescription": "Сканування зчитує параметри й не змінює жодного з них.",
+    "adminWarning": "Деякі параметри можна змінити, лише якщо SuperSonicCleaner запущено від імені адміністратора; без цих прав вони залишаються без змін.",
     "scanFailed": "Не вдалося виконати сканування конфіденційності",
     "applyFailed": "Не вдалося застосувати параметри конфіденційності",
-    "applyFailedDescription": "Спробуйте запустити від імені адміністратора",
-    "settingApplyFailed": "Не вдалося застосувати \"{{label}}\"",
-    "settingEnabled": "{{label}} заблоковано",
-    "settingDisabled": "{{label}} відновлено до типових значень",
-    "settingRevertFailed": "Не вдалося скасувати \"{{label}}\"",
+    "applyFailedDescription": "Спробуйте запустити застосунок від імені адміністратора",
+    "settingApplyFailed": "Не вдалося застосувати «{{label}}»",
+    "settingEnabled": "Застосовано: {{label}}",
+    "settingDisabled": "Повернено до типового значення: {{label}}",
+    "settingRevertFailed": "Не вдалося відновити «{{label}}»",
     "settingRevertFailedGeneric": "Не вдалося скасувати параметр конфіденційності",
     "settingApplyFailedGeneric": "Не вдалося застосувати параметр конфіденційності",
-    "ipcCallFailed": "Не вдалося виконати виклик IPC — спробуйте запустити від імені адміністратора",
+    "ipcCallFailed": "Виклик завершився помилкою: спробуйте запустити застосунок від імені адміністратора",
     "allSettingsLabel": "Усі параметри",
     "unknownError": "Невідома помилка",
-    "requiresSettingEnabled": "Спочатку ввімкніть \"{{label}}\"",
-    "adminRequired": "Спробуйте запустити від імені адміністратора",
-    "settingNotApplied": "Система не повідомила про зміну — може знадобитися перезавантаження, або параметр може керуватися іншим профілем"
+    "requiresSettingEnabled": "Спочатку увімкніть «{{label}}»",
+    "adminRequired": "Спробуйте запустити застосунок від імені адміністратора",
+    "settingNotApplied": "Система не повідомила про зміну: можливо, потрібне перезавантаження, або параметр керується іншим профілем.",
+    "rescanButton": "Сканувати знову",
+    "scanningButton": "Сканування…",
+    "applyRecommended_one": "Застосувати {{count}} рекомендовану зміну",
+    "applyRecommended_other": "Застосувати {{count}} рекомендованих змін",
+    "summaryTitle_one": "{{count}} параметр для зміни",
+    "summaryTitle_other": "{{count}} параметрів для зміни",
+    "summaryNone": "Усі {{total}} параметрів уже мають найбільш приватне значення",
+    "summaryFacts": "{{protected}} з {{total}} уже на найбільш приватному значенні · категорій: {{categories}}",
+    "categoryMeta_one": "{{count}} для зміни",
+    "categoryMeta_other": "{{count}} для зміни",
+    "categoryAllSet": "усе вже налаштовано",
+    "categoryApply_one": "Застосувати {{count}}",
+    "categoryApply_other": "Застосувати {{count}}",
+    "categoryShow": "Показати",
+    "categoryHide": "Приховати",
+    "adminTag": "Потрібні права адміністратора",
+    "notReversibleTag": "Незворотно",
+    "scanProgressTitle": "Триває сканування",
+    "scanProgressCount": "{{current}} з {{total}}",
+    "scanProgressCategory": "Перевірка: {{category}}",
+    "scanProgressLabel": "Хід сканування",
+    "applyingLabel": "Хід застосування",
+    "receiptTitle": "Параметри застосовано",
+    "receiptApplied_one": "{{count}} параметр змінено",
+    "receiptApplied_other": "{{count}} параметрів змінено",
+    "receiptReversible": "можна відновити за допомогою перемикачів",
+    "receiptFailed_one": "{{count}} не застосовано: причину вказано нижче.",
+    "receiptFailed_other": "{{count}} не застосовано: причини вказано нижче.",
+    "receiptFailedAdmin_one": "{{count}} не застосовано: можливо, потрібно запустити застосунок від імені адміністратора. Причину вказано нижче.",
+    "receiptFailedAdmin_other": "{{count}} не застосовано: можливо, потрібно запустити застосунок від імені адміністратора. Причини вказано нижче.",
+    "failedHeading": "Параметри не застосовано",
+    "failedColumnSetting": "Параметр",
+    "failedColumnReason": "Причина",
+    "confirmTitle_one": "Змінити {{count}} параметр?",
+    "confirmTitle_other": "Змінити {{count}} параметрів?",
+    "confirmDescription": "Перелічені параметри перемикаються на найбільш приватне значення. Їх можна повернути до типового значення за допомогою перемикачів на цій сторінці.",
+    "confirmDescriptionIrreversible_one": "Перелічені параметри перемикаються на найбільш приватне значення. {{count}} не можна повернути до типового значення з цієї сторінки.",
+    "confirmDescriptionIrreversible_other": "Перелічені параметри перемикаються на найбільш приватне значення. {{count}} не можна повернути до типового значення з цієї сторінки.",
+    "confirmLabel_one": "Змінити {{count}} параметр",
+    "confirmLabel_other": "Змінити {{count}} параметрів",
+    "settings": {
+      "telemetry-level": {
+        "label": "Телеметрія Windows",
+        "description": "Зменшує збір діагностичних даних до мінімуму (лише рівень безпеки)"
+      },
+      "activity-history": {
+        "label": "Журнал дій",
+        "description": "Забороняє Windows відстежувати й синхронізувати використання застосунків і файлів"
+      },
+      "publish-activity": {
+        "label": "Публікація дій користувача",
+        "description": "Забороняє Windows передавати дані про ваші дії в Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Запити відгуків",
+        "description": "Вимикає періодичні запити відгуків та опитування Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Дані рукописного вводу",
+        "description": "Зупиняє надсилання даних рукописного та клавіатурного вводу в Microsoft"
+      },
+      "input-personalization": {
+        "label": "Персоналізація вводу",
+        "description": "Зупиняє збір даних клавіатурного та рукописного вводу для персоналізації"
+      },
+      "tailored-experiences": {
+        "label": "Персоналізований досвід",
+        "description": "Забороняє Microsoft використовувати діагностичні дані для персоналізації порад і реклами"
+      },
+      "app-launch-tracking": {
+        "label": "Відстеження запуску застосунків",
+        "description": "Забороняє Windows відстежувати застосунки, які ви відкриваєте, для налаштування меню «Пуск»"
+      },
+      "advertising-id": {
+        "label": "Рекламний ID",
+        "description": "Вимикає унікальний рекламний ідентифікатор, який застосунки використовують для відстеження"
+      },
+      "suggested-content": {
+        "label": "Рекомендований вміст у параметрах",
+        "description": "Забороняє Microsoft показувати рекомендації застосунків і рекламу в параметрах"
+      },
+      "tips-notifications": {
+        "label": "Поради та рекомендації",
+        "description": "Вимикає сповіщення Windows з порадами, підказками та рекомендаціями"
+      },
+      "start-suggestions": {
+        "label": "Рекомендації в меню «Пуск»",
+        "description": "Вимикає рекомендації застосунків (рекламу) в меню «Пуск»"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight на екрані блокування",
+        "description": "Вимикає рекламу та рекомендації Microsoft Spotlight на екрані блокування"
+      },
+      "silently-installed-apps": {
+        "label": "Автоматично встановлювані застосунки",
+        "description": "Забороняє Windows автоматично встановлювати рекламовані застосунки"
+      },
+      "preinstalled-apps": {
+        "label": "Рекомендації попередньо встановлених застосунків",
+        "description": "Забороняє Windows рекомендувати невикористані попередньо встановлені застосунки"
+      },
+      "bing-start-menu": {
+        "label": "Bing у меню «Пуск»",
+        "description": "Зупиняє надсилання пошукових запитів із меню «Пуск» у Bing"
+      },
+      "bing-web-search": {
+        "label": "Веб-результати Bing",
+        "description": "Вимикає веб-результати в пошуку Windows, щоб пошук залишався на цьому ПК"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Вимикає Cortana, яка працює у фоновому режимі та збирає дані"
+      },
+      "search-highlights": {
+        "label": "Актуальні теми пошуку",
+        "description": "Вимикає популярні пошукові запити та веб-вміст у полі пошуку"
+      },
+      "store-search-suggestions": {
+        "label": "Рекомендації пошуку Microsoft Store",
+        "description": "Вимикає рекомендації пошуку Microsoft Store, які передають ваші запити в Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Хмарна синхронізація буфера обміну",
+        "description": "Забороняє синхронізацію даних буфера обміну між пристроями через хмару"
+      },
+      "clipboard-history": {
+        "label": "Історія буфера обміну",
+        "description": "Вимикає історію буфера обміну, у якій зберігаються скопійовані текст і зображення"
+      },
+      "settings-sync": {
+        "label": "Синхронізація параметрів",
+        "description": "Зупиняє синхронізацію параметрів Windows, тем і паролів з обліковим записом Microsoft"
+      },
+      "find-my-device": {
+        "label": "Знайти пристрій",
+        "description": "Вимикає відстеження місцезнаходження пристрою компанією Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Вимикає ШІ-помічника Microsoft Copilot у всій Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Вимикає Windows Recall — ШІ-історію знімків екрана, яка фіксує все, що відбувається на екрані"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Вимикає ШІ-аналіз тексту та зображень на екрані функцією Click to Do"
+      },
+      "ai-service-autostart": {
+        "label": "Автозапуск ШІ-служб",
+        "description": "Забороняє автоматичний запуск ШІ-служб у фоновому режимі"
+      },
+      "edge-ai-features": {
+        "label": "ШІ-функції Compose в Edge",
+        "description": "Вимикає функції ШІ-складання та переписування тексту в Edge"
+      },
+      "paint-ai": {
+        "label": "ШІ-функції Paint",
+        "description": "Вимикає функції ШІ-генерації зображень у Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "ШІ-функції Notepad",
+        "description": "Вимикає функції ШІ-переписування тексту в Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "Служба DiagTrack",
+        "description": "Вимикає службу «Функціональні можливості для під'єднаних користувачів і телеметрія»"
+      },
+      "service-dmwappush": {
+        "label": "Служба WAP Push",
+        "description": "Вимикає службу маршрутизації повідомлень WAP Push, яку використовують для телеметрії"
+      },
+      "service-delivery-optimization": {
+        "label": "Оптимізація доставки",
+        "description": "Вимикає однорангове передавання оновлень Windows, щоб цей ПК не надсилав дані оновлень іншим пристроям"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Вимикає диспетчер завантажених карт — фонову службу, яка не потрібна більшості ПК"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Вимикає задачу телеметрії Microsoft, яка збирає дані сумісності"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Вимикає фонову задачу, яка передає телеметрію програм"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Вимикає збір телеметрії через проксі autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "Консолідатор CEIP",
+        "description": "Вимикає передавання даних програми поліпшення якості ПЗ"
+      },
+      "task-usb-ceip": {
+        "label": "Дані використання USB (CEIP)",
+        "description": "Вимикає збір телеметрії використання USB-пристроїв"
+      },
+      "task-disk-diagnostic": {
+        "label": "Збирач діагностики диска",
+        "description": "Вимикає збір і передавання діагностичних даних диска"
+      },
+      "task-feedback-dm": {
+        "label": "Клієнт DM зворотного зв'язку",
+        "description": "Вимикає задачу телеметрії керування пристроями для зворотного зв'язку"
+      },
+      "task-maps-update": {
+        "label": "Задача оновлення карт",
+        "description": "Вимикає автоматичне завантаження даних карт у фоновому режимі"
+      },
+      "task-maps-toast": {
+        "label": "Задача сповіщень карт",
+        "description": "Вимикає задачу сповіщень застосунку «Карти»"
+      },
+      "edge-metrics": {
+        "label": "Звіти про показники Edge",
+        "description": "Забороняє Edge надсилати дані про використання та збої в Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Збір даних про сайти в Edge",
+        "description": "Зупиняє надсилання Edge адрес відвіданих сайтів у Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Звіти персоналізації Edge",
+        "description": "Зупиняє надсилання Edge історії браузера для персоналізації реклами"
+      },
+      "edge-copilot-cdp": {
+        "label": "Доступ Copilot до сторінки (CDP) в Edge",
+        "description": "Забороняє Copilot читати вміст сторінки через Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Контекст сторінки Copilot в Edge",
+        "description": "Забороняє Copilot використовувати контекст сторінки для аналізу вмісту"
+      },
+      "edge-discover": {
+        "label": "Сканування сторінок Discover в Edge",
+        "description": "Зупиняє сканування вмісту сторінок функцією Discover"
+      },
+      "edge-sidebar": {
+        "label": "Бічна панель Edge",
+        "description": "Вимикає бічну панель Edge та її фоновий збір даних"
+      },
+      "edge-shopping": {
+        "label": "Помічник покупок Edge",
+        "description": "Вимикає трекер порівняння цін в Edge"
+      },
+      "chrome-metrics": {
+        "label": "Звіти про показники Chrome",
+        "description": "Забороняє Chrome надсилати дані про використання та збої в Google"
+      },
+      "chrome-feedback": {
+        "label": "Відгуки користувачів Chrome",
+        "description": "Забороняє Chrome збирати та надсилати дані відгуків користувачів"
+      },
+      "chrome-extended-reporting": {
+        "label": "Розширена безпека Chrome",
+        "description": "Зупиняє надсилання Chrome розширених звітів про URL-адреси та завантаження в Google"
+      },
+      "firefox-telemetry": {
+        "label": "Телеметрія Firefox",
+        "description": "Зупиняє збір Firefox телеметричних даних та їх надсилання в Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Агент браузера за замовчуванням Firefox",
+        "description": "Вимикає фоновий агент, який передає дані використання браузера в Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Діагностика та дані використання",
+        "description": "Зупиняє передавання діагностичних даних і даних використання в Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Аналітика Siri",
+        "description": "Зупиняє збір аналітичних даних і даних для поліпшення Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Обмін даними про здоров'я",
+        "description": "Зупиняє передавання даних про здоров'я в Apple для досліджень"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Видимість AirDrop",
+        "description": "Встановлює AirDrop у режим «Ніхто»: отримувати файли через AirDrop не можна, доки ви не увімкнете його знову в системних налаштуваннях"
+      },
+      "macos-crash-reporter": {
+        "label": "Звіти про збої",
+        "description": "Зупиняє автоматичне надсилання звітів про збої"
+      },
+      "macos-ad-tracking": {
+        "label": "Персоналізована реклама",
+        "description": "Обмежує відстеження реклами компанією Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Рекомендації Siri в App Store",
+        "description": "Вимикає рекомендації Siri в App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Рекомендації Safari",
+        "description": "Вимикає пошукові рекомендації Safari, які надсилаються в Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Рекомендації Spotlight",
+        "description": "Вимикає веб-рекомендації Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Попереднє завантаження першого результату Safari",
+        "description": "Зупиняє попереднє завантаження Safari першого результату пошуку, при якому дані перегляду надсилаються на сайти"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Вимикає Handoff і універсальний буфер обміну: продовжувати дії або копіювати та вставляти між пристроями Apple буде неможливо"
+      },
+      "macos-icloud-analytics": {
+        "label": "Аналітика iCloud",
+        "description": "Зупиняє передавання аналітики iCloud в Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Вкладки Safari iCloud",
+        "description": "Вимикає синхронізацію вкладок Safari через iCloud: вкладки, відкриті на інших пристроях Apple, більше не відображаються"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Повністю вимикає Siri: «Привіт, Siri», голосові команди та ярлики Siri перестають працювати"
+      },
+      "macos-siri-dictation": {
+        "label": "Голосове введення Siri",
+        "description": "Вимикає голосове введення: клавіша мікрофона на клавіатурі перестає працювати"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Вимикає функції ШІ Apple Intelligence (macOS 15 Sequoia і новіші)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "Вмикає заголовок Do Not Track в Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Звіти про показники Chrome",
+        "description": "Забороняє Chrome надсилати дані про використання в Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Звіти Safe Browsing в Chrome",
+        "description": "Зупиняє надсилання Chrome розширених звітів про URL-адреси та завантаження в Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Телеметрія Firefox",
+        "description": "Зупиняє збір Firefox телеметричних даних та їх надсилання в Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Перевіряє, що Gatekeeper увімкнено, щоб блокувати непідтверджені застосунки"
+      },
+      "macos-remote-apple-events": {
+        "label": "Віддалені Apple Events",
+        "description": "Вимикає віддалені Apple Events, щоб Mac не можна було автоматизувати віддалено"
+      },
+      "macos-wake-on-network": {
+        "label": "Пробудження через мережу",
+        "description": "Вимикає пробудження через мережу, щоб Mac не можна було розбудити віддалено"
+      },
+      "macos-guest-account": {
+        "label": "Гостьовий обліковий запис",
+        "description": "Вимикає гостьовий обліковий запис, запобігаючи несанкціонованому локальному доступу"
+      },
+      "macos-auto-login": {
+        "label": "Автоматичний вхід",
+        "description": "Вимикає автоматичний вхід, щоб Mac запитував автентифікацію під час запуску"
+      },
+      "macos-firewall": {
+        "label": "Брандмауер застосунків",
+        "description": "Вмикає брандмауер застосунків macOS для контролю вхідних підключень"
+      },
+      "macos-stealth-mode": {
+        "label": "Прихований режим",
+        "description": "Вмикає прихований режим, щоб Mac не відповідав на зондувальні запити (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Вимкнути пересилання IP",
+        "description": "Забороняє системі пересилати пакети між мережевими інтерфейсами"
+      },
+      "macos-block-signed-auto": {
+        "label": "Блокування автоматичного дозволу для підписаних застосунків",
+        "description": "Забороняє підписаним застосункам автоматично обходити брандмауер"
+      },
+      "macos-remote-login": {
+        "label": "Вимкнути віддалений вхід (SSH)",
+        "description": "Повністю вимикає сервер SSH. Якщо вам потрібен доступ через SSH, залиште цей параметр вимкненим і натомість посильте налаштування SSH"
+      },
+      "macos-ssh-root-login": {
+        "label": "Вимкнути вхід root через SSH",
+        "description": "Забороняє прямий вхід root через SSH; використовуйте sudo зі звичайного облікового запису"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Вимкнути автентифікацію SSH за паролем",
+        "description": "Дозволяє автентифікацію SSH лише за ключем. Спершу налаштуйте ключі SSH, інакше ви можете втратити доступ"
+      },
+      "macos-core-dumps": {
+        "label": "Вимкнути дампи ядра",
+        "description": "Забороняє дампи ядра, які можуть розкрити конфіденційний вміст пам'яті"
+      },
+      "gnome-usage-stats": {
+        "label": "Статистика використання",
+        "description": "Вимикає збір статистики використання GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Відстеження нещодавніх файлів",
+        "description": "Вимикає відстеження нещодавно використаних файлів"
+      },
+      "gnome-location": {
+        "label": "Служби геолокації",
+        "description": "Вимикає служби геолокації GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Звіти про збої (Apport)",
+        "description": "Вимикає автоматичне надсилання звітів про збої"
+      },
+      "gnome-connectivity-check": {
+        "label": "Перевірка підключення",
+        "description": "Вимикає періодичні перевірки підключення до мережі"
+      },
+      "core-dump-disable": {
+        "label": "Вимкнути дампи ядра",
+        "description": "Забороняє дампи ядра, які можуть розкрити конфіденційний вміст пам'яті"
+      },
+      "ssh-root-login": {
+        "label": "Вимкнути вхід root через SSH",
+        "description": "Забороняє прямий вхід root через SSH; використовуйте sudo зі звичайного облікового запису"
+      },
+      "ssh-password-auth": {
+        "label": "Вимкнути автентифікацію SSH за паролем",
+        "description": "Дозволяє автентифікацію SSH лише за ключем. Спершу налаштуйте ключі SSH, інакше ви можете втратити доступ"
+      },
+      "kde-usage-stats": {
+        "label": "Статистика використання",
+        "description": "Вимикає зворотний зв'язок користувачів KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Відстеження нещодавніх файлів",
+        "description": "Вимикає журнал активності KDE для нещодавніх файлів"
+      },
+      "kde-baloo": {
+        "label": "Індексування файлів (Baloo)",
+        "description": "Вимикає індексатор файлів Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Звіти про збої (DrKonqi)",
+        "description": "Вимикає обробник звітів про збої KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Телеметрія та збирання даних",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Видалення зайвих програм",
-    "pageDescription": "Видаляйте попередньо встановлені програми Windows і OEM-зайве ПЗ",
+    "pageDescription": "Застосунки, попередньо встановлені Windows і виробником. Після видалення їх можна перевстановити лише з Microsoft Store.",
     "scanButton": "Сканувати",
-    "irreversibleWarning": "Незворотно — видалені програми можна перевстановити лише з Microsoft Store. Уважно перевірте вибрані елементи.",
-    "scanningPackages": "Сканування встановлених пакетів...",
-    "removingProgress": "Видалення {{current}} з {{total}}",
+    "rescanButton": "Сканувати знову",
+    "irreversibleWarning": "Видалення не можна скасувати із застосунку: перевірте вибрані застосунки перед підтвердженням.",
+    "scanningPackages": "Сканування встановлених пакетів…",
+    "removingProgress": "Видалення застосунків ({{current}} з {{total}})",
+    "receiptTitle": "Видалення завершено",
+    "removedApps_one": "{{count}} застосунок видалено",
+    "removedApps_other": "{{count}} застосунків видалено",
+    "failedCount_one": "{{count}} не вдалося",
+    "failedCount_other": "{{count}} не вдалося",
+    "reinstallFromStore": "перевстановлюється лише з Microsoft Store",
     "selectAll": "Вибрати все",
-    "emptyStateTitle": "Зайвих програм не виявлено",
-    "emptyStateDescription": "Натисніть \"Сканувати\", щоб знайти попередньо встановлені програми та OEM-зайве ПЗ.",
+    "filterLabel": "Категорія",
+    "confirmTitle_one": "Видалити {{count}} застосунок?",
+    "confirmTitle_other": "Видалити {{count}} застосунків?",
+    "confirmDescription_one": "Застосунок буде видалено для вашого користувача, а за наявності прав адміністратора — і для нових користувачів. Перевстановити його можна лише з Microsoft Store.",
+    "confirmDescription_other": "Застосунки буде видалено для вашого користувача, а за наявності прав адміністратора — і для нових користувачів. Перевстановити їх можна лише з Microsoft Store.",
+    "confirmLabel_one": "Видалити {{count}} застосунок",
+    "confirmLabel_other": "Видалити {{count}} застосунків",
+    "emptyStateTitle": "Ще не перевірено",
+    "emptyStateDescription": "У цьому сеансі перевірку попередньо встановлених застосунків не виконано.",
+    "lastRun_one": "Останнє видалення: {{date}}, видалено застосунків: {{count}}.",
+    "lastRun_other": "Останнє видалення: {{date}}, видалено застосунків: {{count}}.",
+    "checkKnownTitle": "Відомі застосунки",
+    "checkKnownDetail": "Список застосунків, попередньо встановлених Microsoft і виробниками (OEM)",
+    "checkInstalledTitle": "Встановлені пакети",
+    "checkInstalledDetail": "Пакети застосунків вашого користувача, які порівнюються зі списком",
+    "checkRemovalTitle": "Видалення",
+    "checkRemovalDetail": "Для вашого користувача; за наявності прав адміністратора — також із копії, яка використовується для нових користувачів",
+    "noneFoundTitle": "Жоден із перелічених застосунків не встановлено",
+    "noneFoundDescription": "Відомі попередньо встановлені застосунки відсутні у вашого користувача.",
+    "summaryTitle_one": "Знайдено {{count}} попередньо встановлений застосунок",
+    "summaryTitle_other": "Знайдено {{count}} попередньо встановлених застосунків",
+    "selectedCount_one": "{{count}} вибрано",
+    "selectedCount_other": "{{count}} вибрано",
+    "removeButton_one": "Видалити {{count}} застосунок",
+    "removeButton_other": "Видалити {{count}} застосунків",
+    "removeNone": "Видалити вибрані",
     "scanFailedToast": "Не вдалося виконати сканування зайвих програм",
     "scanFailedDescription": "Переконайтеся, що PowerShell доступний",
     "scanFailedError": "Не вдалося виконати сканування зайвих програм. Переконайтеся, що PowerShell доступний.",
