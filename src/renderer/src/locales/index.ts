@@ -2,7 +2,10 @@ import { createLocaleBackend } from './locale-backend'
 
 // Every language, English included, is a local chunk loaded on demand: the UI language is
 // only known at runtime (the OS language, then the saved setting), so none is bundled.
-// Vite emits one chunk per file; nothing is fetched from a network service.
+// English is still read before the first render, as the fallback for missing keys: it
+// sits in its own chunk (locale-en), loaded next to the UI language, not in the entry
+// chunk. Measuring startup cost by the entry and App chunks alone therefore leaves it out.
+// Nothing is fetched from a network service.
 const loaders = import.meta.glob('./*/*.json', { import: 'default' }) as Record<
   string,
   () => Promise<Record<string, unknown>>
