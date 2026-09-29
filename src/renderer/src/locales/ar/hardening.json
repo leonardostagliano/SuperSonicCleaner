@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "درع الخصوصية",
-    "pageDescription": "تحكّم في القياس عن بُعد والإعلانات والتتبع وجمع البيانات على مستوى نظامك",
+    "pageDescription": "يقرأ إعدادات القياس عن بُعد والإعلانات والبحث والمزامنة ويقارنها بالقيمة الأكثر خصوصية. لا يتغيّر الإعداد إلا عند استخدام مفتاحه أو التأكيد؛ ويمكن إرجاع معظمها إلى الإعداد الافتراضي.",
     "scanButton": "فحص",
-    "scanProgressPreparing": "جارٍ تحضير الفحص...",
-    "applyingProtections": "جارٍ تطبيق وسائل حماية الخصوصية...",
-    "emptyStateTitle": "درع الخصوصية",
-    "emptyStateDescription": "انقر فوق \"فحص\" لمراجعة إعدادات الخصوصية والأمان وتطبيق إجراءات التحصين الموصى بها.",
-    "adminWarning": "تتطلب بعض الإعدادات امتيازات المسؤول لتعديلها. شغّل SuperSonicCleaner كمسؤول للحصول على حماية كاملة.",
+    "scanProgressPreparing": "جارٍ تحضير الفحص",
+    "applyingProtections": "جارٍ تطبيق الإعدادات…",
+    "emptyStateTitle": "لم تُفحص الإعدادات بعد",
+    "emptyStateDescription": "يقرأ الفحص الإعدادات ولا يغيّر أيًا منها.",
+    "adminWarning": "لا يمكن تغيير بعض الإعدادات إلا عندما يعمل SuperSonicCleaner كمسؤول؛ وبدون هذه الصلاحيات تبقى كما هي.",
     "scanFailed": "فشل فحص الخصوصية",
-    "applyFailed": "فشل تطبيق إعدادات الخصوصية",
-    "applyFailedDescription": "جرّب التشغيل كمسؤول",
-    "settingApplyFailed": "فشل تطبيق \"{{label}}\"",
-    "settingEnabled": "تم حظر {{label}}",
-    "settingDisabled": "تمت استعادة {{label}} إلى الإعداد الافتراضي",
-    "settingRevertFailed": "فشل التراجع عن \"{{label}}\"",
+    "applyFailed": "تعذّر تطبيق إعدادات الخصوصية",
+    "applyFailedDescription": "جرّب تشغيل التطبيق كمسؤول",
+    "settingApplyFailed": "تعذّر تطبيق ”{{label}}“",
+    "settingEnabled": "تم التطبيق: {{label}}",
+    "settingDisabled": "أُعيد إلى الإعداد الافتراضي: {{label}}",
+    "settingRevertFailed": "تعذّرت استعادة ”{{label}}“",
     "settingRevertFailedGeneric": "فشل التراجع عن إعداد الخصوصية",
     "settingApplyFailedGeneric": "فشل تطبيق إعداد الخصوصية",
-    "ipcCallFailed": "فشل استدعاء IPC — جرّب التشغيل كمسؤول",
+    "ipcCallFailed": "فشل الاستدعاء: جرّب تشغيل التطبيق كمسؤول",
     "allSettingsLabel": "كل الإعدادات",
     "unknownError": "خطأ غير معروف",
-    "requiresSettingEnabled": "قم بتمكين \"{{label}}\" أولاً",
-    "adminRequired": "جرّب التشغيل كمسؤول",
-    "settingNotApplied": "لم يُبلغ النظام عن التغيير — قد يتطلب الأمر إعادة تشغيل، أو قد يكون الإعداد مُدارًا بواسطة ملف تعريف آخر"
+    "requiresSettingEnabled": "فعِّل ”{{label}}“ أولًا",
+    "adminRequired": "جرّب تشغيل التطبيق كمسؤول",
+    "settingNotApplied": "لم يُبلغ النظام عن التغيير: قد يتطلب الأمر إعادة التشغيل، أو قد يكون الإعداد مُدارًا من ملف تعريف آخر.",
+    "rescanButton": "فحص مرة أخرى",
+    "scanningButton": "جارٍ الفحص…",
+    "applyRecommended_one": "تطبيق {{count}} تغيير موصى به",
+    "applyRecommended_other": "تطبيق {{count}} من التغييرات الموصى بها",
+    "summaryTitle_one": "{{count}} إعداد للتغيير",
+    "summaryTitle_other": "{{count}} إعدادات للتغيير",
+    "summaryNone": "جميع الإعدادات البالغ عددها {{total}} لها بالفعل القيمة الأكثر خصوصية",
+    "summaryFacts": "{{protected}} من أصل {{total}} على القيمة الأكثر خصوصية بالفعل · {{categories}} فئات",
+    "categoryMeta_one": "{{count}} للتغيير",
+    "categoryMeta_other": "{{count}} للتغيير",
+    "categoryAllSet": "الكل مضبوط بالفعل",
+    "categoryApply_one": "تطبيق {{count}}",
+    "categoryApply_other": "تطبيق {{count}}",
+    "categoryShow": "إظهار",
+    "categoryHide": "إخفاء",
+    "adminTag": "يتطلب صلاحيات المسؤول",
+    "notReversibleTag": "غير قابل للتراجع",
+    "scanProgressTitle": "الفحص قيد التقدّم",
+    "scanProgressCount": "{{current}} من {{total}}",
+    "scanProgressCategory": "جارٍ التحقق: {{category}}",
+    "scanProgressLabel": "تقدّم الفحص",
+    "applyingLabel": "تقدّم التطبيق",
+    "receiptTitle": "تم تطبيق الإعدادات",
+    "receiptApplied_one": "تم تغيير {{count}} إعداد",
+    "receiptApplied_other": "تم تغيير {{count}} إعدادات",
+    "receiptReversible": "يمكن استعادتها من المفاتيح",
+    "receiptFailed_one": "لم يُطبَّق {{count}}: السبب مذكور أدناه.",
+    "receiptFailed_other": "لم يُطبَّق {{count}}: الأسباب مذكورة أدناه.",
+    "receiptFailedAdmin_one": "لم يُطبَّق {{count}}: قد يتطلب الأمر تشغيل التطبيق كمسؤول. السبب مذكور أدناه.",
+    "receiptFailedAdmin_other": "لم يُطبَّق {{count}}: قد يتطلب الأمر تشغيل التطبيق كمسؤول. الأسباب مذكورة أدناه.",
+    "failedHeading": "الإعدادات غير المطبَّقة",
+    "failedColumnSetting": "الإعداد",
+    "failedColumnReason": "السبب",
+    "confirmTitle_one": "هل تريد تغيير {{count}} إعداد؟",
+    "confirmTitle_other": "هل تريد تغيير {{count}} إعدادات؟",
+    "confirmDescription": "تنتقل الإعدادات المدرجة إلى القيمة الأكثر خصوصية. يمكن إعادتها إلى الإعداد الافتراضي من المفاتيح في هذه الصفحة.",
+    "confirmDescriptionIrreversible_one": "تنتقل الإعدادات المدرجة إلى القيمة الأكثر خصوصية. لا يمكن إرجاع {{count}} إلى الإعداد الافتراضي من هذه الصفحة.",
+    "confirmDescriptionIrreversible_other": "تنتقل الإعدادات المدرجة إلى القيمة الأكثر خصوصية. لا يمكن إرجاع {{count}} إلى الإعداد الافتراضي من هذه الصفحة.",
+    "confirmLabel_one": "تغيير {{count}} إعداد",
+    "confirmLabel_other": "تغيير {{count}} إعدادات",
+    "settings": {
+      "telemetry-level": {
+        "label": "القياس عن بُعد في Windows",
+        "description": "يقلّص جمع بيانات التشخيص إلى الحد الأدنى (مستوى الأمان فقط)"
+      },
+      "activity-history": {
+        "label": "سجل النشاط",
+        "description": "يمنع Windows من تتبع استخدامك للتطبيقات والملفات ومزامنته"
+      },
+      "publish-activity": {
+        "label": "نشر أنشطة المستخدم",
+        "description": "يمنع Windows من نشر أنشطتك إلى Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "طلبات الملاحظات",
+        "description": "يعطّل طلبات الملاحظات واستطلاعات Microsoft الدورية"
+      },
+      "handwriting-telemetry": {
+        "label": "بيانات الكتابة اليدوية",
+        "description": "يوقف إرسال بيانات الكتابة اليدوية والكتابة على لوحة المفاتيح إلى Microsoft"
+      },
+      "input-personalization": {
+        "label": "تخصيص الإدخال",
+        "description": "يوقف جمع بيانات الكتابة والكتابة بالقلم لأغراض التخصيص"
+      },
+      "tailored-experiences": {
+        "label": "التجارب المخصّصة",
+        "description": "يمنع Microsoft من استخدام بيانات التشخيص لتخصيص النصائح والإعلانات"
+      },
+      "app-launch-tracking": {
+        "label": "تتبّع تشغيل التطبيقات",
+        "description": "يمنع Windows من تتبّع التطبيقات التي تفتحها لضبط قائمة ابدأ"
+      },
+      "advertising-id": {
+        "label": "معرّف الإعلانات",
+        "description": "يعطّل معرّف الإعلانات الفريد الذي تستخدمه التطبيقات لتتبّعك"
+      },
+      "suggested-content": {
+        "label": "المحتوى المقترح في الإعدادات",
+        "description": "يمنع Microsoft من عرض اقتراحات التطبيقات والإعلانات في الإعدادات"
+      },
+      "tips-notifications": {
+        "label": "التلميحات والاقتراحات",
+        "description": "يعطّل إشعارات Windows الخاصة بالتلميحات والحيل والاقتراحات"
+      },
+      "start-suggestions": {
+        "label": "اقتراحات قائمة ابدأ",
+        "description": "يعطّل اقتراحات التطبيقات (الإعلانات) في قائمة ابدأ"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight في شاشة القفل",
+        "description": "يعطّل إعلانات واقتراحات Microsoft Spotlight في شاشة القفل"
+      },
+      "silently-installed-apps": {
+        "label": "التطبيقات المثبَّتة تلقائيًا",
+        "description": "يمنع Windows من تثبيت التطبيقات المروَّجة تلقائيًا"
+      },
+      "preinstalled-apps": {
+        "label": "اقتراحات التطبيقات المثبَّتة مسبقًا",
+        "description": "يمنع Windows من اقتراح التطبيقات المثبَّتة مسبقًا التي لم تستخدمها"
+      },
+      "bing-start-menu": {
+        "label": "Bing في قائمة ابدأ",
+        "description": "يوقف إرسال طلبات البحث المكتوبة في قائمة ابدأ إلى Bing"
+      },
+      "bing-web-search": {
+        "label": "نتائج Bing على الويب",
+        "description": "يعطّل نتائج الويب في بحث Windows، بحيث يبقى البحث على هذا الكمبيوتر"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "يعطّل Cortana التي تعمل في الخلفية وتجمع البيانات"
+      },
+      "search-highlights": {
+        "label": "أبرز نتائج البحث",
+        "description": "يعطّل اقتراحات البحث الرائجة ومحتوى الويب في مربع البحث"
+      },
+      "store-search-suggestions": {
+        "label": "اقتراحات بحث المتجر",
+        "description": "يعطّل اقتراحات بحث Microsoft Store التي ترسل استعلاماتك إلى Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "مزامنة الحافظة السحابية",
+        "description": "يمنع مزامنة بيانات الحافظة بين الأجهزة عبر السحابة"
+      },
+      "clipboard-history": {
+        "label": "سجل الحافظة",
+        "description": "يعطّل سجل الحافظة الذي يخزّن النص والصور المنسوخة"
+      },
+      "settings-sync": {
+        "label": "مزامنة الإعدادات",
+        "description": "يوقف مزامنة إعدادات Windows والسمات وكلمات المرور مع حساب Microsoft الخاص بك"
+      },
+      "find-my-device": {
+        "label": "العثور على جهازي",
+        "description": "يعطّل تتبّع موقع الجهاز بواسطة Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "يعطّل مساعد Microsoft Copilot المعتمد على الذكاء الاصطناعي في نظام Windows بأكمله"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "يعطّل Windows Recall، سجل لقطات الشاشة المعتمد على الذكاء الاصطناعي الذي يلتقط كل ما يظهر على الشاشة"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "يعطّل تحليل الذكاء الاصطناعي لنص وصور الشاشة عبر ميزة Click to Do"
+      },
+      "ai-service-autostart": {
+        "label": "التشغيل التلقائي لخدمات الذكاء الاصطناعي",
+        "description": "يمنع خدمات الذكاء الاصطناعي من البدء تلقائيًا في الخلفية"
+      },
+      "edge-ai-features": {
+        "label": "ميزة Compose في Edge",
+        "description": "يعطّل ميزات إنشاء النصوص وإعادة صياغتها بالذكاء الاصطناعي في Edge"
+      },
+      "paint-ai": {
+        "label": "ميزات الذكاء الاصطناعي في Paint",
+        "description": "يعطّل ميزات إنشاء الصور بالذكاء الاصطناعي في Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "ميزات الذكاء الاصطناعي في Notepad",
+        "description": "يعطّل ميزات إعادة صياغة النصوص بالذكاء الاصطناعي في Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "خدمة DiagTrack",
+        "description": "يعطّل خدمة تجارب المستخدمين المتصلين والقياس عن بُعد"
+      },
+      "service-dmwappush": {
+        "label": "خدمة WAP Push",
+        "description": "يعطّل خدمة توجيه رسائل WAP Push المستخدمة للقياس عن بُعد"
+      },
+      "service-delivery-optimization": {
+        "label": "تحسين التسليم",
+        "description": "يعطّل المشاركة الندّية لتحديثات Windows، بحيث لا يرفع هذا الكمبيوتر بيانات التحديث إلى أجهزة أخرى"
+      },
+      "service-mapsbroker": {
+        "label": "وسيط الخرائط",
+        "description": "يعطّل مدير الخرائط التي تم تنزيلها، وهي خدمة خلفية لا يحتاجها معظم أجهزة الكمبيوتر"
+      },
+      "task-compatibility-appraiser": {
+        "label": "مقيّم التوافق",
+        "description": "يعطّل مهمة قياس بُعد Microsoft التي تجمع بيانات التوافق"
+      },
+      "task-program-data-updater": {
+        "label": "محدّث بيانات البرامج",
+        "description": "يعطّل المهمة الخلفية التي ترفع قياس بُعد البرامج"
+      },
+      "task-autochk-proxy": {
+        "label": "وكيل Autochk",
+        "description": "يعطّل جمع القياس عن بُعد الذي يتم عبر وكيل autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "موحّد CEIP",
+        "description": "يعطّل رفع بيانات برنامج تحسين تجربة العملاء"
+      },
+      "task-usb-ceip": {
+        "label": "بيانات استخدام USB (CEIP)",
+        "description": "يعطّل جمع قياس بُعد استخدام أجهزة USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "جامع تشخيص القرص",
+        "description": "يعطّل جمع بيانات تشخيص القرص ورفعها"
+      },
+      "task-feedback-dm": {
+        "label": "عميل إدارة الملاحظات",
+        "description": "يعطّل مهمة قياس بُعد إدارة الأجهزة الخاصة بالملاحظات"
+      },
+      "task-maps-update": {
+        "label": "مهمة تحديث الخرائط",
+        "description": "يعطّل التنزيل التلقائي لبيانات الخرائط في الخلفية"
+      },
+      "task-maps-toast": {
+        "label": "مهمة إشعارات الخرائط",
+        "description": "يعطّل مهمة إشعارات الخرائط"
+      },
+      "edge-metrics": {
+        "label": "الإبلاغ عن مقاييس Edge",
+        "description": "يمنع Edge من إرسال مقاييس الاستخدام والأعطال إلى Microsoft"
+      },
+      "edge-site-info": {
+        "label": "جمع معلومات المواقع في Edge",
+        "description": "يوقف إرسال Edge لعناوين المواقع التي تزورها إلى Microsoft"
+      },
+      "edge-personalization": {
+        "label": "الإبلاغ عن التخصيص في Edge",
+        "description": "يوقف إرسال Edge لسجل التصفح الخاص بك لتخصيص الإعلانات"
+      },
+      "edge-copilot-cdp": {
+        "label": "وصول Copilot إلى الصفحة (CDP) في Edge",
+        "description": "يمنع Copilot من قراءة محتوى الصفحة عبر بروتوكول Chrome DevTools"
+      },
+      "edge-copilot-page": {
+        "label": "سياق الصفحة لـ Copilot في Edge",
+        "description": "يمنع Copilot من استخدام سياق الصفحة لتحليل المحتوى"
+      },
+      "edge-discover": {
+        "label": "فحص صفحات Discover في Edge",
+        "description": "يوقف ميزة Discover عن فحص محتوى الصفحة"
+      },
+      "edge-sidebar": {
+        "label": "الشريط الجانبي في Edge",
+        "description": "يعطّل الشريط الجانبي في Edge وجمع بياناته في الخلفية"
+      },
+      "edge-shopping": {
+        "label": "مساعد التسوق في Edge",
+        "description": "يعطّل أداة تتبّع مقارنة الأسعار في Edge"
+      },
+      "chrome-metrics": {
+        "label": "الإبلاغ عن مقاييس Chrome",
+        "description": "يمنع Chrome من إرسال مقاييس الاستخدام والأعطال إلى Google"
+      },
+      "chrome-feedback": {
+        "label": "ملاحظات مستخدمي Chrome",
+        "description": "يمنع Chrome من جمع بيانات ملاحظات المستخدمين وإرسالها"
+      },
+      "chrome-extended-reporting": {
+        "label": "التصفح الآمن الموسّع في Chrome",
+        "description": "يوقف إرسال Chrome لتقارير عناوين URL والتنزيلات الموسّعة إلى Google"
+      },
+      "firefox-telemetry": {
+        "label": "قياس بُعد Firefox",
+        "description": "يوقف جمع Firefox لبيانات القياس عن بُعد ورفعها إلى Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "وكيل المتصفح الافتراضي لـ Firefox",
+        "description": "يعطّل الوكيل الخلفي الذي يبلغ Mozilla ببيانات استخدام المتصفح"
+      },
+      "macos-diagnostics": {
+        "label": "بيانات التشخيص والاستخدام",
+        "description": "يوقف مشاركة بيانات التشخيص والاستخدام مع Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "تحليلات Siri",
+        "description": "يوقف جمع بيانات تحليلات Siri وتحسينها"
+      },
+      "macos-health-data-sharing": {
+        "label": "مشاركة بيانات الصحة",
+        "description": "يوقف مشاركة بيانات الصحة مع Apple لأغراض البحث"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "إمكانية اكتشاف AirDrop",
+        "description": "يضبط AirDrop على «لا أحد»: لا يمكنك استقبال الملفات عبر AirDrop حتى تعيد تفعيله من إعدادات النظام"
+      },
+      "macos-crash-reporter": {
+        "label": "مُبلّغ الأعطال",
+        "description": "يوقف مُبلّغ الأعطال عن إرسال التقارير تلقائيًا"
+      },
+      "macos-ad-tracking": {
+        "label": "الإعلانات المخصّصة",
+        "description": "يحدّ من تتبّع الإعلانات بواسطة Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "اقتراحات Siri في App Store",
+        "description": "يعطّل اقتراحات Siri في App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "اقتراحات Safari",
+        "description": "يعطّل اقتراحات بحث Safari المُرسَلة إلى Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "اقتراحات Spotlight",
+        "description": "يعطّل اقتراحات الويب في Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "التحميل المسبق لأفضل نتيجة في Safari",
+        "description": "يوقف Safari عن التحميل المسبق لأفضل نتيجة بحث، وهو ما يرسل بيانات التصفح إلى المواقع"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "يعطّل Handoff والحافظة الشاملة: لن تتمكن بعد الآن من متابعة الأنشطة أو النسخ واللصق بين أجهزة Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "تحليلات iCloud",
+        "description": "يوقف مشاركة تحليلات iCloud مع Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "علامات تبويب Safari في iCloud",
+        "description": "يعطّل مزامنة علامات تبويب Safari عبر iCloud: لن تعود ترى علامات التبويب المفتوحة على أجهزة Apple الأخرى"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "يعطّل Siri بالكامل: تتوقف عبارة \"Hey Siri\" والأوامر الصوتية واختصارات Siri عن العمل"
+      },
+      "macos-siri-dictation": {
+        "label": "إملاء Siri",
+        "description": "يعطّل الإملاء: يتوقف مفتاح الميكروفون في لوحة المفاتيح عن العمل"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "يعطّل ميزات الذكاء الاصطناعي Apple Intelligence (macOS 15 Sequoia وأحدث)"
+      },
+      "macos-safari-dnt": {
+        "label": "عدم التتبّع في Safari",
+        "description": "يفعّل ترويسة Do Not Track في Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "الإبلاغ عن مقاييس Chrome",
+        "description": "يمنع Chrome من إرسال مقاييس الاستخدام إلى Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "تقارير التصفح الآمن في Chrome",
+        "description": "يوقف إرسال Chrome لتقارير عناوين URL والتنزيلات الموسّعة إلى Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "قياس بُعد Firefox",
+        "description": "يوقف جمع Firefox لبيانات القياس عن بُعد ورفعها إلى Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "يتأكّد من تفعيل Gatekeeper لحظر التطبيقات غير المُتحقَّق منها"
+      },
+      "macos-remote-apple-events": {
+        "label": "أحداث Apple عن بُعد",
+        "description": "يعطّل أحداث Apple عن بُعد، بحيث لا يمكن أتمتة جهاز Mac عن بُعد"
+      },
+      "macos-wake-on-network": {
+        "label": "التنبيه للوصول عبر الشبكة",
+        "description": "يعطّل التنبيه للوصول عبر الشبكة، بحيث لا يمكن تنبيه جهاز Mac عن بُعد"
+      },
+      "macos-guest-account": {
+        "label": "حساب الضيف",
+        "description": "يعطّل حساب الضيف لمنع الوصول المحلي غير المصرَّح به"
+      },
+      "macos-auto-login": {
+        "label": "تسجيل الدخول التلقائي",
+        "description": "يعطّل تسجيل الدخول التلقائي، بحيث يطلب Mac المصادقة عند بدء التشغيل"
+      },
+      "macos-firewall": {
+        "label": "جدار حماية التطبيقات",
+        "description": "يفعّل جدار حماية تطبيقات macOS للتحكّم في الاتصالات الواردة"
+      },
+      "macos-stealth-mode": {
+        "label": "الوضع الخفي",
+        "description": "يفعّل الوضع الخفي، بحيث لا يستجيب جهاز Mac لطلبات الاستكشاف (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "تعطيل إعادة توجيه IP",
+        "description": "يمنع النظام من إعادة توجيه الحزم بين واجهات الشبكة"
+      },
+      "macos-block-signed-auto": {
+        "label": "حظر السماح التلقائي للتطبيقات الموقَّعة",
+        "description": "يمنع التطبيقات الموقَّعة من تجاوز جدار الحماية تلقائيًا"
+      },
+      "macos-remote-login": {
+        "label": "تعطيل تسجيل الدخول عن بُعد (SSH)",
+        "description": "يعطّل خادم SSH بالكامل. إذا كنت بحاجة إلى الوصول عبر SSH، فاترك هذا معطَّلًا وقم بتحصين إعدادات SSH بدلًا من ذلك"
+      },
+      "macos-ssh-root-login": {
+        "label": "تعطيل تسجيل دخول root عبر SSH",
+        "description": "يمنع تسجيل دخول root المباشر عبر SSH؛ استخدم sudo من حساب عادي بدلًا من ذلك"
+      },
+      "macos-ssh-password-auth": {
+        "label": "تعطيل مصادقة كلمة مرور SSH",
+        "description": "يسمح فقط بالمصادقة القائمة على المفتاح عبر SSH. أعدّ مفاتيح SSH أولًا، وإلا فقد يُقفَل وصولك"
+      },
+      "macos-core-dumps": {
+        "label": "تعطيل تفريغات النواة",
+        "description": "يمنع تفريغات النواة التي قد تُسرّب محتوى ذاكرة حسّاسًا"
+      },
+      "gnome-usage-stats": {
+        "label": "إحصاءات الاستخدام",
+        "description": "يعطّل جمع إحصاءات استخدام GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "تتبّع الملفات الأخيرة",
+        "description": "يعطّل تتبّع الملفات المستخدَمة مؤخرًا"
+      },
+      "gnome-location": {
+        "label": "خدمات الموقع",
+        "description": "يعطّل خدمات الموقع في GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "الإبلاغ عن الأعطال (Apport)",
+        "description": "يعطّل الإرسال التلقائي لتقارير الأعطال"
+      },
+      "gnome-connectivity-check": {
+        "label": "فحص الاتصال",
+        "description": "يعطّل فحوصات اتصال الشبكة الدورية"
+      },
+      "core-dump-disable": {
+        "label": "تعطيل تفريغات النواة",
+        "description": "يمنع تفريغات النواة التي قد تُسرّب محتوى ذاكرة حسّاسًا"
+      },
+      "ssh-root-login": {
+        "label": "تعطيل تسجيل دخول root عبر SSH",
+        "description": "يمنع تسجيل دخول root المباشر عبر SSH؛ استخدم sudo من حساب عادي بدلًا من ذلك"
+      },
+      "ssh-password-auth": {
+        "label": "تعطيل مصادقة كلمة مرور SSH",
+        "description": "يسمح فقط بالمصادقة القائمة على المفتاح عبر SSH. أعدّ مفاتيح SSH أولًا، وإلا فقد يُقفَل وصولك"
+      },
+      "kde-usage-stats": {
+        "label": "إحصاءات الاستخدام",
+        "description": "يعطّل ملاحظات مستخدمي KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "تتبّع الملفات الأخيرة",
+        "description": "يعطّل سجل نشاط KDE للملفات الأخيرة"
+      },
+      "kde-baloo": {
+        "label": "فهرسة الملفات (Baloo)",
+        "description": "يعطّل مفهرس الملفات Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "الإبلاغ عن الأعطال (DrKonqi)",
+        "description": "يعطّل معالج تقارير أعطال KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "القياس عن بُعد وجمع البيانات",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "إزالة البرامج غير الضرورية",
-    "pageDescription": "أزل تطبيقات Windows المثبتة مسبقًا وبرامج OEM غير الضرورية",
+    "pageDescription": "تطبيقات مثبَّتة مسبقًا بواسطة Windows والشركة المصنِّعة. بعد إزالتها، لا يمكن إعادة تثبيتها إلا من Microsoft Store.",
     "scanButton": "فحص",
-    "irreversibleWarning": "غير قابل للتراجع — لا يمكن إعادة تثبيت التطبيقات التي تمت إزالتها إلا من Microsoft Store. راجع التحديدات بعناية.",
-    "scanningPackages": "جارٍ فحص الحزم المثبتة...",
-    "removingProgress": "جارٍ إزالة {{current}} من {{total}}",
+    "rescanButton": "فحص مرة أخرى",
+    "irreversibleWarning": "لا يمكن التراجع عن الإزالة من داخل التطبيق: راجع التطبيقات المحددة قبل التأكيد.",
+    "scanningPackages": "جارٍ فحص الحزم المثبَّتة…",
+    "removingProgress": "جارٍ إزالة التطبيقات ({{current}} من {{total}})",
+    "receiptTitle": "اكتملت الإزالة",
+    "removedApps_one": "تمت إزالة {{count}} تطبيق",
+    "removedApps_other": "تمت إزالة {{count}} تطبيقات",
+    "failedCount_one": "{{count}} فشل",
+    "failedCount_other": "{{count}} فشل",
+    "reinstallFromStore": "قابل لإعادة التثبيت فقط من Microsoft Store",
     "selectAll": "تحديد الكل",
-    "emptyStateTitle": "لم يتم اكتشاف برامج غير ضرورية",
-    "emptyStateDescription": "انقر فوق \"فحص\" للعثور على التطبيقات المثبتة مسبقًا وبرامج OEM غير الضرورية.",
+    "filterLabel": "الفئة",
+    "confirmTitle_one": "هل تريد إزالة {{count}} تطبيق؟",
+    "confirmTitle_other": "هل تريد إزالة {{count}} تطبيقات؟",
+    "confirmDescription_one": "تتم إزالة التطبيق لمستخدمك، وبصلاحيات المسؤول، للمستخدمين الجدد أيضًا. لا يمكن إعادة تثبيته إلا من Microsoft Store.",
+    "confirmDescription_other": "تتم إزالة التطبيقات لمستخدمك، وبصلاحيات المسؤول، للمستخدمين الجدد أيضًا. لا يمكن إعادة تثبيتها إلا من Microsoft Store.",
+    "confirmLabel_one": "إزالة {{count}} تطبيق",
+    "confirmLabel_other": "إزالة {{count}} تطبيقات",
+    "emptyStateTitle": "لم يُفحص بعد",
+    "emptyStateDescription": "لم يُجرَ فحص للتطبيقات المثبَّتة مسبقًا في هذه الجلسة.",
+    "lastRun_one": "آخر إزالة: {{date}}، تمت إزالة {{count}} تطبيق.",
+    "lastRun_other": "آخر إزالة: {{date}}، تمت إزالة {{count}} تطبيقات.",
+    "checkKnownTitle": "التطبيقات المعروفة",
+    "checkKnownDetail": "قائمة بالتطبيقات المثبَّتة مسبقًا بواسطة Microsoft والشركات المصنِّعة (OEM)",
+    "checkInstalledTitle": "الحزم المثبَّتة",
+    "checkInstalledDetail": "حزم تطبيقات المستخدم الخاص بك، تتم مقارنتها بالقائمة",
+    "checkRemovalTitle": "الإزالة",
+    "checkRemovalDetail": "لمستخدمك؛ وبصلاحيات المسؤول، أيضًا من النسخة المستخدَمة للمستخدمين الجدد",
+    "noneFoundTitle": "لا يوجد أي تطبيق من التطبيقات المدرَجة مثبَّت",
+    "noneFoundDescription": "التطبيقات المعروفة المثبَّتة مسبقًا غير موجودة لدى المستخدم الخاص بك.",
+    "summaryTitle_one": "تم العثور على {{count}} تطبيق مثبَّت مسبقًا",
+    "summaryTitle_other": "تم العثور على {{count}} تطبيقات مثبَّتة مسبقًا",
+    "selectedCount_one": "تم تحديد {{count}}",
+    "selectedCount_other": "تم تحديد {{count}}",
+    "removeButton_one": "إزالة {{count}} تطبيق",
+    "removeButton_other": "إزالة {{count}} تطبيقات",
+    "removeNone": "إزالة المحدَّد",
     "scanFailedToast": "فشل فحص البرامج غير الضرورية",
     "scanFailedDescription": "تأكد من توفر PowerShell",
     "scanFailedError": "فشل فحص البرامج غير الضرورية. تأكد من توفر PowerShell.",
