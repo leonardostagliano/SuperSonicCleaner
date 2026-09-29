@@ -15,6 +15,7 @@
   "cpuDetail": "Aktuelt processorforbrug",
   "sample": "Seneste måling",
   "used": "{{used}} af {{total}} GB brugt",
+  "free": "{{free}} GB ledigt",
   "waiting": "Venter på livedata",
   "unavailable": "Diskdata ikke tilgængelige",
   "live": "Systemmålinger i realtid",

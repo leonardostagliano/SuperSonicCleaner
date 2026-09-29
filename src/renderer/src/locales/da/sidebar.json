@@ -10,5 +10,7 @@
   "history": "Aktivitet",
   "settings": "Indstillinger",
   "gameMode": "Spiltilstand",
-  "firewallAudit": "Firewallkontrol"
+  "firewallAudit": "Firewallkontrol",
+  "updateBadge": "Opdatering",
+  "mainNavigation": "Hovednavigation"
 }

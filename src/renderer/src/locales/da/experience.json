@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Se, hvad der blev ændret, hvad der blev gendannet, og hvad der kræver endnu et kig. Hver fuldført opgave efterlader en registrering.",
-    "settings": "Få SuperSonicCleaner til at passe til dig. Indstil udseende, meddelelser, undtagelser og præferencer for oprydning.",
-    "about": "Open source, gennemtænkt lavet. Find din version, søg efter opdateringer, og lær projektet at kende.",
-    "recovery": "En tydelig vej tilbage. Gennemgå understøttede ændringer og gendannelsesoplysninger, før du fortryder noget."
+    "history": "De seneste 100 scanninger og oprydninger, der er kørt på denne pc, med dato, varighed, behandlede elementer og frigjort plads, samt kvitteringen for hver oprydning.",
+    "settings": "Udseende, sprog, opstart, meddelelser, opdateringer, sikkerhedskopier, oprydningspræferencer og undtagelser. Hver ændring gemmes med det samme.",
+    "about": "Installeret version, opdateringer, MIT-licens og det oprindelige projekt (Kudu).",
+    "recovery": "Ændringer af registreringsdatabasen, tjenester og planlagte opgaver foretaget af SuperSonicCleaner, med sikkerhedskopierne til at fortryde dem. Slettede filer kan ikke gendannes."
   },
   "storageTrend": {
     "title": "Lagerplads over tid",

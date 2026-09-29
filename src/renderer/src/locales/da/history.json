@@ -1,41 +1,66 @@
 {
   "recovery": {
     "title": "Gendannelsescenter",
-    "limits": "Gendannelse omfatter registrerede Windows DWORD-værdier for privatliv/registreringsdatabasen, planlagte opgaver og tjenestekonfiguration. Permanent sletning af filer kan ikke fortrydes. Ældre eller ikke-understøttede ændringer har muligvis kun en manuel sikkerhedskopi. Nogle gendannede indstillinger kræver en genstart.",
+    "limits": "Gendannelse omfatter registreringsdatabasens DWORD-værdier, der er skrevet for privatlivs- og systemindstillinger, planlagte opgaver og tjenestekonfiguration. Ældre eller ikke-understøttede ændringer har muligvis kun en manuel sikkerhedskopi. Nogle gendannede indstillinger træder først i kraft efter en genstart.",
     "refresh": "Opdater",
     "export": "Eksportér gendannelseshistorik",
     "loadError": "Gendannelseshistorikken kunne ikke læses.",
     "failed": "Gendannelse mislykkedes.",
-    "empty": "Ingen registrerede ændringer på denne side. Nye understøttede ændringer vises her.",
+    "empty": "Ændringer foretaget af Privacy Shield, Tjenestehåndtering og Registreringsdatabaseoprydning vises her med deres oprindelige og senere tilstand.",
+    "summary": {
+      "recorded": "Registrerede ændringer",
+      "registryBackups": "Sikkerhedskopier af registreringsdatabasen",
+      "backupFiles": "Sikkerhedskopifiler"
+    },
+    "changesTitle": "Registrerede ændringer",
+    "range": "{{from}}–{{to}} af {{total}}",
     "gameMode": "Gendannelse af Spiltilstand",
     "gameModeDescription": "Spiltilstand har et aktivt eller afventende gendannelsesøjebliksbillede.",
-    "openGameMode": "Åbn gendannelse af Spiltilstand",
+    "openGameMode": "Åbn Spiltilstand",
     "before": "Oprindelig tilstand",
     "after": "Tilstand efter SuperSonicCleaner",
     "restore": "Gendan oprindelig tilstand",
     "previous": "Forrige",
     "next": "Næste",
     "backups": "Sikkerhedskopier af registreringsdatabase og kontekstmenu",
-    "backupDescription": "Disse sikkerhedskopifiler indeholder ikke verificerede oplysninger om efterfølgende tilstand. Gennemse dem i sikkerhedskopimappen, før du gendanner manuelt; import af dem kan overskrive nyere indstillinger. En sikkerhedskopifil er ikke et OS-gendannelsespunkt.",
+    "backupDescription": "Disse sikkerhedskopifiler indeholder ikke en verificeret senere tilstand. Gennemse dem i sikkerhedskopimappen, før du gendanner manuelt: import af dem kan overskrive nyere indstillinger. En sikkerhedskopifil er ikke et gendannelsespunkt for operativsystemet.",
     "openBackups": "Åbn sikkerhedskopimappe",
     "confirmTitle": "Gendan denne ændring?",
-    "confirmDescription": "SuperSonicCleaner kontrollerer den aktuelle tilstand, før den registrerede oprindelige værdi gendannes. Nyere modstridende ændringer bevares. Administratorrettigheder kan være påkrævet.",
+    "confirmDescription": "SuperSonicCleaner kontrollerer den aktuelle tilstand, før den registrerede oprindelige værdi skrives tilbage. Hvis værdien blev ændret igen i mellemtiden, bevares den nyere ændring. Administratorrettigheder kan være påkrævet.",
     "status": {
-      "pending": "Afbrudt / afventer",
-      "ready": "Tilgængelig",
+      "pending": "Afbrudt eller afventende",
+      "ready": "Kan gendannes",
       "restored": "Gendannet",
-      "failed": "Kræver opmærksomhed",
+      "failed": "Gendannelse mislykkedes",
       "conflict": "Nyere ændring registreret"
     },
     "remove": "Fjern post",
-    "removeDescription": "Fjern denne gendannelsespost fra den lokale historik? Dette ændrer ikke dine indstillinger og sletter ikke sikkerhedskopier af registreringsdatabasen. SuperSonicCleaner vil ikke længere kunne gendanne denne ændring for dig.",
-    "unreadable": "Denne gendannelsespost kunne ikke læses. Den kan være skrevet af en anden brugerkonto eller være beskadiget på disken.",
-    "loading": "Indlæser gendannelseshistorik?",
-    "emptyTitle": "Din gendannelseshistorik starter her",
+    "removeTitle": "Fjern denne gendannelsespost?",
+    "removeDescription": "Posten forlader den lokale historik, og SuperSonicCleaner kan ikke længere fortryde denne ændring. Indstillinger og sikkerhedskopier af registreringsdatabasen ændres ikke. Dette kan ikke fortrydes.",
+    "unreadable": "Denne gendannelsespost kunne ikke læses: den kan være skrevet af en anden brugerkonto eller være beskadiget på disken.",
+    "loading": "Læser gendannelseshistorikken…",
+    "emptyTitle": "Ingen gendannelige ændringer",
     "source": {
       "privacy": "Privacy Shield",
       "services": "Tjenestehåndtering",
       "registry": "Registreringsdatabaseoprydning"
+    },
+    "value": {
+      "absent": "Værdien fandtes ikke",
+      "dword": "{{value}} (0x{{hex}})",
+      "taskEnabled": "Opgave aktiveret",
+      "taskDisabled": "Opgave deaktiveret",
+      "start": {
+        "boot": "Bootstart",
+        "system": "Systemstart",
+        "automatic": "Automatisk start",
+        "manual": "Manuel start",
+        "disabled": "Deaktiveret"
+      },
+      "delayed": "forsinket",
+      "running": "kører",
+      "stopped": "stoppet",
+      "raw": "{{value}}"
     },
     "registryBackups": {
       "title": "Sikkerhedskopier af registreringsdatabasen",
@@ -43,7 +68,7 @@
       "empty": "Ingen sikkerhedskopier af registreringsdatabasen endnu.",
       "restore": "Gendan",
       "showInFolder": "Vis i mappe",
-      "requiresAdmin": "Kræver administrator",
+      "requiresAdmin": "Kræver administratorrettigheder",
       "confirmTitle": "Gendan denne sikkerhedskopi af registreringsdatabasen?",
       "confirmDescription": "SuperSonicCleaner importerer nøglerne nedenfor. Værdier fra sikkerhedskopien erstatter de nuværende, og manglende nøgler og værdier tilføjes igen. Intet andet slettes, bortset fra at gendannelse af en sikkerhedskopi fra før gendannelse også fjerner de nøgler og værdier, som den gendannelse, den ophæver, havde tilføjet. Før import gemmer SuperSonicCleaner den aktuelle tilstand for disse nøgler som en sikkerhedskopi fra før gendannelse. Nogle ændringer træder først i kraft, når du logger af eller genstarter.",
       "restored": "Gendannet. Den tidligere tilstand blev gemt i {{file}}.",
@@ -64,8 +89,12 @@
         "empty": "Indeholder ingen registreringsnøgler.",
         "unreadable": "Kunne ikke læses.",
         "classes-root": "Indeholder HKEY_CLASSES_ROOT-nøgler, som sammenfletter computerens og den enkelte brugers klasser, så SuperSonicCleaner ikke kan afgøre, hvilken placering de skal gendannes til. De kan kun inspiceres.",
-        "unverified": "Denne sikkerhedskopi kan ikke verificeres — den kan være blevet ændret, siden SuperSonicCleaner oprettede den, så den kan kun gennemses."
-      }
+        "unverified": "Denne sikkerhedskopi kan ikke verificeres: den kan være blevet ændret, siden SuperSonicCleaner oprettede den, så den kan kun gennemses."
+      },
+      "moreKeys_one": "+1 nøgle mere",
+      "moreKeys_other": "+{{formatted}} nøgler mere",
+      "confirmLabel_one": "Importer 1 nøgle",
+      "confirmLabel_other": "Importer {{formatted}} nøgler"
     }
   },
   "receipts": {
@@ -73,7 +102,7 @@
     "selectionContext": "Cachelagrede poster i disse kategorier: {{found}} · Ikke valgt i denne handling: {{unselected}}",
     "title": "Rydningskvitteringer",
     "description": "Registreret på sletningstidspunktet. Hver kvittering dækker én rydningshandling eller batch.",
-    "empty": "Ingen rydningskvitteringer endnu. Kør en rydning for at registrere resultaterne.",
+    "empty": "Ingen rydningskvitteringer",
     "loadError": "Kunne ikke læse rydningskvitteringer. Eksisterende data er bevaret.",
     "actionError": "Handlingen for kvitteringen mislykkedes.",
     "saveError": "Rydningen blev fuldført, men kvitteringen kunne ikke gemmes.",
@@ -91,7 +120,7 @@
     "retryOf": "Forsøg igen af",
     "export": "Eksportér kvittering",
     "retry": "Prøv kvalificerede fejl igen ({{count}})",
-    "rescan": "Kør en ny scanning",
+    "rescan": "Ny scanning",
     "retryLifetime": "Nye forsøg bruger stadig cachelagrede valg i op til 30 minutter. Undtagelser og aldersbeskyttelse kontrolleres igen. Efter udløb eller genstart skal du køre en ny scanning.",
     "pathsOff": "Stilogning var slået fra for denne kørsel. Kun kategorier og resultater blev bevaret.",
     "item": "Element / kategori",
@@ -106,18 +135,26 @@
     "retryConfirm": "Prøv rydning igen",
     "clearTitle": "Ryd rydningskvitteringer?",
     "clearDescription": "Dette fjerner permanent gemte kvitteringer og deres oplysninger om nye forsøg. Scanningshistorik og den separate slettelog ændres ikke.",
-    "loading": "Loading cleanup receipts?"
+    "loading": "Læser rydningskvitteringer…"
   },
-  "pageTitle": "Scanningshistorik",
+  "pageTitle": "Aktivitet",
+  "viewLabel": "Visning",
   "viewOverview": "Oversigt",
+  "viewList": "Liste",
+  "viewReceipts": "Kvitteringer",
   "clearButton": "Ryd",
-  "emptyStateTitle": "Ingen historik endnu",
-  "emptyStateDescription": "Kør en scanning fra siderne Cleaner, Registry eller Debloater. Resultaterne vises her.",
-  "confirmClearScanDescription": "Dette sletter permanent alle poster i scanningshistorikken. Denne handling kan ikke fortrydes.",
+  "clearHistory": "Ryd historik",
+  "emptyStateTitle": "Ingen aktivitet registreret",
+  "emptyStateDescription": "Scanninger og oprydninger vises her efter deres første kørsel, med dato, varighed og resultat. Rydningskvitteringer findes i visningen Kvitteringer.",
+  "confirmClearScanTitle_one": "Ryd 1 historikpost?",
+  "confirmClearScanTitle_other": "Ryd {{count}} historikposter?",
+  "confirmClearScanDescription": "Stierne i loggen over slettede filer ryddes også. Rydningskvitteringer bevares. Dette kan ikke fortrydes.",
+  "confirmClearLabel_one": "Ryd 1 post",
+  "confirmClearLabel_other": "Ryd {{count}} poster",
   "typeLabels": {
     "cleaner": "Systemoprydning",
-    "registry": "Registreringsdatabase-reparation",
-    "debloater": "Debloater",
+    "registry": "Oprydning af registreringsdatabasen",
+    "debloater": "Fjernelse af bloatware",
     "network": "Netværksoprydning",
     "drivers": "Driveroprydning",
     "malware": "Malware-scanning",
@@ -125,29 +162,88 @@
     "startup": "Startprogramstyring",
     "services": "Tjenestestyring",
     "softwareUpdate": "Softwareopdatering",
-    "cveScan": "CVE-scanning"
+    "cveScan": "Sårbarhedsscanning (CVE)"
+  },
+  "summary": {
+    "spaceFreed": "{{size}} frigjort",
+    "noSpace": "Ingen plads frigjort",
+    "entries_one": "1 post",
+    "entries_other": "{{formatted}} poster",
+    "items_one": "1 element behandlet",
+    "items_other": "{{formatted}} elementer behandlet",
+    "averageDuration": "gennemsnitlig varighed {{duration}}",
+    "errors_one": "1 fejl",
+    "errors_other": "{{formatted}} fejl",
+    "noErrors": "ingen fejl",
+    "range": "fra {{from}} til {{to}}",
+    "sameDay": "den {{date}}"
   },
   "overview": {
-    "tooltipSpace": "Plads"
+    "spaceOverTime": "Frigjort plads pr. dag",
+    "spaceSentence_one": "{{size}} frigjort på 1 dag med aktivitet.",
+    "spaceSentence_other": "{{size}} frigjort på {{count}} dage med aktivitet.",
+    "noSpaceSentence": "Ingen registreret aktivitet frigjorde plads.",
+    "chartLabel_one": "Frigjort plads på 1 dag",
+    "chartLabel_other": "Frigjort plads på {{count}} dage",
+    "tooltipSpace": "{{size}} frigjort",
+    "byType": "Efter type",
+    "topCategories": "Kategorier, der frigjorde mest plads",
+    "recent": "Seneste aktivitet",
+    "showAll": "Fuld liste"
+  },
+  "columns": {
+    "type": "Type",
+    "date": "Dato",
+    "entries": "Poster",
+    "items": "Elementer",
+    "space": "Plads",
+    "duration": "Varighed",
+    "outcome": "Resultat",
+    "category": "Kategori"
+  },
+  "list": {
+    "title": "Al aktivitet",
+    "count_one": "1 post",
+    "count_other": "{{formatted}} poster",
+    "filterLabel": "Type",
+    "filterAll": "Alle typer",
+    "scheduled": "Planlagt",
+    "noErrors": "Ingen fejl"
   },
   "detail": {
+    "close": "Luk",
+    "outcomeDone": "Fuldført",
+    "outcomeErrors_one": "Fuldført med 1 fejl",
+    "outcomeErrors_other": "Fuldført med {{formatted}} fejl",
+    "found_one": "1 element fundet",
+    "found_other": "{{formatted}} elementer fundet",
+    "processed_one": "1 behandlet",
+    "processed_other": "{{formatted}} behandlet",
+    "skipped_one": "1 element sprunget over.",
+    "skipped_other": "{{formatted}} elementer sprunget over.",
+    "scheduled": "planlagt",
+    "scheduledBy": "planlagt: {{name}}",
     "categoriesLabel": "Kategorier",
     "deletedFiles": {
       "title": "Slettede filer",
-      "loading": "Indlæser…",
+      "loading": "Læser sletteloggen…",
       "shownCount": "{{shown}} af {{total}}",
       "loadMore": "Indlæs flere",
       "exportCsv": "Eksportér CSV",
       "openLog": "Åbn log",
-      "exportFailed": "Kunne ikke eksportere listen over slettede filer",
-      "truncatedBadge": "+{{count}} mere",
+      "exported_one": "1 sti eksporteret",
+      "exported_other": "{{formatted}} stier eksporteret",
+      "exportFailed": "Kunne ikke eksportere listen over slettede filer.",
+      "truncatedBadge": "+{{formatted}} ikke vist",
+      "truncatedHint_one": "Denne mappe indeholdt 1 post mere ud over grænsen for visning pr. mappe. Den blev slettet, men ikke vist.",
+      "truncatedHint_other": "Denne mappe indeholdt {{formatted}} poster mere ud over grænsen for visning pr. mappe. De blev slettet, men ikke vist enkeltvis.",
       "emptyRecorded": "Der blev ikke registreret nogen filstier for denne kørsel.",
-      "disabledHint": "Logføring af sletninger er slået fra, så de enkelte stier fra denne kørsel blev ikke registreret. Slå \"Behold en log over slettede filer\" til under Indstillinger → Oprydningsindstillinger for at registrere dem fremover."
+      "disabledHint": "Logføring af sletninger var slået fra, så stierne fra denne kørsel blev ikke registreret. Slå \"Behold en log over slettede filer\" til under Indstillinger › Rengøringsindstillinger for at registrere dem fremover."
     }
   },
   "duration": {
-    "lessThanOneSecond": "<1s",
-    "seconds": "{{count}}s",
-    "minutesAndSeconds": "{{minutes}}m {{seconds}}s"
+    "lessThanOneSecond": "under 1 s",
+    "seconds": "{{count}} s",
+    "minutesAndSeconds": "{{minutes}} min {{seconds}} s"
   }
 }
