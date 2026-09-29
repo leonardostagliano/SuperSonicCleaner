@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Xem điều gì đã thay đổi, điều gì đã được khôi phục và điều gì cần xem lại. Mỗi tác vụ hoàn tất đều để lại bản ghi.",
-    "settings": "Điều chỉnh SuperSonicCleaner cho phù hợp với bạn. Thiết lập giao diện, thông báo, danh sách loại trừ và tùy chọn dọn dẹp của bạn.",
-    "about": "Mã nguồn mở, được xây dựng cẩn thận. Tìm phiên bản của bạn, kiểm tra bản cập nhật và tìm hiểu về dự án.",
-    "recovery": "Một cách quay lại rõ ràng. Xem lại các thay đổi được hỗ trợ và chi tiết khôi phục trước khi hoàn tác bất kỳ điều gì."
+    "history": "100 lượt quét và dọn dẹp gần nhất đã chạy trên PC này, cùng với ngày, thời lượng, số mục đã xử lý, dung lượng đã giải phóng và biên nhận của mỗi lần dọn dẹp.",
+    "settings": "Giao diện, ngôn ngữ, khởi động, thông báo, cập nhật, sao lưu, tùy chọn dọn dẹp và loại trừ. Mọi thay đổi đều được lưu ngay lập tức.",
+    "about": "Phiên bản đã cài đặt, bản cập nhật, giấy phép MIT và dự án gốc (Kudu).",
+    "recovery": "Các thay đổi đối với registry, dịch vụ và tác vụ theo lịch do SuperSonicCleaner thực hiện, cùng bản sao lưu để hoàn tác các thay đổi đó. Không thể khôi phục tệp đã xóa."
   },
   "storageTrend": {
     "title": "Dung lượng lưu trữ theo thời gian",

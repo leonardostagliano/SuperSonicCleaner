@@ -15,6 +15,7 @@
   "cpuDetail": "Mức sử dụng bộ xử lý hiện tại",
   "sample": "Mẫu gần nhất",
   "used": "Đã dùng {{used}} trên {{total}} GB",
+  "free": "{{free}} GB trống",
   "waiting": "Đang chờ dữ liệu trực tiếp",
   "unavailable": "Không có dữ liệu ổ đĩa",
   "live": "Số liệu hệ thống trực tiếp",

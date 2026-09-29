@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Lá chắn quyền riêng tư",
-    "pageDescription": "Kiểm soát telemetry, quảng cáo, theo dõi và việc thu thập dữ liệu trên toàn hệ thống",
+    "pageDescription": "Đọc các cài đặt telemetry, quảng cáo, tìm kiếm và đồng bộ, rồi so sánh với giá trị riêng tư nhất. Một cài đặt chỉ thay đổi khi bạn dùng công tắc của nó hoặc xác nhận; hầu hết có thể khôi phục về mặc định.",
     "scanButton": "Quét",
-    "scanProgressPreparing": "Đang chuẩn bị quét...",
-    "applyingProtections": "Đang áp dụng biện pháp bảo vệ quyền riêng tư...",
-    "emptyStateTitle": "Lá chắn quyền riêng tư",
-    "emptyStateDescription": "Nhấp vào \"Quét\" để kiểm tra cài đặt quyền riêng tư và bảo mật của bạn, đồng thời áp dụng các biện pháp tăng cường được khuyến nghị.",
-    "adminWarning": "Một số cài đặt cần quyền quản trị viên để thay đổi. Hãy chạy SuperSonicCleaner với quyền quản trị viên để được bảo vệ đầy đủ.",
+    "scanProgressPreparing": "Đang chuẩn bị quét",
+    "applyingProtections": "Đang áp dụng cài đặt…",
+    "emptyStateTitle": "Chưa quét cài đặt",
+    "emptyStateDescription": "Quá trình quét đọc các cài đặt và không thay đổi bất kỳ cài đặt nào.",
+    "adminWarning": "Một số cài đặt chỉ có thể thay đổi khi SuperSonicCleaner chạy với quyền quản trị viên; nếu không có quyền đó, chúng vẫn giữ nguyên.",
     "scanFailed": "Quét quyền riêng tư thất bại",
     "applyFailed": "Không thể áp dụng cài đặt quyền riêng tư",
-    "applyFailedDescription": "Hãy thử chạy với quyền quản trị viên",
+    "applyFailedDescription": "Hãy thử chạy ứng dụng với quyền quản trị viên",
     "settingApplyFailed": "Không thể áp dụng \"{{label}}\"",
-    "settingEnabled": "Đã chặn {{label}}",
+    "settingEnabled": "Đã áp dụng {{label}}",
     "settingDisabled": "Đã khôi phục {{label}} về mặc định",
-    "settingRevertFailed": "Không thể hoàn tác \"{{label}}\"",
+    "settingRevertFailed": "Không thể khôi phục \"{{label}}\"",
     "settingRevertFailedGeneric": "Không thể hoàn tác cài đặt quyền riêng tư",
     "settingApplyFailedGeneric": "Không thể áp dụng cài đặt quyền riêng tư",
-    "ipcCallFailed": "Gọi IPC thất bại — hãy thử chạy với quyền quản trị viên",
+    "ipcCallFailed": "Cuộc gọi thất bại: hãy thử chạy ứng dụng với quyền quản trị viên",
     "allSettingsLabel": "Tất cả cài đặt",
     "unknownError": "Lỗi không xác định",
     "requiresSettingEnabled": "Hãy bật \"{{label}}\" trước",
-    "adminRequired": "Hãy thử chạy với quyền quản trị viên",
-    "settingNotApplied": "Hệ thống không báo nhận thay đổi — có thể cần khởi động lại hoặc cài đặt này đang được quản lý bởi một cấu hình khác"
+    "adminRequired": "Hãy thử chạy ứng dụng với quyền quản trị viên",
+    "settingNotApplied": "Hệ thống không báo nhận thay đổi; có thể cần khởi động lại hoặc cài đặt này đang được quản lý bởi một cấu hình khác.",
+    "rescanButton": "Quét lại",
+    "scanningButton": "Đang quét…",
+    "applyRecommended_one": "Áp dụng {{count}} thay đổi được đề xuất",
+    "applyRecommended_other": "Áp dụng {{count}} thay đổi được đề xuất",
+    "summaryTitle_one": "{{count}} cài đặt cần thay đổi",
+    "summaryTitle_other": "{{count}} cài đặt cần thay đổi",
+    "summaryNone": "Cả {{total}} cài đặt đều đã có giá trị riêng tư nhất",
+    "summaryFacts": "{{protected}}/{{total}} đã ở giá trị riêng tư nhất · {{categories}} danh mục",
+    "categoryMeta_one": "{{count}} cần thay đổi",
+    "categoryMeta_other": "{{count}} cần thay đổi",
+    "categoryAllSet": "tất cả đã được thiết lập",
+    "categoryApply_one": "Áp dụng {{count}}",
+    "categoryApply_other": "Áp dụng {{count}}",
+    "categoryShow": "Hiện",
+    "categoryHide": "Ẩn",
+    "adminTag": "Cần quyền quản trị viên",
+    "notReversibleTag": "Không thể hoàn tác",
+    "scanProgressTitle": "Đang quét",
+    "scanProgressCount": "{{current}}/{{total}}",
+    "scanProgressCategory": "Đang kiểm tra: {{category}}",
+    "scanProgressLabel": "Tiến trình quét",
+    "applyingLabel": "Tiến trình áp dụng",
+    "receiptTitle": "Đã áp dụng cài đặt",
+    "receiptApplied_one": "Đã thay đổi {{count}} cài đặt",
+    "receiptApplied_other": "Đã thay đổi {{count}} cài đặt",
+    "receiptReversible": "có thể khôi phục từ các công tắc",
+    "receiptFailed_one": "{{count}} chưa được áp dụng: lý do được liệt kê bên dưới.",
+    "receiptFailed_other": "{{count}} chưa được áp dụng: các lý do được liệt kê bên dưới.",
+    "receiptFailedAdmin_one": "{{count}} chưa được áp dụng: có thể cần chạy ứng dụng với quyền quản trị viên. Lý do được liệt kê bên dưới.",
+    "receiptFailedAdmin_other": "{{count}} chưa được áp dụng: có thể cần chạy ứng dụng với quyền quản trị viên. Các lý do được liệt kê bên dưới.",
+    "failedHeading": "Cài đặt chưa được áp dụng",
+    "failedColumnSetting": "Cài đặt",
+    "failedColumnReason": "Lý do",
+    "confirmTitle_one": "Thay đổi {{count}} cài đặt?",
+    "confirmTitle_other": "Thay đổi {{count}} cài đặt?",
+    "confirmDescription": "Các cài đặt được liệt kê sẽ chuyển sang giá trị riêng tư nhất. Chúng có thể được khôi phục về mặc định từ các công tắc trên trang này.",
+    "confirmDescriptionIrreversible_one": "Các cài đặt được liệt kê sẽ chuyển sang giá trị riêng tư nhất. {{count}} không thể khôi phục về mặc định từ trang này.",
+    "confirmDescriptionIrreversible_other": "Các cài đặt được liệt kê sẽ chuyển sang giá trị riêng tư nhất. {{count}} không thể khôi phục về mặc định từ trang này.",
+    "confirmLabel_one": "Thay đổi {{count}} cài đặt",
+    "confirmLabel_other": "Thay đổi {{count}} cài đặt",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetry của Windows",
+        "description": "Đặt việc thu thập dữ liệu chẩn đoán ở mức tối thiểu (chỉ mức Bảo mật)"
+      },
+      "activity-history": {
+        "label": "Lịch sử hoạt động",
+        "description": "Ngăn Windows theo dõi và đồng bộ việc sử dụng ứng dụng và tệp của bạn"
+      },
+      "publish-activity": {
+        "label": "Xuất bản hoạt động người dùng",
+        "description": "Ngăn Windows xuất bản hoạt động của bạn lên Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Lời nhắc phản hồi",
+        "description": "Tắt các lời nhắc và khảo sát phản hồi định kỳ của Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Dữ liệu chữ viết tay",
+        "description": "Ngừng gửi dữ liệu chữ viết tay và gõ phím đến Microsoft"
+      },
+      "input-personalization": {
+        "label": "Cá nhân hóa dữ liệu nhập",
+        "description": "Ngừng thu thập dữ liệu gõ phím và viết tay để cá nhân hóa"
+      },
+      "tailored-experiences": {
+        "label": "Trải nghiệm được cá nhân hóa",
+        "description": "Ngăn Microsoft sử dụng dữ liệu chẩn đoán để cá nhân hóa mẹo và quảng cáo"
+      },
+      "app-launch-tracking": {
+        "label": "Theo dõi khởi chạy ứng dụng",
+        "description": "Ngăn Windows theo dõi ứng dụng bạn mở để tinh chỉnh menu Start"
+      },
+      "advertising-id": {
+        "label": "ID quảng cáo",
+        "description": "Tắt ID quảng cáo duy nhất mà các ứng dụng dùng để theo dõi bạn"
+      },
+      "suggested-content": {
+        "label": "Nội dung đề xuất trong Cài đặt",
+        "description": "Ngăn Microsoft hiển thị đề xuất ứng dụng và quảng cáo trong Cài đặt"
+      },
+      "tips-notifications": {
+        "label": "Mẹo và đề xuất",
+        "description": "Tắt các mẹo, thủ thuật và thông báo đề xuất của Windows"
+      },
+      "start-suggestions": {
+        "label": "Đề xuất trong menu Start",
+        "description": "Tắt đề xuất ứng dụng (quảng cáo) trong menu Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight trên màn hình khóa",
+        "description": "Tắt quảng cáo và đề xuất của Microsoft Spotlight trên màn hình khóa"
+      },
+      "silently-installed-apps": {
+        "label": "Ứng dụng được cài đặt âm thầm",
+        "description": "Ngăn Windows tự động cài đặt các ứng dụng được quảng bá"
+      },
+      "preinstalled-apps": {
+        "label": "Đề xuất ứng dụng cài sẵn",
+        "description": "Ngăn Windows đề xuất các ứng dụng cài sẵn mà bạn chưa dùng"
+      },
+      "bing-start-menu": {
+        "label": "Bing trong menu Start",
+        "description": "Ngăn các cụm từ tìm kiếm gõ trong menu Start được gửi đến Bing"
+      },
+      "bing-web-search": {
+        "label": "Kết quả web từ Bing",
+        "description": "Tắt kết quả web trong Windows Search, để việc tìm kiếm chỉ diễn ra trên PC này"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Tắt Cortana, thứ chạy nền và thu thập dữ liệu"
+      },
+      "search-highlights": {
+        "label": "Điểm nổi bật tìm kiếm",
+        "description": "Tắt đề xuất tìm kiếm xu hướng và nội dung web trong hộp tìm kiếm"
+      },
+      "store-search-suggestions": {
+        "label": "Đề xuất tìm kiếm của Store",
+        "description": "Tắt đề xuất tìm kiếm của Microsoft Store, thứ gửi truy vấn của bạn đến Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Đồng bộ khay nhớ tạm qua đám mây",
+        "description": "Ngăn dữ liệu khay nhớ tạm được đồng bộ giữa các thiết bị qua đám mây"
+      },
+      "clipboard-history": {
+        "label": "Lịch sử khay nhớ tạm",
+        "description": "Tắt lịch sử khay nhớ tạm lưu trữ văn bản và hình ảnh đã sao chép"
+      },
+      "settings-sync": {
+        "label": "Đồng bộ cài đặt",
+        "description": "Ngừng đồng bộ cài đặt, giao diện và mật khẩu của Windows với tài khoản Microsoft của bạn"
+      },
+      "find-my-device": {
+        "label": "Tìm thiết bị của tôi",
+        "description": "Tắt việc theo dõi thiết bị dựa trên vị trí bởi Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Tắt trợ lý AI Microsoft Copilot trên toàn bộ Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Tắt Windows Recall, lịch sử ảnh chụp màn hình AI ghi lại mọi thứ trên màn hình"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Tắt phân tích AI của Click to Do đối với văn bản và hình ảnh trên màn hình"
+      },
+      "ai-service-autostart": {
+        "label": "Tự động khởi động dịch vụ AI",
+        "description": "Ngăn các dịch vụ AI tự động khởi động ở chế độ nền"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Tắt các tính năng soạn thảo và viết lại văn bản bằng AI của Edge"
+      },
+      "paint-ai": {
+        "label": "Tính năng AI của Paint",
+        "description": "Tắt các tính năng tạo hình ảnh bằng AI trong Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Tính năng AI của Notepad",
+        "description": "Tắt các tính năng viết lại văn bản bằng AI trong Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "Dịch vụ DiagTrack",
+        "description": "Vô hiệu hóa dịch vụ Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "Dịch vụ WAP Push",
+        "description": "Vô hiệu hóa dịch vụ định tuyến thông báo WAP Push dùng cho telemetry"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Vô hiệu hóa chia sẻ bản cập nhật Windows ngang hàng, để PC này không tải lên dữ liệu cập nhật cho thiết bị khác"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Vô hiệu hóa Downloaded Maps Manager, một dịch vụ nền mà hầu hết PC không cần"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Vô hiệu hóa tác vụ telemetry của Microsoft thu thập dữ liệu tương thích"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Vô hiệu hóa tác vụ nền tải lên telemetry của chương trình"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Vô hiệu hóa việc thu thập telemetry thực hiện qua proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Vô hiệu hóa việc tải lên dữ liệu Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "Dữ liệu sử dụng USB (CEIP)",
+        "description": "Vô hiệu hóa việc thu thập telemetry sử dụng thiết bị USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Vô hiệu hóa việc thu thập và tải lên dữ liệu chẩn đoán ổ đĩa"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Vô hiệu hóa tác vụ telemetry quản lý thiết bị phản hồi"
+      },
+      "task-maps-update": {
+        "label": "Tác vụ cập nhật Maps",
+        "description": "Vô hiệu hóa việc tải xuống dữ liệu bản đồ tự động ở chế độ nền"
+      },
+      "task-maps-toast": {
+        "label": "Tác vụ thông báo Maps",
+        "description": "Vô hiệu hóa tác vụ thông báo Maps"
+      },
+      "edge-metrics": {
+        "label": "Báo cáo số liệu Edge",
+        "description": "Ngăn Edge gửi số liệu sử dụng và sự cố đến Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Thu thập thông tin trang web của Edge",
+        "description": "Ngăn Edge gửi địa chỉ các trang bạn truy cập đến Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Báo cáo cá nhân hóa của Edge",
+        "description": "Ngăn Edge gửi lịch sử duyệt web của bạn để cá nhân hóa quảng cáo"
+      },
+      "edge-copilot-cdp": {
+        "label": "Quyền truy cập trang của Edge Copilot (CDP)",
+        "description": "Ngăn Copilot đọc nội dung trang qua Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Ngữ cảnh trang của Edge Copilot",
+        "description": "Ngăn Copilot sử dụng ngữ cảnh trang để phân tích nội dung"
+      },
+      "edge-discover": {
+        "label": "Quét trang của Edge Discover",
+        "description": "Ngăn tính năng Discover quét nội dung trang"
+      },
+      "edge-sidebar": {
+        "label": "Thanh bên của Edge",
+        "description": "Tắt thanh bên của Edge và việc thu thập dữ liệu nền của nó"
+      },
+      "edge-shopping": {
+        "label": "Trợ lý mua sắm của Edge",
+        "description": "Tắt trình theo dõi so sánh giá trong Edge"
+      },
+      "chrome-metrics": {
+        "label": "Báo cáo số liệu Chrome",
+        "description": "Ngăn Chrome gửi số liệu sử dụng và sự cố đến Google"
+      },
+      "chrome-feedback": {
+        "label": "Phản hồi người dùng Chrome",
+        "description": "Ngăn Chrome thu thập và gửi dữ liệu phản hồi người dùng"
+      },
+      "chrome-extended-reporting": {
+        "label": "Safe Browsing mở rộng của Chrome",
+        "description": "Ngăn Chrome gửi báo cáo URL và tệp tải xuống mở rộng đến Google"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetry của Firefox",
+        "description": "Ngăn Firefox thu thập dữ liệu telemetry và tải lên Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Tác nhân trình duyệt mặc định của Firefox",
+        "description": "Vô hiệu hóa tác nhân nền báo cáo dữ liệu sử dụng trình duyệt cho Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Dữ liệu chẩn đoán và sử dụng",
+        "description": "Ngừng chia sẻ dữ liệu chẩn đoán và sử dụng với Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Phân tích Siri",
+        "description": "Ngừng thu thập dữ liệu phân tích và cải tiến của Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Chia sẻ dữ liệu sức khỏe",
+        "description": "Ngừng chia sẻ dữ liệu sức khỏe với Apple cho mục đích nghiên cứu"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Khả năng được phát hiện của AirDrop",
+        "description": "Đặt AirDrop thành Không ai cả: bạn không thể nhận tệp qua AirDrop cho đến khi bật lại trong System Settings"
+      },
+      "macos-crash-reporter": {
+        "label": "Trình báo cáo sự cố",
+        "description": "Ngăn trình báo cáo sự cố tự động gửi báo cáo"
+      },
+      "macos-ad-tracking": {
+        "label": "Quảng cáo được cá nhân hóa",
+        "description": "Giới hạn việc theo dõi quảng cáo bởi Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Đề xuất của Siri trong App Store",
+        "description": "Tắt đề xuất của Siri trong App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Đề xuất của Safari",
+        "description": "Tắt đề xuất tìm kiếm của Safari được gửi đến Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Đề xuất của Spotlight",
+        "description": "Tắt đề xuất web của Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Tải trước kết quả hàng đầu của Safari",
+        "description": "Ngăn Safari tải trước kết quả tìm kiếm hàng đầu, việc này gửi dữ liệu duyệt web đến các trang"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Tắt Handoff và Universal Clipboard: bạn không thể tiếp tục hoạt động hoặc sao chép và dán giữa các thiết bị Apple nữa"
+      },
+      "macos-icloud-analytics": {
+        "label": "Phân tích iCloud",
+        "description": "Ngừng chia sẻ dữ liệu phân tích iCloud với Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Thẻ iCloud của Safari",
+        "description": "Tắt đồng bộ thẻ iCloud của Safari: bạn không còn thấy các thẻ đang mở trên thiết bị Apple khác của mình"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Tắt hoàn toàn Siri: Hey Siri, lệnh thoại và Siri Shortcuts ngừng hoạt động"
+      },
+      "macos-siri-dictation": {
+        "label": "Nhập liệu bằng giọng nói của Siri",
+        "description": "Tắt nhập liệu bằng giọng nói: phím micro trên bàn phím của bạn ngừng hoạt động"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Tắt các tính năng AI của Apple Intelligence (macOS 15 Sequoia trở lên)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "Bật tiêu đề Do Not Track trong Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Báo cáo số liệu Chrome",
+        "description": "Ngăn Chrome gửi số liệu sử dụng đến Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Báo cáo Safe Browsing của Chrome",
+        "description": "Ngăn Chrome gửi báo cáo URL và tệp tải xuống mở rộng đến Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetry của Firefox",
+        "description": "Ngăn Firefox thu thập dữ liệu telemetry và tải lên Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Đảm bảo Gatekeeper được bật, để các ứng dụng chưa xác minh bị chặn"
+      },
+      "macos-remote-apple-events": {
+        "label": "Remote Apple Events",
+        "description": "Tắt Remote Apple Events, để Mac của bạn không thể bị điều khiển từ xa"
+      },
+      "macos-wake-on-network": {
+        "label": "Đánh thức khi có truy cập mạng",
+        "description": "Tắt đánh thức khi có truy cập mạng, để Mac của bạn không thể bị đánh thức từ xa"
+      },
+      "macos-guest-account": {
+        "label": "Tài khoản khách",
+        "description": "Tắt tài khoản khách để ngăn truy cập cục bộ trái phép"
+      },
+      "macos-auto-login": {
+        "label": "Đăng nhập tự động",
+        "description": "Tắt đăng nhập tự động, để Mac yêu cầu xác thực khi khởi động"
+      },
+      "macos-firewall": {
+        "label": "Tường lửa ứng dụng",
+        "description": "Bật tường lửa ứng dụng của macOS để kiểm soát các kết nối đến"
+      },
+      "macos-stealth-mode": {
+        "label": "Chế độ ẩn danh",
+        "description": "Bật chế độ ẩn danh, để Mac của bạn không phản hồi các yêu cầu dò tìm (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Vô hiệu hóa chuyển tiếp IP",
+        "description": "Ngăn hệ thống chuyển tiếp gói tin giữa các giao diện mạng"
+      },
+      "macos-block-signed-auto": {
+        "label": "Chặn cho phép tự động đối với ứng dụng đã ký",
+        "description": "Ngăn các ứng dụng đã ký tự động vượt qua tường lửa"
+      },
+      "macos-remote-login": {
+        "label": "Vô hiệu hóa đăng nhập từ xa (SSH)",
+        "description": "Tắt hoàn toàn máy chủ SSH. Nếu bạn cần truy cập SSH, hãy để tùy chọn này tắt và tăng cường bảo mật các cài đặt SSH thay vào đó"
+      },
+      "macos-ssh-root-login": {
+        "label": "Vô hiệu hóa đăng nhập root qua SSH",
+        "description": "Ngăn đăng nhập trực tiếp bằng root qua SSH; hãy dùng sudo từ một tài khoản thông thường thay vào đó"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Vô hiệu hóa xác thực bằng mật khẩu qua SSH",
+        "description": "Chỉ cho phép xác thực SSH bằng khóa. Hãy thiết lập khóa SSH trước, nếu không bạn có thể bị khóa không truy cập được"
+      },
+      "macos-core-dumps": {
+        "label": "Vô hiệu hóa core dump",
+        "description": "Ngăn core dump, thứ có thể làm rò rỉ nội dung bộ nhớ nhạy cảm"
+      },
+      "gnome-usage-stats": {
+        "label": "Thống kê sử dụng",
+        "description": "Tắt việc thu thập thống kê sử dụng của GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Theo dõi tệp gần đây",
+        "description": "Tắt việc theo dõi các tệp được sử dụng gần đây"
+      },
+      "gnome-location": {
+        "label": "Dịch vụ vị trí",
+        "description": "Tắt dịch vụ vị trí của GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Báo cáo sự cố (Apport)",
+        "description": "Tắt việc gửi báo cáo sự cố tự động"
+      },
+      "gnome-connectivity-check": {
+        "label": "Kiểm tra kết nối",
+        "description": "Tắt việc kiểm tra kết nối mạng định kỳ"
+      },
+      "core-dump-disable": {
+        "label": "Vô hiệu hóa core dump",
+        "description": "Ngăn core dump, thứ có thể làm rò rỉ nội dung bộ nhớ nhạy cảm"
+      },
+      "ssh-root-login": {
+        "label": "Vô hiệu hóa đăng nhập root qua SSH",
+        "description": "Ngăn đăng nhập trực tiếp bằng root qua SSH; hãy dùng sudo từ một tài khoản thông thường thay vào đó"
+      },
+      "ssh-password-auth": {
+        "label": "Vô hiệu hóa xác thực bằng mật khẩu qua SSH",
+        "description": "Chỉ cho phép xác thực SSH bằng khóa. Hãy thiết lập khóa SSH trước, nếu không bạn có thể bị khóa không truy cập được"
+      },
+      "kde-usage-stats": {
+        "label": "Thống kê sử dụng",
+        "description": "Tắt phản hồi người dùng của KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Theo dõi tệp gần đây",
+        "description": "Tắt lịch sử hoạt động tệp gần đây của KDE"
+      },
+      "kde-baloo": {
+        "label": "Lập chỉ mục tệp (Baloo)",
+        "description": "Tắt trình lập chỉ mục tệp Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Báo cáo sự cố (DrKonqi)",
+        "description": "Tắt trình xử lý báo cáo sự cố của KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetry & Thu thập dữ liệu",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Công cụ gỡ bloatware",
-    "pageDescription": "Gỡ bỏ các ứng dụng Windows cài sẵn và bloatware của OEM",
+    "pageDescription": "Các ứng dụng do Windows và nhà sản xuất cài đặt sẵn. Sau khi gỡ bỏ, chúng chỉ có thể được cài đặt lại từ Microsoft Store.",
     "scanButton": "Quét",
-    "irreversibleWarning": "Không thể hoàn tác — các ứng dụng đã gỡ chỉ có thể được cài đặt lại từ Microsoft Store. Hãy xem kỹ các mục đã chọn.",
-    "scanningPackages": "Đang quét các gói đã cài đặt...",
-    "removingProgress": "Đang gỡ {{current}} trên {{total}}",
+    "rescanButton": "Quét lại",
+    "irreversibleWarning": "Không thể hoàn tác việc gỡ bỏ từ ứng dụng này: hãy kiểm tra các ứng dụng đã chọn trước khi xác nhận.",
+    "scanningPackages": "Đang quét các gói đã cài đặt…",
+    "removingProgress": "Đang gỡ ứng dụng ({{current}}/{{total}})",
+    "receiptTitle": "Đã gỡ bỏ xong",
+    "removedApps_one": "Đã gỡ {{count}} ứng dụng",
+    "removedApps_other": "Đã gỡ {{count}} ứng dụng",
+    "failedCount_one": "{{count}} thất bại",
+    "failedCount_other": "{{count}} thất bại",
+    "reinstallFromStore": "chỉ có thể cài đặt lại từ Microsoft Store",
     "selectAll": "Chọn tất cả",
-    "emptyStateTitle": "Không phát hiện bloatware",
-    "emptyStateDescription": "Nhấp vào \"Quét\" để tìm các ứng dụng cài sẵn và bloatware của OEM.",
+    "filterLabel": "Danh mục",
+    "confirmTitle_one": "Gỡ {{count}} ứng dụng?",
+    "confirmTitle_other": "Gỡ {{count}} ứng dụng?",
+    "confirmDescription_one": "Ứng dụng sẽ bị gỡ khỏi người dùng của bạn và, với quyền quản trị viên, khỏi người dùng mới nữa. Ứng dụng chỉ có thể được cài đặt lại từ Microsoft Store.",
+    "confirmDescription_other": "Các ứng dụng sẽ bị gỡ khỏi người dùng của bạn và, với quyền quản trị viên, khỏi người dùng mới nữa. Chúng chỉ có thể được cài đặt lại từ Microsoft Store.",
+    "confirmLabel_one": "Gỡ {{count}} ứng dụng",
+    "confirmLabel_other": "Gỡ {{count}} ứng dụng",
+    "emptyStateTitle": "Chưa quét",
+    "emptyStateDescription": "Chưa có lượt quét ứng dụng cài sẵn nào trong phiên này.",
+    "lastRun_one": "Lần gỡ gần nhất: {{date}}, đã gỡ {{count}} ứng dụng.",
+    "lastRun_other": "Lần gỡ gần nhất: {{date}}, đã gỡ {{count}} ứng dụng.",
+    "checkKnownTitle": "Ứng dụng đã biết",
+    "checkKnownDetail": "Danh sách các ứng dụng do Microsoft và nhà sản xuất (OEM) cài đặt sẵn",
+    "checkInstalledTitle": "Gói đã cài đặt",
+    "checkInstalledDetail": "Các gói ứng dụng của người dùng của bạn, được so sánh với danh sách",
+    "checkRemovalTitle": "Gỡ bỏ",
+    "checkRemovalDetail": "Cho người dùng của bạn; với quyền quản trị viên, cũng gỡ khỏi bản sao dùng cho người dùng mới",
+    "noneFoundTitle": "Không có ứng dụng nào trong danh sách được cài đặt",
+    "noneFoundDescription": "Các ứng dụng cài sẵn đã biết không có mặt cho người dùng của bạn.",
+    "summaryTitle_one": "Tìm thấy {{count}} ứng dụng cài sẵn",
+    "summaryTitle_other": "Tìm thấy {{count}} ứng dụng cài sẵn",
+    "selectedCount_one": "Đã chọn {{count}}",
+    "selectedCount_other": "Đã chọn {{count}}",
+    "removeButton_one": "Gỡ {{count}} ứng dụng",
+    "removeButton_other": "Gỡ {{count}} ứng dụng",
+    "removeNone": "Gỡ mục đã chọn",
     "scanFailedToast": "Quét bloatware thất bại",
     "scanFailedDescription": "Hãy bảo đảm PowerShell khả dụng",
     "scanFailedError": "Không thể quét bloatware. Hãy bảo đảm PowerShell khả dụng.",

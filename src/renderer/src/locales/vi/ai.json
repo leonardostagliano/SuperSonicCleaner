@@ -1,7 +1,7 @@
 {
   "title": "Phân tích AI",
   "description": "Nhận ý kiến thứ hai về các kết quả quét này.",
-  "hubDescription": "Ý kiến thứ hai về các lượt quét và bản ghi hiệu năng, sử dụng tài khoản Codex bạn đã đăng nhập.",
+  "hubDescription": "Chỉ gửi siêu dữ liệu quét hoặc số đo bản ghi đến Codex, dưới tài khoản bạn đã đăng nhập, và chỉ khi bạn bắt đầu phân tích từ một công cụ.",
   "hubPrivacy": "Các lượt quét chỉ chia sẻ siêu dữ liệu tệp ẩn danh. Các bản ghi chia sẻ số liệu CPU, bộ nhớ và ổ đĩa cùng với ID tiến trình tạm thời. Tên, đường dẫn, ghi chú và nội dung tệp vẫn ở lại trên thiết bị này.",
   "connectionTitle": "Kết nối Codex",
   "connectionIntro": "Sử dụng Codex trên máy tính này. Kiểm tra kết nối, sau đó chọn một công cụ bên dưới.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Hoàn tất một lượt quét hoặc lưu một bản ghi hiệu năng, bật phân tích AI cho nó, rồi bắt đầu bằng nút riêng. Không có gì được gửi đi tự động.",
   "tools": {
     "cleaner": {
-      "title": "Dọn dẹp hệ thống"
+      "title": "Dọn dẹp hệ thống",
+      "dataSent": "ID tạm thời, loại tệp, kích thước và tuổi gần đúng. Không bao gồm dấu vết quyền riêng tư."
     },
     "largeFiles": {
-      "title": "Tệp lớn"
+      "title": "Tệp lớn",
+      "dataSent": "ID tạm thời, loại tệp, kích thước và tuổi gần đúng."
     },
     "duplicates": {
-      "title": "Tệp trùng lặp"
+      "title": "Tệp trùng lặp",
+      "dataSent": "ID tạm thời, loại tệp, kích thước, tuổi gần đúng và nhóm trùng lặp."
     },
     "disk": {
-      "title": "Phân tích ổ đĩa"
+      "title": "Phân tích ổ đĩa",
+      "dataSent": "ID tạm thời, tổng kích thước thư mục và tuổi gần đúng."
     },
     "performance": {
-      "title": "Bản ghi hiệu năng"
+      "title": "Bản ghi hiệu năng",
+      "dataSent": "Số liệu CPU, bộ nhớ và ổ đĩa, cùng ID tiến trình tạm thời."
     }
   },
   "enable": "Bật phân tích AI cho trang này",
@@ -51,5 +56,23 @@
     "low": "Ưu tiên thấp",
     "medium": "Ưu tiên trung bình",
     "high": "Ưu tiên cao"
+  },
+  "toolsTitle": "Công cụ",
+  "columns": {
+    "tool": "Công cụ",
+    "dataSent": "Dữ liệu đã gửi",
+    "lastRun": "Lần chạy gần nhất",
+    "state": "Trạng thái"
+  },
+  "lastRun": {
+    "running": "Đang chạy",
+    "done": "Đã hoàn tất trong phiên này",
+    "failed": "Thất bại",
+    "none": "Không có trong phiên này",
+    "perRecording": "Được lưu cùng mỗi bản ghi đã phân tích"
+  },
+  "state": {
+    "on": "Bật",
+    "off": "Tắt"
   }
 }
