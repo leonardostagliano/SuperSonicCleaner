@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Lihat apa yang berubah, apa yang dipulihkan, dan apa yang perlu ditinjau lagi. Setiap tugas yang selesai meninggalkan catatan.",
-    "settings": "Buat SuperSonicCleaner terasa tepat untuk Anda. Atur tampilan, notifikasi, pengecualian, dan preferensi pembersihan Anda.",
-    "about": "Open source, dibuat dengan penuh perhatian. Temukan versi Anda, periksa pembaruan, dan kenali proyek ini.",
-    "recovery": "Cara yang jelas untuk kembali. Tinjau perubahan yang didukung dan detail pemulihan sebelum membatalkan apa pun."
+    "history": "100 pemindaian dan pembersihan terakhir yang dijalankan di PC ini, dengan tanggal, durasi, item yang diproses, ruang yang dibebaskan, dan tanda terima setiap pembersihan.",
+    "settings": "Tampilan, bahasa, startup, notifikasi, pembaruan, cadangan, preferensi pembersihan, dan pengecualian. Setiap perubahan disimpan secara langsung.",
+    "about": "Versi yang terpasang, pembaruan, lisensi MIT, dan proyek asli (Kudu).",
+    "recovery": "Perubahan pada registry, layanan, dan tugas terjadwal yang dibuat oleh SuperSonicCleaner, beserta cadangan untuk membatalkannya. File yang dihapus tidak dapat dipulihkan."
   },
   "storageTrend": {
     "title": "Penyimpanan dari waktu ke waktu",

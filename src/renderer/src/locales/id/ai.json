@@ -1,7 +1,7 @@
 {
   "title": "Analisis AI",
   "description": "Dapatkan opini kedua tentang hasil pemindaian ini.",
-  "hubDescription": "Opini kedua tentang pemindaian dan rekaman performa, menggunakan info masuk Codex Anda.",
+  "hubDescription": "Mengirim ke Codex, melalui info masuk Anda, hanya metadata pemindaian atau pengukuran rekaman, dan hanya saat Anda memulai analisis dari alat.",
   "hubPrivacy": "Pemindaian hanya membagikan metadata file anonim. Rekaman membagikan pengukuran numerik CPU, memori, dan disk dengan ID proses sementara. Nama, jalur, catatan, dan konten file tetap berada di perangkat ini.",
   "connectionTitle": "Koneksi Codex",
   "connectionIntro": "Gunakan Codex di komputer ini. Periksa koneksinya, lalu pilih alat di bawah.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Selesaikan pemindaian atau simpan rekaman performa, aktifkan analisis AI-nya, lalu mulai dengan tombol khusus. Tidak ada yang dikirim secara otomatis.",
   "tools": {
     "cleaner": {
-      "title": "Pembersihan sistem"
+      "title": "Pembersihan sistem",
+      "dataSent": "ID sementara, jenis file, ukuran, dan perkiraan usia. Jejak privasi tidak disertakan."
     },
     "largeFiles": {
-      "title": "File besar"
+      "title": "File besar",
+      "dataSent": "ID sementara, jenis file, ukuran, dan perkiraan usia."
     },
     "duplicates": {
-      "title": "File duplikat"
+      "title": "File duplikat",
+      "dataSent": "ID sementara, jenis file, ukuran, perkiraan usia, dan grup duplikat."
     },
     "disk": {
-      "title": "Analisis disk"
+      "title": "Analisis disk",
+      "dataSent": "ID sementara, ukuran folder total, dan perkiraan usia."
     },
     "performance": {
-      "title": "Rekaman performa"
+      "title": "Rekaman performa",
+      "dataSent": "Pengukuran numerik CPU, memori, dan disk, dengan ID proses sementara."
     }
   },
   "enable": "Aktifkan analisis AI untuk tampilan ini",
@@ -51,5 +56,23 @@
     "low": "Prioritas rendah",
     "medium": "Prioritas sedang",
     "high": "Prioritas tinggi"
+  },
+  "toolsTitle": "Alat",
+  "columns": {
+    "tool": "Alat",
+    "dataSent": "Data yang dikirim",
+    "lastRun": "Terakhir dijalankan",
+    "state": "Status"
+  },
+  "lastRun": {
+    "running": "Berjalan",
+    "done": "Selesai dalam sesi ini",
+    "failed": "Gagal",
+    "none": "Tidak ada dalam sesi ini",
+    "perRecording": "Disimpan dengan setiap rekaman yang dianalisis"
+  },
+  "state": {
+    "on": "Aktif",
+    "off": "Nonaktif"
   }
 }

@@ -10,5 +10,7 @@
   "history": "Aktivitas",
   "settings": "Preferensi",
   "gameMode": "Mode Game",
-  "firewallAudit": "Audit Firewall"
+  "firewallAudit": "Audit Firewall",
+  "updateBadge": "Pembaruan",
+  "mainNavigation": "Navigasi utama"
 }

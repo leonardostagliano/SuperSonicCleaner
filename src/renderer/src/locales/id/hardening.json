@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Perisai Privasi",
-    "pageDescription": "Kendalikan telemetri, iklan, pelacakan, dan pengumpulan data di seluruh sistem Anda",
+    "pageDescription": "Membaca pengaturan telemetri, iklan, pencarian, dan sinkronisasi, lalu membandingkannya dengan nilai paling privat. Suatu pengaturan berubah hanya saat Anda menggunakan sakelarnya atau mengonfirmasi; sebagian besar dapat dikembalikan ke default.",
     "scanButton": "Pindai",
-    "scanProgressPreparing": "Menyiapkan pemindaian...",
-    "applyingProtections": "Menerapkan perlindungan privasi...",
-    "emptyStateTitle": "Perisai Privasi",
-    "emptyStateDescription": "Klik \"Pindai\" untuk mengaudit pengaturan privasi dan keamanan Anda serta menerapkan penguatan yang direkomendasikan.",
-    "adminWarning": "Beberapa pengaturan memerlukan hak administrator untuk diubah. Jalankan SuperSonicCleaner sebagai administrator untuk perlindungan penuh.",
+    "scanProgressPreparing": "Menyiapkan pemindaian",
+    "applyingProtections": "Menerapkan pengaturan…",
+    "emptyStateTitle": "Pengaturan belum dipindai",
+    "emptyStateDescription": "Pemindaian membaca pengaturan dan tidak mengubah satu pun.",
+    "adminWarning": "Sebagian pengaturan hanya dapat diubah saat SuperSonicCleaner berjalan sebagai administrator; tanpa hak tersebut, pengaturan itu tetap seperti semula.",
     "scanFailed": "Pemindaian privasi gagal",
     "applyFailed": "Gagal menerapkan pengaturan privasi",
-    "applyFailedDescription": "Coba jalankan sebagai administrator",
-    "settingApplyFailed": "Gagal menerapkan \"{{label}}\"",
-    "settingEnabled": "{{label}} diblokir",
-    "settingDisabled": "{{label}} dikembalikan ke default",
-    "settingRevertFailed": "Gagal mengembalikan \"{{label}}\"",
+    "applyFailedDescription": "Coba jalankan aplikasi sebagai administrator",
+    "settingApplyFailed": "Gagal menerapkan “{{label}}”",
+    "settingEnabled": "Diterapkan: {{label}}",
+    "settingDisabled": "Dikembalikan ke default: {{label}}",
+    "settingRevertFailed": "Gagal memulihkan “{{label}}”",
     "settingRevertFailedGeneric": "Gagal mengembalikan pengaturan privasi",
     "settingApplyFailedGeneric": "Gagal menerapkan pengaturan privasi",
-    "ipcCallFailed": "Panggilan IPC gagal — coba jalankan sebagai administrator",
+    "ipcCallFailed": "Panggilan gagal: coba jalankan aplikasi sebagai administrator",
     "allSettingsLabel": "Semua pengaturan",
     "unknownError": "Kesalahan tidak diketahui",
-    "requiresSettingEnabled": "Aktifkan \"{{label}}\" terlebih dahulu",
-    "adminRequired": "Coba jalankan sebagai administrator",
-    "settingNotApplied": "Sistem tidak melaporkan perubahan — mungkin memerlukan mulai ulang, atau pengaturan dikelola oleh profil lain"
+    "requiresSettingEnabled": "Aktifkan “{{label}}” terlebih dahulu",
+    "adminRequired": "Coba jalankan aplikasi sebagai administrator",
+    "settingNotApplied": "Sistem tidak melaporkan perubahan tersebut: mungkin perlu mulai ulang, atau pengaturan dikelola oleh profil lain.",
+    "rescanButton": "Pindai lagi",
+    "scanningButton": "Memindai…",
+    "applyRecommended_one": "Terapkan {{count}} perubahan yang direkomendasikan",
+    "applyRecommended_other": "Terapkan {{count}} perubahan yang direkomendasikan",
+    "summaryTitle_one": "{{count}} pengaturan untuk diubah",
+    "summaryTitle_other": "{{count}} pengaturan untuk diubah",
+    "summaryNone": "Semua {{total}} pengaturan sudah memiliki nilai paling privat",
+    "summaryFacts": "{{protected}} dari {{total}} sudah pada nilai paling privat · {{categories}} kategori",
+    "categoryMeta_one": "{{count}} untuk diubah",
+    "categoryMeta_other": "{{count}} untuk diubah",
+    "categoryAllSet": "semua sudah diatur",
+    "categoryApply_one": "Terapkan {{count}}",
+    "categoryApply_other": "Terapkan {{count}}",
+    "categoryShow": "Tampilkan",
+    "categoryHide": "Sembunyikan",
+    "adminTag": "Memerlukan administrator",
+    "notReversibleTag": "Tidak dapat dibatalkan",
+    "scanProgressTitle": "Pemindaian sedang berlangsung",
+    "scanProgressCount": "{{current}} dari {{total}}",
+    "scanProgressCategory": "Memeriksa: {{category}}",
+    "scanProgressLabel": "Progres pemindaian",
+    "applyingLabel": "Progres penerapan",
+    "receiptTitle": "Pengaturan diterapkan",
+    "receiptApplied_one": "{{count}} pengaturan diubah",
+    "receiptApplied_other": "{{count}} pengaturan diubah",
+    "receiptReversible": "dapat dipulihkan dari sakelar",
+    "receiptFailed_one": "{{count}} tidak diterapkan: alasannya tercantum di bawah.",
+    "receiptFailed_other": "{{count}} tidak diterapkan: alasannya tercantum di bawah.",
+    "receiptFailedAdmin_one": "{{count}} tidak diterapkan: mungkin aplikasi perlu dijalankan sebagai administrator. Alasannya tercantum di bawah.",
+    "receiptFailedAdmin_other": "{{count}} tidak diterapkan: mungkin aplikasi perlu dijalankan sebagai administrator. Alasannya tercantum di bawah.",
+    "failedHeading": "Pengaturan tidak diterapkan",
+    "failedColumnSetting": "Pengaturan",
+    "failedColumnReason": "Alasan",
+    "confirmTitle_one": "Ubah {{count}} pengaturan?",
+    "confirmTitle_other": "Ubah {{count}} pengaturan?",
+    "confirmDescription": "Pengaturan yang tercantum beralih ke nilai paling privat. Pengaturan tersebut dapat dikembalikan ke default melalui sakelar di halaman ini.",
+    "confirmDescriptionIrreversible_one": "Pengaturan yang tercantum beralih ke nilai paling privat. {{count}} tidak dapat dikembalikan ke default dari halaman ini.",
+    "confirmDescriptionIrreversible_other": "Pengaturan yang tercantum beralih ke nilai paling privat. {{count}} tidak dapat dikembalikan ke default dari halaman ini.",
+    "confirmLabel_one": "Ubah {{count}} pengaturan",
+    "confirmLabel_other": "Ubah {{count}} pengaturan",
+    "settings": {
+      "telemetry-level": {
+        "label": "Telemetri Windows",
+        "description": "Mengatur pengumpulan data diagnostik ke tingkat minimum (hanya tingkat Keamanan)"
+      },
+      "activity-history": {
+        "label": "Riwayat aktivitas",
+        "description": "Menghentikan Windows melacak dan menyinkronkan penggunaan aplikasi dan file Anda"
+      },
+      "publish-activity": {
+        "label": "Publikasi aktivitas pengguna",
+        "description": "Mencegah Windows memublikasikan aktivitas Anda ke Microsoft"
+      },
+      "feedback-frequency": {
+        "label": "Permintaan masukan",
+        "description": "Menonaktifkan permintaan masukan dan survei berkala dari Microsoft"
+      },
+      "handwriting-telemetry": {
+        "label": "Data tulisan tangan",
+        "description": "Menghentikan pengiriman data tulisan tangan dan pengetikan ke Microsoft"
+      },
+      "input-personalization": {
+        "label": "Personalisasi input",
+        "description": "Menghentikan pengumpulan data pengetikan dan tulisan pena untuk personalisasi"
+      },
+      "tailored-experiences": {
+        "label": "Pengalaman yang disesuaikan",
+        "description": "Mencegah Microsoft menggunakan data diagnostik untuk mempersonalisasi tips dan iklan"
+      },
+      "app-launch-tracking": {
+        "label": "Pelacakan peluncuran aplikasi",
+        "description": "Menghentikan Windows melacak aplikasi yang Anda buka untuk menyesuaikan menu Start"
+      },
+      "advertising-id": {
+        "label": "ID iklan",
+        "description": "Menonaktifkan ID iklan unik yang digunakan aplikasi untuk melacak Anda"
+      },
+      "suggested-content": {
+        "label": "Konten yang disarankan di Pengaturan",
+        "description": "Mencegah Microsoft menampilkan saran aplikasi dan iklan di Pengaturan"
+      },
+      "tips-notifications": {
+        "label": "Tips dan saran",
+        "description": "Menonaktifkan notifikasi tips, trik, dan saran Windows"
+      },
+      "start-suggestions": {
+        "label": "Saran menu Start",
+        "description": "Menonaktifkan saran aplikasi (iklan) di menu Start"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight layar kunci",
+        "description": "Menonaktifkan iklan dan saran Microsoft Spotlight di layar kunci"
+      },
+      "silently-installed-apps": {
+        "label": "Aplikasi yang dipasang secara diam-diam",
+        "description": "Mencegah Windows memasang aplikasi promosi secara otomatis"
+      },
+      "preinstalled-apps": {
+        "label": "Saran aplikasi bawaan",
+        "description": "Menghentikan Windows menyarankan aplikasi bawaan yang belum Anda gunakan"
+      },
+      "bing-start-menu": {
+        "label": "Bing di menu Start",
+        "description": "Menghentikan pengiriman kueri pencarian yang diketik di menu Start ke Bing"
+      },
+      "bing-web-search": {
+        "label": "Hasil web Bing",
+        "description": "Menonaktifkan hasil web di Windows Search, sehingga pencarian tetap di PC ini"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Menonaktifkan Cortana, yang berjalan di latar belakang dan mengumpulkan data"
+      },
+      "search-highlights": {
+        "label": "Sorotan pencarian",
+        "description": "Menonaktifkan saran pencarian tren dan konten web di kotak pencarian"
+      },
+      "store-search-suggestions": {
+        "label": "Saran pencarian Store",
+        "description": "Menonaktifkan saran pencarian Microsoft Store, yang mengirim kueri Anda ke Microsoft"
+      },
+      "clipboard-sync": {
+        "label": "Sinkronisasi cloud clipboard",
+        "description": "Mencegah data clipboard disinkronkan antarperangkat melalui cloud"
+      },
+      "clipboard-history": {
+        "label": "Riwayat clipboard",
+        "description": "Menonaktifkan riwayat clipboard yang menyimpan teks dan gambar yang disalin"
+      },
+      "settings-sync": {
+        "label": "Sinkronisasi pengaturan",
+        "description": "Menghentikan sinkronisasi pengaturan, tema, dan kata sandi Windows ke akun Microsoft Anda"
+      },
+      "find-my-device": {
+        "label": "Temukan perangkat saya",
+        "description": "Menonaktifkan pelacakan perangkat berbasis lokasi oleh Microsoft"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Menonaktifkan asisten AI Microsoft Copilot di seluruh Windows"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Menonaktifkan Windows Recall, riwayat tangkapan layar AI yang merekam semua yang ada di layar"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Menonaktifkan analisis AI Click to Do terhadap teks dan gambar di layar"
+      },
+      "ai-service-autostart": {
+        "label": "Mulai otomatis layanan AI",
+        "description": "Mencegah layanan AI dimulai otomatis di latar belakang"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Menonaktifkan fitur penyusunan dan penulisan ulang teks AI di Edge"
+      },
+      "paint-ai": {
+        "label": "Fitur AI Paint",
+        "description": "Menonaktifkan fitur pembuatan gambar AI di Microsoft Paint"
+      },
+      "notepad-ai": {
+        "label": "Fitur AI Notepad",
+        "description": "Menonaktifkan fitur penulisan ulang teks AI di Microsoft Notepad"
+      },
+      "service-diagtrack": {
+        "label": "Layanan DiagTrack",
+        "description": "Menonaktifkan layanan Connected User Experiences and Telemetry"
+      },
+      "service-dmwappush": {
+        "label": "Layanan WAP Push",
+        "description": "Menonaktifkan layanan perutean pesan WAP Push yang digunakan untuk telemetri"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Menonaktifkan berbagi pembaruan Windows antarperangkat (peer-to-peer), sehingga PC ini tidak mengunggah data pembaruan ke perangkat lain"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Menonaktifkan Downloaded Maps Manager, layanan latar belakang yang tidak dibutuhkan sebagian besar PC"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Menonaktifkan tugas telemetri Microsoft yang mengumpulkan data kompatibilitas"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Menonaktifkan tugas latar belakang yang mengunggah telemetri program"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Menonaktifkan pengumpulan telemetri yang dilakukan melalui proxy autochk"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Menonaktifkan pengunggahan data Customer Experience Improvement Program"
+      },
+      "task-usb-ceip": {
+        "label": "Data penggunaan USB (CEIP)",
+        "description": "Menonaktifkan pengumpulan telemetri penggunaan perangkat USB"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Menonaktifkan pengumpulan dan pengunggahan data diagnostik disk"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Menonaktifkan tugas telemetri manajemen perangkat untuk masukan"
+      },
+      "task-maps-update": {
+        "label": "Tugas pembaruan peta",
+        "description": "Menonaktifkan pengunduhan data peta otomatis di latar belakang"
+      },
+      "task-maps-toast": {
+        "label": "Tugas notifikasi peta",
+        "description": "Menonaktifkan tugas notifikasi Peta"
+      },
+      "edge-metrics": {
+        "label": "Pelaporan metrik Edge",
+        "description": "Menghentikan Edge mengirim metrik penggunaan dan crash ke Microsoft"
+      },
+      "edge-site-info": {
+        "label": "Pengumpulan info situs Edge",
+        "description": "Menghentikan Edge mengirim alamat situs yang Anda kunjungi ke Microsoft"
+      },
+      "edge-personalization": {
+        "label": "Pelaporan personalisasi Edge",
+        "description": "Menghentikan Edge mengirim riwayat penjelajahan Anda untuk personalisasi iklan"
+      },
+      "edge-copilot-cdp": {
+        "label": "Akses halaman Copilot (CDP) di Edge",
+        "description": "Mencegah Copilot membaca konten halaman melalui Chrome DevTools Protocol"
+      },
+      "edge-copilot-page": {
+        "label": "Konteks halaman Copilot Edge",
+        "description": "Mencegah Copilot menggunakan konteks halaman untuk menganalisis konten"
+      },
+      "edge-discover": {
+        "label": "Pemindaian halaman Discover Edge",
+        "description": "Menghentikan fitur Discover memindai konten halaman"
+      },
+      "edge-sidebar": {
+        "label": "Bilah sisi Edge",
+        "description": "Menonaktifkan bilah sisi Edge dan pengumpulan data latar belakangnya"
+      },
+      "edge-shopping": {
+        "label": "Asisten belanja Edge",
+        "description": "Menonaktifkan pelacak perbandingan harga di Edge"
+      },
+      "chrome-metrics": {
+        "label": "Pelaporan metrik Chrome",
+        "description": "Menghentikan Chrome mengirim metrik penggunaan dan crash ke Google"
+      },
+      "chrome-feedback": {
+        "label": "Masukan pengguna Chrome",
+        "description": "Mencegah Chrome mengumpulkan dan mengirim data masukan pengguna"
+      },
+      "chrome-extended-reporting": {
+        "label": "Safe Browsing lanjutan Chrome",
+        "description": "Menghentikan Chrome mengirim laporan URL dan unduhan yang diperluas ke Google"
+      },
+      "firefox-telemetry": {
+        "label": "Telemetri Firefox",
+        "description": "Menghentikan Firefox mengumpulkan data telemetri dan mengunggahnya ke Mozilla"
+      },
+      "firefox-default-agent": {
+        "label": "Agen browser default Firefox",
+        "description": "Menonaktifkan agen latar belakang yang melaporkan data penggunaan browser ke Mozilla"
+      },
+      "macos-diagnostics": {
+        "label": "Data diagnostik dan penggunaan",
+        "description": "Menghentikan berbagi data diagnostik dan penggunaan dengan Apple"
+      },
+      "macos-siri-analytics": {
+        "label": "Analitik Siri",
+        "description": "Menghentikan pengumpulan data analitik dan peningkatan Siri"
+      },
+      "macos-health-data-sharing": {
+        "label": "Berbagi data kesehatan",
+        "description": "Menghentikan berbagi data kesehatan dengan Apple untuk riset"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "Ketersediaan AirDrop",
+        "description": "Mengatur AirDrop ke Tidak Seorang pun: Anda tidak dapat menerima file melalui AirDrop hingga mengaktifkannya kembali di System Settings"
+      },
+      "macos-crash-reporter": {
+        "label": "Pelapor crash",
+        "description": "Menghentikan pelapor crash mengirim laporan secara otomatis"
+      },
+      "macos-ad-tracking": {
+        "label": "Iklan yang dipersonalisasi",
+        "description": "Membatasi pelacakan iklan oleh Apple"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Saran Siri di App Store",
+        "description": "Menonaktifkan saran Siri di App Store"
+      },
+      "macos-safari-suggestions": {
+        "label": "Saran Safari",
+        "description": "Menonaktifkan saran pencarian Safari yang dikirim ke Apple"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Saran Spotlight",
+        "description": "Menonaktifkan saran web Spotlight"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari pramuat hasil teratas",
+        "description": "Menghentikan Safari memuat lebih dulu hasil pencarian teratas, yang mengirim data penjelajahan ke situs"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Menonaktifkan Handoff dan Universal Clipboard: Anda tidak lagi dapat melanjutkan aktivitas atau menyalin dan menempel antarperangkat Apple"
+      },
+      "macos-icloud-analytics": {
+        "label": "Analitik iCloud",
+        "description": "Menghentikan berbagi analitik iCloud dengan Apple"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Tab iCloud Safari",
+        "description": "Menonaktifkan sinkronisasi tab Safari iCloud: Anda tidak lagi melihat tab yang terbuka di perangkat Apple lain"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Menonaktifkan Siri sepenuhnya: Hey Siri, perintah suara, dan Siri Shortcuts berhenti berfungsi"
+      },
+      "macos-siri-dictation": {
+        "label": "Dikte Siri",
+        "description": "Menonaktifkan dikte: tombol mikrofon di keyboard Anda berhenti berfungsi"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Menonaktifkan fitur AI Apple Intelligence (macOS 15 Sequoia dan yang lebih baru)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "Mengaktifkan header Do Not Track di Safari"
+      },
+      "macos-chrome-metrics": {
+        "label": "Pelaporan metrik Chrome",
+        "description": "Menghentikan Chrome mengirim metrik penggunaan ke Google"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Laporan Safe Browsing Chrome",
+        "description": "Menghentikan Chrome mengirim laporan URL dan unduhan yang diperluas ke Google"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Telemetri Firefox",
+        "description": "Menghentikan Firefox mengumpulkan data telemetri dan mengunggahnya ke Mozilla"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Memastikan Gatekeeper aktif, sehingga aplikasi yang tidak terverifikasi diblokir"
+      },
+      "macos-remote-apple-events": {
+        "label": "Apple Events jarak jauh",
+        "description": "Menonaktifkan Apple Events jarak jauh, sehingga Mac Anda tidak dapat diotomatisasi dari jarak jauh"
+      },
+      "macos-wake-on-network": {
+        "label": "Bangunkan untuk akses jaringan",
+        "description": "Menonaktifkan bangun untuk akses jaringan, sehingga Mac Anda tidak dapat dibangunkan dari jarak jauh"
+      },
+      "macos-guest-account": {
+        "label": "Akun tamu",
+        "description": "Menonaktifkan akun tamu untuk mencegah akses lokal yang tidak sah"
+      },
+      "macos-auto-login": {
+        "label": "Login otomatis",
+        "description": "Menonaktifkan login otomatis, sehingga Mac meminta autentikasi saat startup"
+      },
+      "macos-firewall": {
+        "label": "Firewall aplikasi",
+        "description": "Mengaktifkan firewall aplikasi macOS untuk mengontrol koneksi masuk"
+      },
+      "macos-stealth-mode": {
+        "label": "Mode siluman",
+        "description": "Mengaktifkan mode siluman, sehingga Mac Anda tidak merespons permintaan probe (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "Nonaktifkan penerusan IP",
+        "description": "Mencegah sistem meneruskan paket antarantarmuka jaringan"
+      },
+      "macos-block-signed-auto": {
+        "label": "Blokir izin otomatis untuk aplikasi bertanda tangan",
+        "description": "Mencegah aplikasi bertanda tangan melewati firewall secara otomatis"
+      },
+      "macos-remote-login": {
+        "label": "Nonaktifkan login jarak jauh (SSH)",
+        "description": "Menonaktifkan server SSH sepenuhnya. Jika Anda memerlukan akses SSH, biarkan ini nonaktif dan perkuat pengaturan SSH sebagai gantinya"
+      },
+      "macos-ssh-root-login": {
+        "label": "Nonaktifkan login root SSH",
+        "description": "Mencegah login root langsung melalui SSH; gunakan sudo dari akun biasa sebagai gantinya"
+      },
+      "macos-ssh-password-auth": {
+        "label": "Nonaktifkan autentikasi kata sandi SSH",
+        "description": "Hanya mengizinkan autentikasi SSH berbasis kunci. Siapkan kunci SSH terlebih dahulu, atau Anda bisa terkunci"
+      },
+      "macos-core-dumps": {
+        "label": "Nonaktifkan core dump",
+        "description": "Mencegah core dump, yang dapat membocorkan konten memori sensitif"
+      },
+      "gnome-usage-stats": {
+        "label": "Statistik penggunaan",
+        "description": "Menonaktifkan pengumpulan statistik penggunaan GNOME"
+      },
+      "gnome-recent-files": {
+        "label": "Pelacakan file terbaru",
+        "description": "Menonaktifkan pelacakan file yang baru digunakan"
+      },
+      "gnome-location": {
+        "label": "Layanan lokasi",
+        "description": "Menonaktifkan layanan lokasi GNOME"
+      },
+      "gnome-crash-reporting": {
+        "label": "Pelaporan crash (Apport)",
+        "description": "Menonaktifkan pengiriman laporan crash otomatis"
+      },
+      "gnome-connectivity-check": {
+        "label": "Pemeriksaan konektivitas",
+        "description": "Menonaktifkan pemeriksaan konektivitas jaringan berkala"
+      },
+      "core-dump-disable": {
+        "label": "Nonaktifkan core dump",
+        "description": "Mencegah core dump, yang dapat membocorkan konten memori sensitif"
+      },
+      "ssh-root-login": {
+        "label": "Nonaktifkan login root SSH",
+        "description": "Mencegah login root langsung melalui SSH; gunakan sudo dari akun biasa sebagai gantinya"
+      },
+      "ssh-password-auth": {
+        "label": "Nonaktifkan autentikasi kata sandi SSH",
+        "description": "Hanya mengizinkan autentikasi SSH berbasis kunci. Siapkan kunci SSH terlebih dahulu, atau Anda bisa terkunci"
+      },
+      "kde-usage-stats": {
+        "label": "Statistik penggunaan",
+        "description": "Menonaktifkan masukan pengguna KDE Plasma"
+      },
+      "kde-recent-files": {
+        "label": "Pelacakan file terbaru",
+        "description": "Menonaktifkan riwayat aktivitas KDE untuk file terbaru"
+      },
+      "kde-baloo": {
+        "label": "Pengindeksan file (Baloo)",
+        "description": "Menonaktifkan pengindeks file Baloo"
+      },
+      "kde-crash-reporting": {
+        "label": "Pelaporan crash (DrKonqi)",
+        "description": "Menonaktifkan penanganan laporan crash KDE"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetri & Pengumpulan Data",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Penghapus Bloatware",
-    "pageDescription": "Hapus aplikasi Windows prainstal dan bloatware OEM",
+    "pageDescription": "Aplikasi yang dipasang sebelumnya oleh Windows dan produsen. Setelah dihapus, aplikasi tersebut hanya dapat dipasang ulang dari Microsoft Store.",
     "scanButton": "Pindai",
-    "irreversibleWarning": "Tidak dapat dibatalkan — Aplikasi yang dihapus hanya dapat dipasang ulang dari Microsoft Store. Tinjau pilihan dengan saksama.",
-    "scanningPackages": "Memindai paket yang terpasang...",
-    "removingProgress": "Menghapus {{current}} dari {{total}}",
-    "selectAll": "Pilih Semua",
-    "emptyStateTitle": "Tidak ada bloatware terdeteksi",
-    "emptyStateDescription": "Klik \"Pindai\" untuk menemukan aplikasi prainstal dan bloatware OEM.",
+    "rescanButton": "Pindai lagi",
+    "irreversibleWarning": "Penghapusan tidak dapat dibatalkan dari aplikasi: periksa aplikasi yang dipilih sebelum mengonfirmasi.",
+    "scanningPackages": "Memindai paket yang terpasang…",
+    "removingProgress": "Menghapus aplikasi ({{current}} dari {{total}})",
+    "receiptTitle": "Penghapusan selesai",
+    "removedApps_one": "{{count}} aplikasi dihapus",
+    "removedApps_other": "{{count}} aplikasi dihapus",
+    "failedCount_one": "{{count}} gagal",
+    "failedCount_other": "{{count}} gagal",
+    "reinstallFromStore": "hanya dapat dipasang ulang dari Microsoft Store",
+    "selectAll": "Pilih semua",
+    "filterLabel": "Kategori",
+    "confirmTitle_one": "Hapus {{count}} aplikasi?",
+    "confirmTitle_other": "Hapus {{count}} aplikasi?",
+    "confirmDescription_one": "Aplikasi dihapus untuk pengguna Anda, dan dengan hak administrator, juga untuk pengguna baru. Aplikasi ini hanya dapat dipasang ulang dari Microsoft Store.",
+    "confirmDescription_other": "Aplikasi dihapus untuk pengguna Anda, dan dengan hak administrator, juga untuk pengguna baru. Aplikasi ini hanya dapat dipasang ulang dari Microsoft Store.",
+    "confirmLabel_one": "Hapus {{count}} aplikasi",
+    "confirmLabel_other": "Hapus {{count}} aplikasi",
+    "emptyStateTitle": "Belum dipindai",
+    "emptyStateDescription": "Belum ada pemindaian aplikasi bawaan pada sesi ini.",
+    "lastRun_one": "Penghapusan terakhir: {{date}}, {{count}} aplikasi dihapus.",
+    "lastRun_other": "Penghapusan terakhir: {{date}}, {{count}} aplikasi dihapus.",
+    "checkKnownTitle": "Aplikasi yang diketahui",
+    "checkKnownDetail": "Daftar aplikasi yang dipasang sebelumnya oleh Microsoft dan produsen (OEM)",
+    "checkInstalledTitle": "Paket yang terpasang",
+    "checkInstalledDetail": "Paket aplikasi pengguna Anda, dibandingkan dengan daftar",
+    "checkRemovalTitle": "Penghapusan",
+    "checkRemovalDetail": "Untuk pengguna Anda; dengan hak administrator, juga dari salinan yang digunakan untuk pengguna baru",
+    "noneFoundTitle": "Tidak ada aplikasi yang tercantum terpasang",
+    "noneFoundDescription": "Aplikasi bawaan yang dikenal tidak ada untuk pengguna Anda.",
+    "summaryTitle_one": "{{count}} aplikasi bawaan ditemukan",
+    "summaryTitle_other": "{{count}} aplikasi bawaan ditemukan",
+    "selectedCount_one": "{{count}} dipilih",
+    "selectedCount_other": "{{count}} dipilih",
+    "removeButton_one": "Hapus {{count}} aplikasi",
+    "removeButton_other": "Hapus {{count}} aplikasi",
+    "removeNone": "Hapus yang dipilih",
     "scanFailedToast": "Pemindaian bloatware gagal",
     "scanFailedDescription": "Pastikan PowerShell tersedia",
     "scanFailedError": "Gagal memindai bloatware. Pastikan PowerShell tersedia.",
