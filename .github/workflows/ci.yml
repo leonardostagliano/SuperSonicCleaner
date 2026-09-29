@@ -66,6 +66,9 @@ jobs:
       - name: Format check
         run: npm run format:check
 
+      - name: Design check
+        run: npm run check:design
+
       - name: Validate cleaner rules
         run: npm run validate:rules
 
