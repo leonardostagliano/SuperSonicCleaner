@@ -552,7 +552,7 @@ export function DuplicateFinderPage() {
 }
 
 /** One group of identical files: a disclosure row, then its copies. */
-function DuplicateGroupRow({
+export function DuplicateGroupRow({
   group,
   expanded,
   onToggle,
@@ -614,8 +614,9 @@ function DuplicateGroupRow({
             <tbody>
               {group.files.map((file, index) => {
                 const isSelected = selectedPaths.has(file.path)
-                const recommended = isRecommendedCopy(group, index)
                 const tag = copyTag(group, index, selectedPaths)
+                // The amber rule and the tag say the same thing: the rule follows the tag.
+                const recommended = tag === 'recommended'
                 // Selecting this would leave no copy of the file behind
                 const isLastCopy = !isSelected && groupSelected === group.files.length - 1
                 return (
