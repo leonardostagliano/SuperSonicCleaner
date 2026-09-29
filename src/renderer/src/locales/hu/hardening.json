@@ -1,28 +1,478 @@
 {
   "privacy": {
     "pageTitle": "Adatvédelmi pajzs",
-    "pageDescription": "A telemetria, hirdetések, követés és adatgyűjtés szabályozása a teljes rendszeren",
+    "pageDescription": "Beolvassa a telemetria, a hirdetések, a keresés és a szinkronizálás beállításait, és összeveti őket a legszigorúbb adatvédelmi értékkel. Egy beállítás csak akkor változik, ha használja a kapcsolóját vagy megerősíti a módosítást; a legtöbb visszaállítható az alapértelmezett értékre.",
     "scanButton": "Vizsgálat",
-    "scanProgressPreparing": "Vizsgálat előkészítése...",
-    "applyingProtections": "Adatvédelmi védelmek alkalmazása...",
-    "emptyStateTitle": "Adatvédelmi pajzs",
-    "emptyStateDescription": "Kattintson a „Vizsgálat” gombra az adatvédelmi és biztonsági beállítások ellenőrzéséhez, majd az ajánlott megerősítések alkalmazásához.",
-    "adminWarning": "Egyes beállítások módosításához rendszergazdai jogosultság szükséges. A teljes védelemhez futtassa a SuperSonicCleaner alkalmazást rendszergazdaként.",
+    "scanProgressPreparing": "Vizsgálat előkészítése",
+    "applyingProtections": "Beállítások alkalmazása…",
+    "emptyStateTitle": "A beállítások még nincsenek megvizsgálva",
+    "emptyStateDescription": "A vizsgálat beolvassa a beállításokat, és egyiket sem módosítja.",
+    "adminWarning": "Egyes beállítások csak akkor módosíthatók, ha a SuperSonicCleaner rendszergazdaként fut; e jogosultságok nélkül változatlanok maradnak.",
     "scanFailed": "Az adatvédelmi vizsgálat sikertelen",
     "applyFailed": "Nem sikerült alkalmazni az adatvédelmi beállításokat",
-    "applyFailedDescription": "Próbálja meg rendszergazdaként futtatni",
-    "settingApplyFailed": "A(z) „{{label}}” alkalmazása sikertelen",
-    "settingEnabled": "{{label}} blokkolva",
-    "settingDisabled": "{{label}} visszaállítva alapértelmezettre",
-    "settingRevertFailed": "A(z) „{{label}}” visszaállítása sikertelen",
+    "applyFailedDescription": "Próbálja meg rendszergazdaként futtatni az alkalmazást",
+    "settingApplyFailed": "Nem sikerült alkalmazni: „{{label}}”",
+    "settingEnabled": "Alkalmazva: {{label}}",
+    "settingDisabled": "Visszaállítva az alapértelmezettre: {{label}}",
+    "settingRevertFailed": "Nem sikerült visszaállítani: „{{label}}”",
     "settingRevertFailedGeneric": "Az adatvédelmi beállítás visszaállítása sikertelen",
     "settingApplyFailedGeneric": "Az adatvédelmi beállítás alkalmazása sikertelen",
-    "ipcCallFailed": "Az IPC-hívás sikertelen — próbálja meg rendszergazdaként futtatni",
+    "ipcCallFailed": "A hívás sikertelen: próbálja meg rendszergazdaként futtatni az alkalmazást",
     "allSettingsLabel": "Összes beállítás",
     "unknownError": "Ismeretlen hiba",
-    "requiresSettingEnabled": "Először engedélyezze ezt: „{{label}}”",
-    "adminRequired": "Próbálja meg rendszergazdaként futtatni",
-    "settingNotApplied": "A rendszer nem jelezte a módosítást — lehet, hogy újraindítás szükséges, vagy a beállítást egy másik profil kezeli"
+    "requiresSettingEnabled": "Először engedélyezze: „{{label}}”",
+    "adminRequired": "Próbálja meg rendszergazdaként futtatni az alkalmazást",
+    "settingNotApplied": "A rendszer nem jelezte a módosítást: lehet, hogy újraindítás szükséges, vagy a beállítást másik profil kezeli.",
+    "rescanButton": "Vizsgálat újra",
+    "scanningButton": "Vizsgálat…",
+    "applyRecommended_one": "{{count}} ajánlott módosítás alkalmazása",
+    "applyRecommended_other": "{{count}} ajánlott módosítás alkalmazása",
+    "summaryTitle_one": "{{count}} módosítandó beállítás",
+    "summaryTitle_other": "{{count}} módosítandó beállítás",
+    "summaryNone": "Mind a(z) {{total}} beállítás már a legszigorúbb adatvédelmi értéken van",
+    "summaryFacts": "{{protected}}/{{total}} már a legszigorúbb adatvédelmi értéken · {{categories}} kategória",
+    "categoryMeta_one": "{{count}} módosítandó",
+    "categoryMeta_other": "{{count}} módosítandó",
+    "categoryAllSet": "minden már beállítva",
+    "categoryApply_one": "{{count}} alkalmazása",
+    "categoryApply_other": "{{count}} alkalmazása",
+    "categoryShow": "Megjelenítés",
+    "categoryHide": "Elrejtés",
+    "adminTag": "Rendszergazda szükséges",
+    "notReversibleTag": "Nem vonható vissza",
+    "scanProgressTitle": "Vizsgálat folyamatban",
+    "scanProgressCount": "{{current}}/{{total}}",
+    "scanProgressCategory": "Ellenőrzés: {{category}}",
+    "scanProgressLabel": "Vizsgálat folyamata",
+    "applyingLabel": "Alkalmazás folyamata",
+    "receiptTitle": "Beállítások alkalmazva",
+    "receiptApplied_one": "{{count}} beállítás módosítva",
+    "receiptApplied_other": "{{count}} beállítás módosítva",
+    "receiptReversible": "visszaállítható a kapcsolókból",
+    "receiptFailed_one": "{{count}} nem lett alkalmazva: az ok alább olvasható.",
+    "receiptFailed_other": "{{count}} nem lett alkalmazva: az okok alább olvashatók.",
+    "receiptFailedAdmin_one": "{{count}} nem lett alkalmazva: lehet, hogy rendszergazdaként kell futtatni az alkalmazást. Az ok alább olvasható.",
+    "receiptFailedAdmin_other": "{{count}} nem lett alkalmazva: lehet, hogy rendszergazdaként kell futtatni az alkalmazást. Az okok alább olvashatók.",
+    "failedHeading": "Nem alkalmazott beállítások",
+    "failedColumnSetting": "Beállítás",
+    "failedColumnReason": "Ok",
+    "confirmTitle_one": "Módosítja a(z) {{count}} beállítást?",
+    "confirmTitle_other": "Módosítja a(z) {{count}} beállítást?",
+    "confirmDescription": "A felsorolt beállítások a legszigorúbb adatvédelmi értékre változnak. Az oldalon lévő kapcsolókkal visszaállíthatók az alapértelmezettre.",
+    "confirmDescriptionIrreversible_one": "A felsorolt beállítások a legszigorúbb adatvédelmi értékre változnak. {{count}} nem állítható vissza az alapértelmezettre erről az oldalról.",
+    "confirmDescriptionIrreversible_other": "A felsorolt beállítások a legszigorúbb adatvédelmi értékre változnak. {{count}} nem állítható vissza az alapértelmezettre erről az oldalról.",
+    "confirmLabel_one": "{{count}} beállítás módosítása",
+    "confirmLabel_other": "{{count}} beállítás módosítása",
+    "settings": {
+      "telemetry-level": {
+        "label": "Windows telemetria",
+        "description": "Állítsa a diagnosztikai adatgyűjtést minimális szintre (csak biztonsági szint)"
+      },
+      "activity-history": {
+        "label": "Tevékenységelőzmények",
+        "description": "Akadályozza meg, hogy a Windows nyomon kövesse és szinkronizálja az alkalmazás- és fájlhasználatot"
+      },
+      "publish-activity": {
+        "label": "Felhasználói tevékenységek közzététele",
+        "description": "Akadályozza meg, hogy a Windows közzétegye a tevékenységeit a Microsoftnál"
+      },
+      "feedback-frequency": {
+        "label": "Visszajelzési felkérések",
+        "description": "Kapcsolja ki a Microsoft időszakos visszajelzési felkéréseit és felméréseit"
+      },
+      "handwriting-telemetry": {
+        "label": "Kézírási adatok",
+        "description": "Akadályozza meg a kézírási és gépelési adatok küldését a Microsoftnak"
+      },
+      "input-personalization": {
+        "label": "Beviteli személyre szabás",
+        "description": "Akadályozza meg a gépelési és kézírási adatok gyűjtését személyre szabás céljából"
+      },
+      "tailored-experiences": {
+        "label": "Személyre szabott élmények",
+        "description": "Akadályozza meg, hogy a Microsoft diagnosztikai adatokkal szabjon személyre tippeket és hirdetéseket"
+      },
+      "app-launch-tracking": {
+        "label": "Alkalmazásindítás-követés",
+        "description": "Akadályozza meg, hogy a Windows nyomon kövesse, mely alkalmazásokat nyitja meg, a Start menü testreszabásához"
+      },
+      "advertising-id": {
+        "label": "Hirdetési azonosító",
+        "description": "Kapcsolja ki az egyedi hirdetési azonosítót, amellyel az alkalmazások nyomon követik Önt"
+      },
+      "suggested-content": {
+        "label": "Javasolt tartalom a Beállításokban",
+        "description": "Akadályozza meg, hogy a Microsoft alkalmazásjavaslatokat és hirdetéseket jelenítsen meg a Beállításokban"
+      },
+      "tips-notifications": {
+        "label": "Tippek és javaslatok",
+        "description": "Kapcsolja ki a Windows tipp-, trükk- és javaslatértesítéseit"
+      },
+      "start-suggestions": {
+        "label": "Start menü javaslatok",
+        "description": "Kapcsolja ki az alkalmazásjavaslatokat (hirdetéseket) a Start menüben"
+      },
+      "lock-screen-spotlight": {
+        "label": "Spotlight a lezárási képernyőn",
+        "description": "Kapcsolja ki a Microsoft Spotlight hirdetéseit és javaslatait a lezárási képernyőn"
+      },
+      "silently-installed-apps": {
+        "label": "Csendben telepített alkalmazások",
+        "description": "Akadályozza meg, hogy a Windows automatikusan telepítsen ajánlott alkalmazásokat"
+      },
+      "preinstalled-apps": {
+        "label": "Előre telepített alkalmazások javaslatai",
+        "description": "Akadályozza meg, hogy a Windows olyan előre telepített alkalmazásokat javasoljon, amelyeket nem használt"
+      },
+      "bing-start-menu": {
+        "label": "Bing a Start menüben",
+        "description": "Akadályozza meg, hogy a Start menübe írt keresések a Binghez kerüljenek"
+      },
+      "bing-web-search": {
+        "label": "Bing webes találatok",
+        "description": "Kapcsolja ki a webes találatokat a Windows keresésben, hogy a keresések ezen a gépen maradjanak"
+      },
+      "cortana": {
+        "label": "Cortana",
+        "description": "Kapcsolja ki a Cortanát, amely a háttérben fut, és adatokat gyűjt"
+      },
+      "search-highlights": {
+        "label": "Kiemelt keresési találatok",
+        "description": "Kapcsolja ki a népszerű keresési javaslatokat és a webes tartalmat a keresőmezőben"
+      },
+      "store-search-suggestions": {
+        "label": "Áruházi keresési javaslatok",
+        "description": "Kapcsolja ki a Microsoft Store keresési javaslatait, amelyek elküldik a kereséseit a Microsoftnak"
+      },
+      "clipboard-sync": {
+        "label": "Vágólap felhőszinkronizálása",
+        "description": "Akadályozza meg, hogy a vágólap adatai szinkronizálódjanak az eszközök között a felhőn keresztül"
+      },
+      "clipboard-history": {
+        "label": "Vágólapelőzmények",
+        "description": "Kapcsolja ki a vágólapelőzményeket, amelyek tárolják a másolt szöveget és képeket"
+      },
+      "settings-sync": {
+        "label": "Beállítások szinkronizálása",
+        "description": "Akadályozza meg a Windows-beállítások, témák és jelszavak szinkronizálását a Microsoft-fiókjával"
+      },
+      "find-my-device": {
+        "label": "Eszközkeresés",
+        "description": "Kapcsolja ki a Microsoft helyalapú eszközkövetését"
+      },
+      "copilot": {
+        "label": "Microsoft Copilot",
+        "description": "Kapcsolja ki a Microsoft Copilot AI-asszisztenst a teljes Windows rendszerben"
+      },
+      "windows-recall": {
+        "label": "Windows Recall",
+        "description": "Kapcsolja ki a Windows Recallt, az AI-alapú képernyőkép-előzményt, amely mindent rögzít, ami a képernyőn megjelenik"
+      },
+      "click-to-do": {
+        "label": "Click to Do",
+        "description": "Kapcsolja ki a Click to Do AI-alapú elemzését a képernyőn lévő szövegről és képekről"
+      },
+      "ai-service-autostart": {
+        "label": "AI-szolgáltatások automatikus indítása",
+        "description": "Akadályozza meg, hogy az AI-szolgáltatások automatikusan elinduljanak a háttérben"
+      },
+      "edge-ai-features": {
+        "label": "Edge Compose AI",
+        "description": "Kapcsolja ki az Edge AI-alapú szövegszerkesztési és átírási funkcióit"
+      },
+      "paint-ai": {
+        "label": "AI-funkciók a Paintben",
+        "description": "Kapcsolja ki az AI-alapú képgenerálási funkciókat a Microsoft Paintben"
+      },
+      "notepad-ai": {
+        "label": "AI-funkciók a Notepadban",
+        "description": "Kapcsolja ki az AI-alapú szövegátírási funkciókat a Microsoft Notepadban"
+      },
+      "service-diagtrack": {
+        "label": "DiagTrack szolgáltatás",
+        "description": "Tiltsa le a Connected User Experiences and Telemetry szolgáltatást"
+      },
+      "service-dmwappush": {
+        "label": "WAP Push szolgáltatás",
+        "description": "Tiltsa le a telemetriához használt WAP Push üzenettovábbító szolgáltatást"
+      },
+      "service-delivery-optimization": {
+        "label": "Delivery Optimization",
+        "description": "Tiltsa le a Windows-frissítések partnerek közötti megosztását, hogy ez a gép ne töltsön fel frissítési adatokat más eszközökre"
+      },
+      "service-mapsbroker": {
+        "label": "Maps Broker",
+        "description": "Tiltsa le a Downloaded Maps Manager háttérszolgáltatást, amelyre a legtöbb gépnek nincs szüksége"
+      },
+      "task-compatibility-appraiser": {
+        "label": "Compatibility Appraiser",
+        "description": "Tiltsa le a Microsoft kompatibilitási adatokat gyűjtő telemetriai feladatát"
+      },
+      "task-program-data-updater": {
+        "label": "Program Data Updater",
+        "description": "Tiltsa le a programtelemetriát feltöltő háttérfeladatot"
+      },
+      "task-autochk-proxy": {
+        "label": "Autochk Proxy",
+        "description": "Tiltsa le az autochk proxyn keresztül végzett telemetriagyűjtést"
+      },
+      "task-ceip-consolidator": {
+        "label": "CEIP Consolidator",
+        "description": "Tiltsa le a Customer Experience Improvement Program adatfeltöltését"
+      },
+      "task-usb-ceip": {
+        "label": "USB-használati adatok (CEIP)",
+        "description": "Tiltsa le az USB-eszközök használatára vonatkozó telemetriagyűjtést"
+      },
+      "task-disk-diagnostic": {
+        "label": "Disk Diagnostic Collector",
+        "description": "Tiltsa le a lemezdiagnosztikai adatok gyűjtését és feltöltését"
+      },
+      "task-feedback-dm": {
+        "label": "Feedback DM Client",
+        "description": "Tiltsa le a visszajelzési eszközkezelési telemetriai feladatot"
+      },
+      "task-maps-update": {
+        "label": "Térképfrissítési feladat",
+        "description": "Tiltsa le a térképadatok automatikus háttérbeli letöltését"
+      },
+      "task-maps-toast": {
+        "label": "Térkép-értesítési feladat",
+        "description": "Tiltsa le a térkép-értesítési feladatot"
+      },
+      "edge-metrics": {
+        "label": "Edge használati jelentések",
+        "description": "Akadályozza meg, hogy az Edge használati és összeomlási mérőszámokat küldjön a Microsoftnak"
+      },
+      "edge-site-info": {
+        "label": "Edge webhelyadat-gyűjtés",
+        "description": "Akadályozza meg, hogy az Edge elküldje a felkeresett webhelyek címét a Microsoftnak"
+      },
+      "edge-personalization": {
+        "label": "Edge személyre szabási jelentések",
+        "description": "Akadályozza meg, hogy az Edge elküldje az előzményeit hirdetés-személyre szabáshoz"
+      },
+      "edge-copilot-cdp": {
+        "label": "Copilot oldalhozzáférése az Edge-ben (CDP)",
+        "description": "Akadályozza meg, hogy a Copilot a Chrome DevTools Protocolon keresztül olvassa az oldal tartalmát"
+      },
+      "edge-copilot-page": {
+        "label": "Copilot oldalkontextusa az Edge-ben",
+        "description": "Akadályozza meg, hogy a Copilot az oldal kontextusát használja a tartalom elemzéséhez"
+      },
+      "edge-discover": {
+        "label": "Edge Discover oldalvizsgálat",
+        "description": "Akadályozza meg, hogy a Discover funkció megvizsgálja az oldal tartalmát"
+      },
+      "edge-sidebar": {
+        "label": "Edge oldalsáv",
+        "description": "Kapcsolja ki az Edge oldalsávot és a háttérben végzett adatgyűjtését"
+      },
+      "edge-shopping": {
+        "label": "Edge vásárlási asszisztens",
+        "description": "Kapcsolja ki az áregyeztetési nyomkövetőt az Edge-ben"
+      },
+      "chrome-metrics": {
+        "label": "Chrome használati jelentések",
+        "description": "Akadályozza meg, hogy a Chrome használati és összeomlási mérőszámokat küldjön a Google-nek"
+      },
+      "chrome-feedback": {
+        "label": "Chrome felhasználói visszajelzés",
+        "description": "Akadályozza meg, hogy a Chrome felhasználói visszajelzési adatokat gyűjtsön és küldjön"
+      },
+      "chrome-extended-reporting": {
+        "label": "Chrome kibővített Safe Browsing",
+        "description": "Akadályozza meg, hogy a Chrome kibővített URL- és letöltési jelentéseket küldjön a Google-nek"
+      },
+      "firefox-telemetry": {
+        "label": "Firefox telemetria",
+        "description": "Akadályozza meg, hogy a Firefox telemetriai adatokat gyűjtsön és töltsön fel a Mozillához"
+      },
+      "firefox-default-agent": {
+        "label": "Firefox alapértelmezett böngészőügynök",
+        "description": "Tiltsa le a háttérügynököt, amely böngészőhasználati adatokat jelent a Mozillának"
+      },
+      "macos-diagnostics": {
+        "label": "Diagnosztikai és használati adatok",
+        "description": "Akadályozza meg a diagnosztikai és használati adatok megosztását az Apple-lel"
+      },
+      "macos-siri-analytics": {
+        "label": "Siri-elemzés",
+        "description": "Akadályozza meg a Siri elemzési és fejlesztési adatainak gyűjtését"
+      },
+      "macos-health-data-sharing": {
+        "label": "Egészségügyi adatok megosztása",
+        "description": "Akadályozza meg az egészségügyi adatok megosztását az Apple-lel kutatási célokra"
+      },
+      "macos-airdrop-discoverability": {
+        "label": "AirDrop-láthatóság",
+        "description": "Állítsa az AirDropot Senki sem értékre: nem fogadhat fájlokat AirDroppal, amíg újra be nem kapcsolja a Rendszerbeállításokban"
+      },
+      "macos-crash-reporter": {
+        "label": "Összeomlásjelentés",
+        "description": "Akadályozza meg, hogy az összeomlásjelentő automatikusan küldjön jelentéseket"
+      },
+      "macos-ad-tracking": {
+        "label": "Személyre szabott hirdetések",
+        "description": "Korlátozza az Apple hirdetési nyomkövetését"
+      },
+      "macos-siri-suggestions-appstore": {
+        "label": "Siri-javaslatok az App Store-ban",
+        "description": "Kapcsolja ki a Siri-javaslatokat az App Store-ban"
+      },
+      "macos-safari-suggestions": {
+        "label": "Safari keresési javaslatok",
+        "description": "Kapcsolja ki az Apple-nek küldött Safari keresési javaslatokat"
+      },
+      "macos-spotlight-suggestions": {
+        "label": "Spotlight-javaslatok",
+        "description": "Kapcsolja ki a Spotlight webes javaslatait"
+      },
+      "macos-safari-preload-top-hit": {
+        "label": "Safari legjobb találat előbetöltése",
+        "description": "Akadályozza meg, hogy a Safari előre betöltse a legjobb keresési találatot, ami böngészési adatokat küld a webhelyeknek"
+      },
+      "macos-handoff": {
+        "label": "Handoff",
+        "description": "Kapcsolja ki a Handoffot és a közös vágólapot: a tevékenységek folytatása, valamint a másolás és beillesztés az Apple-eszközök között nem lesz lehetséges"
+      },
+      "macos-icloud-analytics": {
+        "label": "iCloud-elemzés",
+        "description": "Akadályozza meg az iCloud-elemzés megosztását az Apple-lel"
+      },
+      "macos-safari-cloud-tabs": {
+        "label": "Safari iCloud-lapok",
+        "description": "Kapcsolja ki a Safari iCloud-lapszinkronizálását: a többi Apple-eszközön nyitva lévő lapok többé nem lesznek láthatók"
+      },
+      "macos-siri-enabled": {
+        "label": "Siri",
+        "description": "Kapcsolja ki teljesen a Sirit: a „Hé, Siri”, a hangparancsok és a Siri-parancsikonok leállnak"
+      },
+      "macos-siri-dictation": {
+        "label": "Siri-diktálás",
+        "description": "Kapcsolja ki a diktálást: a billentyűzet mikrofongombja leáll"
+      },
+      "macos-apple-intelligence": {
+        "label": "Apple Intelligence",
+        "description": "Kapcsolja ki az Apple Intelligence AI-funkcióit (macOS 15 Sequoia és újabb)"
+      },
+      "macos-safari-dnt": {
+        "label": "Safari Do Not Track",
+        "description": "Kapcsolja be a Do Not Track (nyomkövetés tiltása) fejlécet a Safariban"
+      },
+      "macos-chrome-metrics": {
+        "label": "Chrome használati jelentések",
+        "description": "Akadályozza meg, hogy a Chrome használati mérőszámokat küldjön a Google-nek"
+      },
+      "macos-chrome-safe-browsing": {
+        "label": "Chrome Safe Browsing jelentések",
+        "description": "Akadályozza meg, hogy a Chrome kibővített URL- és letöltési jelentéseket küldjön a Google-nek"
+      },
+      "macos-firefox-telemetry": {
+        "label": "Firefox telemetria",
+        "description": "Akadályozza meg, hogy a Firefox telemetriai adatokat gyűjtsön és töltsön fel a Mozillához"
+      },
+      "macos-gatekeeper": {
+        "label": "Gatekeeper",
+        "description": "Győződjön meg róla, hogy a Gatekeeper be van kapcsolva, hogy a nem ellenőrzött alkalmazások blokkolva legyenek"
+      },
+      "macos-remote-apple-events": {
+        "label": "Távoli Apple Events",
+        "description": "Kapcsolja ki a távoli Apple Eventst, hogy a Mac ne legyen távolról automatizálható"
+      },
+      "macos-wake-on-network": {
+        "label": "Ébresztés hálózati hozzáféréssel",
+        "description": "Kapcsolja ki az ébresztést hálózati hozzáféréssel, hogy a Mac ne legyen távolról felébreszthető"
+      },
+      "macos-guest-account": {
+        "label": "Vendégfiók",
+        "description": "Kapcsolja ki a vendégfiókot a jogosulatlan helyi hozzáférés megakadályozása érdekében"
+      },
+      "macos-auto-login": {
+        "label": "Automatikus bejelentkezés",
+        "description": "Kapcsolja ki az automatikus bejelentkezést, hogy a Mac hitelesítést kérjen induláskor"
+      },
+      "macos-firewall": {
+        "label": "Alkalmazástűzfal",
+        "description": "Kapcsolja be a macOS alkalmazástűzfalát a bejövő kapcsolatok szabályozásához"
+      },
+      "macos-stealth-mode": {
+        "label": "Rejtett mód",
+        "description": "Kapcsolja be a rejtett módot, hogy a Mac ne válaszoljon a vizsgáló kérésekre (ICMP ping)"
+      },
+      "macos-ip-forwarding": {
+        "label": "IP-továbbítás letiltása",
+        "description": "Akadályozza meg, hogy a rendszer csomagokat továbbítson a hálózati interfészek között"
+      },
+      "macos-block-signed-auto": {
+        "label": "Aláírt alkalmazások automatikus engedélyezésének letiltása",
+        "description": "Akadályozza meg, hogy az aláírt alkalmazások automatikusan megkerüljék a tűzfalat"
+      },
+      "macos-remote-login": {
+        "label": "Távoli bejelentkezés letiltása (SSH)",
+        "description": "Kapcsolja ki teljesen az SSH-kiszolgálót. Ha SSH-hozzáférésre van szüksége, hagyja kikapcsolva, és inkább erősítse meg az SSH-beállításokat"
+      },
+      "macos-ssh-root-login": {
+        "label": "SSH root-bejelentkezés letiltása",
+        "description": "Akadályozza meg a közvetlen root-bejelentkezést SSH-n keresztül; helyette használjon sudót normál fiókból"
+      },
+      "macos-ssh-password-auth": {
+        "label": "SSH jelszavas hitelesítés letiltása",
+        "description": "Csak kulcsalapú SSH-hitelesítést engedélyezzen. Először állítsa be az SSH-kulcsokat, különben kizárhatja magát"
+      },
+      "macos-core-dumps": {
+        "label": "Core dump letiltása",
+        "description": "Akadályozza meg a core dumpokat, amelyek érzékeny memóriatartalmat szivárogtathatnak ki"
+      },
+      "gnome-usage-stats": {
+        "label": "Használati statisztikák",
+        "description": "Kapcsolja ki a GNOME használati statisztikáinak gyűjtését"
+      },
+      "gnome-recent-files": {
+        "label": "Legutóbbi fájlok követése",
+        "description": "Kapcsolja ki a legutóbb használt fájlok követését"
+      },
+      "gnome-location": {
+        "label": "Helyszolgáltatások",
+        "description": "Kapcsolja ki a GNOME helyszolgáltatásait"
+      },
+      "gnome-crash-reporting": {
+        "label": "Összeomlásjelentés (Apport)",
+        "description": "Kapcsolja ki az összeomlásjelentések automatikus beküldését"
+      },
+      "gnome-connectivity-check": {
+        "label": "Kapcsolatellenőrzés",
+        "description": "Kapcsolja ki az időszakos hálózati kapcsolatellenőrzéseket"
+      },
+      "core-dump-disable": {
+        "label": "Core dump letiltása",
+        "description": "Akadályozza meg a core dumpokat, amelyek érzékeny memóriatartalmat szivárogtathatnak ki"
+      },
+      "ssh-root-login": {
+        "label": "SSH root-bejelentkezés letiltása",
+        "description": "Akadályozza meg a közvetlen root-bejelentkezést SSH-n keresztül; helyette használjon sudót normál fiókból"
+      },
+      "ssh-password-auth": {
+        "label": "SSH jelszavas hitelesítés letiltása",
+        "description": "Csak kulcsalapú SSH-hitelesítést engedélyezzen. Először állítsa be az SSH-kulcsokat, különben kizárhatja magát"
+      },
+      "kde-usage-stats": {
+        "label": "Használati statisztikák",
+        "description": "Kapcsolja ki a KDE Plasma felhasználói visszajelzését"
+      },
+      "kde-recent-files": {
+        "label": "Legutóbbi fájlok követése",
+        "description": "Kapcsolja ki a KDE legutóbbi fájlokra vonatkozó tevékenységelőzményeit"
+      },
+      "kde-baloo": {
+        "label": "Fájlindexelés (Baloo)",
+        "description": "Kapcsolja ki a Baloo fájlindexelőt"
+      },
+      "kde-crash-reporting": {
+        "label": "Összeomlásjelentés (DrKonqi)",
+        "description": "Kapcsolja ki a KDE összeomlásjelentés-kezelőjét"
+      }
+    }
   },
   "privacyCategories": {
     "telemetryLabel": "Telemetria és adatgyűjtés",
@@ -50,14 +500,45 @@
   },
   "debloater": {
     "pageTitle": "Bloatware eltávolító",
-    "pageDescription": "Előre telepített Windows alkalmazások és OEM bloatware eltávolítása",
+    "pageDescription": "A Windows és a gyártó által előre telepített alkalmazások. Eltávolítás után csak a Microsoft Store áruházból telepíthetők újra.",
     "scanButton": "Vizsgálat",
-    "irreversibleWarning": "Visszafordíthatatlan — az eltávolított alkalmazások csak a Microsoft Store áruházból telepíthetők újra. Gondosan ellenőrizze a kijelölést.",
-    "scanningPackages": "Telepített csomagok vizsgálata...",
-    "removingProgress": "{{current}} / {{total}} eltávolítása",
+    "rescanButton": "Vizsgálat újra",
+    "irreversibleWarning": "Az eltávolítás az alkalmazásból nem vonható vissza: megerősítés előtt ellenőrizze a kijelölt alkalmazásokat.",
+    "scanningPackages": "Telepített csomagok vizsgálata…",
+    "removingProgress": "Alkalmazások eltávolítása ({{current}}/{{total}})",
+    "receiptTitle": "Eltávolítás befejezve",
+    "removedApps_one": "{{count}} alkalmazás eltávolítva",
+    "removedApps_other": "{{count}} alkalmazás eltávolítva",
+    "failedCount_one": "{{count}} sikertelen",
+    "failedCount_other": "{{count}} sikertelen",
+    "reinstallFromStore": "csak a Microsoft Store áruházból telepíthető újra",
     "selectAll": "Összes kijelölése",
-    "emptyStateTitle": "Nem található bloatware",
-    "emptyStateDescription": "Kattintson a „Vizsgálat” gombra az előre telepített alkalmazások és az OEM bloatware megkereséséhez.",
+    "filterLabel": "Kategória",
+    "confirmTitle_one": "Eltávolítja a(z) {{count}} alkalmazást?",
+    "confirmTitle_other": "Eltávolítja a(z) {{count}} alkalmazást?",
+    "confirmDescription_one": "Az alkalmazás eltávolításra kerül a felhasználójánál, és rendszergazdai jogosultsággal az új felhasználóknál is. Csak a Microsoft Store áruházból telepíthető újra.",
+    "confirmDescription_other": "Az alkalmazások eltávolításra kerülnek a felhasználójánál, és rendszergazdai jogosultsággal az új felhasználóknál is. Csak a Microsoft Store áruházból telepíthetők újra.",
+    "confirmLabel_one": "{{count}} alkalmazás eltávolítása",
+    "confirmLabel_other": "{{count}} alkalmazás eltávolítása",
+    "emptyStateTitle": "Még nincs megvizsgálva",
+    "emptyStateDescription": "Ebben a munkamenetben nem történt vizsgálat az előre telepített alkalmazásokról.",
+    "lastRun_one": "Legutóbbi eltávolítás: {{date}}, {{count}} alkalmazás eltávolítva.",
+    "lastRun_other": "Legutóbbi eltávolítás: {{date}}, {{count}} alkalmazás eltávolítva.",
+    "checkKnownTitle": "Ismert alkalmazások",
+    "checkKnownDetail": "A Microsoft és a gyártók (OEM) által előre telepített alkalmazások listája",
+    "checkInstalledTitle": "Telepített csomagok",
+    "checkInstalledDetail": "A felhasználója alkalmazáscsomagjai, a listával összevetve",
+    "checkRemovalTitle": "Eltávolítás",
+    "checkRemovalDetail": "A felhasználójánál; rendszergazdai jogosultsággal az új felhasználók számára használt másolatból is",
+    "noneFoundTitle": "A felsorolt alkalmazások egyike sincs telepítve",
+    "noneFoundDescription": "Az ismert előre telepített alkalmazások nincsenek jelen a felhasználójánál.",
+    "summaryTitle_one": "{{count}} előre telepített alkalmazás található",
+    "summaryTitle_other": "{{count}} előre telepített alkalmazás található",
+    "selectedCount_one": "{{count}} kijelölve",
+    "selectedCount_other": "{{count}} kijelölve",
+    "removeButton_one": "{{count}} alkalmazás eltávolítása",
+    "removeButton_other": "{{count}} alkalmazás eltávolítása",
+    "removeNone": "Kijelöltek eltávolítása",
     "scanFailedToast": "A bloatware vizsgálata sikertelen",
     "scanFailedDescription": "Győződjön meg arról, hogy a PowerShell elérhető",
     "scanFailedError": "Nem sikerült megvizsgálni a bloatware elemeket. Győződjön meg arról, hogy a PowerShell elérhető.",

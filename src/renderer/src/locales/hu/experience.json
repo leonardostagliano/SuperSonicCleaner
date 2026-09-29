@@ -1,9 +1,9 @@
 {
   "routes": {
-    "history": "Nézze meg, mi változott, mit sikerült helyreállítani, és mi igényel még egy ellenőrzést. Minden befejezett feladat nyomot hagy.",
-    "settings": "Alakítsa a SuperSonicCleanert a saját igényeire. Állítsa be a megjelenést, az értesítéseket, a kizárásokat és a tisztítási beállításokat.",
-    "about": "Nyílt forráskódú, átgondolt kialakítással. Keresse meg a verzióját, ellenőrizze a frissítéseket, és ismerje meg a projektet.",
-    "recovery": "Egyértelmű út visszafelé. Mielőtt bármit visszavonna, tekintse át a támogatott módosításokat és a visszaállítás részleteit."
+    "history": "Az ezen a számítógépen futtatott utolsó 100 vizsgálat és tisztítás, dátummal, időtartammal, feldolgozott elemekkel és felszabadított hellyel, valamint az egyes tisztítások bizonylatával.",
+    "settings": "Megjelenés, nyelv, indítás, értesítések, frissítések, biztonsági mentések, tisztítási beállítások és kizárások. Minden módosítás azonnal mentésre kerül.",
+    "about": "Telepített verzió, frissítések, MIT licenc és az eredeti projekt (Kudu).",
+    "recovery": "A SuperSonicCleaner által a rendszerleíró adatbázisban, szolgáltatásokban és ütemezett feladatokban végzett módosítások, a visszavonásukhoz szükséges biztonsági mentésekkel. A törölt fájlok nem állíthatók helyre."
   },
   "storageTrend": {
     "title": "Tárhely időbeli alakulása",

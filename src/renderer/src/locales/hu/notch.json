@@ -15,6 +15,7 @@
   "cpuDetail": "Jelenlegi processzorhasználat",
   "sample": "Utolsó minta",
   "used": "{{used}}/{{total}} GB használva",
+  "free": "{{free}} GB szabad",
   "waiting": "Valós idejű adatokra várakozás",
   "unavailable": "Lemezadatok nem érhetők el",
   "live": "Valós idejű rendszermetrikák",

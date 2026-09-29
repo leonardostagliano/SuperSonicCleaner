@@ -1,7 +1,7 @@
 {
   "title": "AI-elemzés",
   "description": "Kérjen független véleményt ezekről a vizsgálati eredményekről.",
-  "hubDescription": "Független vélemény a vizsgálatokról és teljesítményrögzítésekről a Codex-bejelentkezés használatával.",
+  "hubDescription": "A Codexnek, az Ön bejelentkezésén keresztül, kizárólag a vizsgálat metaadatait vagy a rögzítés méréseit küldi el, és csak akkor, ha Ön elemzést indít egy eszközből.",
   "hubPrivacy": "A vizsgálatok csak névtelen fájlmetaadatokat osztanak meg. A rögzítések számszerű CPU-, memória- és lemezméréseket osztanak meg ideiglenes folyamatazonosítókkal. A nevek, útvonalak, megjegyzések és fájltartalmak ezen az eszközön maradnak.",
   "connectionTitle": "Codex-kapcsolat",
   "connectionIntro": "Használja a Codexet ezen a számítógépen. Ellenőrizze a kapcsolatot, majd válasszon eszközt lent.",
@@ -13,19 +13,24 @@
   "hubInstructions": "Fejezzen be egy vizsgálatot vagy mentsen el egy teljesítményrögzítést, kapcsolja be hozzá az AI-elemzést, majd indítsa el a megfelelő gombbal. Semmi sem kerül automatikusan elküldésre.",
   "tools": {
     "cleaner": {
-      "title": "Rendszertisztítás"
+      "title": "Rendszertisztítás",
+      "dataSent": "Ideiglenes azonosítók, fájltípus, méret és hozzávetőleges kor. Az adatvédelmi nyomok nélkül."
     },
     "largeFiles": {
-      "title": "Nagy fájlok"
+      "title": "Nagy fájlok",
+      "dataSent": "Ideiglenes azonosítók, fájltípus, méret és hozzávetőleges kor."
     },
     "duplicates": {
-      "title": "Duplikált fájlok"
+      "title": "Duplikált fájlok",
+      "dataSent": "Ideiglenes azonosítók, fájltípus, méret, hozzávetőleges kor és duplikátumcsoport."
     },
     "disk": {
-      "title": "Lemezelemzés"
+      "title": "Lemezelemzés",
+      "dataSent": "Ideiglenes azonosítók, a mappa teljes mérete és hozzávetőleges kor."
     },
     "performance": {
-      "title": "Teljesítményrögzítések"
+      "title": "Teljesítményrögzítések",
+      "dataSent": "Számszerű CPU-, memória- és lemezmérések, ideiglenes folyamatazonosítókkal."
     }
   },
   "enable": "AI-elemzés bekapcsolása ehhez a nézethez",
@@ -51,5 +56,23 @@
     "low": "Alacsony prioritás",
     "medium": "Közepes prioritás",
     "high": "Magas prioritás"
+  },
+  "toolsTitle": "Eszközök",
+  "columns": {
+    "tool": "Eszköz",
+    "dataSent": "Elküldött adatok",
+    "lastRun": "Utolsó futtatás",
+    "state": "Állapot"
+  },
+  "lastRun": {
+    "running": "Fut",
+    "done": "Befejeződött ebben a munkamenetben",
+    "failed": "Sikertelen",
+    "none": "Nincs ebben a munkamenetben",
+    "perRecording": "Minden elemzett rögzítéssel mentve"
+  },
+  "state": {
+    "on": "Be",
+    "off": "Ki"
   }
 }
