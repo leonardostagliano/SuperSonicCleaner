@@ -2,7 +2,7 @@ import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from '
 import { useTranslation } from 'react-i18next'
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
-import { RTL_LANGUAGES } from './lib/languages'
+import { RTL_LANGUAGES, toastPlacement } from './lib/languages'
 import { useScheduledScan } from './hooks/useScheduledScan'
 import { AppShell } from './components/layout/AppShell'
 import { DashboardPage } from './pages/DashboardPage'
@@ -145,7 +145,7 @@ export function App() {
           <RoutedContent />
         </AppShell>
         <Toaster
-          position="bottom-right"
+          {...toastPlacement(i18n.language)}
           theme={theme === 'system' ? 'system' : theme}
           toastOptions={{
             style: {
